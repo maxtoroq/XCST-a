@@ -40,35 +40,12 @@ function script:NuSpec {
          "<copyright>$($notice.copyright)</copyright>"
          "<iconUrl>$($notice.website)nuget/icon.png</iconUrl>"
 
-   if ($projName -eq "Xcst") {
-
-      "<description>XCST runtime API. For compilation install the Xcst.Compiler package.</description>"
-
-      "<frameworkAssemblies>"
-         "<frameworkAssembly assemblyName='System'/>"
-         "<frameworkAssembly assemblyName='System.Xml'/>"
-      "</frameworkAssemblies>"
-
-   } elseif ($projName -eq "Xcst.Compiler") {
-
-      "<description>XCST compiler API. Use this package to translate your XCST programs into C# code.</description>"
-
-      "<dependencies>"
-         "<dependency id='Xcst' version='$(DependencyVersionRange Xcst)'/>"
-         "<dependency id='Saxon-HE' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Saxon-HE'']').Attributes['allowedVersions'].Value)'/>"
-      "</dependencies>"
-
-      "<frameworkAssemblies>"
-         "<frameworkAssembly assemblyName='System'/>"
-         "<frameworkAssembly assemblyName='System.Xml'/>"
-      "</frameworkAssemblies>"
-
-   } elseif ($projName -eq "Xcst.Web.Mvc") {
+   if ($projName -eq "Xcst.Web.Mvc") {
 
       "<description>XCST view engine for ASP.NET MVC 5.</description>"
 
       "<dependencies>"
-         "<dependency id='Xcst.Compiler' version='$(DependencyVersionRange Xcst.Compiler)'/>"
+         "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
          "<dependency id='Microsoft.AspNet.Mvc' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Microsoft.AspNet.Mvc'']').Attributes['allowedVersions'].Value)'/>"
       "</dependencies>"
 
@@ -82,7 +59,7 @@ function script:NuSpec {
       "<description>XCST pages for ASP.NET.</description>"
 
       "<dependencies>"
-         "<dependency id='Xcst.Compiler' version='$(DependencyVersionRange Xcst.Compiler)'/>"
+         "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
          "<dependency id='Microsoft.Web.Infrastructure' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Microsoft.Web.Infrastructure'']').Attributes['allowedVersions'].Value)'/>"
       "</dependencies>"
 
