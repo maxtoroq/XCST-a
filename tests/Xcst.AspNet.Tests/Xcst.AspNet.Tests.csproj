@@ -95,19 +95,10 @@
     <Compile Include="..\XDocumentNormalizer.cs">
       <Link>XDocumentNormalizer.cs</Link>
     </Compile>
-    <Compile Include="Extension\ExtensionTests.generated.cs">
-      <DependentUpon>ExtensionTests.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
+    <Compile Include="Extension\ExtensionTests.generated.cs" />
     <Compile Include="Extension\ExtensionTestsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Extension\ExtensionTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ExtensionTests.generated.cs</LastGenOutput>
-    </None>
+    <None Include="Extension\generate-extension-tests.ps1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Extension\AntiForgeryToken\anti-forgery-token.foo.i.xcst" />
@@ -276,6 +267,9 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>powershell -NoProfile -ExecutionPolicy RemoteSigned -File $(ProjectDir)Extension\generate-extension-tests.ps1</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
