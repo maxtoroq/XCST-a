@@ -4,6 +4,8 @@ This repository provides integration of XCST with ASP.NET for web application de
 
 See the [project home][1] for more information.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/4chhbklsb4b6h09c?svg=true)](https://ci.appveyor.com/project/maxtoroq/xcst-a)
+
 ### Related Repositories
 
 - [XCST][2]

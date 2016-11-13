@@ -1,0 +1,11 @@
+clone_script:
+- ps: >-
+    git clone -q --branch=$env:appveyor_repo_branch https://github.com/$env:appveyor_repo_name.git $env:appveyor_build_folder
+    cd $env:appveyor_build_folder
+    git checkout -qf $env:appveyor_repo_commit
+    git submodule update --init --recursive
+
+before_build:
+  - ps: .\build\restore-packages.ps1
+
+version: '0.0.0.{build}'
