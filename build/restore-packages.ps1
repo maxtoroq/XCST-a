@@ -10,6 +10,7 @@ try {
 
    &$nuget restore $solutionPath\src\AspNetLib\AspNetLib.sln
    &$nuget restore $solutionPath\XCST-a.sln
+   &$nuget restore ..\samples\aspnet\packages.config -SolutionDirectory ..
 
 } finally {
    Pop-Location
