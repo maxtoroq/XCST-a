@@ -8,4 +8,7 @@ clone_script:
 before_build:
   - ps: .\build\restore-packages.ps1
 
-version: '0.0.0.{build}'
+version: '{build}'
+
+build:
+  project: XCST-a.sln
