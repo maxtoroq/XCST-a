@@ -1,5 +1,5 @@
 clone_script:
-- ps: >-
+- ps: |
     git clone -q --branch=$env:appveyor_repo_branch https://github.com/$env:appveyor_repo_name.git $env:appveyor_build_folder
     cd $env:appveyor_build_folder
     git checkout -qf $env:appveyor_repo_commit
