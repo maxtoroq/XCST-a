@@ -6,7 +6,10 @@ clone_script:
     git submodule update --init --recursive
 
 before_build:
-  - ps: .\build\restore-packages.ps1
+- ps: |
+    .\build\restore-packages.ps1
+    Copy-Item .\packages\Microsoft.Net.Compilers.*\tools\*.dll .\samples\aspnet\Bin\roslyn
+    Copy-Item .\packages\Microsoft.Net.Compilers.*\tools\*.exe .\samples\aspnet\Bin\roslyn
 
 version: '{build}'
 
