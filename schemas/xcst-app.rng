@@ -23,7 +23,7 @@
    <div>
       <ann:documentation>Categories</ann:documentation>
 
-      <define name="instruction-element">
+      <define name="instruction">
          <choice>
             <ref name="anti-forgery-token"/>
             <ref name="check-box"/>
@@ -54,7 +54,7 @@
 
       <define name="sequence-constructor-node">
          <choice>
-            <ref name="instruction-element"/>
+            <ref name="instruction"/>
             <ref name="other-element"/>
             <text/>
          </choice>
@@ -486,15 +486,13 @@
    <div>
       <ann:documentation>Data Types</ann:documentation>
 
-      <define name="AVT">
-         <ann:documentation>Attribute value template.</ann:documentation>
+      <define name="String">
          <data type="string"/>
       </define>
 
-      <define name="AVTExpr">
-         <data type="string">
-            <param name="pattern">.*\{.+\}.*</param>
-         </data>
+      <define name="AVT">
+         <ann:documentation>Attribute value template</ann:documentation>
+         <ref name="String"/>
       </define>
 
       <define name="Name">
@@ -510,7 +508,7 @@
       </define>
 
       <define name="Expression">
-         <ann:documentation>Expression.</ann:documentation>
+         <ann:documentation>Expression</ann:documentation>
          <data type="string">
             <param name="minLength">1</param>
          </data>
