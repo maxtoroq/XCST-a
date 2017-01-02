@@ -22,7 +22,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc.Html {
 
@@ -59,7 +58,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       public static void TextArea(this HtmlHelper htmlHelper,
-                                  DynamicContext context,
+                                  XcstWriter output,
                                   string name,
                                   object value = null,
                                   IDictionary<string, object> htmlAttributes = null) {
@@ -70,11 +69,11 @@ namespace Xcst.Web.Mvc.Html {
             metadata.Model = value;
          }
 
-         TextAreaHelper(htmlHelper, context, metadata, name, implicitRowsAndColumns, htmlAttributes);
+         TextAreaHelper(htmlHelper, output, metadata, name, implicitRowsAndColumns, htmlAttributes);
       }
 
       public static void TextArea(this HtmlHelper htmlHelper,
-                                  DynamicContext context,
+                                  XcstWriter output,
                                   string name,
                                   object value,
                                   int rows, int columns,
@@ -88,12 +87,12 @@ namespace Xcst.Web.Mvc.Html {
 
          IDictionary<string, object> rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
 
-         TextAreaHelper(htmlHelper, context, metadata, name, rowsAndColumns, htmlAttributes);
+         TextAreaHelper(htmlHelper, output, metadata, name, rowsAndColumns, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void TextAreaFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
-                                                        DynamicContext context,
+                                                        XcstWriter output,
                                                         Expression<Func<TModel, TProperty>> expression,
                                                         IDictionary<string, object> htmlAttributes = null) {
 
@@ -102,12 +101,12 @@ namespace Xcst.Web.Mvc.Html {
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         TextAreaHelper(htmlHelper, context, metadata, expressionString, implicitRowsAndColumns, htmlAttributes);
+         TextAreaHelper(htmlHelper, output, metadata, expressionString, implicitRowsAndColumns, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void TextAreaFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
-                                                        DynamicContext context,
+                                                        XcstWriter output,
                                                         Expression<Func<TModel, TProperty>> expression,
                                                         int rows, int columns,
                                                         IDictionary<string, object> htmlAttributes = null) {
@@ -118,12 +117,12 @@ namespace Xcst.Web.Mvc.Html {
          string expressionString = ExpressionHelper.GetExpressionText(expression);
          IDictionary<string, object> rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
 
-         TextAreaHelper(htmlHelper, context, metadata, expressionString, rowsAndColumns, htmlAttributes);
+         TextAreaHelper(htmlHelper, output, metadata, expressionString, rowsAndColumns, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "If this fails, it is because the string-based version had an empty 'name' parameter")]
       internal static void TextAreaHelper(HtmlHelper htmlHelper,
-                                          DynamicContext context,
+                                          XcstWriter output,
                                           ModelMetadata modelMetadata,
                                           string name,
                                           IDictionary<string, object> rowsAndColumns,
@@ -135,8 +134,6 @@ namespace Xcst.Web.Mvc.Html {
          if (String.IsNullOrEmpty(fullName)) {
             throw new ArgumentNullException(nameof(name));
          }
-
-         XcstWriter output = context.Output;
 
          output.WriteStartElement("textarea");
 

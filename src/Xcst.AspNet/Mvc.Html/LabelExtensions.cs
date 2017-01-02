@@ -22,7 +22,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc.Html {
 
@@ -30,19 +29,19 @@ namespace Xcst.Web.Mvc.Html {
    public static class LabelExtensions {
 
       public static void Label(this HtmlHelper html,
-                               DynamicContext context,
+                               XcstWriter output,
                                string expression,
                                string labelText = null,
                                IDictionary<string, object> htmlAttributes = null) {
 
          ModelMetadata metadata = ModelMetadata.FromStringExpression(expression, html.ViewData);
 
-         LabelHelper(html, context, metadata, expression, labelText, htmlAttributes);
+         LabelHelper(html, output, metadata, expression, labelText, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void LabelFor<TModel, TValue>(this HtmlHelper<TModel> html,
-                                                  DynamicContext context,
+                                                  XcstWriter output,
                                                   Expression<Func<TModel, TValue>> expression,
                                                   string labelText = null,
                                                   IDictionary<string, object> htmlAttributes = null) {
@@ -50,19 +49,19 @@ namespace Xcst.Web.Mvc.Html {
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         LabelHelper(html, context, metadata, expressionString, labelText, htmlAttributes);
+         LabelHelper(html, output, metadata, expressionString, labelText, htmlAttributes);
       }
 
       public static void LabelForModel(this HtmlHelper html,
-                                       DynamicContext context,
+                                       XcstWriter output,
                                        string labelText = null,
                                        IDictionary<string, object> htmlAttributes = null) {
 
-         LabelHelper(html, context, html.ViewData.ModelMetadata, String.Empty, labelText, htmlAttributes);
+         LabelHelper(html, output, html.ViewData.ModelMetadata, String.Empty, labelText, htmlAttributes);
       }
 
       internal static void LabelHelper(HtmlHelper html,
-                                     DynamicContext context,
+                                     XcstWriter output,
                                      ModelMetadata metadata,
                                      string expression,
                                      string labelText = null,
@@ -74,8 +73,6 @@ namespace Xcst.Web.Mvc.Html {
          if (String.IsNullOrEmpty(resolvedLabelText)) {
             return;
          }
-
-         XcstWriter output = context.Output;
 
          output.WriteStartElement("label");
 

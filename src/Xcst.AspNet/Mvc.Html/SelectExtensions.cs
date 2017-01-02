@@ -25,7 +25,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Web.Mvc;
-using Xcst.Runtime;
 using Xcst.Web.Runtime;
 using EnumHelper = System.Web.Mvc.Html.EnumHelper;
 
@@ -37,19 +36,19 @@ namespace Xcst.Web.Mvc.Html {
       // DropDownList
 
       public static void DropDownList(this HtmlHelper htmlHelper,
-                                      DynamicContext context,
+                                      XcstWriter output,
                                       string name,
                                       IEnumerable<SelectListItem> selectList = null,
                                       string optionLabel = null,
                                       IDictionary<string, object> htmlAttributes = null) {
 
-         DropDownListHelper(htmlHelper, context, default(ModelMetadata), name, selectList, optionLabel, htmlAttributes);
+         DropDownListHelper(htmlHelper, output, default(ModelMetadata), name, selectList, optionLabel, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void DropDownListFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
-                                                            DynamicContext context,
+                                                            XcstWriter output,
                                                             Expression<Func<TModel, TProperty>> expression,
                                                             IEnumerable<SelectListItem> selectList = null,
                                                             string optionLabel = null,
@@ -60,16 +59,16 @@ namespace Xcst.Web.Mvc.Html {
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         DropDownListHelper(htmlHelper, context, metadata, expressionString, selectList, optionLabel, htmlAttributes);
+         DropDownListHelper(htmlHelper, output, metadata, expressionString, selectList, optionLabel, htmlAttributes);
       }
 
       public static void DropDownListForModel(this HtmlHelper htmlHelper,
-                                              DynamicContext context,
+                                              XcstWriter output,
                                               IEnumerable<SelectListItem> selectList = null,
                                               string optionLabel = null,
                                               IDictionary<string, object> htmlAttributes = null) {
 
-         DropDownListHelper(htmlHelper, context, htmlHelper.ViewData.ModelMetadata, "", selectList, optionLabel, htmlAttributes);
+         DropDownListHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, "", selectList, optionLabel, htmlAttributes);
       }
 
       // Unable to constrain TEnum.  Cannot include IComparable, IConvertible, IFormattable because Nullable<T> does
@@ -79,7 +78,7 @@ namespace Xcst.Web.Mvc.Html {
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void EnumDropDownListFor<TModel, TEnum>(this HtmlHelper<TModel> htmlHelper,
-                                                            DynamicContext context,
+                                                            XcstWriter output,
                                                             Expression<Func<TModel, TEnum>> expression,
                                                             string optionLabel = null,
                                                             IDictionary<string, object> htmlAttributes = null) {
@@ -139,7 +138,7 @@ namespace Xcst.Web.Mvc.Html {
             optionLabel = null;
          }
 
-         DropDownListHelper(htmlHelper, context, metadata, expressionName, selectList, optionLabel, htmlAttributes);
+         DropDownListHelper(htmlHelper, output, metadata, expressionName, selectList, optionLabel, htmlAttributes);
       }
 
       static bool HasFlags(Type type) {
@@ -156,7 +155,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       internal static void DropDownListHelper(HtmlHelper htmlHelper,
-                                              DynamicContext context,
+                                              XcstWriter output,
                                               ModelMetadata metadata,
                                               string expression,
                                               IEnumerable<SelectListItem> selectList,
@@ -176,24 +175,24 @@ namespace Xcst.Web.Mvc.Html {
             }
          }
 
-         SelectInternal(htmlHelper, context, metadata, optionLabel, expression, selectList, allowMultiple: false, htmlAttributes: htmlAttributes);
+         SelectInternal(htmlHelper, output, metadata, optionLabel, expression, selectList, allowMultiple: false, htmlAttributes: htmlAttributes);
       }
 
       // ListBox
 
       public static void ListBox(this HtmlHelper htmlHelper,
-                                 DynamicContext context,
+                                 XcstWriter output,
                                  string name,
                                  IEnumerable<SelectListItem> selectList = null,
                                  IDictionary<string, object> htmlAttributes = null) {
 
-         ListBoxHelper(htmlHelper, context, default(ModelMetadata), name, selectList, htmlAttributes);
+         ListBoxHelper(htmlHelper, output, default(ModelMetadata), name, selectList, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void ListBoxFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
-                                                       DynamicContext context,
+                                                       XcstWriter output,
                                                        Expression<Func<TModel, TProperty>> expression,
                                                        IEnumerable<SelectListItem> selectList = null,
                                                        IDictionary<string, object> htmlAttributes = null) {
@@ -203,25 +202,25 @@ namespace Xcst.Web.Mvc.Html {
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         ListBoxHelper(htmlHelper, context, metadata, expressionString, selectList, htmlAttributes);
+         ListBoxHelper(htmlHelper, output, metadata, expressionString, selectList, htmlAttributes);
       }
 
       public static void ListBoxForModel(this HtmlHelper htmlHelper,
-                                         DynamicContext context,
+                                         XcstWriter output,
                                          IEnumerable<SelectListItem> selectList = null,
                                          IDictionary<string, object> htmlAttributes = null) {
 
-         ListBoxHelper(htmlHelper, context, htmlHelper.ViewData.ModelMetadata, "", selectList, htmlAttributes);
+         ListBoxHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, "", selectList, htmlAttributes);
       }
 
       internal static void ListBoxHelper(HtmlHelper htmlHelper,
-                                         DynamicContext context,
+                                         XcstWriter output,
                                          ModelMetadata metadata,
                                          string name,
                                          IEnumerable<SelectListItem> selectList,
                                          IDictionary<string, object> htmlAttributes) {
 
-         SelectInternal(htmlHelper, context, metadata, optionLabel: null, name: name, selectList: selectList, allowMultiple: true, htmlAttributes: htmlAttributes);
+         SelectInternal(htmlHelper, output, metadata, optionLabel: null, name: name, selectList: selectList, allowMultiple: true, htmlAttributes: htmlAttributes);
       }
 
       // Helper methods
@@ -283,7 +282,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       static void SelectInternal(this HtmlHelper htmlHelper,
-                                 DynamicContext context,
+                                 XcstWriter output,
                                  ModelMetadata metadata,
                                  string optionLabel,
                                  string name,
@@ -331,8 +330,6 @@ namespace Xcst.Web.Mvc.Html {
          if (defaultValue != null) {
             selectList = GetSelectListWithDefaultValue(selectList, defaultValue, allowMultiple);
          }
-
-         XcstWriter output = context.Output;
 
          output.WriteStartElement("select");
 

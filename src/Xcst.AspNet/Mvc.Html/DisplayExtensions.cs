@@ -22,7 +22,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
-using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc.Html {
 
@@ -30,33 +29,33 @@ namespace Xcst.Web.Mvc.Html {
    public static class DisplayExtensions {
 
       public static void Display(this HtmlHelper html,
-                                 DynamicContext context,
+                                 XcstWriter output,
                                  string expression,
                                  string templateName = null,
                                  string htmlFieldName = null,
                                  object additionalViewData = null) {
 
-         TemplateHelpers.Template(html, context, expression, templateName, htmlFieldName, DataBoundControlMode.ReadOnly, additionalViewData);
+         TemplateHelpers.Template(html, output, expression, templateName, htmlFieldName, DataBoundControlMode.ReadOnly, additionalViewData);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void DisplayFor<TModel, TValue>(this HtmlHelper<TModel> html,
-                                                    DynamicContext context,
+                                                    XcstWriter output,
                                                     Expression<Func<TModel, TValue>> expression,
                                                     string templateName = null,
                                                     string htmlFieldName = null,
                                                     object additionalViewData = null) {
 
-         TemplateHelpers.TemplateFor(html, context, expression, templateName, htmlFieldName, DataBoundControlMode.ReadOnly, additionalViewData);
+         TemplateHelpers.TemplateFor(html, output, expression, templateName, htmlFieldName, DataBoundControlMode.ReadOnly, additionalViewData);
       }
 
       public static void DisplayForModel(this HtmlHelper html,
-                                         DynamicContext context,
+                                         XcstWriter output,
                                          string templateName = null,
                                          string htmlFieldName = null,
                                          object additionalViewData = null) {
 
-         TemplateHelpers.TemplateHelper(html, context, html.ViewData.ModelMetadata, htmlFieldName, templateName, DataBoundControlMode.ReadOnly, additionalViewData);
+         TemplateHelpers.TemplateHelper(html, output, html.ViewData.ModelMetadata, htmlFieldName, templateName, DataBoundControlMode.ReadOnly, additionalViewData);
       }
 
       /// <summary>

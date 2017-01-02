@@ -24,7 +24,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
-using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc.Html {
 
@@ -127,7 +126,7 @@ namespace Xcst.Web.Mvc.Html {
       /// Otherwise, a <paramref name="tag"/> element that contains an error message.</returns>
       [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
       public static void ValidationMessage(this HtmlHelper htmlHelper,
-                                           DynamicContext context,
+                                           XcstWriter output,
                                            string modelName,
                                            string validationMessage = null,
                                            IDictionary<string, object> htmlAttributes = null,
@@ -137,7 +136,7 @@ namespace Xcst.Web.Mvc.Html {
 
          ModelMetadata metadata = ModelMetadata.FromStringExpression(modelName, htmlHelper.ViewData);
 
-         ValidationMessageHelper(htmlHelper, context, metadata, modelName, validationMessage, htmlAttributes, tag);
+         ValidationMessageHelper(htmlHelper, output, metadata, modelName, validationMessage, htmlAttributes, tag);
       }
 
       /// <summary>
@@ -156,7 +155,7 @@ namespace Xcst.Web.Mvc.Html {
       /// Otherwise, a <paramref name="tag"/> element that contains an error message.</returns>
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void ValidationMessageFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
-                                                                 DynamicContext context,
+                                                                 XcstWriter output,
                                                                  Expression<Func<TModel, TProperty>> expression,
                                                                  string validationMessage = null,
                                                                  IDictionary<string, object> htmlAttributes = null,
@@ -165,12 +164,12 @@ namespace Xcst.Web.Mvc.Html {
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         ValidationMessageHelper(htmlHelper, context, metadata, expressionString, validationMessage, htmlAttributes, tag);
+         ValidationMessageHelper(htmlHelper, output, metadata, expressionString, validationMessage, htmlAttributes, tag);
       }
 
       [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Normalization to lowercase is a common requirement for JavaScript and HTML values")]
       internal static void ValidationMessageHelper(this HtmlHelper htmlHelper,
-                                                   DynamicContext context,
+                                                   XcstWriter output,
                                                    ModelMetadata modelMetadata,
                                                    string expression,
                                                    string validationMessage,
@@ -199,8 +198,6 @@ namespace Xcst.Web.Mvc.Html {
          if (String.IsNullOrEmpty(tag)) {
             tag = htmlHelper.ViewContext.ValidationMessageElement;
          }
-
-         XcstWriter output = context.Output;
 
          output.WriteStartElement(tag);
 
@@ -237,7 +234,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       public static void ValidationSummary(this HtmlHelper htmlHelper,
-                                           DynamicContext context,
+                                           XcstWriter output,
                                            bool includePropertyErrors = false,
                                            string message = null,
                                            IDictionary<string, object> htmlAttributes = null,
@@ -262,8 +259,6 @@ namespace Xcst.Web.Mvc.Html {
                return;
             }
          }
-
-         XcstWriter output = context.Output;
 
          output.WriteStartElement("div");
 

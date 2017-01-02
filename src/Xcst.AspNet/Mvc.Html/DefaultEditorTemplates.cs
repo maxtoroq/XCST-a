@@ -38,7 +38,7 @@ namespace Xcst.Web.Mvc.Html {
       const string HtmlAttributeKey = "htmlAttributes";
       const string OptionsKeyPrefix = "__xcst_options:";
 
-      public static void BooleanTemplate(HtmlHelper html, DynamicContext context) {
+      public static void BooleanTemplate(HtmlHelper html, XcstWriter output) {
 
          bool? value = null;
 
@@ -51,21 +51,21 @@ namespace Xcst.Web.Mvc.Html {
             string className = GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
             IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-            SelectExtensions.DropDownList(html, context, String.Empty, TriStateValues(value), optionLabel: null, htmlAttributes: htmlAttributes);
+            SelectExtensions.DropDownList(html, output, String.Empty, TriStateValues(value), optionLabel: null, htmlAttributes: htmlAttributes);
 
          } else {
 
             string className = GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
 
-            InputExtensions.CheckBox(html, context, String.Empty, value.GetValueOrDefault(), CreateHtmlAttributes(html, className));
+            InputExtensions.CheckBox(html, output, String.Empty, value.GetValueOrDefault(), CreateHtmlAttributes(html, className));
          }
       }
 
-      public static void CollectionTemplate(HtmlHelper html, DynamicContext context) {
-         CollectionTemplate(html, context, TemplateHelpers.TemplateHelper);
+      public static void CollectionTemplate(HtmlHelper html, XcstWriter output) {
+         CollectionTemplate(html, output, TemplateHelpers.TemplateHelper);
       }
 
-      internal static void CollectionTemplate(HtmlHelper html, DynamicContext context, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+      internal static void CollectionTemplate(HtmlHelper html, XcstWriter output, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
          ViewDataDictionary viewData = html.ViewData;
          object model = viewData.ModelMetadata.Model;
@@ -108,7 +108,7 @@ namespace Xcst.Web.Mvc.Html {
 
                ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => item, itemType);
                string fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
-               templateHelper(html, context, metadata, fieldName, null /* templateName */, DataBoundControlMode.Edit, null /* additionalViewData */);
+               templateHelper(html, output, metadata, fieldName, null /* templateName */, DataBoundControlMode.Edit, null /* additionalViewData */);
             }
 
          } finally {
@@ -116,21 +116,21 @@ namespace Xcst.Web.Mvc.Html {
          }
       }
 
-      public static void DecimalTemplate(HtmlHelper html, DynamicContext context) {
+      public static void DecimalTemplate(HtmlHelper html, XcstWriter output) {
 
          if (html.ViewData.TemplateInfo.FormattedModelValue == html.ViewData.ModelMetadata.Model) {
             html.ViewData.TemplateInfo.FormattedModelValue = String.Format(CultureInfo.CurrentCulture, "{0:0.00}", html.ViewData.ModelMetadata.Model);
          }
 
-         HtmlInputTemplateHelper(html, context, "Decimal");
+         HtmlInputTemplateHelper(html, output, "Decimal");
       }
 
-      public static void HiddenInputTemplate(HtmlHelper html, DynamicContext context) {
+      public static void HiddenInputTemplate(HtmlHelper html, XcstWriter output) {
 
          ViewDataDictionary viewData = html.ViewData;
 
          if (!viewData.ModelMetadata.HideSurroundingHtml) {
-            DefaultDisplayTemplates.StringTemplate(html, context);
+            DefaultDisplayTemplates.StringTemplate(html, output);
          }
 
          object model = viewData.Model;
@@ -152,10 +152,10 @@ namespace Xcst.Web.Mvc.Html {
          string className = GetEditorCssClass(new EditorInfo("HiddenInput", "input", InputType.Hidden), null);
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputExtensions.Hidden(html, context, String.Empty, model, htmlAttributes);
+         InputExtensions.Hidden(html, output, String.Empty, model, htmlAttributes);
       }
 
-      public static void MultilineTextTemplate(HtmlHelper html, DynamicContext context) {
+      public static void MultilineTextTemplate(HtmlHelper html, XcstWriter output) {
 
          object value = html.ViewData.TemplateInfo.FormattedModelValue;
          string className = GetEditorCssClass(new EditorInfo("MultilineText", "textarea"), "text-box multi-line");
@@ -163,7 +163,7 @@ namespace Xcst.Web.Mvc.Html {
 
          AddInputAttributes(html, htmlAttributes);
 
-         TextAreaExtensions.TextArea(html, context, String.Empty, value, 0, 0, htmlAttributes);
+         TextAreaExtensions.TextArea(html, output, String.Empty, value, 0, 0, htmlAttributes);
       }
 
       static IDictionary<string, object> CreateHtmlAttributes(HtmlHelper html, string className, string inputType = null) {
@@ -204,13 +204,12 @@ namespace Xcst.Web.Mvc.Html {
          return htmlAttributes;
       }
 
-      public static void ObjectTemplate(HtmlHelper html, DynamicContext context) {
-         ObjectTemplate(html, context, TemplateHelpers.TemplateHelper);
+      public static void ObjectTemplate(HtmlHelper html, XcstWriter output) {
+         ObjectTemplate(html, output, TemplateHelpers.TemplateHelper);
       }
 
-      internal static void ObjectTemplate(HtmlHelper html, DynamicContext context, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+      internal static void ObjectTemplate(HtmlHelper html, XcstWriter output, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
-         XcstWriter output = context.Output;
          ViewDataDictionary viewData = html.ViewData;
          ModelMetadata modelMetadata = viewData.ModelMetadata;
 
@@ -237,33 +236,33 @@ namespace Xcst.Web.Mvc.Html {
 
             if (!propertyMetadata.HideSurroundingHtml) {
 
-               Action<DynamicContext> memberTemplate = html.MemberTemplate(propertyMetadata);
+               Action<TemplateContext, XcstWriter> memberTemplate = html.MemberTemplate(propertyMetadata);
 
                if (memberTemplate != null) {
-                  memberTemplate(new DynamicContext(context));
+                  memberTemplate(null, output);
                   continue;
                }
 
                output.WriteStartElement("div");
                output.WriteAttributeString("class", "editor-label");
-               LabelExtensions.LabelHelper(html, context, propertyMetadata, propertyMetadata.PropertyName);
+               LabelExtensions.LabelHelper(html, output, propertyMetadata, propertyMetadata.PropertyName);
                output.WriteEndElement();
 
                output.WriteStartElement("div");
                output.WriteAttributeString("class", "editor-field");
             }
 
-            templateHelper(html, context, propertyMetadata, propertyMetadata.PropertyName, null /* templateName */, DataBoundControlMode.Edit, null /* additionalViewData */);
+            templateHelper(html, output, propertyMetadata, propertyMetadata.PropertyName, null /* templateName */, DataBoundControlMode.Edit, null /* additionalViewData */);
 
             if (!propertyMetadata.HideSurroundingHtml) {
                output.WriteString(" ");
-               ValidationExtensions.ValidationMessageHelper(html, context, propertyMetadata, propertyMetadata.PropertyName, null, null, null);
+               ValidationExtensions.ValidationMessageHelper(html, output, propertyMetadata, propertyMetadata.PropertyName, null, null, null);
                output.WriteEndElement(); // </div>
             }
          }
       }
 
-      public static void PasswordTemplate(HtmlHelper html, DynamicContext context) {
+      public static void PasswordTemplate(HtmlHelper html, XcstWriter output) {
 
          object value = (!EditorExtensions.OmitPasswordValue) ?
             html.ViewData.TemplateInfo.FormattedModelValue
@@ -272,78 +271,78 @@ namespace Xcst.Web.Mvc.Html {
          string className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputExtensions.Password(html, context, String.Empty, value, htmlAttributes);
+         InputExtensions.Password(html, output, String.Empty, value, htmlAttributes);
       }
 
-      public static void StringTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "String");
+      public static void StringTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "String");
       }
 
-      public static void TextTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "Text");
+      public static void TextTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "Text");
       }
 
-      public static void PhoneNumberInputTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "PhoneNumber", inputType: "tel");
+      public static void PhoneNumberInputTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "PhoneNumber", inputType: "tel");
       }
 
-      public static void UrlInputTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "Url", inputType: "url");
+      public static void UrlInputTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "Url", inputType: "url");
       }
 
-      public static void EmailAddressInputTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "EmailAddress", inputType: "email");
+      public static void EmailAddressInputTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "EmailAddress", inputType: "email");
       }
 
-      public static void DateTimeInputTemplate(HtmlHelper html, DynamicContext context) {
+      public static void DateTimeInputTemplate(HtmlHelper html, XcstWriter output) {
 
          ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fffK}");
-         HtmlInputTemplateHelper(html, context, "DateTime", inputType: "datetime");
+         HtmlInputTemplateHelper(html, output, "DateTime", inputType: "datetime");
       }
 
-      public static void DateTimeLocalInputTemplate(HtmlHelper html, DynamicContext context) {
+      public static void DateTimeLocalInputTemplate(HtmlHelper html, XcstWriter output) {
 
          ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fff}");
-         HtmlInputTemplateHelper(html, context, "DateTime-local", inputType: "datetime-local");
+         HtmlInputTemplateHelper(html, output, "DateTime-local", inputType: "datetime-local");
       }
 
-      public static void DateInputTemplate(HtmlHelper html, DynamicContext context) {
+      public static void DateInputTemplate(HtmlHelper html, XcstWriter output) {
 
          ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-dd}");
-         HtmlInputTemplateHelper(html, context, "Date", inputType: "date");
+         HtmlInputTemplateHelper(html, output, "Date", inputType: "date");
       }
 
-      public static void TimeInputTemplate(HtmlHelper html, DynamicContext context) {
+      public static void TimeInputTemplate(HtmlHelper html, XcstWriter output) {
 
          ApplyRfc3339DateFormattingIfNeeded(html, "{0:HH:mm:ss.fff}");
-         HtmlInputTemplateHelper(html, context, "Time", inputType: "time");
+         HtmlInputTemplateHelper(html, output, "Time", inputType: "time");
       }
 
-      public static void ByteInputTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "Byte", inputType: "number");
+      public static void ByteInputTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "Byte", inputType: "number");
       }
 
-      public static void SByteInputTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "SByte", inputType: "number");
+      public static void SByteInputTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "SByte", inputType: "number");
       }
 
-      public static void Int32InputTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "Int32", inputType: "number");
+      public static void Int32InputTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "Int32", inputType: "number");
       }
 
-      public static void UInt32InputTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "UInt32", inputType: "number");
+      public static void UInt32InputTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "UInt32", inputType: "number");
       }
 
-      public static void Int64InputTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "Int64", inputType: "number");
+      public static void Int64InputTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "Int64", inputType: "number");
       }
 
-      public static void UInt64InputTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "UInt64", inputType: "number");
+      public static void UInt64InputTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "UInt64", inputType: "number");
       }
 
-      public static void ColorInputTemplate(HtmlHelper html, DynamicContext context) {
+      public static void ColorInputTemplate(HtmlHelper html, XcstWriter output) {
 
          object value = null;
 
@@ -357,14 +356,14 @@ namespace Xcst.Web.Mvc.Html {
             }
          }
 
-         HtmlInputTemplateHelper(html, context, "Color", "color", value);
+         HtmlInputTemplateHelper(html, output, "Color", "color", value);
       }
 
-      public static void UploadTemplate(HtmlHelper html, DynamicContext context) {
-         HtmlInputTemplateHelper(html, context, "Upload", inputType: "file");
+      public static void UploadTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "Upload", inputType: "file");
       }
 
-      public static void DropDownListTemplate(HtmlHelper html, DynamicContext context) {
+      public static void DropDownListTemplate(HtmlHelper html, XcstWriter output) {
 
          string className = GetEditorCssClass(new EditorInfo("DropDownList", "select"), null);
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
@@ -381,10 +380,10 @@ namespace Xcst.Web.Mvc.Html {
             optionLabel = viewData.ModelMetadata.Watermark ?? String.Empty;
          }
 
-         SelectExtensions.DropDownListHelper(html, context, viewData.ModelMetadata, String.Empty, options, optionLabel, htmlAttributes);
+         SelectExtensions.DropDownListHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, htmlAttributes);
       }
 
-      public static void ListBoxTemplate(HtmlHelper html, DynamicContext context) {
+      public static void ListBoxTemplate(HtmlHelper html, XcstWriter output) {
 
          string className = GetEditorCssClass(new EditorInfo("ListBox", "select"), null);
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
@@ -392,7 +391,7 @@ namespace Xcst.Web.Mvc.Html {
 
          IEnumerable<SelectListItem> options = Options(viewData);
 
-         SelectExtensions.ListBoxHelper(html, context, viewData.ModelMetadata, String.Empty, options, htmlAttributes);
+         SelectExtensions.ListBoxHelper(html, output, viewData.ModelMetadata, String.Empty, options, htmlAttributes);
       }
 
       static void ApplyRfc3339DateFormattingIfNeeded(HtmlHelper html, string format) {
@@ -417,18 +416,18 @@ namespace Xcst.Web.Mvc.Html {
          }
       }
 
-      static void HtmlInputTemplateHelper(HtmlHelper html, DynamicContext context, string templateName, string inputType = null) {
-         HtmlInputTemplateHelper(html, context, templateName, inputType, html.ViewData.TemplateInfo.FormattedModelValue);
+      static void HtmlInputTemplateHelper(HtmlHelper html, XcstWriter output, string templateName, string inputType = null) {
+         HtmlInputTemplateHelper(html, output, templateName, inputType, html.ViewData.TemplateInfo.FormattedModelValue);
       }
 
-      static void HtmlInputTemplateHelper(HtmlHelper html, DynamicContext context, string templateName, string inputType, object value) {
+      static void HtmlInputTemplateHelper(HtmlHelper html, XcstWriter output, string templateName, string inputType, object value) {
 
          string className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className, inputType: inputType);
 
          AddInputAttributes(html, htmlAttributes);
 
-         InputExtensions.TextBox(html, context, name: String.Empty, value: value, htmlAttributes: htmlAttributes);
+         InputExtensions.TextBox(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes);
       }
 
       static void AddInputAttributes(HtmlHelper html, IDictionary<string, object> htmlAttributes) {

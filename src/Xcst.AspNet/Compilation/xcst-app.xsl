@@ -32,7 +32,7 @@
    -->
 
    <template match="a:text-box" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="$a:input-attributes, 'format', 'html-type', 'html-placeholder'"/>
@@ -51,7 +51,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -81,7 +81,7 @@
    </template>
 
    <template match="a:password" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="$a:input-attributes, 'html-placeholder'"/>
@@ -100,7 +100,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -126,7 +126,7 @@
    </template>
 
    <template match="a:hidden" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="$a:input-attributes"/>
@@ -145,7 +145,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -171,7 +171,7 @@
    </template>
 
    <template match="a:text-area" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="$a:input-attributes, 'rows', 'cols', 'html-placeholder'"/>
@@ -190,7 +190,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -222,7 +222,7 @@
    </template>
 
    <template match="a:check-box" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="$a:html-attributes, 'for', 'name', 'checked'"/>
@@ -241,7 +241,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -269,7 +269,7 @@
    </template>
 
    <template match="a:radio-button" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="$a:html-attributes, 'for', 'name', 'value', 'checked'"/>
@@ -288,7 +288,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -333,7 +333,7 @@
    </template>
 
    <template match="a:http-method-override" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="'method'"/>
@@ -346,7 +346,7 @@
          <text>.HttpMethodOverride(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <text>, </text>
          <value-of select="src:expand-attribute(@method)"/>
          <text>)</text>
@@ -355,7 +355,7 @@
    </template>
 
    <template match="a:drop-down-list | a:list-box" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
       <param name="indent" tunnel="yes"/>
 
       <variable name="ddl" select="self::a:drop-down-list"/>
@@ -380,7 +380,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <if test="not($for-model)">
             <text>, </text>
             <choose>
@@ -493,7 +493,7 @@
    </template>
 
    <template match="a:label" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="$a:html-attributes, 'for', 'name', 'text'"/>
@@ -514,7 +514,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <if test="not($for-model)">
             <text>, </text>
             <choose>
@@ -544,7 +544,7 @@
    </template>
 
    <template match="a:validation-summary" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="$a:html-attributes, 'include-member-errors', 'message'"/>
@@ -557,7 +557,7 @@
          <text>.ValidationSummary(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <if test="@include-member-errors">
             <text>, includePropertyErrors: </text>
             <value-of select="xcst:expression(@include-member-errors)"/>
@@ -575,7 +575,7 @@
    </template>
 
    <template match="a:validation-message" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="$a:html-attributes, 'for', 'name', 'message'"/>
@@ -592,7 +592,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -625,7 +625,7 @@
    -->
 
    <template match="a:editor | a:display" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="'for', 'name', 'template', 'html-field-name', 'html-attributes', 'with-params', 'options'"/>
@@ -646,7 +646,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$context-param"/>
+         <value-of select="$output"/>
          <if test="not($for-model)">
             <text>, </text>
             <choose>
@@ -755,21 +755,20 @@
          <with-param name="extension" select="true()"/>
       </call-template>
 
-      <variable name="new-context" select="concat(src:aux-variable('context'), '_', generate-id())"/>
+      <variable name="new-output" select="concat(src:aux-variable('output'), '_', generate-id())"/>
       <variable name="new-helper" select="(@helper-name/xcst:name(.), concat(src:aux-variable('model_helper'), '_', generate-id()))[1]"/>
 
       <text>[</text>
       <value-of select="src:string(src:aux-variable('member_template'))"/>
       <text>]</text>
       <text> = new </text>
-      <value-of select="src:global-identifier(concat('System.Action&lt;', src:global-identifier('Xcst.Web.Mvc.ModelHelper'), ', ', src:fully-qualified-helper('DynamicContext'), '>'))"/>
+      <value-of select="src:global-identifier(concat('System.Action&lt;', src:global-identifier('Xcst.Web.Mvc.ModelHelper'), ', ', src:global-identifier('Xcst.XcstWriter'), '>'))"/>
       <text>((</text>
-      <value-of select="$new-helper, $new-context" separator=", "/>
+      <value-of select="$new-helper, $new-output" separator=", "/>
       <text>) => </text>
       <call-template name="src:sequence-constructor">
          <with-param name="indent" select="$indent + 1" tunnel="yes"/>
-         <with-param name="context-param" select="$new-context" tunnel="yes"/>
-         <with-param name="output" select="concat($new-context, '.Output')" tunnel="yes"/>
+         <with-param name="output" select="$new-output" tunnel="yes"/>
          <with-param name="a:model-helper" select="$new-helper" tunnel="yes"/>
       </call-template>
       <text>)</text>
@@ -846,7 +845,7 @@
    </template>
 
    <template match="a:display-text" mode="src:extension-instruction">
-      <param name="context-param" tunnel="yes"/>
+      <param name="output" tunnel="yes"/>
       <param name="src:current-mode" as="xs:QName" required="yes" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
@@ -868,7 +867,7 @@
          <call-template name="a:html-helper"/>
          <if test="$statement">
             <text>, </text>
-            <value-of select="$context-param"/>
+            <value-of select="$output"/>
          </if>
          <text>, </text>
          <choose>

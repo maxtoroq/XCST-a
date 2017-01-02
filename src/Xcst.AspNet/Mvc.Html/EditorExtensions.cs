@@ -36,33 +36,33 @@ namespace Xcst.Web.Mvc.Html {
       public static bool OmitPasswordValue { get; set; }
 
       public static void Editor(this HtmlHelper html,
-                                DynamicContext context,
+                                XcstWriter output,
                                 string expression,
                                 string templateName = null,
                                 string htmlFieldName = null,
                                 object additionalViewData = null) {
 
-         TemplateHelpers.Template(html, context, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
+         TemplateHelpers.Template(html, output, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void EditorFor<TModel, TValue>(this HtmlHelper<TModel> html,
-                                                   DynamicContext context,
+                                                   XcstWriter output,
                                                    Expression<Func<TModel, TValue>> expression,
                                                    string templateName = null,
                                                    string htmlFieldName = null,
                                                    object additionalViewData = null) {
 
-         TemplateHelpers.TemplateFor(html, context, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
+         TemplateHelpers.TemplateFor(html, output, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
       }
 
       public static void EditorForModel(this HtmlHelper html,
-                                        DynamicContext context,
+                                        XcstWriter output,
                                         string templateName = null,
                                         string htmlFieldName = null,
                                         object additionalViewData = null) {
 
-         TemplateHelpers.TemplateHelper(html, context, html.ViewData.ModelMetadata, htmlFieldName, templateName, DataBoundControlMode.Edit, additionalViewData);
+         TemplateHelpers.TemplateHelper(html, output, html.ViewData.ModelMetadata, htmlFieldName, templateName, DataBoundControlMode.Edit, additionalViewData);
       }
 
       /// <summary>
@@ -98,12 +98,12 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="html">The current <see cref="HtmlHelper"/>.</param>
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
-      public static Action<DynamicContext> MemberTemplate(this HtmlHelper html, ModelMetadata propertyMetadata) {
+      public static Action<TemplateContext, XcstWriter> MemberTemplate(this HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (html == null) throw new ArgumentNullException(nameof(html));
          if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));
 
-         Action<ModelHelper, DynamicContext> memberTemplate;
+         Action<ModelHelper, XcstWriter> memberTemplate;
 
          if (!html.ViewData.TryGetValue(MemberTemplateKey, out memberTemplate)) {
             return null;
@@ -111,7 +111,7 @@ namespace Xcst.Web.Mvc.Html {
 
          ModelHelper modelHelper = ModelHelper.ForMemberTemplate(html, propertyMetadata);
 
-         return context => memberTemplate(modelHelper, context);
+         return (c, o) => memberTemplate(modelHelper, o);
       }
    }
 }

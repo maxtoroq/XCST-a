@@ -29,9 +29,7 @@ namespace Xcst.Web.Mvc.Html {
 
    static class DefaultDisplayTemplates {
 
-      public static void BooleanTemplate(HtmlHelper html, DynamicContext context) {
-
-         XcstWriter output = context.Output;
+      public static void BooleanTemplate(HtmlHelper html, XcstWriter output) {
 
          bool? value = null;
 
@@ -78,11 +76,11 @@ namespace Xcst.Web.Mvc.Html {
          }
       }
 
-      public static void CollectionTemplate(HtmlHelper html, DynamicContext context) {
-         CollectionTemplate(html, context, TemplateHelpers.TemplateHelper);
+      public static void CollectionTemplate(HtmlHelper html, XcstWriter output) {
+         CollectionTemplate(html, output, TemplateHelpers.TemplateHelper);
       }
 
-      internal static void CollectionTemplate(HtmlHelper html, DynamicContext context, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+      internal static void CollectionTemplate(HtmlHelper html, XcstWriter output, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
          object model = html.ViewData.ModelMetadata.Model;
 
@@ -124,7 +122,7 @@ namespace Xcst.Web.Mvc.Html {
 
                ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => item, itemType);
                string fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
-               templateHelper(html, context, metadata, fieldName, null /* templateName */, DataBoundControlMode.ReadOnly, null /* additionalViewData */);
+               templateHelper(html, output, metadata, fieldName, null /* templateName */, DataBoundControlMode.ReadOnly, null /* additionalViewData */);
             }
 
          } finally {
@@ -132,18 +130,16 @@ namespace Xcst.Web.Mvc.Html {
          }
       }
 
-      public static void DecimalTemplate(HtmlHelper html, DynamicContext context) {
+      public static void DecimalTemplate(HtmlHelper html, XcstWriter output) {
 
          if (html.ViewData.TemplateInfo.FormattedModelValue == html.ViewData.ModelMetadata.Model) {
-            html.ViewData.TemplateInfo.FormattedModelValue = context.Output.SimpleContent.Format("{0:0.00}", html.ViewData.ModelMetadata.Model);
+            html.ViewData.TemplateInfo.FormattedModelValue = output.SimpleContent.Format("{0:0.00}", html.ViewData.ModelMetadata.Model);
          }
 
-         StringTemplate(html, context);
+         StringTemplate(html, output);
       }
 
-      public static void EmailAddressTemplate(HtmlHelper html, DynamicContext context) {
-
-         XcstWriter output = context.Output;
+      public static void EmailAddressTemplate(HtmlHelper html, XcstWriter output) {
 
          output.WriteStartElement("a");
          output.WriteAttributeString("href", "mailto:" + Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
@@ -151,29 +147,26 @@ namespace Xcst.Web.Mvc.Html {
          output.WriteEndElement();
       }
 
-      public static void HiddenInputTemplate(HtmlHelper html, DynamicContext context) {
+      public static void HiddenInputTemplate(HtmlHelper html, XcstWriter output) {
 
          if (html.ViewData.ModelMetadata.HideSurroundingHtml) {
             return;
          }
 
-         StringTemplate(html, context);
+         StringTemplate(html, output);
       }
 
-      public static void HtmlTemplate(HtmlHelper html, DynamicContext context) {
-
-         XcstWriter output = context.Output;
+      public static void HtmlTemplate(HtmlHelper html, XcstWriter output) {
 
          output.WriteRaw(output.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
       }
 
-      public static void ObjectTemplate(HtmlHelper html, DynamicContext context) {
-         ObjectTemplate(html, context, TemplateHelpers.TemplateHelper);
+      public static void ObjectTemplate(HtmlHelper html, XcstWriter output) {
+         ObjectTemplate(html, output, TemplateHelpers.TemplateHelper);
       }
 
-      internal static void ObjectTemplate(HtmlHelper html, DynamicContext context, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+      internal static void ObjectTemplate(HtmlHelper html, XcstWriter output, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
-         XcstWriter output = context.Output;
          ViewDataDictionary viewData = html.ViewData;
          ModelMetadata modelMetadata = viewData.ModelMetadata;
 
@@ -201,10 +194,10 @@ namespace Xcst.Web.Mvc.Html {
 
             if (!propertyMetadata.HideSurroundingHtml) {
 
-               Action<DynamicContext> memberTemplate = html.MemberTemplate(propertyMetadata);
+               Action<TemplateContext, XcstWriter> memberTemplate = html.MemberTemplate(propertyMetadata);
 
                if (memberTemplate != null) {
-                  memberTemplate(new DynamicContext(context));
+                  memberTemplate(null, output);
                   continue;
                }
 
@@ -217,7 +210,7 @@ namespace Xcst.Web.Mvc.Html {
                output.WriteAttributeString("class", "display-field");
             }
 
-            templateHelper(html, context, propertyMetadata, propertyMetadata.PropertyName, null /* templateName */, DataBoundControlMode.ReadOnly, null /* additionalViewData */);
+            templateHelper(html, output, propertyMetadata, propertyMetadata.PropertyName, null /* templateName */, DataBoundControlMode.ReadOnly, null /* additionalViewData */);
 
             if (!propertyMetadata.HideSurroundingHtml) {
                output.WriteEndElement(); // </div>
@@ -225,13 +218,11 @@ namespace Xcst.Web.Mvc.Html {
          }
       }
 
-      public static void StringTemplate(HtmlHelper html, DynamicContext context) {
-         context.Output.WriteString(html.ViewData.TemplateInfo.FormattedModelValue);
+      public static void StringTemplate(HtmlHelper html, XcstWriter output) {
+         output.WriteString(html.ViewData.TemplateInfo.FormattedModelValue);
       }
 
-      public static void UrlTemplate(HtmlHelper html, DynamicContext context) {
-
-         XcstWriter output = context.Output;
+      public static void UrlTemplate(HtmlHelper html, XcstWriter output) {
 
          output.WriteStartElement("a");
          output.WriteAttributeString("href", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
@@ -239,9 +230,7 @@ namespace Xcst.Web.Mvc.Html {
          output.WriteEndElement();
       }
 
-      public static void ImageUrlTemplate(HtmlHelper html, DynamicContext context) {
-
-         XcstWriter output = context.Output;
+      public static void ImageUrlTemplate(HtmlHelper html, XcstWriter output) {
 
          if (html.ViewData.Model != null) {
             output.WriteStartElement("img");

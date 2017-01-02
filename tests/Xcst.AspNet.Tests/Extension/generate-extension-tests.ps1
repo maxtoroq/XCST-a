@@ -97,9 +97,9 @@ function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, $category) {
             continue
          }
 
-         $correct = $fileName.EndsWith(".c")
+         $correct = $fileName -like '*.c'
          $fileName2 = $fileName.Substring(0, $fileName.LastIndexOf("."))
-         $testName = [Text.RegularExpressions.Regex]::Replace($fileName.Replace(".", "_").Replace("-", "_"), '([a-z])([A-Z])', '$1_$2')
+         $testName = ($fileName -replace '[.-]', '_') -creplace '([a-z])([A-Z])', '$1_$2'
 
          WriteLine
          WriteLine "#line 1 ""$($file.FullName)"""
@@ -113,15 +113,16 @@ function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, $category) {
          PushIndent
          WriteLine
          WriteLine "var result = CompileFromFile(@""$($file.FullName)"", correct: $($correct.ToString().ToLower()));"
-         WriteLine "var moduleType = result.Item1;"
 
          if ($correct) {
+
+            WriteLine "var moduleType = result.Item1;"
 
             foreach ($testCase in ls $directory.FullName "$fileName2.*.xml") {
 
                $testFileName = [IO.Path]::GetFileNameWithoutExtension($testCase.Name)
 
-               if ($testFileName.EndsWith(".p") -or $testFileName.EndsWith(".f")) {
+               if ($testFileName -like '*.p' -or $testFileName -like '*.f') {
 
                   WriteLine "Is$($testFileName.EndsWith(".p"))(OutputEqualsToDoc(moduleType, @""$($testCase.FullName)""));"
                }
