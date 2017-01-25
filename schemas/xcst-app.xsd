@@ -4,12 +4,7 @@
    <xs:element name="instruction" abstract="true"/>
    <xs:group name="sequence-constructor">
       <xs:sequence>
-         <xs:group minOccurs="0" maxOccurs="unbounded" ref="a:sequence-constructor-node"/>
-      </xs:sequence>
-   </xs:group>
-   <xs:group name="sequence-constructor-node">
-      <xs:sequence>
-         <xs:choice minOccurs="0">
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element ref="a:instruction"/>
             <xs:group ref="a:other-element"/>
          </xs:choice>
@@ -98,7 +93,7 @@
    </xs:complexType>
    <xs:element name="option">
       <xs:complexType mixed="true">
-         <xs:group minOccurs="0" ref="a:sequence-constructor-node"/>
+         <xs:group ref="a:sequence-constructor"/>
          <xs:attribute name="value" type="a:Expression"/>
          <xs:attribute name="selected" type="a:Expression"/>
          <xs:attribute name="disabled" type="a:Expression"/>

@@ -48,16 +48,12 @@
 
       <define name="sequence-constructor">
          <zeroOrMore>
-            <ref name="sequence-constructor-node"/>
+            <choice>
+               <ref name="instruction"/>
+               <ref name="other-element"/>
+               <text/>
+            </choice>
          </zeroOrMore>
-      </define>
-
-      <define name="sequence-constructor-node">
-         <choice>
-            <ref name="instruction"/>
-            <ref name="other-element"/>
-            <text/>
-         </choice>
       </define>
 
       <define name="other-element">
@@ -245,9 +241,7 @@
                      </attribute>
                   </choice>
                </zeroOrMore>
-               <optional>
-                  <ref name="sequence-constructor-node"/>
-               </optional>
+               <ref name="sequence-constructor"/>
             </element>
          </zeroOrMore>
       </define>
