@@ -22,6 +22,7 @@ namespace Xcst.Web.Mvc.Html {
 
    static class MvcReflectionExtensions {
 
+#if !ASPNETLIB
       static readonly Func<ModelMetadata, Type> getRealModelType =
          (Func<ModelMetadata, Type>)Delegate.CreateDelegate(typeof(Func<ModelMetadata, Type>), typeof(ModelMetadata).GetProperty("RealModelType", BindingFlags.Instance | BindingFlags.NonPublic).GetGetMethod(nonPublic: true));
 
@@ -30,26 +31,43 @@ namespace Xcst.Web.Mvc.Html {
 
       static readonly Action<TemplateInfo, HashSet<object>> setVisitedObjects =
          (Action<TemplateInfo, HashSet<object>>)Delegate.CreateDelegate(typeof(Action<TemplateInfo, HashSet<object>>), typeof(TemplateInfo).GetProperty("VisitedObjects", BindingFlags.Instance | BindingFlags.NonPublic).GetSetMethod(nonPublic: true));
+#endif
 
       public static Type RealModelType(this ModelMetadata metadata) {
+#if ASPNETLIB
+         return metadata.RealModelType;
+#else
          return getRealModelType(metadata);
+#endif
       }
 
       public static HashSet<object> VisitedObjects(this TemplateInfo templateInfo) {
+#if ASPNETLIB
+         return templateInfo.VisitedObjects;
+#else
          return getVisitedObjects(templateInfo);
+#endif
       }
 
       public static void VisitedObjects(this TemplateInfo templateInfo, HashSet<object> value) {
+#if ASPNETLIB
+         templateInfo.VisitedObjects = value;
+#else
          setVisitedObjects(templateInfo, value);
+#endif
       }
 
       public static bool HasNonDefaultEditFormat(this ModelMetadata metadata) {
-
+#if ASPNETLIB
+         return metadata.HasNonDefaultEditFormat;
+#else
          return (bool)metadata.GetType()
             .GetProperty("HasNonDefaultEditFormat", BindingFlags.Instance | BindingFlags.NonPublic)
             .GetValue(metadata);
+#endif
       }
 
+#if !ASPNETLIB
       public static object GetModelStateValue(this HtmlHelper htmlHelper, string key, Type destinationType) {
 
          ModelState modelState;
@@ -78,5 +96,6 @@ namespace Xcst.Web.Mvc.Html {
       public static FormContext GetFormContextForClientValidation(this ViewContext viewContext) {
          return (viewContext.ClientValidationEnabled) ? viewContext.FormContext : null;
       }
+#endif
    }
 }

@@ -26,6 +26,7 @@ using System.Web.UI.WebControls;
 namespace Xcst.Web.Mvc.Html {
 
    /// <exclude/>
+
    public static class DisplayExtensions {
 
       public static void Display(this HtmlHelper html,
@@ -64,6 +65,7 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="html">The current <see cref="HtmlHelper"/>.</param>
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>true if the property should be shown; otherwise false.</returns>
+
       public static bool ShowForDisplay(this HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (!propertyMetadata.ShowForDisplay

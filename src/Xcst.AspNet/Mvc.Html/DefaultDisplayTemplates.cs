@@ -171,7 +171,9 @@ namespace Xcst.Web.Mvc.Html {
          ModelMetadata modelMetadata = viewData.ModelMetadata;
 
          if (modelMetadata.Model == null) {
+
             // DDB #225237
+
             output.WriteString(modelMetadata.NullDisplayText);
             return;
          }
@@ -179,6 +181,7 @@ namespace Xcst.Web.Mvc.Html {
          if (viewData.TemplateInfo.TemplateDepth > 1) {
 
             // DDB #224751
+
             string text = modelMetadata.SimpleDisplayText;
 
             if (modelMetadata.HtmlEncode) {
@@ -203,7 +206,7 @@ namespace Xcst.Web.Mvc.Html {
 
                output.WriteStartElement("div");
                output.WriteAttributeString("class", "display-label");
-               output.WriteString(propertyMetadata.GetDisplayName() ?? "");
+               output.WriteString(propertyMetadata.GetDisplayName() ?? String.Empty);
                output.WriteEndElement();
 
                output.WriteStartElement("div");

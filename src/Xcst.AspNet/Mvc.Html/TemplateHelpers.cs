@@ -182,22 +182,29 @@ namespace Xcst.Web.Mvc.Html {
          }
 
          // We don't want to search for Nullable<T>, we want to search for T (which should handle both T and Nullable<T>)
+
          Type fieldType = Nullable.GetUnderlyingType(metadata.RealModelType()) ?? metadata.RealModelType();
 
          // TODO: Make better string names for generic types
+
          yield return fieldType.Name;
 
          if (fieldType == typeof(string)) {
 
             // Nothing more to provide
+
             yield break;
 
          } else if (!metadata.IsComplexType) {
 
             // IsEnum is false for the Enum class itself
+
             if (fieldType.IsEnum) {
+
                // Same as fieldType.BaseType.Name in this case
+
                yield return "Enum";
+
             } else if (fieldType == typeof(DateTimeOffset)) {
                yield return "DateTime";
             }
@@ -305,6 +312,7 @@ namespace Xcst.Web.Mvc.Html {
 
          // Normally this shouldn't happen, unless someone writes their own custom Object templates which
          // don't check to make sure that the object hasn't already been displayed
+
          object visitedObjectsKey = metadata.Model
             ?? metadata.RealModelType();
 
@@ -313,7 +321,7 @@ namespace Xcst.Web.Mvc.Html {
             return;
          }
 
-         ViewDataDictionary viewData = new ViewDataDictionary(html.ViewDataContainer.ViewData) {
+         var viewData = new ViewDataDictionary(html.ViewDataContainer.ViewData) {
             Model = metadata.Model,
             ModelMetadata = metadata,
             TemplateInfo = new TemplateInfo {
@@ -329,7 +337,7 @@ namespace Xcst.Web.Mvc.Html {
             IDictionary<string, object> additionalParams = additionalViewData as IDictionary<string, object>
                ?? TypeHelpers.ObjectToDictionary(additionalViewData);
 
-            foreach (KeyValuePair<string, object> kvp in additionalParams) {
+            foreach (var kvp in additionalParams) {
                viewData[kvp.Key] = kvp.Value;
             }
          }

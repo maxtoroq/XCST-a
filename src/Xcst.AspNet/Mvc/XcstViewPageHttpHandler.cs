@@ -13,18 +13,13 @@
 // limitations under the License.
 
 using System;
-using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace Xcst.Web.Mvc {
 
-   public class XcstViewPageHttpHandler : XcstPageHttpHandler
-#if !ASPNETLIB
-      , IView 
-#endif
-      {
+   public class XcstViewPageHttpHandler : XcstPageHttpHandler {
 
       readonly XcstViewPage page;
 
@@ -54,55 +49,18 @@ namespace Xcst.Web.Mvc {
          RequestContext requestContext = context.Request.RequestContext
             ?? new RequestContext(context, new RouteData());
 
-         if (!requestContext.RouteData.Values.ContainsKey("controller")) {
+         var controllerContext = new ControllerContext(requestContext) {
+            ValidateRequest = !this.DisableRequestValidation
+         };
 
-            // routeData must contain an item named 'controller' with a non-empty string value
-            // required by view engine
+         var tempData = new TempDataDictionary(); ;
 
-            string controllerTypeName = nameof(XcstViewPageController);
-
-            requestContext.RouteData.Values["controller"] =
-               controllerTypeName.Substring(0, controllerTypeName.Length - "Controller".Length);
-         }
-
-         var controller = new XcstViewPageController();
-
-         ControllerContext controllerContext;
-         TempDataDictionary tempData;
-
-#if ASPNETLIB
-         controllerContext = new ControllerContext(requestContext);
-         controllerContext.ValidateRequest = !this.DisableRequestValidation;
-
-         tempData = new TempDataDictionary();
-#else
-         // page's ViewData can depend on runtime type (TModel)
-         // since data is not coming from controller we can let page create it
-         controller.ViewData = this.page.ViewData;
-         controller.ValidateRequest = !this.DisableRequestValidation;
-
-         controller.Init(requestContext);
-
-         controllerContext = controller.ControllerContext;
-         tempData = controller.TempData;
-#endif
-
-         this.page.ViewContext = new ViewContext(
-            controllerContext,
-#if !ASPNETLIB
-            this,
-#endif
-            this.page.ViewData, tempData, context.Response.Output);
+         this.page.ViewContext = new ViewContext(controllerContext, this.page.ViewData, tempData, context.Response.Output);
       }
 
       protected override void RenderPage(XcstPage page, HttpContextBase context) {
 
-         ITempDataProvider tempDataProvider =
-#if ASPNETLIB
-            this.page.ViewContext.TempDataProvider;
-#else
-            (this.page.ViewContext.Controller as Controller)?.TempDataProvider;
-#endif
+         ITempDataProvider tempDataProvider = this.page.ViewContext.TempDataProvider;
 
          PossiblyLoadTempData(tempDataProvider);
 
@@ -125,35 +83,6 @@ namespace Xcst.Web.Mvc {
          if (!this.page.ViewContext.IsChildAction) {
             this.page.TempData.Save(this.page.ViewContext, tempDataProvider);
          }
-      }
-
-#if !ASPNETLIB
-      void IView.Render(ViewContext viewContext, TextWriter writer) {
-
-         ViewContext oldViewContext = this.page.ViewContext;
-
-         this.page.ViewContext = viewContext;
-
-         try {
-            XcstView.RenderPage(viewContext, writer, this.page);
-
-         } finally {
-            this.page.ViewContext = oldViewContext;
-         }
-      }
-#endif
-
-      class XcstViewPageController
-#if !ASPNETLIB
-         : Controller
-#endif
-      {
-
-#if !ASPNETLIB
-         internal void Init(RequestContext requestContext) {
-            Initialize(requestContext);
-         }
-#endif
       }
    }
 }

@@ -18,6 +18,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Compilation;
+using System.Web.Mvc;
 
 namespace Xcst.Web {
 
@@ -27,7 +28,6 @@ namespace Xcst.Web {
       HttpRequestBase _Request;
       HttpResponseBase _Response;
       HttpSessionStateBase _Session;
-      HttpServerUtilityBase _Server;
 
 #if ASPNETLIB
       IList<string> _UrlData;
@@ -36,7 +36,7 @@ namespace Xcst.Web {
 
       public virtual string VirtualPath { get; set; }
 
-      // HttpContextWrapper Request/Response/Session/Server return a new instance every time
+      // HttpContextWrapper Request/Response/Session return a new instance every time
       // need to cache result
 
       public virtual HttpContextBase Context {
@@ -46,7 +46,6 @@ namespace Xcst.Web {
             _Request = null;
             _Response = null;
             _Session = null;
-            _Server = null;
 #if ASPNETLIB
             _UrlData = null;
 #endif
@@ -80,7 +79,7 @@ namespace Xcst.Web {
             if (_UrlData == null
                && Context != null) {
 
-               _UrlData = new UrlDataList(XcstWebConfiguration.GetPathInfo(Context));
+               _UrlData = new UrlDataList(WebPageRoute.GetPathInfo(Context));
             }
             return _UrlData;
          }
@@ -96,24 +95,9 @@ namespace Xcst.Web {
          set { _User = value; }
       }
 
-      public virtual bool IsPost {
-         get {
-            return Request?.HttpMethod == "POST";
-         }
-      }
+      public virtual bool IsPost => Request?.HttpMethod == "POST";
 
-      public virtual bool IsAjax {
-         get {
-            var request = Request;
-
-            if (request == null) {
-               return false;
-            }
-
-            return (request["X-Requested-With"] == "XMLHttpRequest")
-               || ((request.Headers != null) && (request.Headers["X-Requested-With"] == "XMLHttpRequest"));
-         }
-      }
+      public virtual bool IsAjax => Request?.IsAjaxRequest() ?? false;
 
       public virtual bool TryAuthorize(string[] users = null, string[] roles = null) {
 

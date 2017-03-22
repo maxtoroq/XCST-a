@@ -26,6 +26,7 @@ using System.Web.Mvc;
 namespace Xcst.Web.Mvc.Html {
 
    /// <exclude/>
+
    public static class LabelExtensions {
 
       public static void Label(this HtmlHelper html,

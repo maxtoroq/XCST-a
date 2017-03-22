@@ -31,23 +31,26 @@ namespace Xcst.Web {
       /// In a non-hosted scenario, this method would only look at a web.config that is present at the current path. Any config settings at an
       /// ancestor directory would not be considered.
       /// </remarks>
+
       public static bool IsExplicitlyDisabled(string path) {
 
-         if (String.IsNullOrEmpty(path)) {
-            throw new ArgumentNullException(nameof(path));
-         }
+         if (String.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
 
          return IsExplicitlyDisabled(GetAppSettings(path));
       }
 
       static bool IsExplicitlyDisabled(NameValueCollection appSettings) {
+
          bool? enabled = GetEnabled(appSettings);
-         return enabled.HasValue && enabled.Value == false;
+
+         return enabled.HasValue
+            && enabled.Value == false;
       }
 
       /// <summary>
       /// Returns the value for webPages:Enabled AppSetting value in web.config.
       /// </summary>
+
       static bool? GetEnabled(NameValueCollection appSettings) {
 
          string enabledSetting = appSettings.Get(AppSettingsEnabledKey);
@@ -64,13 +67,19 @@ namespace Xcst.Web {
          if (path.StartsWith("~/", StringComparison.Ordinal)) {
 
             // Path is virtual, assume we're hosted
+
             return (NameValueCollection)WebConfigurationManager.GetSection("appSettings", path);
 
          } else {
 
             // Path is physical, map it to an application
-            WebConfigurationFileMap fileMap = new WebConfigurationFileMap();
-            fileMap.VirtualDirectories.Add("/", new VirtualDirectoryMapping(path, true));
+
+            var fileMap = new WebConfigurationFileMap {
+               VirtualDirectories = {
+                  { "/", new VirtualDirectoryMapping(path, true) }
+               }
+            };
+
             var config = WebConfigurationManager.OpenMappedWebConfiguration(fileMap, "/");
 
             var appSettingsSection = config.AppSettings;

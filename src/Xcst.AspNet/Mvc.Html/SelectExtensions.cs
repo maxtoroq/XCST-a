@@ -31,6 +31,7 @@ using EnumHelper = System.Web.Mvc.Html.EnumHelper;
 namespace Xcst.Web.Mvc.Html {
 
    /// <exclude/>
+
    public static class SelectExtensions {
 
       // DropDownList
@@ -68,7 +69,7 @@ namespace Xcst.Web.Mvc.Html {
                                               string optionLabel = null,
                                               IDictionary<string, object> htmlAttributes = null) {
 
-         DropDownListHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, "", selectList, optionLabel, htmlAttributes);
+         DropDownListHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, String.Empty, selectList, optionLabel, htmlAttributes);
       }
 
       // Unable to constrain TEnum.  Cannot include IComparable, IConvertible, IFormattable because Nullable<T> does
@@ -106,9 +107,9 @@ namespace Xcst.Web.Mvc.Html {
 
          // Run through same processing as SelectInternal() to determine selected value and ensure it is included
          // in the select list.
+
          string expressionName = ExpressionHelper.GetExpressionText(expression);
-         string expressionFullName =
-             htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(expressionName);
+         string expressionFullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(expressionName);
 
          Enum currentValue = null;
 
@@ -117,7 +118,9 @@ namespace Xcst.Web.Mvc.Html {
          }
 
          if (currentValue == null && !String.IsNullOrEmpty(expressionName)) {
+            
             // Ignore any select list (enumerable with this name) in the view data
+
             currentValue = htmlHelper.ViewData.Eval(expressionName) as Enum;
          }
 
@@ -132,9 +135,11 @@ namespace Xcst.Web.Mvc.Html {
             && String.IsNullOrEmpty(selectList[0].Text)) {
 
             // Were given an optionLabel and the select list has a blank initial slot.  Combine.
+
             selectList[0].Text = optionLabel;
 
             // Use the option label just once; don't pass it down the lower-level helpers.
+
             optionLabel = null;
          }
 
@@ -170,7 +175,7 @@ namespace Xcst.Web.Mvc.Html {
                if (optionList != null
                   && optionList.AddBlankOption) {
 
-                  optionLabel = "";
+                  optionLabel = String.Empty;
                }
             }
          }
@@ -210,7 +215,7 @@ namespace Xcst.Web.Mvc.Html {
                                          IEnumerable<SelectListItem> selectList = null,
                                          IDictionary<string, object> htmlAttributes = null) {
 
-         ListBoxHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, "", selectList, htmlAttributes);
+         ListBoxHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, String.Empty, selectList, htmlAttributes);
       }
 
       internal static void ListBoxHelper(HtmlHelper htmlHelper,
@@ -265,6 +270,7 @@ namespace Xcst.Web.Mvc.Html {
                                       select Convert.ToString(value, CultureInfo.CurrentCulture);
 
          // ToString() by default returns an enum value's name.  But selectList may use numeric values.
+
          IEnumerable<string> enumValues = from Enum value in defaultValues.OfType<Enum>()
                                           select value.ToString("d");
 
@@ -355,6 +361,7 @@ namespace Xcst.Web.Mvc.Html {
             .WriteTo(output);
 
          // Convert each ListItem to an <option> tag and wrap them with <optgroup> if requested.
+
          BuildItems(output, optionLabel, selectList);
 
          output.WriteEndElement(); // </select>
@@ -363,6 +370,7 @@ namespace Xcst.Web.Mvc.Html {
       static void BuildItems(XcstWriter output, string optionLabel, IEnumerable<SelectListItem> selectList) {
 
          // Make optionLabel the first item that gets rendered.
+
          if (optionLabel != null) {
             ListItemToOption(output, new SelectListItem() {
                Text = optionLabel,
@@ -374,6 +382,7 @@ namespace Xcst.Web.Mvc.Html {
          // Group items in the SelectList if requested.
          // Treat each item with Group == null as a member of a unique group
          // so they are added according to the original order.
+
          IEnumerable<IGrouping<int, SelectListItem>> groupedSelectList = selectList.GroupBy<SelectListItem, int>(
              i => (i.Group == null) ? i.GetHashCode() : i.Group.GetHashCode());
 

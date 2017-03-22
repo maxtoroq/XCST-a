@@ -24,6 +24,7 @@ using System.Web.Mvc;
 namespace Xcst.Web.Mvc.Html {
 
    /// <exclude/>
+
    public static class DisplayTextExtensions {
 
       public static void DisplayText(this HtmlHelper html, XcstWriter output, string name) {

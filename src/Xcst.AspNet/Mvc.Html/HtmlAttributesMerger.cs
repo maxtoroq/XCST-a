@@ -19,6 +19,7 @@ using System.Web.Mvc;
 namespace Xcst.Web.Mvc.Html {
 
    /// <exclude/>
+
    public class HtmlAttributesMerger {
 
       public IDictionary<string, object> Attributes { get; }

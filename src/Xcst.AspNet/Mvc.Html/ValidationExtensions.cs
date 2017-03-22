@@ -28,6 +28,7 @@ using System.Web.Mvc;
 namespace Xcst.Web.Mvc.Html {
 
    /// <exclude/>
+
    public static class ValidationExtensions {
 
       static string _resourceClassKey;
@@ -124,6 +125,7 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="tag">The tag to be set for the wrapping HTML element of the validation message.</param>
       /// <returns>null if the model object is valid and client-side validation is disabled.
       /// Otherwise, a <paramref name="tag"/> element that contains an error message.</returns>
+
       [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
       public static void ValidationMessage(this HtmlHelper htmlHelper,
                                            XcstWriter output,
@@ -153,6 +155,7 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="tag">The tag to be set for the wrapping HTML element of the validation message.</param>
       /// <returns>null if the model object is valid and client-side validation is disabled.
       /// Otherwise, a <paramref name="tag"/> element that contains an error message.</returns>
+
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void ValidationMessageFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
                                                                  XcstWriter output,
@@ -329,6 +332,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       // Returns non-null list of model states, which caller will render in order provided.
+
       static IEnumerable<ModelState> GetModelStateList(HtmlHelper htmlHelper, bool includePropertyErrors) {
 
          if (!includePropertyErrors) {

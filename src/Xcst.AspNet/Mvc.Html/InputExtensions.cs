@@ -30,6 +30,7 @@ using System.Web.Routing;
 namespace Xcst.Web.Mvc.Html {
 
    /// <exclude/>
+
    public static class InputExtensions {
 
       // CheckBox
@@ -228,10 +229,12 @@ namespace Xcst.Web.Mvc.Html {
                                      IDictionary<string, object> htmlAttributes = null) {
 
          // Determine whether or not to render the checked attribute based on the contents of ViewData.
+
          string valueString = Convert.ToString(value, CultureInfo.CurrentCulture);
          bool isChecked = (!String.IsNullOrEmpty(name)) && (String.Equals(htmlHelper.EvalString(name), valueString, StringComparison.OrdinalIgnoreCase));
 
          // checked attributes is implicit, so we need to ensure that the dictionary takes precedence.
+
          RouteValueDictionary attributes = ToRouteValueDictionary(htmlAttributes);
 
          if (attributes.ContainsKey("checked")) {
@@ -482,6 +485,7 @@ namespace Xcst.Web.Mvc.Html {
          }
 
          // If there are any errors for a named field, we add the css attribute.
+
          ModelState modelState;
 
          if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out modelState)) {
@@ -511,7 +515,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       static RouteValueDictionary ToRouteValueDictionary(IDictionary<string, object> dictionary) {
-         return dictionary == null ? new RouteValueDictionary() : new RouteValueDictionary(dictionary);
+         return (dictionary == null) ? new RouteValueDictionary() : new RouteValueDictionary(dictionary);
       }
    }
 }

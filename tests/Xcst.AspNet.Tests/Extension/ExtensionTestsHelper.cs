@@ -133,9 +133,6 @@ namespace Xcst.Web.Tests.Extension {
             TextWriter.Null
          );
 
-         module.Html.EnableClientValidation();
-         module.Html.EnableUnobtrusiveJavaScript();
-
          var expectedDoc = new XDocument();
          var actualDoc = new XDocument();
 

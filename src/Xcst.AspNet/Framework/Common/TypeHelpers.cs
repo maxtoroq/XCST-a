@@ -1,33 +1,16 @@
-// Copyright 2015 Max Toro Q.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-#region TypeHelpers is based on code from ASP.NET Web Stack
-// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
-#endregion
-
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Web;
-using System.Web.Mvc;
+using System.Web.Mvc.Properties;
 using System.Web.Routing;
+using System.Web.WebPages;
 
-namespace Xcst.Web.Mvc.Html {
+namespace System.Web.Mvc {
 
    delegate bool TryGetValueDelegate(object dictionary, string key, out object value);
 
@@ -38,12 +21,17 @@ namespace Xcst.Web.Mvc.Html {
 
       static readonly MethodInfo _strongTryGetValueImplInfo = typeof(TypeHelpers).GetMethod("StrongTryGetValueImpl", BindingFlags.NonPublic | BindingFlags.Static);
 
+      public static readonly Assembly MsCorLibAssembly = typeof(string).Assembly;
+      public static readonly Assembly MvcAssembly = typeof(ControllerContext).Assembly;
+      public static readonly Assembly SystemWebAssembly = typeof(HttpContext).Assembly;
+
       // method is used primarily for lighting up new .NET Framework features even if MVC targets the previous version
       // thisParameter is the 'this' parameter if target method is instance method, should be null for static method
 
       public static TDelegate CreateDelegate<TDelegate>(Assembly assembly, string typeName, string methodName, object thisParameter) where TDelegate : class {
 
          // ensure target type exists
+
          Type targetType = assembly.GetType(typeName, false /* throwOnError */);
 
          if (targetType == null) {
@@ -56,6 +44,7 @@ namespace Xcst.Web.Mvc.Html {
       public static TDelegate CreateDelegate<TDelegate>(Type targetType, string methodName, object thisParameter) where TDelegate : class {
 
          // ensure target method exists
+
          ParameterInfo[] delegateParameters = typeof(TDelegate).GetMethod("Invoke").GetParameters();
          Type[] argumentTypes = Array.ConvertAll(delegateParameters, pInfo => pInfo.ParameterType);
          MethodInfo targetMethod = targetType.GetMethod(methodName, argumentTypes);
@@ -65,6 +54,7 @@ namespace Xcst.Web.Mvc.Html {
          }
 
          TDelegate d = Delegate.CreateDelegate(typeof(TDelegate), thisParameter, targetMethod, false /* throwOnBindFailure */) as TDelegate;
+
          return d;
       }
 
@@ -85,6 +75,7 @@ namespace Xcst.Web.Mvc.Html {
          Type dictionaryType = ExtractGenericInterface(targetType, typeof(IDictionary<,>));
 
          // just wrap a call to the underlying IDictionary<TKey, TValue>.TryGetValue() where string can be cast to TKey
+
          if (dictionaryType != null) {
 
             Type[] typeArguments = dictionaryType.GetGenericArguments();
@@ -98,6 +89,7 @@ namespace Xcst.Web.Mvc.Html {
          }
 
          // wrap a call to the underlying IDictionary.Item()
+
          if (result == null && typeof(IDictionary).IsAssignableFrom(targetType)) {
             result = TryGetValueFromNonGenericDictionary;
          }
@@ -141,17 +133,17 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="originalException"><see cref="MissingMethodException"/> to check.</param>
       /// <param name="fullTypeName">Full Type name which Message should contain.</param>
       /// <returns>New <see cref="MissingMethodException"/> if an update is required; null otherwise.</returns>
+
       public static MissingMethodException EnsureDebuggableException(MissingMethodException originalException, string fullTypeName) {
 
          MissingMethodException replacementException = null;
 
          if (!originalException.Message.Contains(fullTypeName)) {
-
             string message = String.Format(
-                CultureInfo.CurrentCulture,
-                "{0} Object type '{1}'.",
-                originalException.Message,
-                fullTypeName);
+               CultureInfo.CurrentCulture,
+               "{0} Object type '{1}'.",
+               originalException.Message,
+               fullTypeName);
 
             replacementException = new MissingMethodException(message, originalException);
          }
@@ -173,12 +165,13 @@ namespace Xcst.Web.Mvc.Html {
                return type;
             }
          }
+
          return null;
       }
 
       static bool StrongTryGetValueImpl<TKey, TValue>(object dictionary, string key, out object value) {
 
-         IDictionary<TKey, TValue> strongDict = (IDictionary<TKey, TValue>)dictionary;
+         var strongDict = (IDictionary<TKey, TValue>)dictionary;
 
          TValue strongValue;
          bool retVal = strongDict.TryGetValue((TKey)(object)key, out strongValue);
@@ -189,10 +182,11 @@ namespace Xcst.Web.Mvc.Html {
 
       static bool TryGetValueFromNonGenericDictionary(object dictionary, string key, out object value) {
 
-         IDictionary weakDict = (IDictionary)dictionary;
+         var weakDict = (IDictionary)dictionary;
 
          bool containsKey = weakDict.Contains(key);
          value = (containsKey) ? weakDict[key] : null;
+
          return containsKey;
       }
 
@@ -206,9 +200,10 @@ namespace Xcst.Web.Mvc.Html {
       /// This helper will cache accessors and types, and is intended when the anonymous object is accessed multiple
       /// times throughout the lifetime of the web application.
       /// </summary>
+
       public static RouteValueDictionary ObjectToDictionary(object value) {
 
-         RouteValueDictionary dictionary = new RouteValueDictionary();
+         var dictionary = new RouteValueDictionary();
 
          if (value != null) {
             foreach (PropertyHelper helper in PropertyHelper.GetProperties(value)) {
@@ -225,9 +220,10 @@ namespace Xcst.Web.Mvc.Html {
       /// This helper will not cache accessors and types, and is intended when the anonymous object is accessed once
       /// or very few times throughout the lifetime of the web application.
       /// </summary>
+
       public static RouteValueDictionary ObjectToDictionaryUncached(object value) {
 
-         RouteValueDictionary dictionary = new RouteValueDictionary();
+         var dictionary = new RouteValueDictionary();
 
          if (value != null) {
             foreach (PropertyHelper helper in PropertyHelper.GetProperties(value)) {
@@ -238,26 +234,14 @@ namespace Xcst.Web.Mvc.Html {
          return dictionary;
       }
 
-      /// <summary>
-      /// Given an object of anonymous type, add each property as a key and associated with its value to the given dictionary.
-      /// </summary>
-      public static void AddAnonymousObjectToDictionary(IDictionary<string, object> dictionary, object value) {
-
-         var values = ObjectToDictionary(value);
-
-         foreach (var item in values) {
-            dictionary.Add(item);
-         }
-      }
-
       /// <remarks>This code is copied from http://www.liensberger.it/web/blog/?p=191 </remarks>
+
       public static bool IsAnonymousType(Type type) {
 
-         if (type == null) {
-            throw new ArgumentNullException("type");
-         }
+         if (type == null) throw new ArgumentNullException(nameof(type));
 
          // TODO: The only way to detect anonymous types right now.
+
          return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
             && type.IsGenericType && type.Name.Contains("AnonymousType")
             && (type.Name.StartsWith("<>", StringComparison.OrdinalIgnoreCase) || type.Name.StartsWith("VB$", StringComparison.OrdinalIgnoreCase))

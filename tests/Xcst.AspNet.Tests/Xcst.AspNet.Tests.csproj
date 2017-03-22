@@ -238,10 +238,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AspNetLib\src\AspNetLib.Mvc\AspNetLib.Mvc.csproj">
-      <Project>{3d3ffd8a-624d-4e9b-954b-e1c105507975}</Project>
-      <Name>AspNetLib.Mvc</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\Xcst.AspNet\Xcst.AspNet.csproj">
       <Project>{5cb9aa5e-52b2-4fbb-8db3-d1d53193d34f}</Project>
       <Name>Xcst.AspNet</Name>

@@ -26,11 +26,13 @@ using System.Web.Mvc;
 namespace Xcst.Web.Mvc.Html {
 
    /// <exclude/>
+
    public static class TextAreaExtensions {
 
       // These values are similar to the defaults used by WebForms
       // when using <asp:TextBox TextMode="MultiLine"> without specifying
       // the Rows and Columns attributes.
+
       const int TextAreaRows = 2;
       const int TextAreaColumns = 20;
 
@@ -143,6 +145,7 @@ namespace Xcst.Web.Mvc.Html {
             .MergeAttributes(rowsAndColumns, replaceExisting: rowsAndColumns != implicitRowsAndColumns); // Only force explicit rows/cols
 
          // If there are any errors for a named field, we add the CSS attribute.
+
          ModelState modelState;
 
          if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out modelState)
@@ -170,6 +173,7 @@ namespace Xcst.Web.Mvc.Html {
 
          // The first newline is always trimmed when a TextArea is rendered, so we add an extra one
          // in case the value being rendered is something like "\r\nHello".
+
          output.WriteString((innerHtmlPrefix ?? Environment.NewLine) + value);
 
          output.WriteEndElement();

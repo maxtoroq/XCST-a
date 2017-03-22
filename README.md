@@ -9,8 +9,6 @@ See the [project home][1] for more information.
 ### Related Repositories
 
 - [XCST][2]
-- [AspNetLib][3]
 
 [1]: http://maxtoroq.github.io/XCST/
 [2]: https://github.com/maxtoroq/XCST
-[3]: https://github.com/maxtoroq/AspNetLib

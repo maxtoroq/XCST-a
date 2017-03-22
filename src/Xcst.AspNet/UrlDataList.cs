@@ -38,13 +38,9 @@ namespace Xcst.Web {
          }
       }
 
-      public int Count {
-         get { return _urlData.Count; }
-      }
+      public int Count => _urlData.Count;
 
-      public bool IsReadOnly {
-         get { return true; }
-      }
+      public bool IsReadOnly => true;
 
       public string this[int index] {
          get {

@@ -17,13 +17,22 @@ using System.Web.Mvc;
 
 namespace Xcst.Web.Mvc {
 
-   public class XcstViewEngine : BuildManagerViewEngine {
+#if !ASPNETLIB
+   public
+#endif
+   class XcstViewEngine : BuildManagerViewEngine {
 
       public XcstViewEngine() {
 
          const string fileExtension = XcstWebConfiguration.FileExtension;
 
-         this.ViewLocationFormats = new[] { "~/Views/{1}/{0}." + fileExtension, "~/Views/Shared/{0}." + fileExtension };
+         this.ViewLocationFormats = new[] {
+#if !ASPNETLIB
+            "~/Views/{1}/{0}." + fileExtension,
+#endif
+            "~/Views/Shared/{0}." + fileExtension
+         };
+
          this.PartialViewLocationFormats = this.ViewLocationFormats;
       }
 

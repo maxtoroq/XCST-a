@@ -24,6 +24,7 @@ using Xcst.Web.Mvc;
 namespace Xcst.Web {
 
    /// <exclude/>
+
    [EditorBrowsable(EditorBrowsableState.Never)]
    public static class PreApplicationStartCode {
 
@@ -37,15 +38,12 @@ namespace Xcst.Web {
 
             XcstWebConfiguration config = XcstWebConfiguration.Instance;
 
-#if ASPNETLIB
-            AspNetLib.Mvc.PreApplicationStartCode.Start();
+            System.Web.Mvc.PreApplicationStartCode.Start();
 
+#if ASPNETLIB
             config.RegisterHandlerFactory(XcstPageHttpHandler.Create);
             config.RegisterHandlerFactory(XcstViewPageHttpHandler.Create);
-#else
-            System.Web.Mvc.PreApplicationStartCode.Start();
 #endif
-
             config.CompilerFactory.RegisterApplicationExtension();
 
             BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(ViewPageBuildProvider<XcstViewPage>));
@@ -53,9 +51,6 @@ namespace Xcst.Web {
 
 #if ASPNETLIB
             DynamicModuleUtility.RegisterModule(typeof(XcstPageHttpModule));
-
-            HtmlHelper.ClientValidationEnabled = true;
-            HtmlHelper.UnobtrusiveJavaScriptEnabled = true;
 #endif
          }
       }

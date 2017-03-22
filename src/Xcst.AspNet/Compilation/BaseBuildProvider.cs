@@ -27,7 +27,7 @@ namespace Xcst.Web.Compilation {
    public abstract class BaseBuildProvider : BuildProvider {
 
       string _GeneratedTypeName, _GeneratedTypeNamespace, _GeneratedTypeFullName;
-      Uri _PhysicalPath, _ApplicationPhysicalPath;
+      Uri _PhysicalPath;
       string _AppRelativeVirtualPath;
       bool? _IsFileInCodeDir;
 
@@ -102,7 +102,7 @@ namespace Xcst.Web.Compilation {
                _GeneratedTypeNamespace = String.Join(".", segments, 0, segments.Length - 1);
             } else {
                _GeneratedTypeName = value;
-               _GeneratedTypeNamespace = "";
+               _GeneratedTypeNamespace = String.Empty;
             }
          }
       }

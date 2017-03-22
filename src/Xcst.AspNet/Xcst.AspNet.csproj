@@ -36,12 +36,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -66,6 +69,130 @@
     <Compile Include="Compilation\BaseBuildProvider.cs" />
     <Compile Include="Compilation\PageBuildProvider.cs" />
     <Compile Include="Compiler\ApplicationExtensionConfiguration.cs" />
+    <Compile Include="Framework\AntiXsrf\AntiForgery.cs" />
+    <Compile Include="Framework\AntiXsrf\AntiForgeryConfig.cs" />
+    <Compile Include="Framework\AntiXsrf\AntiForgeryConfigWrapper.cs" />
+    <Compile Include="Framework\AntiXsrf\AntiForgeryToken.cs" />
+    <Compile Include="Framework\AntiXsrf\AntiForgeryTokenSerializer.cs" />
+    <Compile Include="Framework\AntiXsrf\AntiForgeryTokenStore.cs" />
+    <Compile Include="Framework\AntiXsrf\AntiForgeryWorker.cs" />
+    <Compile Include="Framework\AntiXsrf\BinaryBlob.cs" />
+    <Compile Include="Framework\AntiXsrf\Claims\Claim.cs" />
+    <Compile Include="Framework\AntiXsrf\Claims\ClaimsIdentity.cs" />
+    <Compile Include="Framework\AntiXsrf\Claims\ClaimsIdentityConverter.cs" />
+    <Compile Include="Framework\AntiXsrf\ClaimUidExtractor.cs" />
+    <Compile Include="Framework\AntiXsrf\CryptoUtil.cs" />
+    <Compile Include="Framework\AntiXsrf\HttpAntiForgeryException.cs" />
+    <Compile Include="Framework\AntiXsrf\IAntiForgeryAdditionalDataProvider.cs" />
+    <Compile Include="Framework\AntiXsrf\IAntiForgeryConfig.cs" />
+    <Compile Include="Framework\AntiXsrf\IAntiForgeryTokenSerializer.cs" />
+    <Compile Include="Framework\AntiXsrf\IClaimUidExtractor.cs" />
+    <Compile Include="Framework\AntiXsrf\ICryptoSystem.cs" />
+    <Compile Include="Framework\AntiXsrf\ITokenStore.cs" />
+    <Compile Include="Framework\AntiXsrf\ITokenValidator.cs" />
+    <Compile Include="Framework\AntiXsrf\MachineKey45CryptoSystem.cs" />
+    <Compile Include="Framework\AntiXsrf\TokenValidator.cs" />
+    <Compile Include="Framework\Common\AttributeList.cs" />
+    <Compile Include="Framework\Common\CollectionExtensions.cs" />
+    <Compile Include="Framework\Common\DictionaryExtensions.cs" />
+    <Compile Include="Framework\Common\ListWrapperCollection.cs" />
+    <Compile Include="Framework\Common\PrefixContainer.cs" />
+    <Compile Include="Framework\Common\PropertyHelper.cs" />
+    <Compile Include="Framework\Common\TypeDescriptorHelper.cs" />
+    <Compile Include="Framework\Common\TypeHelpers.cs" />
+    <Compile Include="Framework\DataAnnotations\CachedDataAnnotationsModelMetadata.cs" />
+    <Compile Include="Framework\CachedModelMetadata.cs" />
+    <Compile Include="Framework\DataAnnotations\DataAnnotationsModelMetadata.cs" />
+    <Compile Include="Framework\DataAnnotations\DataAnnotationsModelValidator.cs" />
+    <Compile Include="Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" />
+    <Compile Include="Framework\DataAnnotations\DataTypeUtil.cs" />
+    <Compile Include="Framework\DataAnnotations\ValidatableObjectAdapter.cs" />
+    <Compile Include="Framework\Common\HelpersResources.Designer.cs">
+      <DependentUpon>HelpersResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Framework\AdditionalMetaDataAttribute.cs" />
+    <Compile Include="Framework\AllowHtmlAttribute.cs" />
+    <Compile Include="Framework\ControllerContext.cs" />
+    <Compile Include="Framework\Common\CopyOnWriteDictionary.cs" />
+    <Compile Include="Framework\DependencyResolver.cs" />
+    <Compile Include="Framework\Common\DictionaryHelpers.cs" />
+    <Compile Include="Framework\IDisplayMode.cs" />
+    <Compile Include="Framework\EnumHelper.cs" />
+    <Compile Include="Framework\Common\Error.cs" />
+    <Compile Include="Framework\ExpressionHelper.cs" />
+    <Compile Include="Framework\ExpressionUtil\CachedExpressionCompiler.cs" />
+    <Compile Include="Framework\ExpressionUtil\ExpressionFingerprint.cs" />
+    <Compile Include="Framework\ExpressionUtil\ExpressionFingerprintChain.cs" />
+    <Compile Include="Framework\ExpressionUtil\FingerprintingExpressionVisitor.cs" />
+    <Compile Include="Framework\ExpressionUtil\HashCodeCombiner.cs" />
+    <Compile Include="Framework\ExpressionUtil\HoistingExpressionVisitor.cs" />
+    <Compile Include="Framework\HtmlHelper.cs" />
+    <Compile Include="Framework\HttpRequestExtensions.cs" />
+    <Compile Include="Framework\IResolver.cs" />
+    <Compile Include="Framework\AssociatedMetadataProvider.cs" />
+    <Compile Include="Framework\HiddenInputAttribute.cs" />
+    <Compile Include="Framework\ModelMetadata.cs" />
+    <Compile Include="Framework\ModelBinding\BindAttribute.cs" />
+    <Compile Include="Framework\ModelBinding\ByteArrayModelBinder.cs" />
+    <Compile Include="Framework\ModelBinding\CancellationTokenModelBinder.cs" />
+    <Compile Include="Framework\ModelBinding\CustomModelBinderAttribute.cs" />
+    <Compile Include="Framework\ModelBinding\DefaultModelBinder.cs" />
+    <Compile Include="Framework\ModelBinding\DictionaryValueProvider.cs" />
+    <Compile Include="Framework\ModelBinding\FormCollection.cs" />
+    <Compile Include="Framework\ModelBinding\FormValueProvider.cs" />
+    <Compile Include="Framework\ModelBinding\HttpFileCollectionValueProvider.cs" />
+    <Compile Include="Framework\ModelBinding\HttpPostedFileBaseModelBinder.cs" />
+    <Compile Include="Framework\ModelBinding\IModelBinder.cs" />
+    <Compile Include="Framework\ModelBinding\IModelBinderProvider.cs" />
+    <Compile Include="Framework\ModelBinding\IUnvalidatedRequestValues.cs" />
+    <Compile Include="Framework\ModelBinding\IValueProvider.cs" />
+    <Compile Include="Framework\ModelBinding\JQueryFormValueProvider.cs" />
+    <Compile Include="Framework\ModelBinding\JsonValueProviderFactory.cs" />
+    <Compile Include="Framework\ModelBinding\ModelBinderAttribute.cs" />
+    <Compile Include="Framework\ModelBinding\NameValueCollectionValueProvider.cs" />
+    <Compile Include="Framework\ModelBinding\QueryStringValueProvider.cs" />
+    <Compile Include="Framework\ModelBinding\RouteDataValueProvider.cs" />
+    <Compile Include="Framework\ModelBinding\ValueProviderFactory.cs" />
+    <Compile Include="Framework\ModelBinding\ValueProviderUtil.cs" />
+    <Compile Include="Framework\ModelStateDictionary.cs" />
+    <Compile Include="Framework\Common\MvcResources.Designer.cs">
+      <DependentUpon>MvcResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Framework\PreApplicationStartCode.cs" />
+    <Compile Include="Framework\SelectList.cs" />
+    <Compile Include="Framework\TempDataDictionary.cs" />
+    <Compile Include="Framework\UrlHelper.cs" />
+    <Compile Include="Framework\AssociatedValidatorProvider.cs" />
+    <Compile Include="Framework\ClientDataTypeModelValidatorProvider.cs" />
+    <Compile Include="Framework\DataErrorInfoModelValidatorProvider.cs" />
+    <Compile Include="Framework\IClientValidatable.cs" />
+    <Compile Include="Framework\ModelClientValidationRule.cs" />
+    <Compile Include="Framework\ModelValidator.cs" />
+    <Compile Include="Framework\ValueProviderResult.cs" />
+    <Compile Include="Framework\ViewContext.cs" />
+    <Compile Include="Framework\ViewDataDictionary.cs" />
+    <Compile Include="Framework\ViewEngine\Compilation\BuildManagerCompiledView.cs" />
+    <Compile Include="Framework\ViewEngine\Compilation\BuildManagerViewEngine.cs" />
+    <Compile Include="Framework\ViewEngine\Compilation\IBuildManager.cs" />
+    <Compile Include="Framework\ViewEngine\Compilation\IViewPageActivator.cs" />
+    <Compile Include="Framework\ViewEngine\Compilation\TypeCacheUtil.cs" />
+    <Compile Include="Framework\ViewEngine\Compilation\WebPages\BuildManagerWrapper.cs" />
+    <Compile Include="Framework\ViewEngine\Compilation\WebPages\FileExistenceCache.cs" />
+    <Compile Include="Framework\ViewEngine\Compilation\WebPages\IVirtualPathUtility.cs" />
+    <Compile Include="Framework\ViewEngine\IViewEngine.cs" />
+    <Compile Include="Framework\ViewEngine\IViewLocationCache.cs" />
+    <Compile Include="Framework\ViewEngine\VirtualPathProviderViewEngine.cs" />
+    <Compile Include="Framework\Common\WebPageResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebPageResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Framework\BrowserOverriding\BrowserHelpers.cs" />
+    <Compile Include="Framework\BrowserOverriding\BrowserOverrideStore.cs" />
     <Compile Include="IFileDependent.cs" />
     <Compile Include="Mvc.Html\DefaultDisplayTemplates.cs" />
     <Compile Include="Mvc.Html\DefaultEditorTemplates.cs" />
@@ -81,14 +208,12 @@
     <Compile Include="Mvc.Html\SelectExtensions.cs" />
     <Compile Include="Mvc.Html\TemplateHelpers.cs" />
     <Compile Include="Mvc.Html\TextAreaExtensions.cs" />
-    <Compile Include="Mvc.Html\TypeHelpers.cs" />
     <Compile Include="Mvc.Html\ValidationExtensions.cs" />
     <Compile Include="Mvc\ModelHelper.cs" />
     <Compile Include="Mvc\ModelHelperOfTModel.cs" />
     <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mvc.Html\HtmlAttributesMerger.cs" />
-    <Compile Include="PropertyHelper.cs" />
     <Compile Include="Runtime\OptionList.cs" />
     <Compile Include="Runtime\UrlUtil.cs" />
     <Compile Include="Mvc\XcstViewPage.cs" />
@@ -98,6 +223,7 @@
     <Compile Include="Mvc\XcstViewPageHttpHandler.cs" />
     <Compile Include="Mvc\XcstViewPageOfTModel.cs" />
     <Compile Include="UrlDataList.cs" />
+    <Compile Include="UrlRewriterHelper.cs" />
     <Compile Include="WebPageRoute.cs" />
     <Compile Include="WebPagesDeployment.cs" />
     <Compile Include="XcstPage.cs" />
@@ -107,43 +233,30 @@
     <Compile Include="XcstWebConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AspNetLib\src\AspNetLib.AntiXsrf\AspNetLib.AntiXsrf.csproj">
-      <Project>{25fff507-9cbb-49e4-a4d1-c36276cc88ff}</Project>
-      <Name>AspNetLib.AntiXsrf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AspNetLib\src\AspNetLib.Crypto\AspNetLib.Crypto.csproj">
-      <Project>{a12229d0-0073-47d2-9785-33e8199af1b7}</Project>
-      <Name>AspNetLib.Crypto</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AspNetLib\src\AspNetLib.Mvc.DataAnnotations\AspNetLib.Mvc.DataAnnotations.csproj">
-      <Project>{f44eab06-8df3-48c3-b0fc-73112cb82338}</Project>
-      <Name>AspNetLib.Mvc.DataAnnotations</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AspNetLib\src\AspNetLib.Mvc.ModelBinding\AspNetLib.Mvc.ModelBinding.csproj">
-      <Project>{a9c616df-cf8e-4923-8f45-b1dee8898992}</Project>
-      <Name>AspNetLib.Mvc.ModelBinding</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AspNetLib\src\AspNetLib.Mvc.ViewEngine.Compilation\AspNetLib.Mvc.ViewEngine.Compilation.csproj">
-      <Project>{4f39dea1-dcba-4a73-9293-8eee67c1c18e}</Project>
-      <Name>AspNetLib.Mvc.ViewEngine.Compilation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AspNetLib\src\AspNetLib.Mvc.ViewEngine\AspNetLib.Mvc.ViewEngine.csproj">
-      <Project>{6b5ff4c8-59b5-4e5f-b0a5-d1d926df3451}</Project>
-      <Name>AspNetLib.Mvc.ViewEngine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AspNetLib\src\AspNetLib.Mvc\AspNetLib.Mvc.csproj">
-      <Project>{3d3ffd8a-624d-4e9b-954b-e1c105507975}</Project>
-      <Name>AspNetLib.Mvc</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Compilation\xcst-app.xsl">
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Framework\Common\HelpersResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>HelpersResources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>System.Web.Helpers.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Framework\Common\MvcResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MvcResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+      <CustomToolNamespace>System.Web.Mvc.Properties</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Framework\Common\WebPageResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebPageResources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>System.Web.WebPages.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
