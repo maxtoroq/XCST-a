@@ -120,6 +120,7 @@ namespace System.Web.Mvc {
                IEnumerable<ModelMetadata> originalProperties = Provider.GetMetadataForProperties(Model, RealModelType);
 
                // This will be returned as a copied out array in the common case, so reuse the returned array for performance.
+
                _propertiesInternal = SortProperties(originalProperties.AsArray());
                _properties = new ReadOnlyCollection<ModelMetadata>(_propertiesInternal);
             }

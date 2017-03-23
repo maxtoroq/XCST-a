@@ -10,6 +10,9 @@ using System.Text;
 using System.Web.Routing;
 using System.Web.WebPages;
 using System.Web.WebPages.Resources;
+using Xcst;
+using Xcst.Runtime;
+using Xcst.Web.Mvc.Html;
 
 namespace System.Web.Mvc {
 
@@ -119,6 +122,58 @@ namespace System.Web.Mvc {
          return result;
       }
 
+      public static string GenerateIdFromName(string name) {
+         return GenerateIdFromName(name, IdAttributeDotReplacement);
+      }
+
+      public static string GenerateIdFromName(string name, string idAttributeDotReplacement) {
+
+         if (name == null) throw new ArgumentNullException(nameof(name));
+         if (idAttributeDotReplacement == null) throw new ArgumentNullException(nameof(idAttributeDotReplacement));
+
+         // TagBuilder.CreateSanitizedId returns null for empty strings, return String.Empty instead to avoid breaking change
+
+         if (name.Length == 0) {
+            return String.Empty;
+         }
+
+         return TagBuilder.CreateSanitizedId(name, idAttributeDotReplacement);
+      }
+
+      public static string GetInputTypeString(InputType inputType) {
+
+         switch (inputType) {
+            case InputType.CheckBox:
+               return "checkbox";
+            case InputType.Hidden:
+               return "hidden";
+            case InputType.Password:
+               return "password";
+            case InputType.Radio:
+               return "radio";
+            case InputType.Text:
+               return "text";
+            default:
+               return "text";
+         }
+      }
+
+      /// <summary>
+      /// Creates a dictionary from an object, by adding each public instance property as a key with its associated 
+      /// value to the dictionary. It will expose public properties from derived types as well. This is typically used
+      /// with objects of an anonymous type.
+      /// </summary>
+      /// <example>
+      /// <c>new { property_name = "value" }</c> will translate to the entry <c>{ "property_name" , "value" }</c>
+      /// in the resulting dictionary.
+      /// </example>
+      /// <param name="value">The object to be converted.</param>
+      /// <returns>The created dictionary of property names and property values.</returns>
+
+      public static IDictionary<string, object> ObjectToDictionary(object value) {
+         return TypeHelpers.ObjectToDictionary(value);
+      }
+
       /// <summary>
       /// Set this property to <see cref="Mvc.Html5DateRenderingMode.Rfc3339"/> to have templated helpers such as Html.EditorFor render date and time
       /// values as Rfc3339 compliant strings.
@@ -162,42 +217,6 @@ namespace System.Web.Mvc {
 
       internal bool EvalBoolean(string key) {
          return Convert.ToBoolean(this.ViewData.Eval(key), CultureInfo.InvariantCulture);
-      }
-
-      public static string GenerateIdFromName(string name) {
-         return GenerateIdFromName(name, IdAttributeDotReplacement);
-      }
-
-      public static string GenerateIdFromName(string name, string idAttributeDotReplacement) {
-
-         if (name == null) throw new ArgumentNullException(nameof(name));
-         if (idAttributeDotReplacement == null) throw new ArgumentNullException(nameof(idAttributeDotReplacement));
-
-         // TagBuilder.CreateSanitizedId returns null for empty strings, return String.Empty instead to avoid breaking change
-
-         if (name.Length == 0) {
-            return String.Empty;
-         }
-
-         return TagBuilder.CreateSanitizedId(name, idAttributeDotReplacement);
-      }
-
-      public static string GetInputTypeString(InputType inputType) {
-
-         switch (inputType) {
-            case InputType.CheckBox:
-               return "checkbox";
-            case InputType.Hidden:
-               return "hidden";
-            case InputType.Password:
-               return "password";
-            case InputType.Radio:
-               return "radio";
-            case InputType.Text:
-               return "text";
-            default:
-               return "text";
-         }
       }
 
       internal object GetModelStateValue(string key, Type destinationType) {
@@ -277,19 +296,33 @@ namespace System.Web.Mvc {
       }
 
       /// <summary>
-      /// Creates a dictionary from an object, by adding each public instance property as a key with its associated 
-      /// value to the dictionary. It will expose public properties from derived types as well. This is typically used
-      /// with objects of an anonymous type.
+      /// Determines whether a property should be shown in a display template, based on its metadata.
       /// </summary>
-      /// <example>
-      /// <c>new { property_name = "value" }</c> will translate to the entry <c>{ "property_name" , "value" }</c>
-      /// in the resulting dictionary.
-      /// </example>
-      /// <param name="value">The object to be converted.</param>
-      /// <returns>The created dictionary of property names and property values.</returns>
+      /// <param name="propertyMetadata">The property's metadata.</param>
+      /// <returns>true if the property should be shown; otherwise false.</returns>
 
-      public static IDictionary<string, object> ObjectToDictionary(object value) {
-         return TypeHelpers.ObjectToDictionary(value);
+      public bool ShowForDisplay(ModelMetadata propertyMetadata) {
+         return DisplayExtensions.ShowForDisplay(this, propertyMetadata);
+      }
+
+      /// <summary>
+      /// Determines whether a property should be shown in an editor template, based on its metadata.
+      /// </summary>
+      /// <param name="propertyMetadata">The property's metadata.</param>
+      /// <returns>true if the property should be shown; otherwise false.</returns>
+
+      public bool ShowForEdit(ModelMetadata propertyMetadata) {
+         return EditorExtensions.ShowForEdit(this, propertyMetadata);
+      }
+
+      /// <summary>
+      /// Returns the member template delegate for the provided property.
+      /// </summary>
+      /// <param name="propertyMetadata">The property's metadata.</param>
+      /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
+
+      public Action<TemplateContext, XcstWriter> MemberTemplate(ModelMetadata propertyMetadata) {
+         return EditorExtensions.MemberTemplate(this, propertyMetadata);
       }
    }
 

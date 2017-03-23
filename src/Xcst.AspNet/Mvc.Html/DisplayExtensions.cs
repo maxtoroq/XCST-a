@@ -66,7 +66,12 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>true if the property should be shown; otherwise false.</returns>
 
-      public static bool ShowForDisplay(this HtmlHelper html, ModelMetadata propertyMetadata) {
+#if !ASPNETLIB
+      public
+#else
+      internal
+#endif
+      static bool ShowForDisplay(this HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (!propertyMetadata.ShowForDisplay
             || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
@@ -74,16 +79,17 @@ namespace Xcst.Web.Mvc.Html {
             return false;
          }
 
-         if (propertyMetadata.AdditionalValues.ContainsKey(nameof(propertyMetadata.ShowForDisplay))) {
-            return (bool)propertyMetadata.AdditionalValues[nameof(propertyMetadata.ShowForDisplay)];
+         bool show;
+
+         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(propertyMetadata.ShowForDisplay), out show)) {
+            return show;
          }
 
 #if !ASPNETLIB
          if (propertyMetadata.ModelType == typeof(EntityState)) {
             return false;
-         } 
+         }
 #endif
-
          return !propertyMetadata.IsComplexType;
       }
    }

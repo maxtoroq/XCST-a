@@ -24,63 +24,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
+using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Mvc.Html {
 
    /// <exclude/>
 
    public static class ValidationExtensions {
-
-      static string _resourceClassKey;
-
-      public static string ResourceClassKey
-      {
-         get { return _resourceClassKey ?? String.Empty; }
-         set { _resourceClassKey = value; }
-      }
-
-      static FieldValidationMetadata ApplyFieldValidationMetadata(HtmlHelper htmlHelper, ModelMetadata modelMetadata, string modelName) {
-
-         FormContext formContext = htmlHelper.ViewContext.FormContext;
-         FieldValidationMetadata fieldMetadata = formContext.GetValidationMetadataForField(modelName, true /* createIfNotFound */);
-
-         // write rules to context object
-         IEnumerable<ModelValidator> validators = ModelValidatorProviders.Providers.GetValidators(modelMetadata, htmlHelper.ViewContext);
-
-         foreach (ModelClientValidationRule rule in validators.SelectMany(v => v.GetClientValidationRules())) {
-            fieldMetadata.ValidationRules.Add(rule);
-         }
-
-         return fieldMetadata;
-      }
-
-      static string GetInvalidPropertyValueResource(HttpContextBase httpContext) {
-
-         string resourceValue = null;
-
-         if (!String.IsNullOrEmpty(ResourceClassKey) && (httpContext != null)) {
-            // If the user specified a ResourceClassKey try to load the resource they specified.
-            // If the class key is invalid, an exception will be thrown.
-            // If the class key is valid but the resource is not found, it returns null, in which
-            // case it will fall back to the MVC default error message.
-            resourceValue = httpContext.GetGlobalResourceObject(ResourceClassKey, "InvalidPropertyValue", CultureInfo.CurrentUICulture) as string;
-         }
-         return resourceValue ?? "The value '{0}' is invalid.";
-      }
-
-      static string GetUserErrorMessageOrDefault(HttpContextBase httpContext, ModelError error, ModelState modelState) {
-
-         if (!String.IsNullOrEmpty(error.ErrorMessage)) {
-            return error.ErrorMessage;
-         }
-
-         if (modelState == null) {
-            return null;
-         }
-
-         string attemptedValue = (modelState.Value != null) ? modelState.Value.AttemptedValue : null;
-         return String.Format(CultureInfo.CurrentCulture, GetInvalidPropertyValueResource(httpContext), attemptedValue);
-      }
 
       public static void Validate(this HtmlHelper htmlHelper, string modelName) {
 
@@ -215,11 +165,15 @@ namespace Xcst.Web.Mvc.Html {
                attribs.AddDontReplace("data-valmsg-for", modelName);
                attribs.AddDontReplace("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
             } else {
+
                FieldValidationMetadata fieldMetadata = ApplyFieldValidationMetadata(htmlHelper, modelMetadata, modelName);
+
                // rules will already have been written to the metadata object
+
                fieldMetadata.ReplaceValidationMessageContents = replaceValidationMessageContents; // only replace contents if no explicit message was specified
 
                // client validation always requires an ID
+
                attribs.GenerateId(modelName + "_validationMessage");
                fieldMetadata.ValidationMessageId = attribs.Attributes["id"].ToString();
             }
@@ -250,15 +204,19 @@ namespace Xcst.Web.Mvc.Html {
          if (htmlHelper.ViewData.ModelState.IsValid) {
 
             if (formContext == null) {
+
                // No client side validation
+
                return;
             }
 
             // TODO: This isn't really about unobtrusive; can we fix up non-unobtrusive to get rid of this, too?
+
             if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled
                && !includePropertyErrors) {
 
                // No client-side updates
+
                return;
             }
          }
@@ -273,7 +231,9 @@ namespace Xcst.Web.Mvc.Html {
             if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
 
                if (includePropertyErrors) {
+
                   // Only put errors in the validation summary if they're supposed to be included there
+
                   divAttribs.AddDontReplace("data-valmsg-summary", "true");
                }
 
@@ -350,7 +310,8 @@ namespace Xcst.Web.Mvc.Html {
 
             // Sort modelStates to respect the ordering in the metadata.                 
             // ModelState doesn't refer to ModelMetadata, but we can correlate via the property name.
-            Dictionary<string, int> ordering = new Dictionary<string, int>();
+
+            var ordering = new Dictionary<string, int>();
 
             var metadata = htmlHelper.ViewData.ModelMetadata;
 
@@ -366,5 +327,42 @@ namespace Xcst.Web.Mvc.Html {
                    select kv.Value;
          }
       }
+
+      static FieldValidationMetadata ApplyFieldValidationMetadata(HtmlHelper htmlHelper, ModelMetadata modelMetadata, string modelName) {
+
+         FormContext formContext = htmlHelper.ViewContext.FormContext;
+         FieldValidationMetadata fieldMetadata = formContext.GetValidationMetadataForField(modelName, true /* createIfNotFound */);
+
+         // write rules to context object
+
+         IEnumerable<ModelValidator> validators = ModelValidatorProviders.Providers.GetValidators(modelMetadata, htmlHelper.ViewContext);
+
+         foreach (ModelClientValidationRule rule in validators.SelectMany(v => v.GetClientValidationRules())) {
+            fieldMetadata.ValidationRules.Add(rule);
+         }
+
+         return fieldMetadata;
+      }
+
+      static string GetUserErrorMessageOrDefault(HttpContextBase httpContext, ModelError error, ModelState modelState) {
+
+         if (!String.IsNullOrEmpty(error.ErrorMessage)) {
+            return error.ErrorMessage;
+         }
+
+         if (modelState == null) {
+            return null;
+         }
+
+         string attemptedValue = (modelState.Value != null) ?
+            modelState.Value.AttemptedValue
+            : null;
+
+         string messageFormat = XcstWebConfiguration.Instance.Editors.DefaultValidationMessage?.Invoke()
+            ?? "The value '{0}' is invalid.";
+
+         return String.Format(CultureInfo.CurrentCulture, messageFormat, attemptedValue);
+      }
+
    }
 }

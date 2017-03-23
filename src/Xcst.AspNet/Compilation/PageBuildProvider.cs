@@ -22,6 +22,7 @@ using System.Web;
 using System.Web.Compilation;
 using System.Web.Hosting;
 using Xcst.Compiler;
+using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Compilation {
 

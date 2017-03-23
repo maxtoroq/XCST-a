@@ -200,7 +200,7 @@
     <Compile Include="Mvc.Html\DisplayExtensions.cs" />
     <Compile Include="Mvc.Html\DisplayTextExtensions.cs" />
     <Compile Include="Mvc.Html\EditorExtensions.cs" />
-    <Compile Include="Mvc.Html\EditorInfo.cs" />
+    <Compile Include="Configuration\EditorInfo.cs" />
     <Compile Include="Mvc.Html\InputExtensions.cs" />
     <Compile Include="Mvc.Html\LabelExtensions.cs" />
     <Compile Include="Mvc.Html\ModelMetadataExtensions.cs" />
@@ -230,7 +230,7 @@
     <Compile Include="XcstPageHttpHandler.cs" />
     <Compile Include="XcstPageHttpHandlerFactory.cs" />
     <Compile Include="XcstPageHttpModule.cs" />
-    <Compile Include="XcstWebConfiguration.cs" />
+    <Compile Include="Configuration\XcstWebConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Compilation\xcst-app.xsl">

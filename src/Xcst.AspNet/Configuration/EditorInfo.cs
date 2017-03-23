@@ -15,7 +15,7 @@
 using System;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Configuration {
 
    public class EditorInfo {
 

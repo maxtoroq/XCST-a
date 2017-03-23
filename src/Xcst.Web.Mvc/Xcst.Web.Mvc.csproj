@@ -96,6 +96,12 @@
     <Compile Include="..\Xcst.AspNet\Compiler\ApplicationExtensionConfiguration.cs">
       <Link>Compiler\ApplicationExtensionConfiguration.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Configuration\EditorInfo.cs">
+      <Link>Configuration\EditorInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Configuration\XcstWebConfiguration.cs">
+      <Link>Configuration\XcstWebConfiguration.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Framework\Common\PropertyHelper.cs">
       <Link>PropertyHelper.cs</Link>
     </Compile>
@@ -122,9 +128,6 @@
     </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc.Html\EditorExtensions.cs">
       <Link>Mvc.Html\EditorExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\EditorInfo.cs">
-      <Link>Mvc.Html\EditorInfo.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc.Html\HtmlAttributesMerger.cs">
       <Link>Mvc.Html\HtmlAttributesMerger.cs</Link>
@@ -185,9 +188,6 @@
     </Compile>
     <Compile Include="..\Xcst.AspNet\XcstPage.cs">
       <Link>XcstPage.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\XcstWebConfiguration.cs">
-      <Link>XcstWebConfiguration.cs</Link>
     </Compile>
     <Compile Include="..\XmlNamespaces.cs">
       <Link>XmlNamespaces.cs</Link>

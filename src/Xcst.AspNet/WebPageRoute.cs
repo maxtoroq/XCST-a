@@ -21,6 +21,7 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Web;
 using System.Web.Hosting;
+using Xcst.Web.Configuration;
 
 namespace Xcst.Web {
 

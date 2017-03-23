@@ -24,6 +24,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using Xcst.Runtime;
+using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Mvc.Html {
 

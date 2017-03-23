@@ -17,6 +17,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Compilation;
 using System.Web.SessionState;
+using Xcst.Web.Configuration;
 
 namespace Xcst.Web {
 

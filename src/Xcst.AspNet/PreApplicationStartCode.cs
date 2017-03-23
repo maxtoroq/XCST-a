@@ -19,6 +19,7 @@ using System.Web.Mvc;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Xcst.Compiler;
 using Xcst.Web.Compilation;
+using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
 
 namespace Xcst.Web {

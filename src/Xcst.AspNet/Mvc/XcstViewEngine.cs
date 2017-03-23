@@ -14,6 +14,7 @@
 
 using System;
 using System.Web.Mvc;
+using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Mvc {
 

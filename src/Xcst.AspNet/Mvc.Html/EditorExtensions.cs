@@ -32,10 +32,6 @@ namespace Xcst.Web.Mvc.Html {
 
       const string MemberTemplateKey = "__xcst_member_template";
 
-      public static Func<EditorInfo, string, string> EditorCssClassFunction { get; set; }
-
-      public static bool OmitPasswordValue { get; set; }
-
       public static void Editor(this HtmlHelper html,
                                 XcstWriter output,
                                 string expression,
@@ -73,7 +69,12 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>true if the property should be shown; otherwise false.</returns>
 
-      public static bool ShowForEdit(this HtmlHelper html, ModelMetadata propertyMetadata) {
+#if !ASPNETLIB
+      public
+#else
+      internal
+#endif
+      static bool ShowForEdit(this HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (!propertyMetadata.ShowForEdit
             || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
@@ -81,8 +82,10 @@ namespace Xcst.Web.Mvc.Html {
             return false;
          }
 
-         if (propertyMetadata.AdditionalValues.ContainsKey(nameof(propertyMetadata.ShowForEdit))) {
-            return (bool)propertyMetadata.AdditionalValues[nameof(propertyMetadata.ShowForEdit)];
+         bool show;
+
+         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(propertyMetadata.ShowForEdit), out show)) {
+            return show;
          }
 
 #if !ASPNETLIB
@@ -90,7 +93,6 @@ namespace Xcst.Web.Mvc.Html {
             return false;
          } 
 #endif
-
          return !propertyMetadata.IsComplexType;
       }
 
@@ -101,7 +103,12 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
 
-      public static Action<TemplateContext, XcstWriter> MemberTemplate(this HtmlHelper html, ModelMetadata propertyMetadata) {
+#if !ASPNETLIB
+      public
+#else
+      internal
+#endif
+      static Action<TemplateContext, XcstWriter> MemberTemplate(this HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (html == null) throw new ArgumentNullException(nameof(html));
          if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));

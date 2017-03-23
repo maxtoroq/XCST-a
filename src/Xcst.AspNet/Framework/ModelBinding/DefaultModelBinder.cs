@@ -9,12 +9,12 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Web.Mvc.Properties;
+using Xcst.Web.Configuration;
 
 namespace System.Web.Mvc {
 
    public class DefaultModelBinder : IModelBinder {
 
-      static string _resourceClassKey;
       ModelBinderDictionary _binders;
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Property is settable so that the dictionary can be provided for unit testing purposes.")]
@@ -26,11 +26,6 @@ namespace System.Web.Mvc {
             return _binders;
          }
          set { _binders = value; }
-      }
-
-      public static string ResourceClassKey {
-         get { return _resourceClassKey ?? String.Empty; }
-         set { _resourceClassKey = value; }
       }
 
       static void AddValueRequiredMessageToModelState(ControllerContext controllerContext, ModelStateDictionary modelState, string modelStateKey, Type elementType, object value) {
@@ -227,6 +222,7 @@ namespace System.Web.Mvc {
          }
 
          // call into the property's model binder
+
          IModelBinder propertyBinder = Binders.GetBinder(propertyDescriptor.PropertyType);
          object originalPropertyValue = propertyDescriptor.GetValue(bindingContext.Model);
          ModelMetadata propertyMetadata = bindingContext.PropertyMetadata[propertyDescriptor.Name];
@@ -503,26 +499,16 @@ namespace System.Web.Mvc {
       // If the class key is valid but the resource is not found, it returns null, in which
       // case it will fall back to the MVC default error message.
 
-      static string GetUserResourceString(ControllerContext controllerContext, string resourceName) {
-
-         string result = null;
-
-         if (!String.IsNullOrEmpty(ResourceClassKey)
-            && controllerContext != null
-            && controllerContext.HttpContext != null) {
-
-            result = controllerContext.HttpContext.GetGlobalResourceObject(ResourceClassKey, resourceName, CultureInfo.CurrentUICulture) as string;
-         }
-
-         return result;
-      }
-
       static string GetValueInvalidResource(ControllerContext controllerContext) {
-         return GetUserResourceString(controllerContext, "PropertyValueInvalid") ?? MvcResources.DefaultModelBinder_ValueInvalid;
+
+         return XcstWebConfiguration.Instance.ModelBinding.DefaultInvalidPropertyValueErrorMessage?.Invoke()
+            ?? MvcResources.DefaultModelBinder_ValueInvalid;
       }
 
       static string GetValueRequiredResource(ControllerContext controllerContext) {
-         return GetUserResourceString(controllerContext, "PropertyValueRequired") ?? MvcResources.DefaultModelBinder_ValueRequired;
+
+         return XcstWebConfiguration.Instance.ModelBinding.DefaultRequiredPropertyValueErrorMessage?.Invoke()
+            ?? MvcResources.DefaultModelBinder_ValueRequired;
       }
 
       static IEnumerable<string> GetZeroBasedIndexes() {

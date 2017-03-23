@@ -29,6 +29,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.UI.WebControls;
 using Xcst.Runtime;
+using Xcst.Web.Configuration;
 using Xcst.Web.Runtime;
 
 namespace Xcst.Web.Mvc.Html {
@@ -264,7 +265,7 @@ namespace Xcst.Web.Mvc.Html {
 
       public static void PasswordTemplate(HtmlHelper html, XcstWriter output) {
 
-         object value = (!EditorExtensions.OmitPasswordValue) ?
+         object value = (!XcstWebConfiguration.Instance.Editors.OmitPasswordValue) ?
             html.ViewData.TemplateInfo.FormattedModelValue
             : null;
 
@@ -451,7 +452,7 @@ namespace Xcst.Web.Mvc.Html {
 
       internal static string GetEditorCssClass(EditorInfo editorInfo, string defaultCssClass) {
 
-         Func<EditorInfo, string, string> customFn = EditorExtensions.EditorCssClassFunction;
+         Func<EditorInfo, string, string> customFn = XcstWebConfiguration.Instance.Editors.EditorCssClassFunction;
 
          if (customFn != null) {
             return customFn(editorInfo, defaultCssClass);

@@ -19,7 +19,7 @@ using System.Web.Compilation;
 using System.Web.Hosting;
 using Xcst.Compiler;
 
-namespace Xcst.Web {
+namespace Xcst.Web.Configuration {
 
    public sealed class XcstWebConfiguration {
 
@@ -36,12 +36,35 @@ namespace Xcst.Web {
 
       internal IList<Func<object, IHttpHandler>> HttpHandlerFactories { get; } = new List<Func<object, IHttpHandler>>();
 
+      public EditorsConfiguration Editors { get; } = new EditorsConfiguration();
+
       private XcstWebConfiguration() { }
 
 #if ASPNETLIB
+
+      public ModelBindingConfiguration ModelBinding { get; } = new ModelBindingConfiguration();
+
       public void RegisterHandlerFactory(Func<object, IHttpHandler> handlerFactory) {
          this.HttpHandlerFactories.Insert(0, handlerFactory);
       }
 #endif
    }
+
+   public class EditorsConfiguration {
+
+      public Func<string> DefaultValidationMessage { get; set; }
+
+      public Func<EditorInfo, string, string> EditorCssClassFunction { get; set; }
+
+      public bool OmitPasswordValue { get; set; }
+   }
+
+#if ASPNETLIB
+   public class ModelBindingConfiguration {
+
+      public Func<string> DefaultInvalidPropertyValueErrorMessage { get; set; }
+
+      public Func<string> DefaultRequiredPropertyValueErrorMessage { get; set; }
+   }
+#endif
 }
