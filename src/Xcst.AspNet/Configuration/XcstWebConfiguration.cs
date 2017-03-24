@@ -41,7 +41,6 @@ namespace Xcst.Web.Configuration {
       private XcstWebConfiguration() { }
 
 #if ASPNETLIB
-
       public ModelBindingConfiguration ModelBinding { get; } = new ModelBindingConfiguration();
 
       public void RegisterHandlerFactory(Func<object, IHttpHandler> handlerFactory) {
@@ -59,6 +58,7 @@ namespace Xcst.Web.Configuration {
 
       public Func<string> DefaultValidationMessage { get; set; }
 
+#if ASPNETLIB
       /// <summary>
       /// Validation message for numeric types.
       /// </summary>
@@ -70,8 +70,9 @@ namespace Xcst.Web.Configuration {
       /// </summary>
 
       public Func<string> DateValidationMessage { get; set; }
+#endif
 
-      public Func<EditorInfo, string, string> EditorCssClassFunction { get; set; }
+      public Func<EditorInfo, string, string> EditorCssClass { get; set; }
 
       /// <summary>
       /// Instruct the default password template not to output the <code>value</code> attribute.

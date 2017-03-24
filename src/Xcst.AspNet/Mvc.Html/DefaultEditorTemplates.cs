@@ -452,7 +452,7 @@ namespace Xcst.Web.Mvc.Html {
 
       internal static string GetEditorCssClass(EditorInfo editorInfo, string defaultCssClass) {
 
-         Func<EditorInfo, string, string> customFn = XcstWebConfiguration.Instance.Editors.EditorCssClassFunction;
+         Func<EditorInfo, string, string> customFn = XcstWebConfiguration.Instance.Editors.EditorCssClass;
 
          if (customFn != null) {
             return customFn(editorInfo, defaultCssClass);

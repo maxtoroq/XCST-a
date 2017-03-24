@@ -8,7 +8,7 @@
 
       var config = XcstWebConfiguration.Instance;
 
-      config.Editors.EditorCssClassFunction = (info, defaultClass) =>
+      config.Editors.EditorCssClass = (info, defaultClass) =>
          (info.InputType == InputType.Text
             || info.InputType == InputType.Password
             || info.TagName != "input") ? "form-control"
