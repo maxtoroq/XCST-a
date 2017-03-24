@@ -65,7 +65,7 @@ namespace System.Web.Mvc {
             Type listType = typeof(List<>).MakeGenericType(elementType);
             object collection = CreateModel(controllerContext, bindingContext, listType);
 
-            var arrayBindingContext = new ModelBindingContext() {
+            var arrayBindingContext = new ModelBindingContext {
                ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => collection, listType),
                ModelName = bindingContext.ModelName,
                ModelState = bindingContext.ModelState,
@@ -98,7 +98,7 @@ namespace System.Web.Mvc {
             Type keyType = genericArguments[0];
             Type valueType = genericArguments[1];
 
-            var dictionaryBindingContext = new ModelBindingContext() {
+            var dictionaryBindingContext = new ModelBindingContext {
                ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, modelType),
                ModelName = bindingContext.ModelName,
                ModelState = bindingContext.ModelState,
@@ -121,7 +121,7 @@ namespace System.Web.Mvc {
 
             if (collectionType.IsInstanceOfType(model)) {
 
-               var collectionBindingContext = new ModelBindingContext() {
+               var collectionBindingContext = new ModelBindingContext {
                   ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, modelType),
                   ModelName = bindingContext.ModelName,
                   ModelState = bindingContext.ModelState,
@@ -158,7 +158,7 @@ namespace System.Web.Mvc {
 
             if (bindingContext.FallbackToEmptyPrefix) {
 
-               bindingContext = new ModelBindingContext() {
+               bindingContext = new ModelBindingContext {
                   ModelMetadata = bindingContext.ModelMetadata,
                   ModelState = bindingContext.ModelState,
                   PropertyFilter = bindingContext.PropertyFilter,
@@ -228,7 +228,7 @@ namespace System.Web.Mvc {
          ModelMetadata propertyMetadata = bindingContext.PropertyMetadata[propertyDescriptor.Name];
          propertyMetadata.Model = originalPropertyValue;
 
-         var innerBindingContext = new ModelBindingContext() {
+         var innerBindingContext = new ModelBindingContext {
             ModelMetadata = propertyMetadata,
             ModelName = fullPropertyKey,
             ModelState = bindingContext.ModelState,
@@ -375,7 +375,7 @@ namespace System.Web.Mvc {
             propertyName => bindAttr.IsPropertyAllowed(propertyName) && bindingContext.PropertyFilter(propertyName)
             : bindingContext.PropertyFilter;
 
-         var newBindingContext = new ModelBindingContext() {
+         var newBindingContext = new ModelBindingContext {
             ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, bindingContext.ModelType),
             ModelName = bindingContext.ModelName,
             ModelState = bindingContext.ModelState,
@@ -471,6 +471,7 @@ namespace System.Web.Mvc {
          }
 
          // just use a simple zero-based system
+
          stopOnIndexNotFound = true;
          indexes = GetZeroBasedIndexes();
       }
@@ -493,11 +494,6 @@ namespace System.Web.Mvc {
       protected virtual ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext) {
          return TypeDescriptorHelper.Get(bindingContext.ModelType);
       }
-
-      // If the user specified a ResourceClassKey try to load the resource they specified.
-      // If the class key is invalid, an exception will be thrown.
-      // If the class key is valid but the resource is not found, it returns null, in which
-      // case it will fall back to the MVC default error message.
 
       static string GetValueInvalidResource(ControllerContext controllerContext) {
 
@@ -685,7 +681,7 @@ namespace System.Web.Mvc {
                }
             }
 
-            var innerContext = new ModelBindingContext() {
+            var innerContext = new ModelBindingContext {
                ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, elementType),
                ModelName = subIndexKey,
                ModelState = bindingContext.ModelState,
@@ -745,7 +741,7 @@ namespace System.Web.Mvc {
 
             // bind the key
 
-            var keyBindingContext = new ModelBindingContext() {
+            var keyBindingContext = new ModelBindingContext {
                ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, keyType),
                ModelName = keyFieldKey,
                ModelState = bindingContext.ModelState,
@@ -787,6 +783,7 @@ namespace System.Web.Mvc {
          }
 
          // replace the original collection
+
          object dictionary = bindingContext.Model;
          CollectionHelpers.ReplaceDictionary(keyType, valueType, dictionary, modelList);
 
@@ -795,7 +792,7 @@ namespace System.Web.Mvc {
 
       static KeyValuePair<object, object> CreateEntryForModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type valueType, IModelBinder valueBinder, string modelName, object modelKey) {
 
-         var valueBindingContext = new ModelBindingContext() {
+         var valueBindingContext = new ModelBindingContext {
             ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, valueType),
             ModelName = modelName,
             ModelState = bindingContext.ModelState,

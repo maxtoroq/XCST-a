@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc.Properties;
+using Xcst.Web.Configuration;
 
 namespace System.Web.Mvc {
 
@@ -52,41 +53,26 @@ namespace System.Web.Mvc {
       static bool IsDateTimeType(Type type, ModelMetadata metadata) {
 
          return typeof(DateTime) == GetTypeToValidate(type)
-             && !String.Equals(metadata.DataTypeName, "Time", StringComparison.OrdinalIgnoreCase);
+            && !String.Equals(metadata.DataTypeName, "Time", StringComparison.OrdinalIgnoreCase);
       }
 
       static Type GetTypeToValidate(Type type) {
-         return Nullable.GetUnderlyingType(type) ?? type; // strip off the Nullable<>
-      }
 
-      // If the user specified a ResourceClassKey try to load the resource they specified.
-      // If the class key is invalid, an exception will be thrown.
-      // If the class key is valid but the resource is not found, it returns null, in which
-      // case it will fall back to the MVC default error message.
+         // strip off the Nullable<>
 
-      static string GetUserResourceString(ControllerContext controllerContext, string resourceName) {
-
-         string result = null;
-
-         if (!String.IsNullOrEmpty(ResourceClassKey)
-            && controllerContext != null
-            && controllerContext.HttpContext != null) {
-
-            result = controllerContext.HttpContext.GetGlobalResourceObject(ResourceClassKey, resourceName, CultureInfo.CurrentUICulture) as string;
-         }
-
-         return result;
+         return Nullable.GetUnderlyingType(type)
+            ?? type;
       }
 
       static string GetFieldMustBeNumericResource(ControllerContext controllerContext) {
 
-         return GetUserResourceString(controllerContext, "FieldMustBeNumeric")
+         return XcstWebConfiguration.Instance.Editors.NumberValidationMessage?.Invoke()
             ?? MvcResources.ClientDataTypeModelValidatorProvider_FieldMustBeNumeric;
       }
 
       static string GetFieldMustBeDateResource(ControllerContext controllerContext) {
 
-         return GetUserResourceString(controllerContext, "FieldMustBeDate")
+         return XcstWebConfiguration.Instance.Editors.DateValidationMessage?.Invoke()
             ?? MvcResources.ClientDataTypeModelValidatorProvider_FieldMustBeDate;
       }
 
@@ -108,7 +94,7 @@ namespace System.Web.Mvc {
          string _validationType;
 
          public ClientModelValidator(ModelMetadata metadata, ControllerContext controllerContext, string validationType, string errorMessage)
-             : base(metadata, controllerContext) {
+            : base(metadata, controllerContext) {
 
             if (String.IsNullOrEmpty(validationType)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(validationType));
             if (String.IsNullOrEmpty(errorMessage)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(errorMessage));
@@ -128,14 +114,16 @@ namespace System.Web.Mvc {
          }
 
          string FormatErrorMessage(string displayName) {
-            
+
             // use CurrentCulture since this message is intended for the site visitor
+
             return String.Format(CultureInfo.CurrentCulture, _errorMessage, displayName);
          }
 
          public sealed override IEnumerable<ModelValidationResult> Validate(object container) {
-            
+
             // this is not a server-side validator
+
             return Enumerable.Empty<ModelValidationResult>();
          }
       }

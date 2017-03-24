@@ -96,11 +96,11 @@ namespace System.Web.Mvc {
       }
 
       public bool IsValidField(string key) {
-         if (key == null) {
-            throw new ArgumentNullException("key");
-         }
+
+         if (key == null) throw new ArgumentNullException(nameof(key));
 
          // if the key is not found in the dictionary, we just say that it's valid (since there are no errors)
+
          return DictionaryHelpers.FindKeysWithPrefix(this, key)
             .All(entry => entry.Value.Errors.Count == 0);
       }

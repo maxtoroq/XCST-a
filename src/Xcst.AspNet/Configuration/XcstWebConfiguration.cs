@@ -52,9 +52,30 @@ namespace Xcst.Web.Configuration {
 
    public class EditorsConfiguration {
 
+      /// <summary>
+      /// Default message used by <code>a:validation-message</code> and <code>a:validation-summary</code>
+      /// when model state contains an error but with a null or empty message.
+      /// </summary>
+
       public Func<string> DefaultValidationMessage { get; set; }
 
+      /// <summary>
+      /// Validation message for numeric types.
+      /// </summary>
+
+      public Func<string> NumberValidationMessage { get; set; }
+
+      /// <summary>
+      /// Validation message for date types.
+      /// </summary>
+
+      public Func<string> DateValidationMessage { get; set; }
+
       public Func<EditorInfo, string, string> EditorCssClassFunction { get; set; }
+
+      /// <summary>
+      /// Instruct the default password template not to output the <code>value</code> attribute.
+      /// </summary>
 
       public bool OmitPasswordValue { get; set; }
    }
@@ -62,7 +83,16 @@ namespace Xcst.Web.Configuration {
 #if ASPNETLIB
    public class ModelBindingConfiguration {
 
+      /// <summary>
+      /// Default message used when setting a property results in an exception.
+      /// </summary>
+
       public Func<string> DefaultInvalidPropertyValueErrorMessage { get; set; }
+
+      /// <summary>
+      /// Default message used when there's no value for a non-nullable property that does not explicitly
+      /// use the <code>RequiredAttribute</code>.
+      /// </summary>
 
       public Func<string> DefaultRequiredPropertyValueErrorMessage { get; set; }
    }
