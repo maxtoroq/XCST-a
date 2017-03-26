@@ -311,7 +311,7 @@ namespace System.Web.Mvc {
          return GetMetadataFromProvider(modelAccessor, modelType ?? typeof(string), propertyName, container, containerType, metadataProvider);
       }
 
-      internal ModelMetadata(ModelMetadataProvider provider, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) {
+      public ModelMetadata(ModelMetadataProvider provider, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) {
 
          if (provider == null) throw new ArgumentNullException(nameof(provider));
          if (modelType == null) throw new ArgumentNullException(nameof(modelType));
@@ -413,7 +413,7 @@ namespace System.Web.Mvc {
       }
    }
 
-   abstract class ModelMetadataProvider {
+   public abstract class ModelMetadataProvider {
 
       public abstract IEnumerable<ModelMetadata> GetMetadataForProperties(object container, Type containerType);
 
@@ -422,7 +422,7 @@ namespace System.Web.Mvc {
       public abstract ModelMetadata GetMetadataForType(Func<object> modelAccessor, Type modelType);
    }
 
-   class ModelMetadataProviders {
+   public class ModelMetadataProviders {
 
       static ModelMetadataProviders _instance = new ModelMetadataProviders();
 
