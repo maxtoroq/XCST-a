@@ -223,7 +223,7 @@
     <Compile Include="Mvc\XcstViewPageHttpHandler.cs" />
     <Compile Include="Mvc\XcstViewPageOfTModel.cs" />
     <Compile Include="UrlDataList.cs" />
-    <Compile Include="UrlRewriterHelper.cs" />
+    <Compile Include="Framework\UrlRewriterHelper.cs" />
     <Compile Include="WebPageRoute.cs" />
     <Compile Include="WebPagesDeployment.cs" />
     <Compile Include="XcstPage.cs" />

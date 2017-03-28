@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-using System.Collections.Specialized;
+using System.Collections;
 
 namespace System.Web.WebPages {
 
@@ -18,28 +18,13 @@ namespace System.Web.WebPages {
       bool _urlRewriterIsTurnedOnValue;
       volatile bool _urlRewriterIsTurnedOnCalculated = false;
 
-      static bool WasThisRequestRewritten(HttpContextBase httpContext) {
+      public virtual bool WasRequestRewritten(IServiceProvider httpContext, IDictionary httpContextItems) {
 
-         if (httpContext.Items.Contains(UrlWasRewrittenServerVar)) {
-            return Object.Equals(httpContext.Items[UrlWasRewrittenServerVar], UrlWasRequestRewrittenTrueValue);
-         } else {
-
-            var httpWorkerRequest = (HttpWorkerRequest)httpContext.GetService(typeof(HttpWorkerRequest));
-
-            bool requestWasRewritten = httpWorkerRequest != null
-               && httpWorkerRequest.GetServerVariable(UrlWasRewrittenServerVar) != null;
-
-            if (requestWasRewritten) {
-               httpContext.Items.Add(UrlWasRewrittenServerVar, UrlWasRequestRewrittenTrueValue);
-            } else {
-               httpContext.Items.Add(UrlWasRewrittenServerVar, UrlWasRequestRewrittenFalseValue);
-            }
-
-            return requestWasRewritten;
-         }
+         return IsUrlRewriterTurnedOn(httpContext)
+            && WasThisRequestRewritten(httpContext, httpContextItems);
       }
 
-      bool IsUrlRewriterTurnedOn(HttpContextBase httpContext) {
+      bool IsUrlRewriterTurnedOn(IServiceProvider httpContext) {
 
          // Need to do double-check locking because a single instance of this class is shared in the entire app domain (see PathHelpers)
 
@@ -61,10 +46,25 @@ namespace System.Web.WebPages {
          return _urlRewriterIsTurnedOnValue;
       }
 
-      public virtual bool WasRequestRewritten(HttpContextBase httpContext) {
+      static bool WasThisRequestRewritten(IServiceProvider httpContext, IDictionary httpContextItems) {
 
-         return IsUrlRewriterTurnedOn(httpContext)
-            && WasThisRequestRewritten(httpContext);
+         if (httpContextItems.Contains(UrlWasRewrittenServerVar)) {
+            return Object.Equals(httpContextItems[UrlWasRewrittenServerVar], UrlWasRequestRewrittenTrueValue);
+         } else {
+
+            var httpWorkerRequest = (HttpWorkerRequest)httpContext.GetService(typeof(HttpWorkerRequest));
+
+            bool requestWasRewritten = httpWorkerRequest != null
+               && httpWorkerRequest.GetServerVariable(UrlWasRewrittenServerVar) != null;
+
+            if (requestWasRewritten) {
+               httpContextItems.Add(UrlWasRewrittenServerVar, UrlWasRequestRewrittenTrueValue);
+            } else {
+               httpContextItems.Add(UrlWasRewrittenServerVar, UrlWasRequestRewrittenFalseValue);
+            }
+
+            return requestWasRewritten;
+         }
       }
    }
 }

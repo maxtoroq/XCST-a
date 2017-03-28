@@ -118,7 +118,7 @@ namespace System.Web.WebPages {
 
          // we only want to manipulate the path if URL rewriting is active for this request, else we risk breaking the generated URL
 
-         bool wasRequestRewritten = _urlRewriterHelper.WasRequestRewritten(httpContext);
+         bool wasRequestRewritten = _urlRewriterHelper.WasRequestRewritten(httpContext, httpContext.Items);
 
          if (!wasRequestRewritten) {
             return contentPath;

@@ -103,10 +103,13 @@
       <Link>Configuration\XcstWebConfiguration.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Framework\Common\PropertyHelper.cs">
-      <Link>PropertyHelper.cs</Link>
+      <Link>Framework\Common\PropertyHelper.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Framework\Common\TypeHelpers.cs">
-      <Link>TypeHelpers.cs</Link>
+      <Link>Framework\Common\TypeHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Framework\UrlRewriterHelper.cs">
+      <Link>Framework\UrlRewriterHelper.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\IFileDependent.cs">
       <Link>IFileDependent.cs</Link>
@@ -182,9 +185,6 @@
     </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\UrlUtil.cs">
       <Link>Runtime\UrlUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\UrlRewriterHelper.cs">
-      <Link>UrlRewriterHelper.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\XcstPage.cs">
       <Link>XcstPage.cs</Link>

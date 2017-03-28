@@ -32,6 +32,7 @@ using HttpContextBase = System.Web.HttpContext;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
+
    public static class UrlUtil {
 
       static UrlRewriterHelper _urlRewriterHelper = new UrlRewriterHelper();
@@ -104,7 +105,7 @@ namespace Xcst.Web.Runtime {
 
          // we only want to manipulate the path if URL rewriting is active for this request, else we risk breaking the generated URL
 
-         bool wasRequestRewritten = _urlRewriterHelper.WasRequestRewritten(new HttpContextWrapper(httpContext));
+         bool wasRequestRewritten = _urlRewriterHelper.WasRequestRewritten(httpContext, httpContext.Items);
 
          if (!wasRequestRewritten) {
             return contentPath;
