@@ -93,6 +93,19 @@ namespace Xcst.Web.Compilation {
             new QualifiedName("application-uri", XmlNamespaces.XcstApplication),
             this.applicationUri
          );
+
+         bool aspnetlib =
+#if ASPNETLIB
+            true
+#else
+            false
+#endif
+            ;
+
+         compiler.SetParameter(
+            new QualifiedName("aspnetlib", XmlNamespaces.XcstApplication),
+            aspnetlib
+         );
       }
 
       protected override IEnumerable<CodeCompileUnit> BuildCompileUnits() {

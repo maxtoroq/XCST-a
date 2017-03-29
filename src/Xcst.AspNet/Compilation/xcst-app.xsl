@@ -23,6 +23,7 @@
    xmlns:xcst="http://maxtoroq.github.io/XCST/syntax">
 
    <param name="a:application-uri" as="xs:anyURI"/>
+   <param name="a:aspnetlib" select="true()" as="xs:boolean"/>
 
    <variable name="a:html-attributes" select="'html-class', 'html-attributes'"/>
    <variable name="a:input-attributes" select="'for', 'name', 'value', $a:html-attributes"/>
@@ -318,6 +319,7 @@
    </template>
 
    <template match="a:anti-forgery-token" mode="src:extension-instruction">
+      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="allowed" select="()"/>
@@ -325,11 +327,24 @@
          <with-param name="extension" select="true()"/>
       </call-template>
 
-      <variable name="expr">
-         <value-of select="src:global-identifier('System.Web.Helpers.AntiForgery')"/>
-         <text>.GetHtml().ToString()</text>
-      </variable>
-      <c:value-of value="{$expr}" disable-output-escaping="yes"/>
+      <choose>
+         <when test="$a:aspnetlib">
+            <variable name="expr">
+               <call-template name="a:html-helper"/>
+               <text>.AntiForgeryToken(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </variable>
+            <c:void value="{$expr}"/>
+         </when>
+         <otherwise>
+            <variable name="expr">
+               <value-of select="src:global-identifier('System.Web.Helpers.AntiForgery')"/>
+               <text>.GetHtml().ToString()</text>
+            </variable>
+            <c:value-of value="{$expr}" disable-output-escaping="yes"/>
+         </otherwise>
+      </choose>
    </template>
 
    <template match="a:http-method-override" mode="src:extension-instruction">

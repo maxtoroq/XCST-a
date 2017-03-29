@@ -5,6 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Security.Principal;
 using System.Web.WebPages.Resources;
+using Xcst;
 
 namespace System.Web.Helpers.AntiXsrf {
 
@@ -76,7 +77,7 @@ namespace System.Web.Helpers.AntiXsrf {
       // the <form>. This method has a side effect: it may set a response
       // cookie.
 
-      public string GetFormInputElement(HttpContextBase httpContext) {
+      public void GetFormInputElement(HttpContextBase httpContext, XcstWriter output) {
 
          CheckSSLConfig(httpContext);
 
@@ -96,12 +97,11 @@ namespace System.Web.Helpers.AntiXsrf {
             httpContext.Response.AddHeader("X-Frame-Options", "SAMEORIGIN");
          }
 
-         return String.Format(
-             CultureInfo.InvariantCulture,
-             "<input type=\"hidden\" name=\"{0}\" value=\"{1}\" />",
-             HttpUtility.HtmlAttributeEncode(_config.FormFieldName),
-             HttpUtility.HtmlAttributeEncode(_serializer.Serialize(formToken))
-         );
+         output.WriteStartElement("input");
+         output.WriteAttributeString("type", "hidden");
+         output.WriteAttributeString("name", _config.FormFieldName);
+         output.WriteAttributeString("value", _serializer.Serialize(formToken));
+         output.WriteEndElement();
       }
 
       // [ ENTRY POINT ]

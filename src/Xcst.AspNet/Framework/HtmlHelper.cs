@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Web.Helpers;
 using System.Web.Routing;
 using System.Web.WebPages;
 using System.Web.WebPages.Resources;
@@ -293,6 +294,10 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
       public IHtmlString Raw(object value) {
          return new HtmlString(value?.ToString());
+      }
+
+      public void AntiForgeryToken(XcstWriter output) {
+         AntiForgery.GetHtml(this.ViewContext.HttpContext, output);
       }
 
       /// <summary>
