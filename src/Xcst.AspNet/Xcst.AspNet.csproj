@@ -107,11 +107,6 @@
     <Compile Include="Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" />
     <Compile Include="Framework\DataAnnotations\DataTypeUtil.cs" />
     <Compile Include="Framework\DataAnnotations\ValidatableObjectAdapter.cs" />
-    <Compile Include="Framework\Common\HelpersResources.Designer.cs">
-      <DependentUpon>HelpersResources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Framework\AdditionalMetaDataAttribute.cs" />
     <Compile Include="Framework\AllowHtmlAttribute.cs" />
     <Compile Include="Framework\ControllerContext.cs" />
@@ -235,11 +230,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Compilation\xcst-app.xsl">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Framework\Common\HelpersResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>HelpersResources.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>System.Web.Helpers.Resources</CustomToolNamespace>
     </EmbeddedResource>
     <EmbeddedResource Include="Framework\Common\MvcResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
