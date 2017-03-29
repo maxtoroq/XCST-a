@@ -102,6 +102,12 @@
     <Compile Include="..\Xcst.AspNet\Configuration\XcstWebConfiguration.cs">
       <Link>Configuration\XcstWebConfiguration.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\FrameworkExtensions.cs">
+      <Link>FrameworkExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Framework\Common\DictionaryExtensions.cs">
+      <Link>Framework\Common\DictionaryExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Framework\Common\PropertyHelper.cs">
       <Link>Framework\Common\PropertyHelper.cs</Link>
     </Compile>
@@ -114,56 +120,14 @@
     <Compile Include="..\Xcst.AspNet\IFileDependent.cs">
       <Link>IFileDependent.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\DefaultDisplayTemplates.cs">
-      <Link>Mvc.Html\DefaultDisplayTemplates.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\DefaultEditorTemplates.cs">
-      <Link>Mvc.Html\DefaultEditorTemplates.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\DictionaryExtensions.cs">
-      <Link>Mvc.Html\DictionaryExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\DisplayExtensions.cs">
-      <Link>Mvc.Html\DisplayExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\DisplayTextExtensions.cs">
-      <Link>Mvc.Html\DisplayTextExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\EditorExtensions.cs">
-      <Link>Mvc.Html\EditorExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\HtmlAttributesMerger.cs">
-      <Link>Mvc.Html\HtmlAttributesMerger.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\InputExtensions.cs">
-      <Link>Mvc.Html\InputExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\LabelExtensions.cs">
-      <Link>Mvc.Html\LabelExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\ModelMetadataExtensions.cs">
-      <Link>Mvc.Html\ModelMetadataExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\MvcReflectionExtensions.cs">
-      <Link>Mvc.Html\MvcReflectionExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\SelectExtensions.cs">
-      <Link>Mvc.Html\SelectExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\TemplateHelpers.cs">
-      <Link>Mvc.Html\TemplateHelpers.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\TextAreaExtensions.cs">
-      <Link>Mvc.Html\TextAreaExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc.Html\ValidationExtensions.cs">
-      <Link>Mvc.Html\ValidationExtensions.cs</Link>
-    </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\ModelHelper.cs">
       <Link>Mvc\ModelHelper.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\ModelHelperOfTModel.cs">
       <Link>Mvc\ModelHelperOfTModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Mvc\ModelMetadataExtensions.cs">
+      <Link>Mvc\ModelMetadataExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\PreApplicationStartCode.cs">
       <Link>PreApplicationStartCode.cs</Link>
@@ -180,11 +144,47 @@
     <Compile Include="..\Xcst.AspNet\Mvc\XcstViewPageOfTModel.cs">
       <Link>Mvc\XcstViewPageOfTModel.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\DefaultDisplayTemplates.cs">
+      <Link>Runtime\DefaultDisplayTemplates.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\DefaultEditorTemplates.cs">
+      <Link>Runtime\DefaultEditorTemplates.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\DisplayInstructions.cs">
+      <Link>Runtime\DisplayInstructions.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\DisplayTextInstructions.cs">
+      <Link>Runtime\DisplayTextInstructions.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\EditorInstructions.cs">
+      <Link>Runtime\EditorInstructions.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\HtmlAttributesMerger.cs">
+      <Link>Runtime\HtmlAttributesMerger.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\InputInstructions.cs">
+      <Link>Runtime\InputInstructions.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\LabelInstructions.cs">
+      <Link>Runtime\LabelInstructions.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\OptionList.cs">
       <Link>Runtime\OptionList.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\SelectInstructions.cs">
+      <Link>Runtime\SelectInstructions.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\TemplateHelpers.cs">
+      <Link>Runtime\TemplateHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\TextAreaInstructions.cs">
+      <Link>Runtime\TextAreaInstructions.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\UrlUtil.cs">
       <Link>Runtime\UrlUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\ValidationInstructions.cs">
+      <Link>Runtime\ValidationInstructions.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\XcstPage.cs">
       <Link>XcstPage.cs</Link>

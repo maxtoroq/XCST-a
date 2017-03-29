@@ -2,6 +2,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace System.Collections.Generic {
 
@@ -77,7 +78,7 @@ namespace System.Collections.Generic {
          return false;
       }
 
-      internal static IEnumerable<KeyValuePair<string, TValue>> FindKeysWithPrefix<TValue>(this IDictionary<string, TValue> dictionary, string prefix) {
+      public static IEnumerable<KeyValuePair<string, TValue>> FindKeysWithPrefix<TValue>(this IDictionary<string, TValue> dictionary, string prefix) {
 
          Contract.Assert(dictionary != null);
          Contract.Assert(prefix != null);
@@ -113,6 +114,36 @@ namespace System.Collections.Generic {
                      break;
                }
             }
+         }
+      }
+
+      public static bool DoesAnyKeyHavePrefix<TValue>(IDictionary<string, TValue> dictionary, string prefix) {
+         return FindKeysWithPrefix(dictionary, prefix).Any();
+      }
+
+      public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue @default) {
+
+         TValue value;
+
+         if (dict.TryGetValue(key, out value)) {
+            return value;
+         }
+
+         return @default;
+      }
+
+      public static void AddCssClass(this IDictionary<string, object> dict, string cssClass) {
+
+         if (String.IsNullOrEmpty(cssClass)) {
+            return;
+         }
+
+         string existingClass;
+
+         if (TryGetValue(dict, "class", out existingClass)) {
+            dict["class"] = existingClass + " " + cssClass;
+         } else {
+            dict["class"] = cssClass;
          }
       }
    }

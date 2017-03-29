@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region DisplayTextExtensions is based on code from ASP.NET Web Stack
+#region DisplayTextInstructions is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
@@ -21,18 +21,18 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Runtime {
 
    /// <exclude/>
 
-   public static class DisplayTextExtensions {
+   public static class DisplayTextInstructions {
 
-      public static void DisplayText(this HtmlHelper html, XcstWriter output, string name) {
+      public static void DisplayText(HtmlHelper html, XcstWriter output, string name) {
          DisplayTextHelper(html, output, ModelMetadata.FromStringExpression(name, html.ViewData));
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void DisplayTextFor<TModel, TResult>(this HtmlHelper<TModel> html, XcstWriter output, Expression<Func<TModel, TResult>> expression) {
+      public static void DisplayTextFor<TModel, TResult>(HtmlHelper<TModel> html, XcstWriter output, Expression<Func<TModel, TResult>> expression) {
          DisplayTextHelper(html, output, ModelMetadata.FromLambdaExpression(expression, html.ViewData));
       }
 
@@ -47,12 +47,12 @@ namespace Xcst.Web.Mvc.Html {
          }
       }
 
-      public static string DisplayString(this HtmlHelper html, string name) {
+      public static string DisplayString(HtmlHelper html, string name) {
          return DisplayStringHelper(html, ModelMetadata.FromStringExpression(name, html.ViewData));
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static string DisplayStringFor<TModel, TResult>(this HtmlHelper<TModel> html, Expression<Func<TModel, TResult>> expression) {
+      public static string DisplayStringFor<TModel, TResult>(HtmlHelper<TModel> html, Expression<Func<TModel, TResult>> expression) {
          return DisplayStringHelper(html, ModelMetadata.FromLambdaExpression(expression, html.ViewData));
       }
 

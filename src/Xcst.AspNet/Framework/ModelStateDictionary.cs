@@ -101,7 +101,7 @@ namespace System.Web.Mvc {
 
          // if the key is not found in the dictionary, we just say that it's valid (since there are no errors)
 
-         return DictionaryHelpers.FindKeysWithPrefix(this, key)
+         return this.FindKeysWithPrefix(key)
             .All(entry => entry.Value.Errors.Count == 0);
       }
 

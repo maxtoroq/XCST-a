@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Runtime {
 
    /// <exclude/>
 

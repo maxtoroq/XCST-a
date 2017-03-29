@@ -19,9 +19,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-#if !ASPNETLIB
-using System.Data.Linq; 
-#endif
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -30,9 +27,13 @@ using System.Web.Routing;
 using System.Web.UI.WebControls;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
-using Xcst.Web.Runtime;
 
-namespace Xcst.Web.Mvc.Html {
+#if !ASPNETLIB
+using System.Data.Linq; 
+using Xcst.Web.Mvc.Html;
+#endif
+
+namespace Xcst.Web.Runtime {
 
    static class DefaultEditorTemplates {
 
@@ -52,13 +53,13 @@ namespace Xcst.Web.Mvc.Html {
             string className = GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
             IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-            SelectExtensions.DropDownList(html, output, String.Empty, TriStateValues(value), optionLabel: null, htmlAttributes: htmlAttributes);
+            SelectInstructions.DropDownList(html, output, String.Empty, TriStateValues(value), optionLabel: null, htmlAttributes: htmlAttributes);
 
          } else {
 
             string className = GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
 
-            InputExtensions.CheckBox(html, output, String.Empty, value.GetValueOrDefault(), CreateHtmlAttributes(html, className));
+            InputInstructions.CheckBox(html, output, String.Empty, value.GetValueOrDefault(), CreateHtmlAttributes(html, className));
          }
       }
 
@@ -153,7 +154,7 @@ namespace Xcst.Web.Mvc.Html {
          string className = GetEditorCssClass(new EditorInfo("HiddenInput", "input", InputType.Hidden), null);
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputExtensions.Hidden(html, output, String.Empty, model, htmlAttributes);
+         InputInstructions.Hidden(html, output, String.Empty, model, htmlAttributes);
       }
 
       public static void MultilineTextTemplate(HtmlHelper html, XcstWriter output) {
@@ -164,7 +165,7 @@ namespace Xcst.Web.Mvc.Html {
 
          AddInputAttributes(html, htmlAttributes);
 
-         TextAreaExtensions.TextArea(html, output, String.Empty, value, 0, 0, htmlAttributes);
+         TextAreaInstructions.TextArea(html, output, String.Empty, value, 0, 0, htmlAttributes);
       }
 
       static IDictionary<string, object> CreateHtmlAttributes(HtmlHelper html, string className, string inputType = null) {
@@ -246,7 +247,7 @@ namespace Xcst.Web.Mvc.Html {
 
                output.WriteStartElement("div");
                output.WriteAttributeString("class", "editor-label");
-               LabelExtensions.LabelHelper(html, output, propertyMetadata, propertyMetadata.PropertyName);
+               LabelInstructions.LabelHelper(html, output, propertyMetadata, propertyMetadata.PropertyName);
                output.WriteEndElement();
 
                output.WriteStartElement("div");
@@ -257,7 +258,7 @@ namespace Xcst.Web.Mvc.Html {
 
             if (!propertyMetadata.HideSurroundingHtml) {
                output.WriteString(" ");
-               ValidationExtensions.ValidationMessageHelper(html, output, propertyMetadata, propertyMetadata.PropertyName, null, null, null);
+               ValidationInstructions.ValidationMessageHelper(html, output, propertyMetadata, propertyMetadata.PropertyName, null, null, null);
                output.WriteEndElement(); // </div>
             }
          }
@@ -272,7 +273,7 @@ namespace Xcst.Web.Mvc.Html {
          string className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputExtensions.Password(html, output, String.Empty, value, htmlAttributes);
+         InputInstructions.Password(html, output, String.Empty, value, htmlAttributes);
       }
 
       public static void StringTemplate(HtmlHelper html, XcstWriter output) {
@@ -381,7 +382,7 @@ namespace Xcst.Web.Mvc.Html {
             optionLabel = viewData.ModelMetadata.Watermark ?? String.Empty;
          }
 
-         SelectExtensions.DropDownListHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, htmlAttributes);
+         SelectInstructions.DropDownListHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, htmlAttributes);
       }
 
       public static void ListBoxTemplate(HtmlHelper html, XcstWriter output) {
@@ -392,7 +393,7 @@ namespace Xcst.Web.Mvc.Html {
 
          IEnumerable<SelectListItem> options = Options(viewData);
 
-         SelectExtensions.ListBoxHelper(html, output, viewData.ModelMetadata, String.Empty, options, htmlAttributes);
+         SelectInstructions.ListBoxHelper(html, output, viewData.ModelMetadata, String.Empty, options, htmlAttributes);
       }
 
       static void ApplyRfc3339DateFormattingIfNeeded(HtmlHelper html, string format) {
@@ -428,7 +429,7 @@ namespace Xcst.Web.Mvc.Html {
 
          AddInputAttributes(html, htmlAttributes);
 
-         InputExtensions.TextBox(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes);
+         InputInstructions.TextBox(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes);
       }
 
       static void AddInputAttributes(HtmlHelper html, IDictionary<string, object> htmlAttributes) {

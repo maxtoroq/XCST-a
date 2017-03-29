@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region TextAreaExtensions is based on code from ASP.NET Web Stack
+#region TextAreaInstructions is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
@@ -23,11 +23,11 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Runtime {
 
    /// <exclude/>
 
-   public static class TextAreaExtensions {
+   public static class TextAreaInstructions {
 
       // These values are similar to the defaults used by WebForms
       // when using <asp:TextBox TextMode="MultiLine"> without specifying
@@ -59,7 +59,7 @@ namespace Xcst.Web.Mvc.Html {
          return result;
       }
 
-      public static void TextArea(this HtmlHelper htmlHelper,
+      public static void TextArea(HtmlHelper htmlHelper,
                                   XcstWriter output,
                                   string name,
                                   object value = null,
@@ -74,7 +74,7 @@ namespace Xcst.Web.Mvc.Html {
          TextAreaHelper(htmlHelper, output, metadata, name, implicitRowsAndColumns, htmlAttributes);
       }
 
-      public static void TextArea(this HtmlHelper htmlHelper,
+      public static void TextArea(HtmlHelper htmlHelper,
                                   XcstWriter output,
                                   string name,
                                   object value,
@@ -93,7 +93,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void TextAreaFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+      public static void TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
                                                         XcstWriter output,
                                                         Expression<Func<TModel, TProperty>> expression,
                                                         IDictionary<string, object> htmlAttributes = null) {
@@ -107,7 +107,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void TextAreaFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+      public static void TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
                                                         XcstWriter output,
                                                         Expression<Func<TModel, TProperty>> expression,
                                                         int rows, int columns,

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region SelectExtensions is based on code from ASP.NET Web Stack
+#region SelectInstructions is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
@@ -25,18 +25,17 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Web.Mvc;
-using Xcst.Web.Runtime;
 using EnumHelper = System.Web.Mvc.Html.EnumHelper;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Runtime {
 
    /// <exclude/>
 
-   public static class SelectExtensions {
+   public static class SelectInstructions {
 
       // DropDownList
 
-      public static void DropDownList(this HtmlHelper htmlHelper,
+      public static void DropDownList(HtmlHelper htmlHelper,
                                       XcstWriter output,
                                       string name,
                                       IEnumerable<SelectListItem> selectList = null,
@@ -48,7 +47,7 @@ namespace Xcst.Web.Mvc.Html {
 
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void DropDownListFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+      public static void DropDownListFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
                                                             XcstWriter output,
                                                             Expression<Func<TModel, TProperty>> expression,
                                                             IEnumerable<SelectListItem> selectList = null,
@@ -63,7 +62,7 @@ namespace Xcst.Web.Mvc.Html {
          DropDownListHelper(htmlHelper, output, metadata, expressionString, selectList, optionLabel, htmlAttributes);
       }
 
-      public static void DropDownListForModel(this HtmlHelper htmlHelper,
+      public static void DropDownListForModel(HtmlHelper htmlHelper,
                                               XcstWriter output,
                                               IEnumerable<SelectListItem> selectList = null,
                                               string optionLabel = null,
@@ -78,7 +77,7 @@ namespace Xcst.Web.Mvc.Html {
       // Nullable<T> expression.
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void EnumDropDownListFor<TModel, TEnum>(this HtmlHelper<TModel> htmlHelper,
+      public static void EnumDropDownListFor<TModel, TEnum>(HtmlHelper<TModel> htmlHelper,
                                                             XcstWriter output,
                                                             Expression<Func<TModel, TEnum>> expression,
                                                             string optionLabel = null,
@@ -185,7 +184,7 @@ namespace Xcst.Web.Mvc.Html {
 
       // ListBox
 
-      public static void ListBox(this HtmlHelper htmlHelper,
+      public static void ListBox(HtmlHelper htmlHelper,
                                  XcstWriter output,
                                  string name,
                                  IEnumerable<SelectListItem> selectList = null,
@@ -196,7 +195,7 @@ namespace Xcst.Web.Mvc.Html {
 
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void ListBoxFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+      public static void ListBoxFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
                                                        XcstWriter output,
                                                        Expression<Func<TModel, TProperty>> expression,
                                                        IEnumerable<SelectListItem> selectList = null,
@@ -210,7 +209,7 @@ namespace Xcst.Web.Mvc.Html {
          ListBoxHelper(htmlHelper, output, metadata, expressionString, selectList, htmlAttributes);
       }
 
-      public static void ListBoxForModel(this HtmlHelper htmlHelper,
+      public static void ListBoxForModel(HtmlHelper htmlHelper,
                                          XcstWriter output,
                                          IEnumerable<SelectListItem> selectList = null,
                                          IDictionary<string, object> htmlAttributes = null) {
@@ -230,7 +229,7 @@ namespace Xcst.Web.Mvc.Html {
 
       // Helper methods
 
-      static IEnumerable<SelectListItem> GetSelectData(this HtmlHelper htmlHelper, string name) {
+      static IEnumerable<SelectListItem> GetSelectData(HtmlHelper htmlHelper, string name) {
 
          object o = null;
 
@@ -287,7 +286,7 @@ namespace Xcst.Web.Mvc.Html {
          return newSelectList;
       }
 
-      static void SelectInternal(this HtmlHelper htmlHelper,
+      static void SelectInternal(HtmlHelper htmlHelper,
                                  XcstWriter output,
                                  ModelMetadata metadata,
                                  string optionLabel,
@@ -307,7 +306,7 @@ namespace Xcst.Web.Mvc.Html {
          // If we got a null selectList, try to use ViewData to get the list of items.
 
          if (selectList == null) {
-            selectList = htmlHelper.GetSelectData(name);
+            selectList = GetSelectData(htmlHelper, name);
             usedViewData = true;
          }
 

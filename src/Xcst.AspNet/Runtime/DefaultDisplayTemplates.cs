@@ -26,7 +26,11 @@ using System.Web.UI.WebControls;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
 
-namespace Xcst.Web.Mvc.Html {
+#if !ASPNETLIB
+using Xcst.Web.Mvc.Html;
+#endif
+
+namespace Xcst.Web.Runtime {
 
    static class DefaultDisplayTemplates {
 
@@ -51,7 +55,7 @@ namespace Xcst.Web.Mvc.Html {
             output.WriteAttributeString("disabled", "disabled");
 
             foreach (SelectListItem item in DefaultEditorTemplates.TriStateValues(value)) {
-               SelectExtensions.ListItemToOption(output, item);
+               SelectInstructions.ListItemToOption(output, item);
             }
 
             output.WriteEndElement();

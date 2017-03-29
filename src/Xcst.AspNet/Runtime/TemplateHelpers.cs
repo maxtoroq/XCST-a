@@ -27,8 +27,9 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using Xcst.Web.Mvc;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Runtime {
 
    static class TemplateHelpers {
 

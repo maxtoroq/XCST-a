@@ -46,7 +46,7 @@
       </call-template>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('InputExtensions')"/>
+         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.TextBox</text>
          <if test="@for">For</if>
          <text>(</text>
@@ -95,7 +95,7 @@
       </call-template>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('InputExtensions')"/>
+         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.Password</text>
          <if test="@for">For</if>
          <text>(</text>
@@ -140,7 +140,7 @@
       </call-template>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('InputExtensions')"/>
+         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.Hidden</text>
          <if test="@for">For</if>
          <text>(</text>
@@ -185,7 +185,7 @@
       </call-template>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('TextAreaExtensions')"/>
+         <value-of select="a:fully-qualified-helper('TextAreaInstructions')"/>
          <text>.TextArea</text>
          <if test="@for">For</if>
          <text>(</text>
@@ -236,7 +236,7 @@
       </call-template>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('InputExtensions')"/>
+         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.CheckBox</text>
          <if test="@for">For</if>
          <text>(</text>
@@ -283,7 +283,7 @@
       </call-template>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('InputExtensions')"/>
+         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.RadioButton</text>
          <if test="@for">For</if>
          <text>(</text>
@@ -357,7 +357,7 @@
       </call-template>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('InputExtensions')"/>
+         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.HttpMethodOverride(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
@@ -387,7 +387,7 @@
       </call-template>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('SelectExtensions')"/>
+         <value-of select="a:fully-qualified-helper('SelectInstructions')"/>
          <text>.</text>
          <value-of select="if ($ddl) then 'DropDownList' else 'ListBox'"/>
          <if test="@for or $for-model">For</if>
@@ -520,7 +520,7 @@
 
       <variable name="for-model" select="empty((@for, @name))"/>
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('LabelExtensions')"/>
+         <value-of select="a:fully-qualified-helper('LabelInstructions')"/>
          <text>.Label</text>
          <choose>
             <when test="@for">For</when>
@@ -568,7 +568,7 @@
       </call-template>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('ValidationExtensions')"/>
+         <value-of select="a:fully-qualified-helper('ValidationInstructions')"/>
          <text>.ValidationSummary(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
@@ -601,7 +601,7 @@
       <call-template name="a:validate-for"/>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('ValidationExtensions')"/>
+         <value-of select="a:fully-qualified-helper('ValidationInstructions')"/>
          <text>.ValidationMessage</text>
          <if test="@for">For</if>
          <text>(</text>
@@ -653,7 +653,7 @@
       <variable name="editor" select="self::a:editor"/>
       <variable name="for-model" select="empty((@for, @name))"/>
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html(concat((if ($editor) then 'Editor' else 'Display'), 'Extensions'))"/>
+         <value-of select="a:fully-qualified-helper(concat((if ($editor) then 'Editor' else 'Display'), 'Instructions'))"/>
          <text>.</text>
          <value-of select="if ($editor) then 'Editor' else 'Display'"/>
          <if test="@for or $for-model">For</if>
@@ -874,7 +874,7 @@
       <variable name="statement" select="$src:current-mode eq xs:QName('src:statement')"/>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('DisplayTextExtensions')"/>
+         <value-of select="a:fully-qualified-helper('DisplayTextInstructions')"/>
          <text>.Display</text>
          <value-of select="if ($statement) then 'Text' else 'String'"/>
          <if test="@for">For</if>
@@ -1065,7 +1065,7 @@
       <param name="merge-attributes" as="attribute()*"/>
 
       <variable name="expr">
-         <value-of select="a:fully-qualified-helper-html('HtmlAttributesMerger')"/>
+         <value-of select="a:fully-qualified-helper('HtmlAttributesMerger')"/>
          <text>.Create(</text>
          <value-of select="$html-attributes/xcst:expression(.)"/>
          <text>)</text>
@@ -1090,12 +1090,6 @@
       <param name="helper" as="xs:string"/>
 
       <sequence select="concat(src:global-identifier('Xcst.Web.Runtime'), '.', $helper)"/>
-   </function>
-
-   <function name="a:fully-qualified-helper-html" as="xs:string">
-      <param name="helper" as="xs:string"/>
-
-      <sequence select="concat(src:global-identifier('Xcst.Web.Mvc.Html'), '.', $helper)"/>
    </function>
 
 </stylesheet>

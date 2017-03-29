@@ -307,7 +307,7 @@ namespace System.Web.Mvc {
       /// <returns>true if the property should be shown; otherwise false.</returns>
 
       public bool ShowForDisplay(ModelMetadata propertyMetadata) {
-         return DisplayExtensions.ShowForDisplay(this, propertyMetadata);
+         return ModelMetadataExtensions.ShowForDisplay(this, propertyMetadata);
       }
 
       /// <summary>
@@ -317,7 +317,7 @@ namespace System.Web.Mvc {
       /// <returns>true if the property should be shown; otherwise false.</returns>
 
       public bool ShowForEdit(ModelMetadata propertyMetadata) {
-         return EditorExtensions.ShowForEdit(this, propertyMetadata);
+         return ModelMetadataExtensions.ShowForEdit(this, propertyMetadata);
       }
 
       /// <summary>
@@ -327,7 +327,7 @@ namespace System.Web.Mvc {
       /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
 
       public Action<TemplateContext, XcstWriter> MemberTemplate(ModelMetadata propertyMetadata) {
-         return EditorExtensions.MemberTemplate(this, propertyMetadata);
+         return ModelMetadataExtensions.MemberTemplate(this, propertyMetadata);
       }
    }
 

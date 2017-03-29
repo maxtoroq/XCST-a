@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region ValidationExtensions is based on code from ASP.NET Web Stack
+#region ValidationInstructions is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
@@ -26,13 +26,13 @@ using System.Web;
 using System.Web.Mvc;
 using Xcst.Web.Configuration;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Runtime {
 
    /// <exclude/>
 
-   public static class ValidationExtensions {
+   public static class ValidationInstructions {
 
-      public static void Validate(this HtmlHelper htmlHelper, string modelName) {
+      public static void Validate(HtmlHelper htmlHelper, string modelName) {
 
          if (modelName == null) throw new ArgumentNullException(nameof(modelName));
 
@@ -42,7 +42,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void ValidateFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression) {
+      public static void ValidateFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression) {
          ValidateHelper(htmlHelper,
                         ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData),
                         ExpressionHelper.GetExpressionText(expression));
@@ -77,7 +77,7 @@ namespace Xcst.Web.Mvc.Html {
       /// Otherwise, a <paramref name="tag"/> element that contains an error message.</returns>
 
       [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
-      public static void ValidationMessage(this HtmlHelper htmlHelper,
+      public static void ValidationMessage(HtmlHelper htmlHelper,
                                            XcstWriter output,
                                            string modelName,
                                            string validationMessage = null,
@@ -107,7 +107,7 @@ namespace Xcst.Web.Mvc.Html {
       /// Otherwise, a <paramref name="tag"/> element that contains an error message.</returns>
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void ValidationMessageFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+      public static void ValidationMessageFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
                                                                  XcstWriter output,
                                                                  Expression<Func<TModel, TProperty>> expression,
                                                                  string validationMessage = null,
@@ -121,7 +121,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Normalization to lowercase is a common requirement for JavaScript and HTML values")]
-      internal static void ValidationMessageHelper(this HtmlHelper htmlHelper,
+      internal static void ValidationMessageHelper(HtmlHelper htmlHelper,
                                                    XcstWriter output,
                                                    ModelMetadata modelMetadata,
                                                    string expression,
@@ -190,7 +190,7 @@ namespace Xcst.Web.Mvc.Html {
          output.WriteEndElement();
       }
 
-      public static void ValidationSummary(this HtmlHelper htmlHelper,
+      public static void ValidationSummary(HtmlHelper htmlHelper,
                                            XcstWriter output,
                                            bool includePropertyErrors = false,
                                            string message = null,
@@ -363,6 +363,5 @@ namespace Xcst.Web.Mvc.Html {
 
          return String.Format(CultureInfo.CurrentCulture, messageFormat, attemptedValue);
       }
-
    }
 }

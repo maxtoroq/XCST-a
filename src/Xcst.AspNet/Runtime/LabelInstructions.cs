@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region LabelExtensions is based on code from ASP.NET Web Stack
+#region LabelInstructions is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
@@ -23,13 +23,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Runtime {
 
    /// <exclude/>
 
-   public static class LabelExtensions {
+   public static class LabelInstructions {
 
-      public static void Label(this HtmlHelper html,
+      public static void Label(HtmlHelper html,
                                XcstWriter output,
                                string expression,
                                string labelText = null,
@@ -41,7 +41,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void LabelFor<TModel, TValue>(this HtmlHelper<TModel> html,
+      public static void LabelFor<TModel, TValue>(HtmlHelper<TModel> html,
                                                   XcstWriter output,
                                                   Expression<Func<TModel, TValue>> expression,
                                                   string labelText = null,
@@ -53,7 +53,7 @@ namespace Xcst.Web.Mvc.Html {
          LabelHelper(html, output, metadata, expressionString, labelText, htmlAttributes);
       }
 
-      public static void LabelForModel(this HtmlHelper html,
+      public static void LabelForModel(HtmlHelper html,
                                        XcstWriter output,
                                        string labelText = null,
                                        IDictionary<string, object> htmlAttributes = null) {

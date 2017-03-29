@@ -18,9 +18,9 @@ using System.Globalization;
 using System.Reflection;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web {
 
-   static class MvcReflectionExtensions {
+   static class FrameworkExtensions {
 
 #if !ASPNETLIB
       static readonly Func<ModelMetadata, Type> getRealModelType =

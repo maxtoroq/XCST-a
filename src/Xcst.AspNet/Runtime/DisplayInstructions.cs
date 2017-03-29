@@ -12,24 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region DisplayExtensions is based on code from ASP.NET Web Stack
+#region DisplayInstructions is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
 using System;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Runtime {
 
    /// <exclude/>
 
-   public static class DisplayExtensions {
+   public static class DisplayInstructions {
 
-      public static void Display(this HtmlHelper html,
+      public static void Display(HtmlHelper html,
                                  XcstWriter output,
                                  string expression,
                                  string templateName = null,
@@ -40,7 +39,7 @@ namespace Xcst.Web.Mvc.Html {
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void DisplayFor<TModel, TValue>(this HtmlHelper<TModel> html,
+      public static void DisplayFor<TModel, TValue>(HtmlHelper<TModel> html,
                                                     XcstWriter output,
                                                     Expression<Func<TModel, TValue>> expression,
                                                     string templateName = null,
@@ -50,47 +49,13 @@ namespace Xcst.Web.Mvc.Html {
          TemplateHelpers.TemplateFor(html, output, expression, templateName, htmlFieldName, DataBoundControlMode.ReadOnly, additionalViewData);
       }
 
-      public static void DisplayForModel(this HtmlHelper html,
+      public static void DisplayForModel(HtmlHelper html,
                                          XcstWriter output,
                                          string templateName = null,
                                          string htmlFieldName = null,
                                          object additionalViewData = null) {
 
          TemplateHelpers.TemplateHelper(html, output, html.ViewData.ModelMetadata, htmlFieldName, templateName, DataBoundControlMode.ReadOnly, additionalViewData);
-      }
-
-      /// <summary>
-      /// Determines whether a property should be shown in a display template, based on its metadata.
-      /// </summary>
-      /// <param name="html">The current <see cref="HtmlHelper"/>.</param>
-      /// <param name="propertyMetadata">The property's metadata.</param>
-      /// <returns>true if the property should be shown; otherwise false.</returns>
-
-#if !ASPNETLIB
-      public
-#else
-      internal
-#endif
-      static bool ShowForDisplay(this HtmlHelper html, ModelMetadata propertyMetadata) {
-
-         if (!propertyMetadata.ShowForDisplay
-            || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
-
-            return false;
-         }
-
-         bool show;
-
-         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(propertyMetadata.ShowForDisplay), out show)) {
-            return show;
-         }
-
-#if !ASPNETLIB
-         if (propertyMetadata.ModelType == typeof(EntityState)) {
-            return false;
-         }
-#endif
-         return !propertyMetadata.IsComplexType;
       }
    }
 }
