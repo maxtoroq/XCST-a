@@ -72,12 +72,10 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Xcst, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.0.17.0\lib\net45\Xcst.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\packages\Xcst.0.20.0\lib\net45\Xcst.dll</HintPath>
     </Reference>
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.17.0\lib\net45\Xcst.Compiler.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\packages\Xcst.Compiler.0.20.0\lib\net45\Xcst.Compiler.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -36,8 +36,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:input-attributes, 'format', 'html-type', 'html-placeholder'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="$a:input-attributes, 'format', 'html-type', 'html-placeholder'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -85,8 +84,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:input-attributes, 'html-placeholder'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="$a:input-attributes, 'html-placeholder'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -130,8 +128,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:input-attributes"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="$a:input-attributes"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -175,8 +172,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:input-attributes, 'rows', 'cols', 'html-placeholder'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="$a:input-attributes, 'rows', 'cols', 'html-placeholder'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -226,8 +222,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:html-attributes, 'for', 'name', 'checked'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="$a:html-attributes, 'for', 'name', 'checked'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -273,8 +268,8 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:html-attributes, 'for', 'name', 'value', 'checked'"/>
          <with-param name="required" select="'value'"/>
+         <with-param name="optional" select="$a:html-attributes, 'for', 'name', 'checked'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -322,8 +317,6 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="()"/>
-         <with-param name="required" select="()"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -351,7 +344,6 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="'method'"/>
          <with-param name="required" select="'method'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
@@ -377,8 +369,7 @@
       <variable name="for-model" select="empty((@for, @name))"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:input-attributes, 'options'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="$a:input-attributes, 'options'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -466,8 +457,7 @@
             </if>
             <for-each select="a:option">
                <call-template name="xcst:validate-attribs">
-                  <with-param name="allowed" select="'value', 'selected', 'disabled'"/>
-                  <with-param name="required" select="()"/>
+                  <with-param name="optional" select="'value', 'selected', 'disabled'"/>
                   <with-param name="extension" select="true()"/>
                </call-template>
                <call-template name="src:line-number"/>
@@ -511,8 +501,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:html-attributes, 'for', 'name', 'text'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="$a:html-attributes, 'for', 'name', 'text'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -562,8 +551,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:html-attributes, 'include-member-errors', 'message'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="$a:html-attributes, 'include-member-errors', 'message'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -593,8 +581,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="$a:html-attributes, 'for', 'name', 'message'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="$a:html-attributes, 'for', 'name', 'message'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -643,8 +630,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="'for', 'name', 'template', 'html-field-name', 'html-attributes', 'with-params', 'options'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="'for', 'name', 'template', 'html-field-name', 'html-attributes', 'with-params', 'options'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -730,8 +716,7 @@
 
       <if test="self::a:with-options">
          <call-template name="xcst:validate-attribs">
-            <with-param name="allowed" select="'for', 'name', 'options'"/>
-            <with-param name="required" select="()"/>
+            <with-param name="optional" select="'for', 'name', 'options'"/>
             <with-param name="extension" select="true()"/>
          </call-template>
          <call-template name="a:validate-for">
@@ -765,8 +750,7 @@
       <param name="indent" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="'helper-name'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="'helper-name'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -830,8 +814,7 @@
    <template match="a:display-name" mode="src:extension-instruction">
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="'for', 'name'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="'for', 'name'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -864,8 +847,7 @@
       <param name="src:current-mode" as="xs:QName" required="yes" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="'for', 'name'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="'for', 'name'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -915,8 +897,7 @@
    <template match="a:model" mode="src:extension-instruction">
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="allowed" select="'value', 'as', 'html-field-prefix', 'helper-name', 'with-params'"/>
-         <with-param name="required" select="()"/>
+         <with-param name="optional" select="'value', 'as', 'html-field-prefix', 'helper-name', 'with-params'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
