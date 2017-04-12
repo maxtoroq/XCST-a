@@ -13,8 +13,6 @@
             || info.InputType == InputType.Password
             || info.TagName != "input") ? "form-control"
             : null;
-
-      config.Editors.OmitPasswordValue = true;
    }
 
 </script>

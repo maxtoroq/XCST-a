@@ -2,7 +2,7 @@
 <c:module version='1.0' language='C#'
    xmlns:c='http://maxtoroq.github.io/XCST'>
 
-   <c:import href='_common.xcst'/>
+   <c:import href='../Shared/_Layout.xcst'/>
 
    <c:template name='content' expand-text='yes'>
       <h1>Index</h1>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?model Samples.Contact?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:template name='c:initial-template'>
+      <dl>
+         <a:display>
+            <a:member-template>
+               <dt>
+                  <a:display-name/>
+                  <c:text>:</c:text>
+               </dt>
+               <dd>
+                  <a:display/>
+               </dd>
+            </a:member-template>
+         </a:display>
+      </dl>
+   </c:template>
+
+</c:module>
