@@ -24,17 +24,6 @@ namespace Xcst.Web.Mvc.Html {
 
       const string MemberTemplateKey = "__xcst_member_template";
 
-      public static string GroupName(this ModelMetadata metadata) {
-
-         string groupName;
-
-         if (metadata.AdditionalValues.TryGetValue("GroupName", out groupName)) {
-            return groupName;
-         }
-
-         return null;
-      }
-
       /// <summary>
       /// Determines whether a property should be shown in a display template, based on its metadata.
       /// </summary>

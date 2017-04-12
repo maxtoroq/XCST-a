@@ -197,6 +197,8 @@ namespace System.Web.Mvc {
 
       public virtual string Watermark { get; set; }
 
+      public virtual string GroupName { get; set; }
+
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static ModelMetadata FromLambdaExpression<TParameter, TValue>(Expression<Func<TParameter, TValue>> expression, ViewDataDictionary<TParameter> viewData) {
          return FromLambdaExpression(expression, viewData, metadataProvider: null);

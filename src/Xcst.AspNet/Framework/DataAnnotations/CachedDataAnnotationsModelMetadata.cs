@@ -228,6 +228,13 @@ namespace System.Web.Mvc {
             : base.ComputeWatermark();
       }
 
+      protected override string ComputeGroupName() {
+
+         return (this.PrototypeCache.Display != null) ?
+            this.PrototypeCache.Display.GetGroupName()
+            : base.ComputeGroupName();
+      }
+
       static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo displayColumnProperty, Type modelType) {
 
          if (displayColumnProperty == null) {

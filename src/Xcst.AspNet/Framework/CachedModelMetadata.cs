@@ -36,6 +36,7 @@ namespace System.Web.Mvc {
       bool _showForEdit;
       string _templateHint;
       string _watermark;
+      string _groupName;
 
       bool _convertEmptyStringToNullComputed;
       bool _dataTypeNameComputed;
@@ -55,6 +56,7 @@ namespace System.Web.Mvc {
       bool _showForEditComputed;
       bool _templateHintComputed;
       bool _watermarkComputed;
+      bool _groupNameComputed;
 
       public sealed override bool ConvertEmptyStringToNull {
          get {
@@ -319,6 +321,20 @@ namespace System.Web.Mvc {
          }
       }
 
+      public sealed override string GroupName {
+         get {
+            if (!_groupNameComputed) {
+               _groupName = ComputeGroupName();
+               _groupNameComputed = true;
+            }
+            return _groupName;
+         }
+         set {
+            _groupName = value;
+            _groupNameComputed = true;
+         }
+      }
+
       // Constructor for creating real instances of the metadata class based on a prototype
 
       protected CachedModelMetadata(CachedModelMetadata<TPrototypeCache> prototype, Func<object> modelAccessor)
@@ -409,6 +425,10 @@ namespace System.Web.Mvc {
 
       protected virtual string ComputeWatermark() {
          return base.Watermark;
+      }
+
+      protected virtual string ComputeGroupName() {
+         return base.GroupName;
       }
 
       protected sealed override string GetSimpleDisplayText() {

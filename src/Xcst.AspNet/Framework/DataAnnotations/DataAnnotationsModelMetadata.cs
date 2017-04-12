@@ -118,10 +118,12 @@ namespace System.Web.Mvc {
          string name = null;
 
          if (display != null) {
+
             result.Description = display.GetDescription();
             result.ShortDisplayName = display.GetShortName();
             result.Watermark = display.GetPrompt();
             result.Order = display.GetOrder() ?? ModelMetadata.DefaultOrder;
+            result.GroupName = display.GetGroupName();
 
             name = display.GetName();
          }
