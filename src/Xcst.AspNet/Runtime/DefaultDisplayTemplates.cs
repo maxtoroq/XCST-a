@@ -25,10 +25,7 @@ using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
-
-#if !ASPNETLIB
-using Xcst.Web.Mvc.Html;
-#endif
+using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Runtime {
 
@@ -198,11 +195,11 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => html.ShowForDisplay(pm))) {
+         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => ModelHelper.ShowForDisplayImpl(html, pm))) {
 
             if (!propertyMetadata.HideSurroundingHtml) {
 
-               Action<TemplateContext, XcstWriter> memberTemplate = html.MemberTemplate(propertyMetadata);
+               Action<TemplateContext, XcstWriter> memberTemplate = ModelHelper.MemberTemplateImpl(html, propertyMetadata);
 
                if (memberTemplate != null) {
                   memberTemplate(null, output);

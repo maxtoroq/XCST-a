@@ -27,10 +27,10 @@ using System.Web.Routing;
 using System.Web.UI.WebControls;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
+using Xcst.Web.Mvc;
 
 #if !ASPNETLIB
 using System.Data.Linq; 
-using Xcst.Web.Mvc.Html;
 #endif
 
 namespace Xcst.Web.Runtime {
@@ -234,11 +234,11 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => html.ShowForEdit(pm))) {
+         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => ModelHelper.ShowForEditImpl(html, pm))) {
 
             if (!propertyMetadata.HideSurroundingHtml) {
 
-               Action<TemplateContext, XcstWriter> memberTemplate = html.MemberTemplate(propertyMetadata);
+               Action<TemplateContext, XcstWriter> memberTemplate = ModelHelper.MemberTemplateImpl(html, propertyMetadata);
 
                if (memberTemplate != null) {
                   memberTemplate(null, output);

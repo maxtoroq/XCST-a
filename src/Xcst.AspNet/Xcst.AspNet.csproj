@@ -195,7 +195,6 @@
     <Compile Include="Configuration\EditorInfo.cs" />
     <Compile Include="Runtime\InputInstructions.cs" />
     <Compile Include="Runtime\LabelInstructions.cs" />
-    <Compile Include="Mvc\ModelMetadataExtensions.cs" />
     <Compile Include="FrameworkExtensions.cs" />
     <Compile Include="Runtime\SelectInstructions.cs" />
     <Compile Include="Runtime\TemplateHelpers.cs" />
