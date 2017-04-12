@@ -28,7 +28,7 @@
          <![CDATA[
 
          var message = new MailMessage {
-            From = new MailAddress("noreply@example.com", Request.Url.Host),
+            From = new MailAddress("noreply@example.com", this.Request.Url.Host),
             To = { contactTo },
             Subject = contactSubject,
             ReplyToList = { new MailAddress(contact.Email, contact.Name) },

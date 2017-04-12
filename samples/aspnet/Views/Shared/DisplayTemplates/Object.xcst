@@ -7,7 +7,6 @@
    <c:use-functions in='System'/>
    <c:use-functions in='System.Linq'/>
    <c:use-functions in='System.Web.Mvc'/>
-   <c:use-functions in='Xcst.Web.Mvc.Html'/>
 
    <c:param name='labelColumnClass'>col-md-3</c:param>
    <c:param name='fieldColumnClass'>col-md-9</c:param>

@@ -18,9 +18,17 @@ using System.Data;
 using System.Web.Mvc;
 using Xcst.Runtime;
 
-namespace Xcst.Web.Mvc.Html {
+namespace Xcst.Web.Mvc
+#if !ASPNETLIB
+   .Html
+#endif
+   {
 
-   public static class ModelMetadataExtensions {
+#if !ASPNETLIB
+   public
+#endif
+
+   static class ModelMetadataExtensions {
 
       const string MemberTemplateKey = "__xcst_member_template";
 
@@ -30,13 +38,12 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="html">The current <see cref="HtmlHelper"/>.</param>
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>true if the property should be shown; otherwise false.</returns>
+      /// <remarks>
+      /// This method uses the same logic used by the built-in <code>Object</code> display template;
+      /// e.g. by default, it returns false for complex types.
+      /// </remarks>
 
-#if !ASPNETLIB
-      public
-#else
-      internal
-#endif
-      static bool ShowForDisplay(this HtmlHelper html, ModelMetadata propertyMetadata) {
+      public static bool ShowForDisplay(this HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (!propertyMetadata.ShowForDisplay
             || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
@@ -64,13 +71,12 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="html">The current <see cref="HtmlHelper"/>.</param>
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>true if the property should be shown; otherwise false.</returns>
+      /// <remarks>
+      /// This method uses the same logic used by the built-in <code>Object</code> editor template;
+      /// e.g. by default, it returns false for complex types.
+      /// </remarks>
 
-#if !ASPNETLIB
-      public
-#else
-      internal
-#endif
-      static bool ShowForEdit(this HtmlHelper html, ModelMetadata propertyMetadata) {
+      public static bool ShowForEdit(this HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (!propertyMetadata.ShowForEdit
             || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
@@ -99,12 +105,7 @@ namespace Xcst.Web.Mvc.Html {
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
 
-#if !ASPNETLIB
-      public
-#else
-      internal
-#endif
-      static Action<TemplateContext, XcstWriter> MemberTemplate(this HtmlHelper html, ModelMetadata propertyMetadata) {
+      public static Action<TemplateContext, XcstWriter> MemberTemplate(this HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (html == null) throw new ArgumentNullException(nameof(html));
          if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));

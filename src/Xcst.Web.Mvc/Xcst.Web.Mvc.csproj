@@ -127,6 +127,9 @@
     <Compile Include="..\Xcst.AspNet\Mvc\ModelMetadataExtensions.cs">
       <Link>Mvc\ModelMetadataExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Mvc\ShowForAttribute.cs">
+      <Link>Mvc\ShowForAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\PreApplicationStartCode.cs">
       <Link>PreApplicationStartCode.cs</Link>
     </Compile>

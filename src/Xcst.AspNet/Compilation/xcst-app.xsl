@@ -785,14 +785,10 @@
          <call-template name="src:line-hidden"/>
          <call-template name="src:new-line-indented"/>
          <text>[</text>
-         <value-of select="src:global-identifier('System.Web.Mvc.AdditionalMetadata')"/>
-         <text>("ShowForDisplay", </text>
+         <value-of select="src:global-identifier('Xcst.Web.Mvc.ShowFor')"/>
+         <text>(Display = </text>
          <value-of select="src:boolean($display ne 'edit-only')"/>
-         <text>)]</text>
-         <call-template name="src:new-line-indented"/>
-         <text>[</text>
-         <value-of select="src:global-identifier('System.Web.Mvc.AdditionalMetadata')"/>
-         <text>("ShowForEdit", </text>
+         <text>, Edit = </text>
          <value-of select="src:boolean($display ne 'view-only')"/>
          <text>)]</text>
       </if>

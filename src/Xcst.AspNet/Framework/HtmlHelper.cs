@@ -13,7 +13,7 @@ using System.Web.WebPages;
 using System.Web.WebPages.Resources;
 using Xcst;
 using Xcst.Runtime;
-using Xcst.Web.Mvc.Html;
+using Xcst.Web.Mvc;
 
 namespace System.Web.Mvc {
 
@@ -305,6 +305,10 @@ namespace System.Web.Mvc {
       /// </summary>
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>true if the property should be shown; otherwise false.</returns>
+      /// <remarks>
+      /// This method uses the same logic used by the built-in <code>Object</code> display template;
+      /// e.g. by default, it returns false for complex types.
+      /// </remarks>
 
       public bool ShowForDisplay(ModelMetadata propertyMetadata) {
          return ModelMetadataExtensions.ShowForDisplay(this, propertyMetadata);
@@ -315,6 +319,10 @@ namespace System.Web.Mvc {
       /// </summary>
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>true if the property should be shown; otherwise false.</returns>
+      /// <remarks>
+      /// This method uses the same logic used by the built-in <code>Object</code> editor template;
+      /// e.g. by default, it returns false for complex types.
+      /// </remarks>
 
       public bool ShowForEdit(ModelMetadata propertyMetadata) {
          return ModelMetadataExtensions.ShowForEdit(this, propertyMetadata);
