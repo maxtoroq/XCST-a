@@ -14,16 +14,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Web.Mvc;
-using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc {
 
    public class ModelHelper {
-
-      const string MemberTemplateKey = "__xcst_member_template";
 
       public HtmlHelper Html { get; }
 
@@ -218,104 +214,6 @@ namespace Xcst.Web.Mvc {
          }
 
          return resolvedValue;
-      }
-
-      /// <summary>
-      /// Determines whether a property should be shown in a display template, based on its metadata.
-      /// </summary>
-      /// <param name="propertyMetadata">The property's metadata.</param>
-      /// <returns>true if the property should be shown; otherwise false.</returns>
-      /// <remarks>
-      /// This method uses the same logic used by the built-in <code>Object</code> display template;
-      /// e.g. by default, it returns false for complex types.
-      /// </remarks>
-
-      public bool ShowForDisplay(ModelMetadata propertyMetadata) {
-         return ShowForDisplayImpl(this.Html, propertyMetadata);
-      }
-
-      internal static bool ShowForDisplayImpl(HtmlHelper html, ModelMetadata propertyMetadata) {
-
-         if (!propertyMetadata.ShowForDisplay
-            || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
-
-            return false;
-         }
-
-         bool show;
-
-         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(propertyMetadata.ShowForDisplay), out show)) {
-            return show;
-         }
-
-#if !ASPNETLIB
-         if (propertyMetadata.ModelType == typeof(EntityState)) {
-            return false;
-         }
-#endif
-         return !propertyMetadata.IsComplexType;
-      }
-
-      /// <summary>
-      /// Determines whether a property should be shown in an editor template, based on its metadata.
-      /// </summary>
-      /// <param name="propertyMetadata">The property's metadata.</param>
-      /// <returns>true if the property should be shown; otherwise false.</returns>
-      /// <remarks>
-      /// This method uses the same logic used by the built-in <code>Object</code> editor template;
-      /// e.g. by default, it returns false for complex types.
-      /// </remarks>
-
-      public bool ShowForEdit(ModelMetadata propertyMetadata) {
-         return ShowForEditImpl(this.Html, propertyMetadata);
-      }
-
-      internal static bool ShowForEditImpl(HtmlHelper html, ModelMetadata propertyMetadata) {
-
-         if (!propertyMetadata.ShowForEdit
-            || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
-
-            return false;
-         }
-
-         bool show;
-
-         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(propertyMetadata.ShowForEdit), out show)) {
-            return show;
-         }
-
-#if !ASPNETLIB
-         if (propertyMetadata.ModelType == typeof(EntityState)) {
-            return false;
-         } 
-#endif
-         return !propertyMetadata.IsComplexType;
-      }
-
-      /// <summary>
-      /// Returns the member template delegate for the provided property.
-      /// </summary>
-      /// <param name="propertyMetadata">The property's metadata.</param>
-      /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
-
-      public Action<TemplateContext, XcstWriter> MemberTemplate(ModelMetadata propertyMetadata) {
-         return MemberTemplateImpl(this.Html, propertyMetadata);
-      }
-
-      internal static Action<TemplateContext, XcstWriter> MemberTemplateImpl(HtmlHelper html, ModelMetadata propertyMetadata) {
-
-         if (html == null) throw new ArgumentNullException(nameof(html));
-         if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));
-
-         Action<ModelHelper, XcstWriter> memberTemplate;
-
-         if (!html.ViewData.TryGetValue(MemberTemplateKey, out memberTemplate)) {
-            return null;
-         }
-
-         ModelHelper modelHelper = ForMemberTemplate(html, propertyMetadata);
-
-         return (c, o) => memberTemplate(modelHelper, o);
       }
 
       class ViewDataContainer : IViewDataContainer {

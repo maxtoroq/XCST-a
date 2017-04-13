@@ -124,6 +124,9 @@
     <Compile Include="..\Xcst.AspNet\Mvc\ModelHelperOfTModel.cs">
       <Link>Mvc\ModelHelperOfTModel.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Mvc\ModelMetadataExtensions.cs">
+      <Link>Mvc\ModelMetadataExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\ShowForAttribute.cs">
       <Link>Mvc\ShowForAttribute.cs</Link>
     </Compile>

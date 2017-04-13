@@ -12,6 +12,8 @@ using System.Web.Routing;
 using System.Web.WebPages;
 using System.Web.WebPages.Resources;
 using Xcst;
+using Xcst.Runtime;
+using Xcst.Web.Mvc;
 
 namespace System.Web.Mvc {
 
@@ -296,6 +298,44 @@ namespace System.Web.Mvc {
 
       public void AntiForgeryToken(XcstWriter output) {
          AntiForgery.GetHtml(this.ViewContext.HttpContext, output);
+      }
+
+      /// <summary>
+      /// Determines whether a property should be shown in a display template, based on its metadata.
+      /// </summary>
+      /// <param name="propertyMetadata">The property's metadata.</param>
+      /// <returns>true if the property should be shown; otherwise false.</returns>
+      /// <remarks>
+      /// This method uses the same logic used by the built-in <code>Object</code> display template;
+      /// e.g. by default, it returns false for complex types.
+      /// </remarks>
+
+      public bool ShowForDisplay(ModelMetadata propertyMetadata) {
+         return ModelMetadataExtensions.ShowForDisplay(this, propertyMetadata);
+      }
+
+      /// <summary>
+      /// Determines whether a property should be shown in an editor template, based on its metadata.
+      /// </summary>
+      /// <param name="propertyMetadata">The property's metadata.</param>
+      /// <returns>true if the property should be shown; otherwise false.</returns>
+      /// <remarks>
+      /// This method uses the same logic used by the built-in <code>Object</code> editor template;
+      /// e.g. by default, it returns false for complex types.
+      /// </remarks>
+
+      public bool ShowForEdit(ModelMetadata propertyMetadata) {
+         return ModelMetadataExtensions.ShowForEdit(this, propertyMetadata);
+      }
+
+      /// <summary>
+      /// Returns the member template delegate for the provided property.
+      /// </summary>
+      /// <param name="propertyMetadata">The property's metadata.</param>
+      /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
+
+      public Action<TemplateContext, XcstWriter> MemberTemplate(ModelMetadata propertyMetadata) {
+         return ModelMetadataExtensions.MemberTemplate(this, propertyMetadata);
       }
    }
 

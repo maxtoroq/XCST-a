@@ -28,14 +28,14 @@
             </c:choose>
          </c:when>
          <c:otherwise>
-            <c:for-each name='prop' in='ViewData.ModelMetadata.Properties.Where(x => ModelHelper.ShowForEdit(x))'>
+            <c:for-each name='prop' in='ViewData.ModelMetadata.Properties.Where(x => Html.ShowForEdit(x))'>
                <c:variable name='editorTemplate' value='prop.TemplateHint ?? prop.DataTypeName'/>
                <c:choose>
                   <c:when test='prop.HideSurroundingHtml'>
                      <a:editor name='{prop.PropertyName}' template='{editorTemplate}'/>
                   </c:when>
                   <c:otherwise>
-                     <c:variable name='memberTemplate' value='ModelHelper.MemberTemplate(prop)'/>
+                     <c:variable name='memberTemplate' value='Html.MemberTemplate(prop)'/>
                      <c:choose>
                         <c:when test='memberTemplate != null'>
                            <c:evaluate-delegate value='memberTemplate'/>

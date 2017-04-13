@@ -24,14 +24,14 @@
             </c:choose>
          </c:when>
          <c:otherwise>
-            <c:for-each name='prop' in='ViewData.ModelMetadata.Properties.Where(x => ModelHelper.ShowForDisplay(x))'>
+            <c:for-each name='prop' in='ViewData.ModelMetadata.Properties.Where(x => Html.ShowForDisplay(x))'>
                <c:variable name='displayTemplate' value='prop.TemplateHint ?? prop.DataTypeName'/>
                <c:choose>
                   <c:when test='prop.HideSurroundingHtml'>
                      <a:display name='{prop.PropertyName}' template='{displayTemplate}'/>
                   </c:when>
                   <c:otherwise>
-                     <c:variable name='memberTemplate' value='ModelHelper.MemberTemplate(prop)'/>
+                     <c:variable name='memberTemplate' value='Html.MemberTemplate(prop)'/>
                      <c:choose>
                         <c:when test='memberTemplate != null'>
                            <c:evaluate-delegate value='memberTemplate'/>
