@@ -30,15 +30,11 @@ using Xcst.Web.Configuration;
 
 #if !ASPNETLIB
 using System.Data.Linq; 
-using Xcst.Web.Mvc.Html;
 #endif
 
 namespace Xcst.Web.Runtime {
 
    static class DefaultEditorTemplates {
-
-      const string HtmlAttributeKey = "htmlAttributes";
-      const string OptionsKeyPrefix = "__xcst_options:";
 
       public static void BooleanTemplate(HtmlHelper html, XcstWriter output) {
 
@@ -170,7 +166,7 @@ namespace Xcst.Web.Runtime {
 
       static IDictionary<string, object> CreateHtmlAttributes(HtmlHelper html, string className, string inputType = null) {
 
-         object htmlAttributesObject = html.ViewData[HtmlAttributeKey];
+         object htmlAttributesObject = html.ViewData["htmlAttributes"];
 
          if (htmlAttributesObject != null) {
             return MergeHtmlAttributes(htmlAttributesObject, className, inputType);
@@ -234,11 +230,11 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => html.ShowForEdit(pm))) {
+         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => EditorInstructions.ShowForEdit(html, pm))) {
 
             if (!propertyMetadata.HideSurroundingHtml) {
 
-               Action<TemplateContext, XcstWriter> memberTemplate = html.MemberTemplate(propertyMetadata);
+               Action<TemplateContext, XcstWriter> memberTemplate = EditorInstructions.MemberTemplate(html, propertyMetadata);
 
                if (memberTemplate != null) {
                   memberTemplate(null, output);
@@ -474,7 +470,7 @@ namespace Xcst.Web.Runtime {
 
          IEnumerable<SelectListItem> options;
 
-         if (viewData.TryGetValue(OptionsKeyPrefix + viewData.TemplateInfo.HtmlFieldPrefix, out options)) {
+         if (viewData.TryGetValue("__xcst_options:" + viewData.TemplateInfo.HtmlFieldPrefix, out options)) {
             return options;
          }
 

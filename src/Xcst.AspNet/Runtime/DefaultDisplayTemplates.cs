@@ -26,10 +26,6 @@ using System.Web.UI.WebControls;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
 
-#if !ASPNETLIB
-using Xcst.Web.Mvc.Html;
-#endif
-
 namespace Xcst.Web.Runtime {
 
    static class DefaultDisplayTemplates {
@@ -198,11 +194,12 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => html.ShowForDisplay(pm))) {
+         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => DisplayInstructions.ShowForDisplay(html, pm))) {
 
             if (!propertyMetadata.HideSurroundingHtml) {
 
-               Action<TemplateContext, XcstWriter> memberTemplate = html.MemberTemplate(propertyMetadata);
+               Action<TemplateContext, XcstWriter> memberTemplate =
+                  DisplayInstructions.MemberTemplate(html, propertyMetadata);
 
                if (memberTemplate != null) {
                   memberTemplate(null, output);

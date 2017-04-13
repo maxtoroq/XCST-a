@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Web.Helpers;
@@ -13,7 +14,7 @@ using System.Web.WebPages;
 using System.Web.WebPages.Resources;
 using Xcst;
 using Xcst.Runtime;
-using Xcst.Web.Mvc;
+using Xcst.Web.Runtime;
 
 namespace System.Web.Mvc {
 
@@ -300,6 +301,85 @@ namespace System.Web.Mvc {
          AntiForgery.GetHtml(this.ViewContext.HttpContext, output);
       }
 
+      public string DisplayName() {
+         return MetadataInstructions.DisplayNameForModel(this);
+      }
+
+      public string DisplayName(string name) {
+         return MetadataInstructions.DisplayName(this, name);
+      }
+
+      public string FieldId() {
+         return FieldId(String.Empty);
+      }
+
+      public string FieldId(string name) {
+         return this.ViewData.TemplateInfo.GetFullHtmlFieldId(name);
+      }
+
+      public string FieldName() {
+         return InputInstructions.FieldNameForModel(this);
+      }
+
+      public string FieldName(string name) {
+         return InputInstructions.FieldName(this, name);
+      }
+
+      public string FieldValue() {
+         return FieldValueHelper(String.Empty, value: null, format: this.ViewData.ModelMetadata.EditFormatString, useViewData: true);
+      }
+
+      public string FieldValue(string name) {
+
+         if (name == null) throw new ArgumentNullException(nameof(name));
+
+         return FieldValueHelper(name, value: null, format: this.ViewData.ModelMetadata.EditFormatString, useViewData: true);
+      }
+
+      public string FieldValue(string name, string format) {
+
+         if (name == null) throw new ArgumentNullException(nameof(name));
+
+         return FieldValueHelper(name, value: null, format: format, useViewData: true);
+      }
+
+      internal string FieldValueHelper(string name, object value, string format, bool useViewData) {
+
+         string fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+         string attemptedValue = (string)GetModelStateValue(fullName, typeof(string));
+         string resolvedValue;
+
+         if (attemptedValue != null) {
+
+            // case 1: if ModelState has a value then it's already formatted so ignore format string
+
+            resolvedValue = attemptedValue;
+
+         } else if (useViewData) {
+
+            if (name.Length == 0) {
+
+               // case 2(a): format the value from ModelMetadata for the current model
+
+               ModelMetadata metadata = ModelMetadata.FromStringExpression(String.Empty, this.ViewData);
+               resolvedValue = FormatValue(metadata.Model, format);
+
+            } else {
+
+               // case 2(b): format the value from ViewData
+
+               resolvedValue = EvalString(name, format);
+            }
+         } else {
+
+            // case 3: format the explicit value from ModelMetadata
+
+            resolvedValue = FormatValue(value, format);
+         }
+
+         return resolvedValue;
+      }
+
       /// <summary>
       /// Determines whether a property should be shown in a display template, based on its metadata.
       /// </summary>
@@ -311,7 +391,7 @@ namespace System.Web.Mvc {
       /// </remarks>
 
       public bool ShowForDisplay(ModelMetadata propertyMetadata) {
-         return ModelMetadataExtensions.ShowForDisplay(this, propertyMetadata);
+         return DisplayInstructions.ShowForDisplay(this, propertyMetadata);
       }
 
       /// <summary>
@@ -325,7 +405,7 @@ namespace System.Web.Mvc {
       /// </remarks>
 
       public bool ShowForEdit(ModelMetadata propertyMetadata) {
-         return ModelMetadataExtensions.ShowForEdit(this, propertyMetadata);
+         return EditorInstructions.ShowForEdit(this, propertyMetadata);
       }
 
       /// <summary>
@@ -335,7 +415,7 @@ namespace System.Web.Mvc {
       /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
 
       public Action<TemplateContext, XcstWriter> MemberTemplate(ModelMetadata propertyMetadata) {
-         return ModelMetadataExtensions.MemberTemplate(this, propertyMetadata);
+         return EditorInstructions.MemberTemplate(this, propertyMetadata);
       }
    }
 
@@ -363,6 +443,36 @@ namespace System.Web.Mvc {
          : base(viewContext, viewDataContainer, routeCollection) {
 
          _viewData = new ViewDataDictionary<TModel>(viewDataContainer.ViewData);
+      }
+
+      public string DisplayName<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+         return MetadataInstructions.DisplayNameFor(this, expression);
+      }
+
+      public string FieldId<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+         return FieldId(ExpressionHelper.GetExpressionText(expression));
+      }
+
+      public string FieldName<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+         return InputInstructions.FieldNameFor(this, expression);
+      }
+
+      public string FieldValue<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+
+         ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
+
+         string expressionString = ExpressionHelper.GetExpressionText(expression);
+
+         return FieldValueHelper(expressionString, metadata.Model, format: metadata.EditFormatString, useViewData: false);
+      }
+
+      public string FieldValue<TProperty>(Expression<Func<TModel, TProperty>> expression, string format) {
+
+         ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
+
+         string expressionString = ExpressionHelper.GetExpressionText(expression);
+
+         return FieldValueHelper(expressionString, metadata.Model, format, useViewData: false);
       }
    }
 

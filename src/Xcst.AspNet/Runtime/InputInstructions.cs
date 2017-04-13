@@ -517,5 +517,19 @@ namespace Xcst.Web.Runtime {
       static RouteValueDictionary ToRouteValueDictionary(IDictionary<string, object> dictionary) {
          return (dictionary == null) ? new RouteValueDictionary() : new RouteValueDictionary(dictionary);
       }
+
+      // Field Name
+
+      public static string FieldName(HtmlHelper html, string name) {
+         return html.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+      }
+
+      public static string FieldNameFor<TModel, TProperty>(HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression) {
+         return FieldName(html, ExpressionHelper.GetExpressionText(expression));
+      }
+
+      public static string FieldNameForModel(HtmlHelper html) {
+         return FieldName(html, String.Empty);
+      }
    }
 }

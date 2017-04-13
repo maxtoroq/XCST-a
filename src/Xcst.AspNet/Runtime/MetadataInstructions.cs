@@ -1,4 +1,4 @@
-// Copyright 2015 Max Toro Q.
+﻿// Copyright 2015 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,62 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region DisplayTextInstructions is based on code from ASP.NET Web Stack
+#region MetadataInstructions is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
 namespace Xcst.Web.Runtime {
 
-   /// <exclude/>
+   public static class MetadataInstructions {
 
-   public static class DisplayTextInstructions {
+      // display name
+
+      public static string DisplayName(HtmlHelper html, string name) {
+
+         ModelMetadata metadata = ModelMetadata.FromStringExpression(name, html.ViewData);
+
+         return DisplayNameHelper(metadata, name);
+      }
+
+      public static string DisplayNameFor<TModel, TProperty>(HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression) {
+
+         ModelMetadata metadata;
+
+         if (typeof(IEnumerable<TModel>).IsAssignableFrom(typeof(TModel))) {
+            metadata = ModelMetadata.FromLambdaExpression(expression, new ViewDataDictionary<TModel>());
+         } else {
+            metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
+         }
+
+         string expressionString = ExpressionHelper.GetExpressionText(expression);
+
+         return DisplayNameHelper(metadata, expressionString);
+      }
+
+      public static string DisplayNameForModel(HtmlHelper html) {
+         return DisplayNameHelper(html.ViewData.ModelMetadata, String.Empty);
+      }
+
+      internal static string DisplayNameHelper(ModelMetadata metadata, string htmlFieldName) {
+
+         // We don't call ModelMetadata.GetDisplayName here because we want to fall back to the field name rather than the ModelType.
+         // This is similar to how the LabelHelpers get the text of a label.
+
+         string resolvedDisplayName = metadata.DisplayName
+            ?? metadata.PropertyName
+            ?? htmlFieldName.Split('.').Last();
+
+         return resolvedDisplayName;
+      }
+
+      // display text
 
       public static void DisplayText(HtmlHelper html, XcstWriter output, string name) {
          DisplayTextHelper(html, output, ModelMetadata.FromStringExpression(name, html.ViewData));

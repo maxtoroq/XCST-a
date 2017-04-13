@@ -118,15 +118,6 @@
     <Compile Include="..\Xcst.AspNet\IFileDependent.cs">
       <Link>IFileDependent.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc\ModelHelper.cs">
-      <Link>Mvc\ModelHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc\ModelHelperOfTModel.cs">
-      <Link>Mvc\ModelHelperOfTModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc\ModelMetadataExtensions.cs">
-      <Link>Mvc\ModelMetadataExtensions.cs</Link>
-    </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\ShowForAttribute.cs">
       <Link>Mvc\ShowForAttribute.cs</Link>
     </Compile>
@@ -154,20 +145,23 @@
     <Compile Include="..\Xcst.AspNet\Runtime\DisplayInstructions.cs">
       <Link>Runtime\DisplayInstructions.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Runtime\DisplayTextInstructions.cs">
-      <Link>Runtime\DisplayTextInstructions.cs</Link>
-    </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\EditorInstructions.cs">
       <Link>Runtime\EditorInstructions.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\HtmlAttributesMerger.cs">
       <Link>Runtime\HtmlAttributesMerger.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\HtmlHelperFactory.cs">
+      <Link>Runtime\HtmlHelperFactory.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\InputInstructions.cs">
       <Link>Runtime\InputInstructions.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\LabelInstructions.cs">
       <Link>Runtime\LabelInstructions.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\MetadataInstructions.cs">
+      <Link>Runtime\MetadataInstructions.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\OptionList.cs">
       <Link>Runtime\OptionList.cs</Link>

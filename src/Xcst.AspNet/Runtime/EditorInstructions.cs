@@ -17,10 +17,13 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using Xcst.Runtime;
 
 namespace Xcst.Web.Runtime {
 
@@ -57,6 +60,47 @@ namespace Xcst.Web.Runtime {
                                         object additionalViewData = null) {
 
          TemplateHelpers.TemplateHelper(html, output, html.ViewData.ModelMetadata, htmlFieldName, templateName, DataBoundControlMode.Edit, additionalViewData);
+      }
+
+      public static bool ShowForEdit(HtmlHelper html, ModelMetadata propertyMetadata) {
+
+         if (html == null) throw new ArgumentNullException(nameof(html));
+         if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));
+
+         if (!propertyMetadata.ShowForEdit
+            || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
+
+            return false;
+         }
+
+         bool show;
+
+         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(propertyMetadata.ShowForEdit), out show)) {
+            return show;
+         }
+
+#if !ASPNETLIB
+         if (propertyMetadata.ModelType == typeof(EntityState)) {
+            return false;
+         } 
+#endif
+         return !propertyMetadata.IsComplexType;
+      }
+
+      public static Action<TemplateContext, XcstWriter> MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) {
+
+         if (html == null) throw new ArgumentNullException(nameof(html));
+         if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));
+
+         Action<HtmlHelper, XcstWriter> memberTemplate;
+
+         if (!html.ViewData.TryGetValue("__xcst_member_template", out memberTemplate)) {
+            return null;
+         }
+
+         HtmlHelper helper = HtmlHelperFactory.ForMemberTemplate(html, propertyMetadata);
+
+         return (c, o) => memberTemplate(helper, o);
       }
    }
 }
