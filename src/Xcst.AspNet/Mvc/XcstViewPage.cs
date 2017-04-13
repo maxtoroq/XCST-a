@@ -97,6 +97,7 @@ namespace Xcst.Web.Mvc {
          this.Html = null;
       }
 
+#if ASPNETLIB
       public void Redirect(string url) {
 
          this.TempData?.Keep();
@@ -120,11 +121,7 @@ namespace Xcst.Web.Mvc {
          }
 
          if (valueProvider == null) {
-#if ASPNETLIB
             valueProvider = ValueProviderFactories.Factories.GetValueProvider(this.ViewContext);
-#else
-            valueProvider = this.ViewContext.Controller?.ValueProvider;
-#endif
          }
 
          var bindingContext = new ModelBindingContext {
@@ -176,6 +173,7 @@ namespace Xcst.Web.Mvc {
 
          return (prefix + "." + propertyName);
       }
+#endif
 
       protected override void CopyState(XcstPage page) {
 

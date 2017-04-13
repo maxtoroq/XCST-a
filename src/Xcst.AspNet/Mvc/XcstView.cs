@@ -64,15 +64,6 @@ namespace Xcst.Web.Mvc {
 
          AddFileDependencies(instance, viewContext.HttpContext.Response);
 
-         RenderImpl(viewContext, getOutputter, viewPage);
-      }
-
-      internal static void RenderPage(ViewContext viewContext, TextWriter writer, XcstViewPage viewPage) {
-         RenderImpl(viewContext, t => t.OutputTo(writer), viewPage);
-      }
-
-      static void RenderImpl(ViewContext viewContext, Func<XcstTemplateEvaluator, XcstOutputter> getOutputter, XcstViewPage viewPage) {
-
          XcstEvaluator evaluator = XcstEvaluator.Using(viewPage);
 
          foreach (var item in viewContext.ViewData) {

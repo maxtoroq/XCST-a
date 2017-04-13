@@ -99,6 +99,7 @@ namespace Xcst.Web {
 
       public virtual bool IsAjax => Request?.IsAjaxRequest() ?? false;
 
+#if ASPNETLIB
       public virtual bool TryAuthorize(string[] users = null, string[] roles = null) {
 
          if (IsAuthorized(this.User, users, roles)) {
@@ -151,6 +152,7 @@ namespace Xcst.Web {
 
          return true;
       }
+#endif
 
       protected XcstPage LoadPage(string path) {
 
