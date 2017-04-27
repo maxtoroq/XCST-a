@@ -520,16 +520,16 @@ namespace Xcst.Web.Runtime {
 
       // Field Name
 
-      public static string FieldName(HtmlHelper html, string name) {
+      public static string Name(HtmlHelper html, string name) {
          return html.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
       }
 
-      public static string FieldNameFor<TModel, TProperty>(HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression) {
-         return FieldName(html, ExpressionHelper.GetExpressionText(expression));
+      public static string NameFor<TModel, TProperty>(HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression) {
+         return Name(html, ExpressionHelper.GetExpressionText(expression));
       }
 
-      public static string FieldNameForModel(HtmlHelper html) {
-         return FieldName(html, String.Empty);
+      public static string NameForModel(HtmlHelper html) {
+         return Name(html, String.Empty);
       }
    }
 }

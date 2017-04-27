@@ -301,7 +301,7 @@ namespace System.Web.Mvc {
          AntiForgery.GetHtml(this.ViewContext.HttpContext, output);
       }
 
-      public string DisplayName() {
+      public string DisplayNameForModel() {
          return MetadataInstructions.DisplayNameForModel(this);
       }
 
@@ -309,41 +309,41 @@ namespace System.Web.Mvc {
          return MetadataInstructions.DisplayName(this, name);
       }
 
-      public string FieldId() {
-         return FieldId(String.Empty);
+      public string IdForModel() {
+         return Id(String.Empty);
       }
 
-      public string FieldId(string name) {
+      public string Id(string name) {
          return this.ViewData.TemplateInfo.GetFullHtmlFieldId(name);
       }
 
-      public string FieldName() {
-         return InputInstructions.FieldNameForModel(this);
+      public string NameForModel() {
+         return InputInstructions.NameForModel(this);
       }
 
-      public string FieldName(string name) {
-         return InputInstructions.FieldName(this, name);
+      public string Name(string name) {
+         return InputInstructions.Name(this, name);
       }
 
-      public string FieldValue() {
-         return FieldValueHelper(String.Empty, value: null, format: this.ViewData.ModelMetadata.EditFormatString, useViewData: true);
+      public string ValueForModel() {
+         return ValueHelper(String.Empty, value: null, format: this.ViewData.ModelMetadata.EditFormatString, useViewData: true);
       }
 
-      public string FieldValue(string name) {
+      public string Value(string name) {
 
          if (name == null) throw new ArgumentNullException(nameof(name));
 
-         return FieldValueHelper(name, value: null, format: this.ViewData.ModelMetadata.EditFormatString, useViewData: true);
+         return ValueHelper(name, value: null, format: this.ViewData.ModelMetadata.EditFormatString, useViewData: true);
       }
 
-      public string FieldValue(string name, string format) {
+      public string Value(string name, string format) {
 
          if (name == null) throw new ArgumentNullException(nameof(name));
 
-         return FieldValueHelper(name, value: null, format: format, useViewData: true);
+         return ValueHelper(name, value: null, format: format, useViewData: true);
       }
 
-      internal string FieldValueHelper(string name, object value, string format, bool useViewData) {
+      internal string ValueHelper(string name, object value, string format, bool useViewData) {
 
          string fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
          string attemptedValue = (string)GetModelStateValue(fullName, typeof(string));
@@ -445,34 +445,34 @@ namespace System.Web.Mvc {
          _viewData = new ViewDataDictionary<TModel>(viewDataContainer.ViewData);
       }
 
-      public string DisplayName<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+      public string DisplayNameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
          return MetadataInstructions.DisplayNameFor(this, expression);
       }
 
-      public string FieldId<TProperty>(Expression<Func<TModel, TProperty>> expression) {
-         return FieldId(ExpressionHelper.GetExpressionText(expression));
+      public string IdFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+         return Id(ExpressionHelper.GetExpressionText(expression));
       }
 
-      public string FieldName<TProperty>(Expression<Func<TModel, TProperty>> expression) {
-         return InputInstructions.FieldNameFor(this, expression);
+      public string NameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+         return InputInstructions.NameFor(this, expression);
       }
 
-      public string FieldValue<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+      public string ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
 
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         return FieldValueHelper(expressionString, metadata.Model, format: metadata.EditFormatString, useViewData: false);
+         return ValueHelper(expressionString, metadata.Model, format: metadata.EditFormatString, useViewData: false);
       }
 
-      public string FieldValue<TProperty>(Expression<Func<TModel, TProperty>> expression, string format) {
+      public string ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression, string format) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
 
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         return FieldValueHelper(expressionString, metadata.Model, format, useViewData: false);
+         return ValueHelper(expressionString, metadata.Model, format, useViewData: false);
       }
    }
 

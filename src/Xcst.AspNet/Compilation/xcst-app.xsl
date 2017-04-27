@@ -732,7 +732,7 @@
       <value-of select="src:string(concat(src:aux-variable('options'), ':'))"/>
       <text> + </text>
       <value-of select="a:fully-qualified-helper('InputInstructions')"/>
-      <text>.FieldName</text>
+      <text>.Name</text>
       <if test="$for or $for-model">For</if>
       <if test="$for-model">Model</if>
       <text>(</text>
