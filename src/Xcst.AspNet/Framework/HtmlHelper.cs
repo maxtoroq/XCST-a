@@ -13,7 +13,7 @@ using System.Web.Routing;
 using System.Web.WebPages;
 using System.Web.WebPages.Resources;
 using Xcst;
-using Xcst.Runtime;
+using Xcst.PackageModel;
 using Xcst.Web.Runtime;
 
 namespace System.Web.Mvc {

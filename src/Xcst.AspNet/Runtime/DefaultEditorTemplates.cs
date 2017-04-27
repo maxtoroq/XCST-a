@@ -25,7 +25,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.UI.WebControls;
-using Xcst.Runtime;
+using Xcst.PackageModel;
 using Xcst.Web.Configuration;
 
 #if !ASPNETLIB
