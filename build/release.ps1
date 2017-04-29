@@ -42,7 +42,7 @@ function script:NuSpec {
 
    if ($projName -eq "Xcst.Web.Mvc") {
 
-      "<description>XCST view engine for ASP.NET MVC 5.</description>"
+      "<description>XCST view engine for ASP.NET MVC 5.2.x</description>"
 
       "<dependencies>"
          "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
@@ -56,7 +56,7 @@ function script:NuSpec {
 	
    } elseif ($projName -eq "Xcst.AspNet") {
       
-      "<description>XCST pages for ASP.NET.</description>"
+      "<description>XCST web pages for ASP.NET 4.5+</description>"
 
       "<dependencies>"
          "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
