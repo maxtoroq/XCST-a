@@ -74,6 +74,8 @@ function script:NuSpec {
    "<files>"
       "<file src='$tempPath\NOTICE.xml'/>"
       "<file src='$solutionPath\LICENSE.txt'/>"
+      "<file src='$solutionPath\schemas\*.rng' target='schemas'/>"
+      "<file src='$solutionPath\schemas\*.xsd' target='schemas'/>"
       "<file src='$projPath\bin\$configuration\$projName.*' target='lib\$targetFxMoniker'/>"
    "</files>"
 
