@@ -35,7 +35,7 @@
                      <c:variable name='memberTemplate' value='DisplayInstructions.MemberTemplate(Html, prop)'/>
                      <c:choose>
                         <c:when test='memberTemplate != null'>
-                           <c:evaluate-delegate value='memberTemplate'/>
+                           <c:evaluate-delegate delegate='memberTemplate'/>
                         </c:when>
                         <c:otherwise>
                            <div class='form-group'>

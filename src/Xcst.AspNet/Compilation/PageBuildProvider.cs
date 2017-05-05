@@ -168,7 +168,7 @@ namespace Xcst.Web.Compilation {
 
          base.GenerateCode(assemblyBuilder);
 
-         assemblyBuilder.AddAssemblyReference(typeof(Xcst.IXcstPackage).Assembly);
+         assemblyBuilder.AddAssemblyReference(typeof(Xcst.PackageModel.IXcstPackage).Assembly);
 
          if (!this.IsFileInCodeDir) {
             assemblyBuilder.AddAssemblyReference(typeof(TPage).Assembly);
