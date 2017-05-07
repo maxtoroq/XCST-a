@@ -20,11 +20,9 @@ namespace System.Web.WebPages {
    sealed class BuildManagerWrapper {
 
       internal static readonly Guid KeyGuid = Guid.NewGuid();
-      static readonly TimeSpan _objectFactoryCacheDuration = TimeSpan.FromMinutes(1);
       readonly IVirtualPathUtility _virtualPathUtility;
       readonly Func<VirtualPathProvider> _vppFunc;
       readonly bool _isPrecompiled;
-      readonly FileExistenceCache _vppCache;
 
       public BuildManagerWrapper()
          : this(() => HostingEnvironment.VirtualPathProvider, new VirtualPathUtilityWrapper()) { }
@@ -43,10 +41,6 @@ namespace System.Web.WebPages {
          _vppFunc = vppFunc;
          _virtualPathUtility = virtualPathUtility;
          _isPrecompiled = IsNonUpdatablePrecompiledApp();
-
-         if (!_isPrecompiled) {
-            _vppCache = new FileExistenceCache(vppFunc);
-         }
       }
 
       internal bool IsNonUpdatablePrecompiledApp() {

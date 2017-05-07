@@ -215,11 +215,9 @@ namespace Xcst.Web {
          // If we haven't found anything yet, now try looking for default.* or index.* at the current url
 
          currentLevel = pathValue;
-         string currentLevelDefault;
          string currentLevelIndex;
 
          if (String.IsNullOrEmpty(currentLevel)) {
-            currentLevelDefault = "default";
             currentLevelIndex = "index";
          } else {
 
@@ -227,18 +225,11 @@ namespace Xcst.Web {
                currentLevel += "/";
             }
 
-            currentLevelDefault = currentLevel + "default";
             currentLevelIndex = currentLevel + "index";
          }
 
          // Does the current route level match any supported extension?
          
-         //string defaultMatch = GetRouteLevelMatch(currentLevelDefault, supportedExtensions, virtualPathExists, context/*, displayModes*/);
-
-         //if (defaultMatch != null) {
-         //   return new WebPageMatch(defaultMatch, String.Empty);
-         //}
-
          string indexMatch = GetRouteLevelMatch(currentLevelIndex, supportedExtensions, virtualPathExists, context/*, displayModes*/);
 
          if (indexMatch != null) {

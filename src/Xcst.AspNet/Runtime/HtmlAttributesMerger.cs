@@ -71,8 +71,6 @@ namespace Xcst.Web.Runtime {
 
       public HtmlAttributesMerger AddReplace(string key, string value, bool removeIfNull = false) {
 
-         bool exists = this.Attributes.ContainsKey(key);
-
          if (value == null
             && removeIfNull) {
 

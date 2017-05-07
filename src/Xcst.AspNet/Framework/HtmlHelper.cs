@@ -27,7 +27,6 @@ namespace System.Web.Mvc {
       public static readonly string ValidationSummaryCssClassName = "validation-summary-errors";
       public static readonly string ValidationSummaryValidCssClassName = "validation-summary-valid";
 
-      static readonly object _html5InputsModeKey = new object();
       static string _idAttributeDotReplacement;
 
       DynamicViewDataDictionary _dynamicViewDataDictionary;

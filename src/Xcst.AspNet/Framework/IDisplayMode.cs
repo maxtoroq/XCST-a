@@ -117,7 +117,7 @@ namespace System.Web.WebPages {
 
    sealed class DisplayModeProvider {
 
-      public static readonly string MobileDisplayModeId = "Mobile";
+      //public static readonly string MobileDisplayModeId = "Mobile";
       public static readonly string DefaultDisplayModeId = String.Empty;
       static readonly object _displayModeKey = new object();
       static readonly DisplayModeProvider _instance = new DisplayModeProvider();
