@@ -68,7 +68,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Xcst, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.0.23.0\lib\net45\Xcst.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.0.23.1\lib\net45\Xcst.dll</HintPath>
     </Reference>
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xcst.Compiler.0.23.0\lib\net45\Xcst.Compiler.dll</HintPath>
