@@ -60,6 +60,7 @@
       <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Reflection.Metadata, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Reflection.Metadata.1.1.0\lib\dotnet5.2\System.Reflection.Metadata.dll</HintPath>
       <Private>True</Private>
@@ -96,6 +97,9 @@
     <Compile Include="Extension\ExtensionTests.generated.cs" />
     <Compile Include="Extension\ExtensionTestsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Extension\Editor\Templates\Time.c.xcst" />
+    <None Include="Extension\Editor\Templates\DateTime.c.xcst" />
+    <None Include="Extension\Editor\Templates\Date.c.xcst" />
     <None Include="Extension\generate-extension-tests.ps1" />
   </ItemGroup>
   <ItemGroup>

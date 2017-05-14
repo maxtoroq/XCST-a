@@ -53,7 +53,7 @@ namespace System.Web.Mvc {
       static bool IsDateTimeType(Type type, ModelMetadata metadata) {
 
          return typeof(DateTime) == GetTypeToValidate(type)
-            && !String.Equals(metadata.DataTypeName, "Time", StringComparison.OrdinalIgnoreCase);
+            && String.Equals(metadata.DataTypeName, "Date", StringComparison.OrdinalIgnoreCase);
       }
 
       static Type GetTypeToValidate(Type type) {

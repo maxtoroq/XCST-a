@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:use-functions in='System'/>
+   <c:use-functions in='System.Xml'/>
+   <c:use-functions in='Microsoft.VisualStudio.TestTools.UnitTesting'/>
+
+   <c:type name='Foo'>
+      <c:member name='d' as='DateTime'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:variable name='doc' value='new XmlDocument()'/>
+      <c:using name='output' value='doc.CreateNavigator().AppendChild()'>
+         <c:result-document output='output'>
+            <a:model as='Foo'>
+               <a:editor for='d'/>
+            </a:model>
+         </c:result-document>
+      </c:using>
+      <c:void value='Assert.AreEqual("input", doc.DocumentElement.LocalName)'/>
+      <c:void value='Assert.AreEqual("datetime", doc.DocumentElement.GetAttribute("type"))'/>
+      <c:void value='Assert.IsFalse(doc.DocumentElement.HasAttribute("data-val-date"))'/>
+   </c:template>
+
+   <c:template name='expected'/>
+
+</c:module>

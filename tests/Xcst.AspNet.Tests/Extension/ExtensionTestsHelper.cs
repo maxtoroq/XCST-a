@@ -79,10 +79,12 @@ namespace Xcst.Web.Tests.Extension {
                MetadataReference.CreateFromFile(typeof(System.Uri).Assembly.Location),
                MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location),
                MetadataReference.CreateFromFile(typeof(System.Xml.XmlWriter).Assembly.Location),
+               MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.DataType).Assembly.Location),
                MetadataReference.CreateFromFile(typeof(Xcst.PackageModel.IXcstPackage).Assembly.Location),
                MetadataReference.CreateFromFile(typeof(System.Web.HttpContext).Assembly.Location),
                MetadataReference.CreateFromFile(typeof(System.Web.Mvc.ViewContext).Assembly.Location),
                MetadataReference.CreateFromFile(typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location),
+               MetadataReference.CreateFromFile(typeof(Microsoft.VisualStudio.TestTools.UnitTesting.Assert).Assembly.Location),
                MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location)
             };
 
