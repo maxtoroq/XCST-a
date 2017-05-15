@@ -9,20 +9,21 @@
    <c:use-functions in='Microsoft.VisualStudio.TestTools.UnitTesting'/>
 
    <c:type name='Foo'>
-      <c:member name='d' as='DateTime' data-type='Date'/>
+      <c:member name='d' as='DateTime' value='new DateTime()' data-type='Date'/>
    </c:type>
 
    <c:template name='c:initial-template'>
       <c:variable name='doc' value='new XmlDocument()'/>
       <c:using name='output' value='doc.CreateNavigator().AppendChild()'>
          <c:result-document output='output'>
-            <a:model as='Foo'>
+            <a:model value='new Foo()'>
                <a:editor for='d'/>
             </a:model>
          </c:result-document>
       </c:using>
       <c:void value='Assert.AreEqual("input", doc.DocumentElement.LocalName)'/>
       <c:void value='Assert.AreEqual("date", doc.DocumentElement.GetAttribute("type"))'/>
+      <c:void value='Assert.AreEqual("0001-01-01", doc.DocumentElement.GetAttribute("value"))'/>
       <c:void value='Assert.IsTrue(doc.DocumentElement.HasAttribute("data-val-date"))'/>
    </c:template>
 

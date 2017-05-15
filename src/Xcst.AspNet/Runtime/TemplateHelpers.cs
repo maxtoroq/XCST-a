@@ -64,7 +64,7 @@ namespace Xcst.Web.Runtime {
             { "PhoneNumber", DefaultEditorTemplates.PhoneNumberInputTemplate },
             { "Url", DefaultEditorTemplates.UrlInputTemplate },
             { "EmailAddress", DefaultEditorTemplates.EmailAddressInputTemplate },
-            { "DateTime", DefaultEditorTemplates.DateTimeInputTemplate },
+            { "DateTime", DefaultEditorTemplates.DateTimeLocalInputTemplate },
             { "DateTime-local", DefaultEditorTemplates.DateTimeLocalInputTemplate },
             { "Date", DefaultEditorTemplates.DateInputTemplate },
             { "Time", DefaultEditorTemplates.TimeInputTemplate },

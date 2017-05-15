@@ -97,6 +97,8 @@
     <Compile Include="Extension\ExtensionTests.generated.cs" />
     <Compile Include="Extension\ExtensionTestsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Extension\Editor\Templates\DateTime-local.c.xcst" />
+    <None Include="Extension\Editor\Templates\DateTimeOffset.c.xcst" />
     <None Include="Extension\Editor\Templates\Time.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTime.c.xcst" />
     <None Include="Extension\Editor\Templates\Date.c.xcst" />
