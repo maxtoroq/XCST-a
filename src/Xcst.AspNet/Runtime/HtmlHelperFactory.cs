@@ -77,7 +77,9 @@ namespace Xcst.Web.Runtime {
             currentViewContext.Writer
          );
 
-         return new HtmlHelper<TModel>(newViewContext, container, currentHtml.RouteCollection);
+         return new HtmlHelper<TModel>(newViewContext, container, currentHtml.RouteCollection) {
+            Html5DateRenderingMode = currentHtml.Html5DateRenderingMode
+         };
       }
 
       internal static HtmlHelper ForMemberTemplate(HtmlHelper currentHtml, ModelMetadata memberMetadata) {
@@ -101,7 +103,9 @@ namespace Xcst.Web.Runtime {
 
          currentViewData.TemplateInfo.VisitedObjects(new HashSet<object>(currentViewData.TemplateInfo.VisitedObjects()));
 
-         return new HtmlHelper(currentHtml.ViewContext, container, currentHtml.RouteCollection);
+         return new HtmlHelper(currentHtml.ViewContext, container, currentHtml.RouteCollection) {
+            Html5DateRenderingMode = currentHtml.Html5DateRenderingMode
+         };
       }
 
       class ViewDataContainer : IViewDataContainer {
