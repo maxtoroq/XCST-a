@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Converted from Relax NG schema, using Trang. Use only with code completion tools that do not support Relax NG. -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:a="http://maxtoroq.github.io/XCST/application" elementFormDefault="qualified" targetNamespace="http://maxtoroq.github.io/XCST/application">
-   <xs:element name="instruction" abstract="true"/>
+   <xs:element name="extension-instruction" abstract="true"/>
    <xs:group name="sequence-constructor">
       <xs:sequence>
          <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:element ref="a:instruction"/>
+            <xs:element ref="a:extension-instruction"/>
             <xs:group ref="a:other-element"/>
          </xs:choice>
       </xs:sequence>
@@ -22,62 +22,62 @@
       </xs:sequence>
    </xs:group>
    <xs:attributeGroup name="value-attribute-or-content">
-      <xs:attribute name="value" type="a:Expression"/>
+      <xs:attribute name="value" type="a:expression"/>
    </xs:attributeGroup>
-   <xs:element name="text-box" substitutionGroup="a:instruction">
+   <xs:element name="text-box" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attributeGroup ref="a:input-attributes"/>
-         <xs:attribute name="format" type="a:AVT"/>
-         <xs:attribute name="html-type" type="a:AVT"/>
-         <xs:attribute name="html-placeholder" type="a:AVT"/>
+         <xs:attribute name="format" type="a:avt"/>
+         <xs:attribute name="html-type" type="a:avt"/>
+         <xs:attribute name="html-placeholder" type="a:avt"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="password" substitutionGroup="a:instruction">
+   <xs:element name="password" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attributeGroup ref="a:input-attributes"/>
-         <xs:attribute name="html-placeholder" type="a:AVT"/>
+         <xs:attribute name="html-placeholder" type="a:avt"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="hidden" substitutionGroup="a:instruction">
+   <xs:element name="hidden" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attributeGroup ref="a:input-attributes"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="text-area" substitutionGroup="a:instruction">
+   <xs:element name="text-area" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attributeGroup ref="a:input-attributes"/>
-         <xs:attribute name="rows" type="a:Expression"/>
-         <xs:attribute name="cols" type="a:Expression"/>
-         <xs:attribute name="html-placeholder" type="a:AVT"/>
+         <xs:attribute name="rows" type="a:expression"/>
+         <xs:attribute name="cols" type="a:expression"/>
+         <xs:attribute name="html-placeholder" type="a:avt"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="check-box" substitutionGroup="a:instruction">
+   <xs:element name="check-box" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attribute name="for" type="a:Expression"/>
-         <xs:attribute name="name" type="a:AVT"/>
-         <xs:attribute name="checked" type="a:Expression"/>
+         <xs:attribute name="for" type="a:expression"/>
+         <xs:attribute name="name" type="a:avt"/>
+         <xs:attribute name="checked" type="a:expression"/>
          <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="radio-button" substitutionGroup="a:instruction">
+   <xs:element name="radio-button" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attribute name="value" use="required" type="a:Expression"/>
-         <xs:attribute name="for" type="a:Expression"/>
-         <xs:attribute name="name" type="a:AVT"/>
-         <xs:attribute name="checked" type="a:Expression"/>
+         <xs:attribute name="value" use="required" type="a:expression"/>
+         <xs:attribute name="for" type="a:expression"/>
+         <xs:attribute name="name" type="a:avt"/>
+         <xs:attribute name="checked" type="a:expression"/>
          <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="anti-forgery-token" substitutionGroup="a:instruction">
+   <xs:element name="anti-forgery-token" substitutionGroup="a:extension-instruction">
       <xs:complexType/>
    </xs:element>
-   <xs:element name="http-method-override" substitutionGroup="a:instruction">
+   <xs:element name="http-method-override" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attribute name="method" use="required" type="a:AVT"/>
+         <xs:attribute name="method" use="required" type="a:avt"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="list-box" substitutionGroup="a:instruction" type="a:select-common"/>
-   <xs:element name="drop-down-list" substitutionGroup="a:instruction" type="a:select-common"/>
+   <xs:element name="list-box" substitutionGroup="a:extension-instruction" type="a:select-common"/>
+   <xs:element name="drop-down-list" substitutionGroup="a:extension-instruction" type="a:select-common"/>
    <xs:complexType name="select-common">
       <xs:complexContent>
          <xs:extension base="a:options">
@@ -89,70 +89,70 @@
       <xs:sequence>
          <xs:element minOccurs="0" maxOccurs="unbounded" ref="a:option"/>
       </xs:sequence>
-      <xs:attribute name="options" type="a:Expression"/>
+      <xs:attribute name="options" type="a:expression"/>
    </xs:complexType>
    <xs:element name="option">
       <xs:complexType mixed="true">
          <xs:group ref="a:sequence-constructor"/>
-         <xs:attribute name="value" type="a:Expression"/>
-         <xs:attribute name="selected" type="a:Expression"/>
-         <xs:attribute name="disabled" type="a:Expression"/>
+         <xs:attribute name="value" type="a:expression"/>
+         <xs:attribute name="selected" type="a:expression"/>
+         <xs:attribute name="disabled" type="a:expression"/>
       </xs:complexType>
    </xs:element>
    <xs:attributeGroup name="input-attributes">
-      <xs:attribute name="for" type="a:Expression"/>
-      <xs:attribute name="name" type="a:AVT"/>
-      <xs:attribute name="value" type="a:Expression"/>
+      <xs:attribute name="for" type="a:expression"/>
+      <xs:attribute name="name" type="a:avt"/>
+      <xs:attribute name="value" type="a:expression"/>
       <xs:attributeGroup ref="a:html-attributes"/>
    </xs:attributeGroup>
-   <xs:element name="label" substitutionGroup="a:instruction">
+   <xs:element name="label" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attribute name="for" type="a:Expression"/>
-         <xs:attribute name="name" type="a:AVT"/>
-         <xs:attribute name="text" type="a:AVT"/>
+         <xs:attribute name="for" type="a:expression"/>
+         <xs:attribute name="name" type="a:avt"/>
+         <xs:attribute name="text" type="a:avt"/>
          <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="validation-summary" substitutionGroup="a:instruction">
+   <xs:element name="validation-summary" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attribute name="include-member-errors" type="a:Expression"/>
-         <xs:attribute name="message" type="a:AVT"/>
+         <xs:attribute name="include-member-errors" type="a:expression"/>
+         <xs:attribute name="message" type="a:avt"/>
          <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="validation-message" substitutionGroup="a:instruction">
+   <xs:element name="validation-message" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attribute name="for" type="a:Expression"/>
-         <xs:attribute name="name" type="a:AVT"/>
-         <xs:attribute name="message" type="a:AVT"/>
+         <xs:attribute name="for" type="a:expression"/>
+         <xs:attribute name="name" type="a:avt"/>
+         <xs:attribute name="message" type="a:avt"/>
          <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
    <xs:attributeGroup name="html-attributes">
-      <xs:attribute name="html-class" type="a:AVT"/>
-      <xs:attribute name="html-attributes" type="a:Expression"/>
+      <xs:attribute name="html-class" type="a:avt"/>
+      <xs:attribute name="html-attributes" type="a:expression"/>
    </xs:attributeGroup>
-   <xs:element name="editor" substitutionGroup="a:instruction" type="a:editor-display-common"/>
-   <xs:element name="display" substitutionGroup="a:instruction" type="a:editor-display-common"/>
+   <xs:element name="editor" substitutionGroup="a:extension-instruction" type="a:editor-display-common"/>
+   <xs:element name="display" substitutionGroup="a:extension-instruction" type="a:editor-display-common"/>
    <xs:complexType name="editor-display-common">
       <xs:sequence>
          <xs:element minOccurs="0" maxOccurs="unbounded" ref="a:with-options"/>
          <xs:element minOccurs="0" ref="a:member-template"/>
       </xs:sequence>
-      <xs:attribute name="for" type="a:Expression"/>
-      <xs:attribute name="name" type="a:AVT"/>
-      <xs:attribute name="template" type="a:AVT"/>
-      <xs:attribute name="html-field-name" type="a:AVT"/>
-      <xs:attribute name="html-attributes" type="a:Expression"/>
-      <xs:attribute name="with-params" type="a:Expression"/>
-      <xs:attribute name="options" type="a:Expression"/>
+      <xs:attribute name="for" type="a:expression"/>
+      <xs:attribute name="name" type="a:avt"/>
+      <xs:attribute name="template" type="a:avt"/>
+      <xs:attribute name="html-field-name" type="a:avt"/>
+      <xs:attribute name="html-attributes" type="a:expression"/>
+      <xs:attribute name="with-params" type="a:expression"/>
+      <xs:attribute name="options" type="a:expression"/>
    </xs:complexType>
    <xs:element name="with-options">
       <xs:complexType>
          <xs:complexContent>
             <xs:extension base="a:options">
-               <xs:attribute name="for" type="a:Expression"/>
-               <xs:attribute name="name" type="a:AVT"/>
+               <xs:attribute name="for" type="a:expression"/>
+               <xs:attribute name="name" type="a:avt"/>
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -160,55 +160,55 @@
    <xs:element name="member-template">
       <xs:complexType mixed="true">
          <xs:group ref="a:sequence-constructor"/>
-         <xs:attribute name="helper-name" type="a:Name"/>
+         <xs:attribute name="helper-name" type="a:identifier"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="display-name" substitutionGroup="a:instruction">
+   <xs:element name="display-name" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attribute name="for" type="a:Expression"/>
-         <xs:attribute name="name" type="a:AVT"/>
+         <xs:attribute name="for" type="a:expression"/>
+         <xs:attribute name="name" type="a:avt"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="display-text" substitutionGroup="a:instruction">
+   <xs:element name="display-text" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attribute name="for" type="a:Expression"/>
-         <xs:attribute name="name" type="a:AVT"/>
+         <xs:attribute name="for" type="a:expression"/>
+         <xs:attribute name="name" type="a:avt"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="model" substitutionGroup="a:instruction">
+   <xs:element name="model" substitutionGroup="a:extension-instruction">
       <xs:complexType mixed="true">
          <xs:group ref="a:sequence-constructor"/>
-         <xs:attribute name="value" type="a:Expression"/>
-         <xs:attribute name="as" type="a:Type"/>
-         <xs:attribute name="html-field-prefix" type="a:AVT"/>
-         <xs:attribute name="with-params" type="a:Expression"/>
-         <xs:attribute name="helper-name" type="a:Name"/>
+         <xs:attribute name="value" type="a:expression"/>
+         <xs:attribute name="as" type="a:type_name"/>
+         <xs:attribute name="html-field-prefix" type="a:avt"/>
+         <xs:attribute name="with-params" type="a:expression"/>
+         <xs:attribute name="helper-name" type="a:identifier"/>
       </xs:complexType>
    </xs:element>
-   <xs:simpleType name="String">
+   <xs:simpleType name="string">
       <xs:restriction base="xs:string"/>
    </xs:simpleType>
-   <xs:simpleType name="AVT">
+   <xs:simpleType name="avt">
       <xs:annotation>
          <xs:documentation>Attribute value template</xs:documentation>
       </xs:annotation>
-      <xs:restriction base="a:String"/>
+      <xs:restriction base="a:string"/>
    </xs:simpleType>
-   <xs:simpleType name="Name">
-      <xs:restriction base="xs:token">
-         <xs:minLength value="1"/>
-      </xs:restriction>
-   </xs:simpleType>
-   <xs:simpleType name="Type">
-      <xs:restriction base="xs:token">
-         <xs:minLength value="1"/>
-      </xs:restriction>
-   </xs:simpleType>
-   <xs:simpleType name="Expression">
+   <xs:simpleType name="expression">
       <xs:annotation>
-         <xs:documentation>Expression</xs:documentation>
+         <xs:documentation>expression</xs:documentation>
       </xs:annotation>
       <xs:restriction base="xs:string">
+         <xs:minLength value="1"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="identifier">
+      <xs:restriction base="xs:token">
+         <xs:minLength value="1"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="type_name">
+      <xs:restriction base="xs:token">
          <xs:minLength value="1"/>
       </xs:restriction>
    </xs:simpleType>

@@ -23,7 +23,7 @@
    <div>
       <ann:documentation>Categories</ann:documentation>
 
-      <define name="instruction">
+      <define name="extension-instruction">
          <choice>
             <ref name="anti-forgery-token"/>
             <ref name="check-box"/>
@@ -49,7 +49,7 @@
       <define name="sequence-constructor">
          <zeroOrMore>
             <choice>
-               <ref name="instruction"/>
+               <ref name="extension-instruction"/>
                <ref name="other-element"/>
                <text/>
             </choice>
@@ -79,7 +79,7 @@
       <define name="value-attribute-or-content">
          <choice>
             <attribute name="value">
-               <ref name="Expression"/>
+               <ref name="expression"/>
             </attribute>
             <ref name="sequence-constructor"/>
          </choice>
@@ -95,13 +95,13 @@
             <zeroOrMore>
                <choice>
                   <attribute name="format">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                   <attribute name="html-type">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                   <attribute name="html-placeholder">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                </choice>
             </zeroOrMore>
@@ -113,7 +113,7 @@
             <ref name="input-attributes"/>
             <optional>
                <attribute name="html-placeholder">
-                  <ref name="AVT"/>
+                  <ref name="avt"/>
                </attribute>
             </optional>
          </element>
@@ -131,13 +131,13 @@
             <zeroOrMore>
                <choice>
                   <attribute name="rows">
-                     <ref name="Expression"/>
+                     <ref name="expression"/>
                   </attribute>
                   <attribute name="cols">
-                     <ref name="Expression"/>
+                     <ref name="expression"/>
                   </attribute>
                   <attribute name="html-placeholder">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                </choice>
             </zeroOrMore>
@@ -148,15 +148,15 @@
          <element name="check-box">
             <choice>
                <attribute name="for">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
                <zeroOrMore>
                   <choice>
                      <attribute name="name">
-                        <ref name="AVT"/>
+                        <ref name="avt"/>
                      </attribute>
                      <attribute name="checked">
-                        <ref name="Expression"/>
+                        <ref name="expression"/>
                      </attribute>
                   </choice>
                </zeroOrMore>
@@ -168,19 +168,19 @@
       <define name="radio-button">
          <element name="radio-button">
             <attribute name="value">
-               <ref name="Expression"/>
+               <ref name="expression"/>
             </attribute>
             <choice>
                <attribute name="for">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
                <zeroOrMore>
                   <choice>
                      <attribute name="name">
-                        <ref name="AVT"/>
+                        <ref name="avt"/>
                      </attribute>
                      <attribute name="checked">
-                        <ref name="Expression"/>
+                        <ref name="expression"/>
                      </attribute>
                   </choice>
                </zeroOrMore>
@@ -198,7 +198,7 @@
       <define name="http-method-override">
          <element name="http-method-override">
             <attribute name="method">
-               <ref name="AVT"/>
+               <ref name="avt"/>
             </attribute>
          </element>
       </define>
@@ -223,7 +223,7 @@
       <define name="options">
          <optional>
             <attribute name="options">
-               <ref name="Expression"/>
+               <ref name="expression"/>
             </attribute>
          </optional>
          <zeroOrMore>
@@ -231,13 +231,13 @@
                <zeroOrMore>
                   <choice>
                      <attribute name="value">
-                        <ref name="Expression"/>
+                        <ref name="expression"/>
                      </attribute>
                      <attribute name="selected">
-                        <ref name="Expression"/>
+                        <ref name="expression"/>
                      </attribute>
                      <attribute name="disabled">
-                        <ref name="Expression"/>
+                        <ref name="expression"/>
                      </attribute>
                   </choice>
                </zeroOrMore>
@@ -249,15 +249,15 @@
       <define name="input-attributes">
          <choice>
             <attribute name="for">
-               <ref name="Expression"/>
+               <ref name="expression"/>
             </attribute>
             <zeroOrMore>
                <choice>
                   <attribute name="name">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                   <attribute name="value">
-                     <ref name="Expression"/>
+                     <ref name="expression"/>
                   </attribute>
                </choice>
             </zeroOrMore>
@@ -269,17 +269,17 @@
          <element name="label">
             <choice>
                <attribute name="for">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
                <optional>
                   <attribute name="name">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                </optional>
             </choice>
             <optional>
                <attribute name="text">
-                  <ref name="AVT"/>
+                  <ref name="avt"/>
                </attribute>
             </optional>
             <ref name="html-attributes"/>
@@ -291,10 +291,10 @@
             <zeroOrMore>
                <choice>
                   <attribute name="include-member-errors">
-                     <ref name="Expression"/>
+                     <ref name="expression"/>
                   </attribute>
                   <attribute name="message">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                </choice>
             </zeroOrMore>
@@ -306,17 +306,17 @@
          <element name="validation-message">
             <choice>
                <attribute name="for">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
                <optional>
                   <attribute name="name">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                </optional>
             </choice>
             <optional>
                <attribute name="message">
-                  <ref name="AVT"/>
+                  <ref name="avt"/>
                </attribute>
             </optional>
             <ref name="html-attributes"/>
@@ -327,10 +327,10 @@
          <zeroOrMore>
             <choice>
                <attribute name="html-class">
-                  <ref name="AVT"/>
+                  <ref name="avt"/>
                </attribute>
                <attribute name="html-attributes">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
             </choice>
          </zeroOrMore>
@@ -355,30 +355,30 @@
       <define name="editor-display-common">
          <choice>
             <attribute name="for">
-               <ref name="Expression"/>
+               <ref name="expression"/>
             </attribute>
             <optional>
                <attribute name="name">
-                  <ref name="AVT"/>
+                  <ref name="avt"/>
                </attribute>
             </optional>
          </choice>
          <zeroOrMore>
             <choice>
                <attribute name="template">
-                  <ref name="AVT"/>
+                  <ref name="avt"/>
                </attribute>
                <attribute name="html-field-name">
-                  <ref name="AVT"/>
+                  <ref name="avt"/>
                </attribute>
                <attribute name="html-attributes">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
                <attribute name="with-params">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
                <attribute name="options">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
             </choice>
          </zeroOrMore>
@@ -386,11 +386,11 @@
             <element name="with-options">
                <choice>
                   <attribute name="for">
-                     <ref name="Expression"/>
+                     <ref name="expression"/>
                   </attribute>
                   <optional>
                      <attribute name="name">
-                        <ref name="AVT"/>
+                        <ref name="avt"/>
                      </attribute>
                   </optional>
                </choice>
@@ -401,7 +401,7 @@
             <element name="member-template">
                <optional>
                   <attribute name="helper-name">
-                     <ref name="Name"/>
+                     <ref name="identifier"/>
                   </attribute>
                </optional>
                <ref name="sequence-constructor"/>
@@ -417,11 +417,11 @@
          <element name="display-name">
             <choice>
                <attribute name="for">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
                <optional>
                   <attribute name="name">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                </optional>
             </choice>
@@ -432,11 +432,11 @@
          <element name="display-text">
             <choice>
                <attribute name="for">
-                  <ref name="Expression"/>
+                  <ref name="expression"/>
                </attribute>
                <optional>
                   <attribute name="name">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                </optional>
             </choice>
@@ -452,23 +452,23 @@
             <oneOrMore>
                <choice>
                   <attribute name="value">
-                     <ref name="Expression"/>
+                     <ref name="expression"/>
                   </attribute>
                   <attribute name="as">
-                     <ref name="Type"/>
+                     <ref name="type_name"/>
                   </attribute>
                </choice>
             </oneOrMore>
             <zeroOrMore>
                <choice>
                   <attribute name="html-field-prefix">
-                     <ref name="AVT"/>
+                     <ref name="avt"/>
                   </attribute>
                   <attribute name="with-params">
-                     <ref name="Expression"/>
+                     <ref name="expression"/>
                   </attribute>
                   <attribute name="helper-name">
-                     <ref name="Name"/>
+                     <ref name="identifier"/>
                   </attribute>
                </choice>
             </zeroOrMore>
@@ -480,30 +480,30 @@
    <div>
       <ann:documentation>Data Types</ann:documentation>
 
-      <define name="String">
+      <define name="string">
          <data type="string"/>
       </define>
 
-      <define name="AVT">
+      <define name="avt">
          <ann:documentation>Attribute value template</ann:documentation>
-         <ref name="String"/>
+         <ref name="string"/>
       </define>
 
-      <define name="Name">
-         <data type="token">
-            <param name="minLength">1</param>
-         </data>
-      </define>
-
-      <define name="Type">
-         <data type="token">
-            <param name="minLength">1</param>
-         </data>
-      </define>
-
-      <define name="Expression">
-         <ann:documentation>Expression</ann:documentation>
+      <define name="expression">
+         <ann:documentation>expression</ann:documentation>
          <data type="string">
+            <param name="minLength">1</param>
+         </data>
+      </define>
+
+      <define name="identifier">
+         <data type="token">
+            <param name="minLength">1</param>
+         </data>
+      </define>
+
+      <define name="type_name">
+         <data type="token">
             <param name="minLength">1</param>
          </data>
       </define>
