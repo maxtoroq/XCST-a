@@ -16,6 +16,7 @@
 -->
 <grammar xmlns="http://relaxng.org/ns/structure/1.0"
    xmlns:ann="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:docs="http://maxtoroq.github.io/XCST/docs"
    xmlns:a="http://maxtoroq.github.io/XCST/application"
    ns="http://maxtoroq.github.io/XCST/application"
    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
@@ -131,10 +132,14 @@
             <zeroOrMore>
                <choice>
                   <attribute name="rows">
-                     <ref name="expression"/>
+                     <ref name="expression">
+                        <docs:expression-type name="System.Int32"/>
+                     </ref>
                   </attribute>
                   <attribute name="cols">
-                     <ref name="expression"/>
+                     <ref name="expression">
+                        <docs:expression-type name="System.Int32"/>
+                     </ref>
                   </attribute>
                   <attribute name="html-placeholder">
                      <ref name="avt"/>
@@ -156,7 +161,9 @@
                         <ref name="avt"/>
                      </attribute>
                      <attribute name="checked">
-                        <ref name="expression"/>
+                        <ref name="expression">
+                           <docs:expression-type name="System.Boolean"/>
+                        </ref>
                      </attribute>
                   </choice>
                </zeroOrMore>
@@ -180,7 +187,9 @@
                         <ref name="avt"/>
                      </attribute>
                      <attribute name="checked">
-                        <ref name="expression"/>
+                        <ref name="expression">
+                           <docs:expression-type name="System.Boolean"/>
+                        </ref>
                      </attribute>
                   </choice>
                </zeroOrMore>
@@ -223,7 +232,7 @@
       <define name="options">
          <optional>
             <attribute name="options">
-               <ref name="expression"/>
+               <ref name="options-expr"/>
             </attribute>
          </optional>
          <zeroOrMore>
@@ -231,19 +240,46 @@
                <zeroOrMore>
                   <choice>
                      <attribute name="value">
-                        <ref name="expression"/>
+                        <ref name="expression">
+                           <docs:expression-type name="System.Object"/>
+                        </ref>
                      </attribute>
                      <attribute name="selected">
-                        <ref name="expression"/>
+                        <ref name="expression">
+                           <docs:expression-type name="System.Boolean"/>
+                        </ref>
                      </attribute>
                      <attribute name="disabled">
-                        <ref name="expression"/>
+                        <ref name="expression">
+                           <docs:expression-type name="System.Boolean"/>
+                        </ref>
                      </attribute>
                   </choice>
                </zeroOrMore>
                <ref name="sequence-constructor"/>
             </element>
          </zeroOrMore>
+      </define>
+
+      <define name="options-expr">
+         <ref name="expression">
+            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
+               <docs:type-param name="System.Web.Mvc.SelectListItem"/>
+            </docs:expression-type>
+            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
+               <docs:type-param name="System.Collections.Generic.KeyValuePair&lt;TKey, TValue>" topic="5tbh8a42"/>
+            </docs:expression-type>
+            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
+               <docs:type-param name="System.Linq.IGrouping" topic="bb344977">
+                  <docs:type-param name="TGroupKey"/>
+                  <docs:type-param name="System.Collections.Generic.KeyValuePair&lt;TKey, TValue>" topic="5tbh8a42"/>
+               </docs:type-param>
+            </docs:expression-type>
+            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
+               <docs:type-param name="System.Linq.IGrouping&lt;TKey, TElement>" topic="bb344977"/>
+            </docs:expression-type>
+            <docs:expression-type name="System.Collections.IEnumerable"/>
+         </ref>
       </define>
 
       <define name="input-attributes">
@@ -257,7 +293,9 @@
                      <ref name="avt"/>
                   </attribute>
                   <attribute name="value">
-                     <ref name="expression"/>
+                     <ref name="expression">
+                        <docs:expression-type name="System.Object"/>
+                     </ref>
                   </attribute>
                </choice>
             </zeroOrMore>
@@ -291,7 +329,9 @@
             <zeroOrMore>
                <choice>
                   <attribute name="include-member-errors">
-                     <ref name="expression"/>
+                     <ref name="expression">
+                        <docs:expression-type name="System.Boolean"/>
+                     </ref>
                   </attribute>
                   <attribute name="message">
                      <ref name="avt"/>
@@ -330,7 +370,13 @@
                   <ref name="avt"/>
                </attribute>
                <attribute name="html-attributes">
-                  <ref name="expression"/>
+                  <ref name="expression">
+                     <docs:expression-type name="System.Object"/>
+                     <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
+                        <docs:type-param name="System.String"/>
+                        <docs:type-param name="System.Object"/>
+                     </docs:expression-type>
+                  </ref>
                </attribute>
             </choice>
          </zeroOrMore>
@@ -372,13 +418,25 @@
                   <ref name="avt"/>
                </attribute>
                <attribute name="html-attributes">
-                  <ref name="expression"/>
+                  <ref name="expression">
+                     <docs:expression-type name="System.Object"/>
+                     <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
+                        <docs:type-param name="System.String"/>
+                        <docs:type-param name="System.Object"/>
+                     </docs:expression-type>
+                  </ref>
                </attribute>
                <attribute name="with-params">
-                  <ref name="expression"/>
+                  <ref name="expression">
+                     <docs:expression-type name="System.Object"/>
+                     <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
+                        <docs:type-param name="System.String"/>
+                        <docs:type-param name="System.Object"/>
+                     </docs:expression-type>
+                  </ref>
                </attribute>
                <attribute name="options">
-                  <ref name="expression"/>
+                  <ref name="options-expr"/>
                </attribute>
             </choice>
          </zeroOrMore>
@@ -465,7 +523,13 @@
                      <ref name="avt"/>
                   </attribute>
                   <attribute name="with-params">
-                     <ref name="expression"/>
+                     <ref name="expression">
+                        <docs:expression-type name="System.Object"/>
+                        <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
+                           <docs:type-param name="System.String"/>
+                           <docs:type-param name="System.Object"/>
+                        </docs:expression-type>
+                     </ref>
                   </attribute>
                   <attribute name="helper-name">
                      <ref name="identifier"/>
@@ -485,12 +549,12 @@
       </define>
 
       <define name="avt">
-         <ann:documentation>Attribute value template</ann:documentation>
+         <ann:documentation>Attribute value template.</ann:documentation>
          <ref name="string"/>
       </define>
 
       <define name="expression">
-         <ann:documentation>expression</ann:documentation>
+         <ann:documentation>Expression.</ann:documentation>
          <data type="string">
             <param name="minLength">1</param>
          </data>

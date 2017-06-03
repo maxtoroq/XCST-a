@@ -89,7 +89,7 @@
       <xs:sequence>
          <xs:element minOccurs="0" maxOccurs="unbounded" ref="a:option"/>
       </xs:sequence>
-      <xs:attribute name="options" type="a:expression"/>
+      <xs:attribute name="options" type="a:options-expr"/>
    </xs:complexType>
    <xs:element name="option">
       <xs:complexType mixed="true">
@@ -99,6 +99,9 @@
          <xs:attribute name="disabled" type="a:expression"/>
       </xs:complexType>
    </xs:element>
+   <xs:simpleType name="options-expr">
+      <xs:restriction base="a:expression"/>
+   </xs:simpleType>
    <xs:attributeGroup name="input-attributes">
       <xs:attribute name="for" type="a:expression"/>
       <xs:attribute name="name" type="a:avt"/>
@@ -145,7 +148,7 @@
       <xs:attribute name="html-field-name" type="a:avt"/>
       <xs:attribute name="html-attributes" type="a:expression"/>
       <xs:attribute name="with-params" type="a:expression"/>
-      <xs:attribute name="options" type="a:expression"/>
+      <xs:attribute name="options" type="a:options-expr"/>
    </xs:complexType>
    <xs:element name="with-options">
       <xs:complexType>
@@ -190,13 +193,13 @@
    </xs:simpleType>
    <xs:simpleType name="avt">
       <xs:annotation>
-         <xs:documentation>Attribute value template</xs:documentation>
+         <xs:documentation>Attribute value template.</xs:documentation>
       </xs:annotation>
       <xs:restriction base="a:string"/>
    </xs:simpleType>
    <xs:simpleType name="expression">
       <xs:annotation>
-         <xs:documentation>expression</xs:documentation>
+         <xs:documentation>Expression.</xs:documentation>
       </xs:annotation>
       <xs:restriction base="xs:string">
          <xs:minLength value="1"/>
