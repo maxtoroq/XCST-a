@@ -331,9 +331,10 @@
             <zeroOrMore>
                <choice>
                   <attribute name="include-member-errors">
-                     <ref name="expression">
-                        <docs:expression-type name="System.Boolean"/>
-                     </ref>
+                     <choice>
+                        <ref name="boolean"/>
+                        <ref name="avt-expr"/>
+                     </choice>
                   </attribute>
                   <attribute name="message">
                      <ref name="avt"/>
@@ -552,6 +553,18 @@
 
       <define name="integer">
          <data type="int"/>
+      </define>
+
+      <define name="boolean">
+         <ann:documentation>One of the values "yes", "no", "true", "false", "1" or "0".</ann:documentation>
+         <choice>
+            <value>yes</value>
+            <value>no</value>
+            <value>true</value>
+            <value>false</value>
+            <value>1</value>
+            <value>0</value>
+         </choice>
       </define>
 
       <define name="avt">

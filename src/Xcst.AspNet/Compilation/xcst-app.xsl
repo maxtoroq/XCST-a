@@ -563,7 +563,7 @@
          <value-of select="$output"/>
          <if test="@include-member-errors">
             <text>, includePropertyErrors: </text>
-            <value-of select="xcst:expression(@include-member-errors)"/>
+            <value-of select="@include-member-errors/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
          </if>
          <text>, message: </text>
          <value-of select="(@message/src:expand-attribute(.), 'default(string)')[1]"/>
