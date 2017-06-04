@@ -471,14 +471,12 @@
                <text>text: </text>
                <call-template name="src:simple-content"/>
                <if test="@selected">
-                  <text>, selected: (bool)(</text>
-                  <value-of select="xcst:expression(@selected)"/>
-                  <text>)</text>
+                  <text>, selected: </text>
+                  <value-of select="@selected/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
                </if>
                <if test="@disabled">
-                  <text>, disabled: (bool)(</text>
-                  <value-of select="xcst:expression(@disabled)"/>
-                  <text>)</text>
+                  <text>, disabled: </text>
+                  <value-of select="@disabled/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
                </if>
                <text>)</text>
             </for-each>

@@ -17,9 +17,9 @@
       <c:choose>
          <c:when test='ViewData.ModelMetadata.IsNullableValueType'>
             <a:drop-down-list html-class='form-control' html-attributes='htmlAttributes'>
-               <a:option value='""' selected='!modelValue.HasValue'/>
-               <a:option value='"true"' selected='modelValue.HasValue &amp;&amp; modelValue.Value'>Yes</a:option>
-               <a:option value='"false"' selected='modelValue.HasValue &amp;&amp; !modelValue.Value'>No</a:option>
+               <a:option value='""' selected='{!modelValue.HasValue}'/>
+               <a:option value='"true"' selected='{modelValue.HasValue &amp;&amp; modelValue.Value}'>Yes</a:option>
+               <a:option value='"false"' selected='{modelValue.HasValue &amp;&amp; !modelValue.Value}'>No</a:option>
             </a:drop-down-list>
          </c:when>
          <c:otherwise>

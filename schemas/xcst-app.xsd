@@ -103,8 +103,16 @@
       <xs:complexType mixed="true">
          <xs:group ref="a:sequence-constructor"/>
          <xs:attribute name="value" type="a:expression"/>
-         <xs:attribute name="selected" type="a:expression"/>
-         <xs:attribute name="disabled" type="a:expression"/>
+         <xs:attribute name="selected">
+            <xs:simpleType>
+               <xs:union memberTypes="a:boolean a:avt-expr"/>
+            </xs:simpleType>
+         </xs:attribute>
+         <xs:attribute name="disabled">
+            <xs:simpleType>
+               <xs:union memberTypes="a:boolean a:avt-expr"/>
+            </xs:simpleType>
+         </xs:attribute>
       </xs:complexType>
    </xs:element>
    <xs:simpleType name="options-expr">

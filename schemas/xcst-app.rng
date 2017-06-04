@@ -247,14 +247,16 @@
                         </ref>
                      </attribute>
                      <attribute name="selected">
-                        <ref name="expression">
-                           <docs:expression-type name="System.Boolean"/>
-                        </ref>
+                        <choice>
+                           <ref name="boolean"/>
+                           <ref name="avt-expr"/>
+                        </choice>
                      </attribute>
                      <attribute name="disabled">
-                        <ref name="expression">
-                           <docs:expression-type name="System.Boolean"/>
-                        </ref>
+                        <choice>
+                           <ref name="boolean"/>
+                           <ref name="avt-expr"/>
+                        </choice>
                      </attribute>
                   </choice>
                </zeroOrMore>
