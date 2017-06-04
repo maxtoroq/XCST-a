@@ -163,9 +163,10 @@
                         <ref name="avt"/>
                      </attribute>
                      <attribute name="checked">
-                        <ref name="expression">
-                           <docs:expression-type name="System.Boolean"/>
-                        </ref>
+                        <choice>
+                           <ref name="boolean"/>
+                           <ref name="avt-expr"/>
+                        </choice>
                      </attribute>
                   </choice>
                </zeroOrMore>
@@ -189,9 +190,10 @@
                         <ref name="avt"/>
                      </attribute>
                      <attribute name="checked">
-                        <ref name="expression">
-                           <docs:expression-type name="System.Boolean"/>
-                        </ref>
+                        <choice>
+                           <ref name="boolean"/>
+                           <ref name="avt-expr"/>
+                        </choice>
                      </attribute>
                   </choice>
                </zeroOrMore>

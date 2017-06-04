@@ -63,7 +63,11 @@
       <xs:complexType>
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
-         <xs:attribute name="checked" type="a:expression"/>
+         <xs:attribute name="checked">
+            <xs:simpleType>
+               <xs:union memberTypes="a:boolean a:avt-expr"/>
+            </xs:simpleType>
+         </xs:attribute>
          <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
@@ -72,7 +76,11 @@
          <xs:attribute name="value" use="required" type="a:expression"/>
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
-         <xs:attribute name="checked" type="a:expression"/>
+         <xs:attribute name="checked">
+            <xs:simpleType>
+               <xs:union memberTypes="a:boolean a:avt-expr"/>
+            </xs:simpleType>
+         </xs:attribute>
          <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>

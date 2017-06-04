@@ -252,7 +252,7 @@
          </choose>
          <if test="not(@for) and @checked">
             <text>, isChecked: </text>
-            <value-of select="xcst:expression(@checked)"/>
+            <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
          </if>
          <variable name="merge-attributes" select="()"/>
          <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
@@ -301,7 +301,7 @@
          <value-of select="xcst:expression(@value)"/>
          <if test="not(@for) and @checked">
             <text>, isChecked: </text>
-            <value-of select="xcst:expression(@checked)"/>
+            <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
          </if>
          <variable name="merge-attributes" select="()"/>
          <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
