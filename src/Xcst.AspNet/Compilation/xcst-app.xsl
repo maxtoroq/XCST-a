@@ -204,9 +204,9 @@
          </choose>
          <if test="@rows or @cols">
             <text>, rows: </text>
-            <value-of select="(@rows/xcst:expression(.), '2')[1]"/>
+            <value-of select="(@rows/src:integer(xcst:integer(., true()), src:expand-attribute(.)), '2')[1]"/>
             <text>, columns: </text>
-            <value-of select="(@cols/xcst:expression(.), '20')[1]"/>
+            <value-of select="(@cols/src:integer(xcst:integer(., true()), src:expand-attribute(.)), '20')[1]"/>
          </if>
          <variable name="merge-attributes" select="@html-placeholder"/>
          <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">

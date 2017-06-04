@@ -132,14 +132,16 @@
             <zeroOrMore>
                <choice>
                   <attribute name="rows">
-                     <ref name="expression">
-                        <docs:expression-type name="System.Int32"/>
-                     </ref>
+                     <choice>
+                        <ref name="integer"/>
+                        <ref name="avt-expr"/>
+                     </choice>
                   </attribute>
                   <attribute name="cols">
-                     <ref name="expression">
-                        <docs:expression-type name="System.Int32"/>
-                     </ref>
+                     <choice>
+                        <ref name="integer"/>
+                        <ref name="avt-expr"/>
+                     </choice>
                   </attribute>
                   <attribute name="html-placeholder">
                      <ref name="avt"/>
@@ -548,9 +550,20 @@
          <data type="string"/>
       </define>
 
+      <define name="integer">
+         <data type="int"/>
+      </define>
+
       <define name="avt">
          <ann:documentation>Attribute value template.</ann:documentation>
          <ref name="string"/>
+      </define>
+
+      <define name="avt-expr">
+         <ann:documentation>Attribute value template.</ann:documentation>
+         <data type="string">
+            <param name="pattern">.*\{.+\}.*</param>
+         </data>
       </define>
 
       <define name="expression">

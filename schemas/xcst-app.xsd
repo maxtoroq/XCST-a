@@ -46,8 +46,16 @@
    <xs:element name="text-area" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attributeGroup ref="a:input-attributes"/>
-         <xs:attribute name="rows" type="a:expression"/>
-         <xs:attribute name="cols" type="a:expression"/>
+         <xs:attribute name="rows">
+            <xs:simpleType>
+               <xs:union memberTypes="a:integer a:avt-expr"/>
+            </xs:simpleType>
+         </xs:attribute>
+         <xs:attribute name="cols">
+            <xs:simpleType>
+               <xs:union memberTypes="a:integer a:avt-expr"/>
+            </xs:simpleType>
+         </xs:attribute>
          <xs:attribute name="html-placeholder" type="a:avt"/>
       </xs:complexType>
    </xs:element>
@@ -191,11 +199,22 @@
    <xs:simpleType name="string">
       <xs:restriction base="xs:string"/>
    </xs:simpleType>
+   <xs:simpleType name="integer">
+      <xs:restriction base="xs:int"/>
+   </xs:simpleType>
    <xs:simpleType name="avt">
       <xs:annotation>
          <xs:documentation>Attribute value template.</xs:documentation>
       </xs:annotation>
       <xs:restriction base="a:string"/>
+   </xs:simpleType>
+   <xs:simpleType name="avt-expr">
+      <xs:annotation>
+         <xs:documentation>Attribute value template.</xs:documentation>
+      </xs:annotation>
+      <xs:restriction base="xs:string">
+         <xs:pattern value=".*\{.+\}.*"/>
+      </xs:restriction>
    </xs:simpleType>
    <xs:simpleType name="expression">
       <xs:annotation>
