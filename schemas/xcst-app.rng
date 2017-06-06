@@ -244,9 +244,7 @@
                <zeroOrMore>
                   <choice>
                      <attribute name="value">
-                        <ref name="expression">
-                           <docs:expression-type name="System.Object"/>
-                        </ref>
+                        <ref name="expression"/>
                      </attribute>
                      <attribute name="selected">
                         <choice>
@@ -299,9 +297,7 @@
                      <ref name="avt"/>
                   </attribute>
                   <attribute name="value">
-                     <ref name="expression">
-                        <docs:expression-type name="System.Object"/>
-                     </ref>
+                     <ref name="expression"/>
                   </attribute>
                </choice>
             </zeroOrMore>
