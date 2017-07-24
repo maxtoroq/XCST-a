@@ -43,6 +43,12 @@ namespace Xcst.Web.Configuration {
 #if ASPNETLIB
       public ModelBindingConfiguration ModelBinding { get; } = new ModelBindingConfiguration();
 
+      /// <summary>
+      /// Instructs the ASP.NET runtime to perform request validation. The default is true.
+      /// </summary>
+
+      public bool ValidateRequest { get; set; } = true;
+
       public void RegisterHandlerFactory(Func<object, IHttpHandler> handlerFactory) {
          this.HttpHandlerFactories.Insert(0, handlerFactory);
       }

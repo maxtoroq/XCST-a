@@ -100,6 +100,7 @@ namespace System.Web.Mvc {
          if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
 
          this.RequestContext = controllerContext.RequestContext;
+         this.ValidateRequest = controllerContext.ValidateRequest;
       }
 
       public ControllerContext(HttpContextBase httpContext, RouteData routeData)
