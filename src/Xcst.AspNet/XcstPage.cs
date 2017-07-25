@@ -19,6 +19,7 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Compilation;
 using System.Web.Mvc;
+using System.Web.SessionState;
 
 namespace Xcst.Web {
 
@@ -183,5 +184,15 @@ namespace Xcst.Web {
       protected virtual void CopyState(XcstPage page) {
          page.Context = this.Context;
       }
+   }
+
+   public interface IFileDependent {
+
+      string[] FileDependencies { get; }
+   }
+
+   public interface ISessionStateAware {
+
+      SessionStateBehavior SessionStateBehavior { get; }
    }
 }

@@ -66,8 +66,8 @@ namespace Xcst.Web {
 
                if (handler != null) {
 
-                  //SessionStateUtil.SetUpSessionState(context, handler);
-                  
+                  (handler as XcstPageHttpHandler)?.SetUpSessionState(context);
+
                   // Remap to our handler
 
                   context.RemapHandler(handler);
@@ -229,7 +229,7 @@ namespace Xcst.Web {
          }
 
          // Does the current route level match any supported extension?
-         
+
          string indexMatch = GetRouteLevelMatch(currentLevelIndex, supportedExtensions, virtualPathExists, context/*, displayModes*/);
 
          if (indexMatch != null) {

@@ -40,7 +40,7 @@ namespace Xcst.Web {
 
       public static IHttpHandler CreateFromVirtualPath(string virtualPath) {
 
-         var instance = BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(object));
+         object instance = BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(object));
 
          if (instance == null) {
             return null;
@@ -98,6 +98,15 @@ namespace Xcst.Web {
 
          if (files != null) {
             response.AddFileDependencies(files);
+         }
+      }
+
+      public virtual void SetUpSessionState(HttpContextBase context) {
+
+         ISessionStateAware sessionState = this.page as ISessionStateAware;
+
+         if (sessionState != null) {
+            context.SetSessionStateBehavior(sessionState.SessionStateBehavior);
          }
       }
    }

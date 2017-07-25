@@ -97,6 +97,8 @@
     <Compile Include="Extension\ExtensionTests.generated.cs" />
     <Compile Include="Extension\ExtensionTestsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Extension\Directives\sessionstate.dupl.i.xcst" />
+    <None Include="Extension\Directives\sessionstate.type.i.xcst" />
     <None Include="Extension\Directives\model.dupl.i.xcst" />
     <None Include="Extension\Directives\inherits.dupl.i.xcst" />
     <None Include="Extension\Directives\inherits.type.i.xcst" />

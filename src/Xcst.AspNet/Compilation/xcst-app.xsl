@@ -940,30 +940,42 @@
    <template match="/" mode="src:main">
       <choose>
          <when test="not($src:library-package)">
-            <variable name="inherits-pi" select="processing-instruction(inherits)"/>
-            <variable name="model-pi" select="processing-instruction(model)"/>
-            <variable name="both-pi" select="($inherits-pi, $model-pi)/."/>
-
-            <if test="count($inherits-pi) gt 1">
-               <sequence select="error((), 'Only one ''inherits'' directive is allowed.', src:error-object($inherits-pi[2]))"/>
-            </if>
-            <if test="count($model-pi) gt 1">
-               <sequence select="error((), 'Only one ''model'' directive is allowed.', src:error-object($model-pi[2]))"/>
-            </if>
-            <if test="count($both-pi) gt 1">
-               <sequence select="error((), '''inherits'' and ''model'' directives are mutually exclusive.', src:error-object($both-pi[2]))"/>
-            </if>
-            <variable name="inherits" select="$inherits-pi/xcst:non-string(.)"/>
-            <variable name="model" select="$model-pi/xcst:non-string(.)"/>
             <next-match>
-               <with-param name="a:inherits" select="$inherits" tunnel="yes"/>
-               <with-param name="a:model" select="$model" tunnel="yes"/>
+               <with-param name="a:directives" tunnel="yes">
+                  <apply-templates select="processing-instruction()" mode="a:directive"/>
+               </with-param>
             </next-match>
          </when>
          <otherwise>
             <next-match/>
          </otherwise>
       </choose>
+   </template>
+
+   <template match="processing-instruction(inherits) | processing-instruction(model)" mode="a:directive">
+      <if test="preceding-sibling::processing-instruction()[name() eq name(current())]">
+         <sequence select="error((), concat('Only one ''', name(), ''' directive is allowed.'), src:error-object(.))"/>
+      </if>
+      <if test="preceding-sibling::processing-instruction()[name() = ('inherits', 'model')]">
+         <sequence select="error((), '''inherits'' and ''model'' directives are mutually exclusive.', src:error-object(.))"/>
+      </if>
+      <element name="{name()}" namespace="">
+         <value-of select="xcst:non-string(.)"/>
+      </element>
+   </template>
+
+   <template match="processing-instruction(sessionstate)" mode="a:directive">
+      <if test="preceding-sibling::processing-instruction()[name() eq name(current())]">
+         <sequence select="error((), concat('Only one ''', name(), ''' directive is allowed.'), src:error-object(.))"/>
+      </if>
+      <variable name="value" select="xcst:non-string(.)"/>
+      <variable name="allowed" select="'Default', 'Required', 'ReadOnly', 'Disabled'"/>
+      <if test="not($value = $allowed)">
+         <sequence select="error((), concat('Invalid value for ''', name(), ''' directive. Must be one of (', string-join($allowed, '|'), ').'), src:error-object(.))"/>
+      </if>
+      <element name="{name()}" namespace="">
+         <value-of select="$value"/>
+      </element>
    </template>
 
    <template match="c:module | c:package" mode="src:import-namespace-extra">
@@ -981,23 +993,53 @@
 
    <template match="c:module | c:package" mode="src:base-types" as="xs:string*">
       <param name="library-package" tunnel="yes"/>
-      <param name="a:inherits" as="xs:string?" tunnel="yes"/>
-      <param name="a:model" as="xs:string?" tunnel="yes"/>
+      <param name="a:directives" as="document-node()" tunnel="yes"/>
 
       <if test="not($library-package)">
          <sequence select="
-            if ($a:inherits) then $a:inherits
-            else concat($src:base-types[1], '&lt;', ($a:model, 'dynamic')[1], '>')"/>
+            if ($a:directives/inherits) then string($a:directives/inherits)
+            else concat($src:base-types[1], '&lt;', ($a:directives/model, 'dynamic')[1], '>')"/>
          <sequence select="$src:base-types[position() gt 1]"/>
+         <if test="$a:directives/sessionstate">
+            <sequence select="src:global-identifier('Xcst.Web.ISessionStateAware')"/>
+         </if>
       </if>
    </template>
 
    <template match="c:module | c:package" mode="src:infrastructure-extra">
       <param name="indent" tunnel="yes"/>
       <param name="library-package" tunnel="yes"/>
+      <param name="modules" tunnel="yes"/>
+      <param name="a:directives" as="node()?" tunnel="yes"/>
 
       <next-match/>
       <if test="not($library-package)">
+
+         <variable name="module-pos" select="
+            for $pos in (1 to count($modules)) 
+            return if ($modules[$pos] is current()) then $pos else ()"/>
+         <variable name="principal-module" select="$module-pos eq count($modules)"/>
+
+         <if test="$a:aspnetlib
+            and $a:directives/sessionstate
+            and $principal-module">
+
+            <value-of select="$src:new-line"/>
+            <call-template name="src:new-line-indented"/>
+            <value-of select="src:global-identifier('System.Web.SessionState.SessionStateBehavior')"/>
+            <text> </text>
+            <value-of select="src:global-identifier('Xcst.Web.ISessionStateAware'), 'SessionStateBehavior'" separator="."/>
+            <call-template name="src:open-brace"/>
+            <call-template name="src:new-line-indented">
+               <with-param name="increase" select="1"/>
+            </call-template>
+            <text>get { return </text>
+            <value-of select="src:global-identifier('System.Web.SessionState.SessionStateBehavior'), $a:directives/sessionstate" separator="."/>
+            <value-of select="$src:statement-delimiter"/>
+            <text> }</text>
+            <call-template name="src:close-brace"/>
+         </if>
+
          <variable name="module-uri" select="document-uri(root(.))"/>
          <variable name="functions-type" select="a:functions-type-name(.)"/>
          <value-of select="$src:new-line"/>
@@ -1025,7 +1067,7 @@
             <with-param name="increase" select="2"/>
          </call-template>
          <text>return </text>
-         <value-of select="src:global-identifier('Xcst.Web.Runtime'), 'UrlUtil'" separator="."/>
+         <value-of select="a:fully-qualified-helper('UrlUtil')"/>
          <text>.GenerateClientUrl(</text>
          <value-of select="$functions-type, 'BasePath'" separator="."/>
          <text>, path, pathParts)</text>

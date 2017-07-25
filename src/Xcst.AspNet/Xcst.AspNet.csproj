@@ -185,7 +185,6 @@
     </Compile>
     <Compile Include="Framework\BrowserOverriding\BrowserHelpers.cs" />
     <Compile Include="Framework\BrowserOverriding\BrowserOverrideStore.cs" />
-    <Compile Include="IFileDependent.cs" />
     <Compile Include="Mvc\ShowForAttribute.cs" />
     <Compile Include="Runtime\DefaultDisplayTemplates.cs" />
     <Compile Include="Runtime\DefaultEditorTemplates.cs" />
