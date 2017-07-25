@@ -47,7 +47,7 @@ namespace Xcst.Web {
 #endif
             config.CompilerFactory.RegisterApplicationExtension();
 
-            BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(ViewPageBuildProvider<XcstViewPage>));
+            BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(PageBuildProvider<XcstViewPage>));
             ViewEngines.Engines.Add(new XcstViewEngine());
 
 #if ASPNETLIB

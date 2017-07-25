@@ -937,6 +937,35 @@
       ## Infrastructure
    -->
 
+   <template match="/" mode="src:main">
+      <choose>
+         <when test="not($src:library-package)">
+            <variable name="inherits-pi" select="processing-instruction(inherits)"/>
+            <variable name="model-pi" select="processing-instruction(model)"/>
+            <variable name="both-pi" select="($inherits-pi, $model-pi)/."/>
+
+            <if test="count($inherits-pi) gt 1">
+               <sequence select="error((), 'Only one ''inherits'' directive is allowed.', src:error-object($inherits-pi[2]))"/>
+            </if>
+            <if test="count($model-pi) gt 1">
+               <sequence select="error((), 'Only one ''model'' directive is allowed.', src:error-object($model-pi[2]))"/>
+            </if>
+            <if test="count($both-pi) gt 1">
+               <sequence select="error((), '''inherits'' and ''model'' directives are mutually exclusive.', src:error-object($both-pi[2]))"/>
+            </if>
+            <variable name="inherits" select="$inherits-pi/xcst:non-string(.)"/>
+            <variable name="model" select="$model-pi/xcst:non-string(.)"/>
+            <next-match>
+               <with-param name="a:inherits" select="$inherits" tunnel="yes"/>
+               <with-param name="a:model" select="$model" tunnel="yes"/>
+            </next-match>
+         </when>
+         <otherwise>
+            <next-match/>
+         </otherwise>
+      </choose>
+   </template>
+
    <template match="c:module | c:package" mode="src:import-namespace-extra">
       <param name="class" tunnel="yes"/>
       <param name="library-package" tunnel="yes"/>
@@ -947,6 +976,19 @@
          <text>using static </text>
          <value-of select="$class, a:functions-type-name(.)" separator="."/>
          <value-of select="$src:statement-delimiter"/>
+      </if>
+   </template>
+
+   <template match="c:module | c:package" mode="src:base-types" as="xs:string*">
+      <param name="library-package" tunnel="yes"/>
+      <param name="a:inherits" as="xs:string?" tunnel="yes"/>
+      <param name="a:model" as="xs:string?" tunnel="yes"/>
+
+      <if test="not($library-package)">
+         <sequence select="
+            if ($a:inherits) then $a:inherits
+            else concat($src:base-types[1], '&lt;', ($a:model, 'dynamic')[1], '>')"/>
+         <sequence select="$src:base-types[position() gt 1]"/>
       </if>
    </template>
 

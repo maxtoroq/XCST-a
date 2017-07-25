@@ -69,10 +69,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Xcst, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.0.26.0\lib\net45\Xcst.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.0.27.0\lib\net45\Xcst.dll</HintPath>
     </Reference>
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.26.0\lib\net45\Xcst.Compiler.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Compiler.0.27.0\lib\net45\Xcst.Compiler.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>
@@ -97,6 +97,11 @@
     <Compile Include="Extension\ExtensionTests.generated.cs" />
     <Compile Include="Extension\ExtensionTestsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Extension\Directives\model.dupl.i.xcst" />
+    <None Include="Extension\Directives\inherits.dupl.i.xcst" />
+    <None Include="Extension\Directives\inherits.type.i.xcst" />
+    <None Include="Extension\Directives\inherits_model.mutex.i.xcst" />
+    <None Include="Extension\Directives\model.type.i.xcst" />
     <None Include="Extension\Editor\Templates\DateTime-local.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTimeOffset.c.xcst" />
     <None Include="Extension\Editor\Templates\Time.c.xcst" />
