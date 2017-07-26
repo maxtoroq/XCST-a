@@ -993,7 +993,7 @@
 
    <template match="c:module | c:package" mode="src:base-types" as="xs:string*">
       <param name="library-package" tunnel="yes"/>
-      <param name="a:directives" as="document-node()" tunnel="yes"/>
+      <param name="a:directives" as="node()?" tunnel="yes"/>
 
       <if test="not($library-package)">
          <sequence select="
