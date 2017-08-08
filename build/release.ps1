@@ -9,6 +9,15 @@ $nuget = "..\.nuget\nuget.exe"
 $solutionPath = Resolve-Path ..
 $configuration = "Release"
 
+function script:ProjectPath([string]$projName) {
+   Resolve-Path $solutionPath\src\$projName
+}
+
+function script:ProjectFile([string]$projName) {
+   $projPath = ProjectPath $projName
+   return "$projPath\$projName.csproj"
+}
+
 function script:PackageVersion([string]$projName) {
    
    $assemblyPath = Resolve-Path $solutionPath\src\$projName\bin\$configuration\$projName.dll
@@ -115,12 +124,21 @@ function script:NuPack([string]$projName) {
    return Join-Path $outputPath "$projName.$($pkgVersion.ToString(3)).nupkg"
 }
 
-function script:Release([string]$projName) {
-   
-   $projPath = Resolve-Path $solutionPath\src\$projName
-   $projFile = "$projPath\$projName.csproj"
+function script:Build([string]$projName) {
+
+   $projFile = ProjectFile $projName
 
    MSBuild $projFile /p:Configuration=$configuration
+}
+
+function script:Release([string]$projName, [switch]$skipBuild) {
+
+   $projPath = ProjectPath $projName
+   $projFile = ProjectFile $projName
+
+   if (-not $skipBuild) {
+      Build $projName
+   }
 
    $lastTag = git describe --abbrev=0 --tags
    $lastRelease = New-Object Version $lastTag.Substring(1)
@@ -167,7 +185,26 @@ try {
    [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
    $notice = $noticeDoc.DocumentElement
 
-   Release $ProjectName
+   $projects = "Xcst.AspNet", "Xcst.Web.Mvc"
+
+   if ($ProjectName -eq '*') {
+      
+      foreach ($p in $projects) {
+
+         Build $p
+
+         if ((PackageVersion $p).Build -ne 0) {
+            throw "Patch number should be reset to 0 (Project: $p)."
+         }
+      }
+
+      foreach ($p in $projects) {
+         Release $p -skipBuild
+      }
+
+   } else {
+      Release $ProjectName
+   }
 
 } finally {
    Pop-Location
