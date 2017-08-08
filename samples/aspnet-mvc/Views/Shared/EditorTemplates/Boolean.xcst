@@ -4,8 +4,8 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:use-functions in='System'/>
-   <c:use-functions in='System.Globalization'/>
+   <c:import-namespace ns='System'/>
+   <c:import-namespace ns='System.Globalization'/>
 
    <c:param name='htmlAttributes' as='object'/>
 

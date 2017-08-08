@@ -55,24 +55,15 @@ function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, $category) {
 
    foreach ($file in ls $directory.FullName *.pxcst) {
 
-      $fileStream = [IO.File]::OpenRead($file.FullName)
+      $compiler = $compilerFactory.CreateCompiler()
+      $compiler.TargetNamespace = $directory.Name
+      $compiler.NamedPackage = $true
+      $compiler.IndentChars = $singleIndent
 
-      try {
+      $xcstResult = $compiler.Compile((New-Object Uri $file.FullName))
 
-         $compiler = $compilerFactory.CreateCompiler()
-         $compiler.TargetNamespace = $directory.Name
-         $compiler.LibraryPackage = $true
-         $compiler.IndentChars = $singleIndent
-
-         $xcstResult = $compiler.Compile($fileStream, (New-Object Uri $file.FullName))
-
-         foreach ($src in $xcstResult.CompilationUnits) {
-            WriteLine $src
-         }
-
-      } finally {
-         
-         $fileStream.Dispose()
+      foreach ($src in $xcstResult.CompilationUnits) {
+         WriteLine $src
       }
    }
 

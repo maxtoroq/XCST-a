@@ -4,9 +4,9 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:use-functions in='System'/>
-   <c:use-functions in='System.Xml'/>
-   <c:use-functions in='Microsoft.VisualStudio.TestTools.UnitTesting'/>
+   <c:import-namespace ns='System'/>
+   <c:import-namespace ns='System.Xml'/>
+   <c:import-namespace ns='Microsoft.VisualStudio.TestTools.UnitTesting'/>
 
    <c:type name='Foo'>
       <c:member name='d' as='DateTime' value='new DateTime()'/>

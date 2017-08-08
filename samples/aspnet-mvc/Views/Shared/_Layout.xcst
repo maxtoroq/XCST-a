@@ -2,7 +2,7 @@
 <c:module version='1.0' language='C#'
    xmlns:c='http://maxtoroq.github.io/XCST'>
 
-   <c:use-functions in='System'/>
+   <c:import-namespace ns='System'/>
 
    <c:variable name='title' value='null' as='string'/>
    <c:variable name='siteTitle'>XCST View Engine</c:variable>

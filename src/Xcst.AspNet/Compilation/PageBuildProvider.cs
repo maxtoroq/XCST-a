@@ -80,7 +80,7 @@ namespace Xcst.Web.Compilation {
       protected virtual void ConfigureCompiler(XcstCompiler compiler) {
 
          if (this.IsFileInCodeDir) {
-            compiler.LibraryPackage = true;
+            compiler.NamedPackage = true;
          } else {
             compiler.SetTargetBaseTypes(typeof(TPage));
             compiler.TargetNamespace = this.GeneratedTypeNamespace;

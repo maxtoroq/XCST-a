@@ -4,9 +4,9 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:use-functions in='System'/>
-   <c:use-functions in='System.Net.Mail'/>
-   <c:use-functions in='System.Web.Helpers'/>
+   <c:import-namespace ns='System'/>
+   <c:import-namespace ns='System.Net.Mail'/>
+   <c:import-namespace ns='System.Web.Helpers'/>
 
    <c:import href='_common.xcst'/>
 

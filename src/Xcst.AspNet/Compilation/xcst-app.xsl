@@ -939,7 +939,7 @@
 
    <template match="/" mode="src:main">
       <choose>
-         <when test="not($src:library-package)">
+         <when test="not($src:named-package)">
             <next-match>
                <with-param name="a:directives" tunnel="yes">
                   <apply-templates select="processing-instruction()" mode="a:directive"/>
@@ -980,10 +980,9 @@
 
    <template match="c:module | c:package" mode="src:import-namespace-extra">
       <param name="class" tunnel="yes"/>
-      <param name="library-package" tunnel="yes"/>
 
       <next-match/>
-      <if test="not($library-package)">
+      <if test="not($src:named-package)">
          <call-template name="src:new-line-indented"/>
          <text>using static </text>
          <value-of select="$class, a:functions-type-name(.)" separator="."/>
@@ -992,10 +991,9 @@
    </template>
 
    <template match="c:module | c:package" mode="src:base-types" as="xs:string*">
-      <param name="library-package" tunnel="yes"/>
       <param name="a:directives" as="node()?" tunnel="yes"/>
 
-      <if test="not($library-package)">
+      <if test="not($src:named-package)">
          <sequence select="
             if ($a:directives/inherits) then string($a:directives/inherits)
             else concat($src:base-types[1], '&lt;', ($a:directives/model, 'dynamic')[1], '>')"/>
@@ -1008,12 +1006,11 @@
 
    <template match="c:module | c:package" mode="src:infrastructure-extra">
       <param name="indent" tunnel="yes"/>
-      <param name="library-package" tunnel="yes"/>
       <param name="modules" tunnel="yes"/>
       <param name="a:directives" as="node()?" tunnel="yes"/>
 
       <next-match/>
-      <if test="not($library-package)">
+      <if test="not($src:named-package)">
 
          <variable name="module-pos" select="
             for $pos in (1 to count($modules)) 

@@ -4,10 +4,10 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:use-functions in='System'/>
-   <c:use-functions in='System.Linq'/>
-   <c:use-functions in='System.Web.Mvc'/>
-   <c:use-functions in='Xcst.Web.Runtime'/>
+   <c:import-namespace ns='System'/>
+   <c:import-namespace ns='System.Linq'/>
+   <c:import-namespace ns='System.Web.Mvc'/>
+   <c:import-namespace ns='Xcst.Web.Runtime'/>
 
    <c:param name='labelColumnClass'>col-md-3</c:param>
    <c:param name='fieldColumnClass'>col-md-9</c:param>

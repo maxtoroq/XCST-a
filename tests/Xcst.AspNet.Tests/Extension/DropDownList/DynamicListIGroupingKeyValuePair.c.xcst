@@ -4,8 +4,8 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:use-functions in='System.Collections.Generic'/>
-   <c:use-functions in='System.Linq'/>
+   <c:import-namespace ns='System.Collections.Generic'/>
+   <c:import-namespace ns='System.Linq'/>
 
    <c:template name='c:initial-template'>
       <a:drop-down-list name='number'
