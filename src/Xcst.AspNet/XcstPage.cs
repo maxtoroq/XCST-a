@@ -191,8 +191,10 @@ namespace Xcst.Web {
       string[] FileDependencies { get; }
    }
 
+#if ASPNETLIB
    public interface ISessionStateAware {
 
       SessionStateBehavior SessionStateBehavior { get; }
    }
+#endif
 }
