@@ -113,9 +113,7 @@ namespace Xcst.Web.Compilation {
          // The 'Show Complete Compilation Source' feature of the ASP.NET server error page
          // shows the last compile unit. Returning IFileDependent partial first.
 
-         if (!this.IsFileInCodeDir
-            && !typeof(IFileDependent).IsAssignableFrom(typeof(TPage))) {
-
+         if (!this.IsFileInCodeDir) {
             yield return FileDependentPartial();
          }
 
