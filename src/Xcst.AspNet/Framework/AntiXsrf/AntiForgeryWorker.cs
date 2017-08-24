@@ -171,5 +171,29 @@ namespace System.Web.Helpers.AntiXsrf {
          // Validate
          _validator.ValidateTokens(httpContext, ExtractIdentity(httpContext), deserializedCookieToken, deserializedFormToken);
       }
+
+      public bool TryValidate(HttpContextBase httpContext) {
+
+         CheckSSLConfig(httpContext);
+
+         // Extract cookie & form tokens
+         AntiForgeryToken cookieToken = _tokenStore.GetCookieToken(httpContext);
+         AntiForgeryToken formToken = _tokenStore.GetFormToken(httpContext);
+
+         // Validate
+         return _validator.TryValidateTokens(httpContext, ExtractIdentity(httpContext), cookieToken, formToken);
+      }
+
+      public bool TryValidate(HttpContextBase httpContext, string cookieToken, string formToken) {
+
+         CheckSSLConfig(httpContext);
+
+         // Extract cookie & form tokens
+         AntiForgeryToken deserializedCookieToken = DeserializeToken(cookieToken);
+         AntiForgeryToken deserializedFormToken = DeserializeToken(formToken);
+
+         // Validate
+         return _validator.TryValidateTokens(httpContext, ExtractIdentity(httpContext), deserializedCookieToken, deserializedFormToken);
+      }
    }
 }

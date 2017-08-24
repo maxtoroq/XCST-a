@@ -84,6 +84,22 @@ namespace System.Web.Helpers.AntiXsrf {
 
       public void ValidateTokens(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
 
+         Exception ex = ValidateTokensImpl(httpContext, identity, sessionToken, fieldToken);
+
+         if (ex != null) {
+            throw ex;
+         }
+      }
+
+      public bool TryValidateTokens(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
+
+         Exception ex = ValidateTokensImpl(httpContext, identity, sessionToken, fieldToken);
+
+         return ex != null;
+      }
+
+      Exception ValidateTokensImpl(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
+
          // Were the tokens even present at all?
 
          if (sessionToken == null) throw HttpAntiForgeryException.CreateCookieMissingException(_config.CookieName);
@@ -92,13 +108,13 @@ namespace System.Web.Helpers.AntiXsrf {
          // Do the tokens have the correct format?
 
          if (!sessionToken.IsSessionToken || fieldToken.IsSessionToken) {
-            throw HttpAntiForgeryException.CreateTokensSwappedException(_config.CookieName, _config.FormFieldName);
+            return HttpAntiForgeryException.CreateTokensSwappedException(_config.CookieName, _config.FormFieldName);
          }
 
          // Are the security tokens embedded in each incoming token identical?
 
          if (!Equals(sessionToken.SecurityToken, fieldToken.SecurityToken)) {
-            throw HttpAntiForgeryException.CreateSecurityTokenMismatchException();
+            return HttpAntiForgeryException.CreateSecurityTokenMismatchException();
          }
 
          // Is the incoming token meant for the current user?
@@ -123,17 +139,19 @@ namespace System.Web.Helpers.AntiXsrf {
             || currentUsername.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
 
          if (!String.Equals(fieldToken.Username, currentUsername, (useCaseSensitiveUsernameComparison) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase)) {
-            throw HttpAntiForgeryException.CreateUsernameMismatchException(fieldToken.Username, currentUsername);
+            return HttpAntiForgeryException.CreateUsernameMismatchException(fieldToken.Username, currentUsername);
          }
 
          if (!Equals(fieldToken.ClaimUid, currentClaimUid)) {
-            throw HttpAntiForgeryException.CreateClaimUidMismatchException();
+            return HttpAntiForgeryException.CreateClaimUidMismatchException();
          }
 
          // Is the AdditionalData valid?
          if (_config.AdditionalDataProvider != null && !_config.AdditionalDataProvider.ValidateAdditionalData(httpContext, fieldToken.AdditionalData)) {
-            throw HttpAntiForgeryException.CreateAdditionalDataCheckFailedException();
+            return HttpAntiForgeryException.CreateAdditionalDataCheckFailedException();
          }
+
+         return null;
       }
    }
 }

@@ -25,5 +25,7 @@ namespace System.Web.Helpers.AntiXsrf {
       // Validates a (cookie, form) token pair.
 
       void ValidateTokens(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken cookieToken, AntiForgeryToken formToken);
+
+      bool TryValidateTokens(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken cookieToken, AntiForgeryToken formToken);
    }
 }

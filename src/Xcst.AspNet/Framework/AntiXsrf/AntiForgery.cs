@@ -119,5 +119,39 @@ namespace System.Web.Helpers {
 
          _worker.Validate(new HttpContextWrapper(context), cookieToken, formToken);
       }
+
+      public static bool TryValidate() {
+
+         HttpContext context = HttpContext.Current;
+
+         if (context == null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
+
+         return TryValidate(new HttpContextWrapper(context));
+      }
+
+      public static bool TryValidate(HttpContextBase context) {
+
+         if (context == null) throw new ArgumentNullException(nameof(context));
+
+         return _worker.TryValidate(context);
+      }
+
+      [EditorBrowsable(EditorBrowsableState.Advanced)]
+      public static bool TryValidate(string cookieToken, string formToken) {
+
+         HttpContext context = HttpContext.Current;
+
+         if (context == null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
+
+         return TryValidate(new HttpContextWrapper(context), cookieToken, formToken);
+      }
+
+      [EditorBrowsable(EditorBrowsableState.Advanced)]
+      public static bool TryValidate(HttpContextBase context, string cookieToken, string formToken) {
+
+         if (context == null) throw new ArgumentNullException(nameof(context));
+
+         return _worker.TryValidate(context, cookieToken, formToken);
+      }
    }
 }
