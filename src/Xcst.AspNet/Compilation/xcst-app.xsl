@@ -804,6 +804,7 @@
    </template>
 
    <template match="a:display-name" mode="src:extension-instruction">
+      <param name="src:current-mode" as="xs:QName" required="yes" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="optional" select="'for', 'name'"/>
@@ -811,6 +812,8 @@
       </call-template>
 
       <call-template name="a:validate-for"/>
+
+      <variable name="statement" select="$src:current-mode eq xs:QName('src:statement')"/>
 
       <variable name="for-model" select="empty((@for, @name))"/>
       <variable name="expr">
@@ -836,7 +839,18 @@
          </if>
          <text>)</text>
       </variable>
-      <c:object value="{$expr}"/>
+      <choose>
+         <when test="$statement">
+            <c:object value="{$expr}"/>
+         </when>
+         <otherwise>
+            <value-of select="$expr"/>
+         </otherwise>
+      </choose>
+   </template>
+
+   <template match="a:display-name" mode="xcst:extension-instruction">
+      <xcst:instruction as="System.String" expression="true"/>
    </template>
 
    <template match="a:display-text" mode="src:extension-instruction">
@@ -882,9 +896,13 @@
             <c:void value="{$expr}"/>
          </when>
          <otherwise>
-            <c:object value="{$expr}"/>
+            <value-of select="$expr"/>
          </otherwise>
       </choose>
+   </template>
+
+   <template match="a:display-text" mode="xcst:extension-instruction">
+      <xcst:instruction as="System.String" expression="true"/>
    </template>
 
    <!--

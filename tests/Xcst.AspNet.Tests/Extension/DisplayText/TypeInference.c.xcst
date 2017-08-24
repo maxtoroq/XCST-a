@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='Microsoft.VisualStudio.TestTools.UnitTesting'/>
+
+   <c:type name='Foo'>
+      <c:member name='bar' null-display-text='&lt;no bar>'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <a:model as='Foo'>
+         <c:variable name='text'>
+            <a:display-text for='bar'/>
+         </c:variable>
+         <c:void value='Assert.IsTrue(CompileType(text) == typeof(string))'/>
+         <c:void value='Assert.IsTrue(text == "&lt;no bar>")'/>
+      </a:model>
+   </c:template>
+
+   <c:template name='expected'/>
+
+</c:module>

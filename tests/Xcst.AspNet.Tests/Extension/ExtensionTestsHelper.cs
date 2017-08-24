@@ -39,7 +39,7 @@ namespace Xcst.Web.Tests.Extension {
             compiler.UseLineDirective = true;
             compiler.UsePackageBase = new StackFrame(1, true).GetMethod().DeclaringType.Namespace;
 
-            compiler.SetTargetBaseTypes(typeof(XcstViewPage));
+            compiler.SetTargetBaseTypes(typeof(TestBase));
 
             compiler.SetParameter(
                new QualifiedName("application-uri", XmlNamespaces.XcstApplication),
@@ -155,6 +155,15 @@ namespace Xcst.Web.Tests.Extension {
          }
 
          return XDocumentNormalizer.DeepEqualsWithNormalization(expectedDoc, actualDoc);
+      }
+   }
+
+   public abstract class TestBase : XcstViewPage { }
+
+   public abstract class TestBase<TModel> : XcstViewPage<TModel> {
+
+      protected Type CompileType<T>(T obj) {
+         return typeof(T);
       }
    }
 }
