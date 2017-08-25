@@ -6,7 +6,9 @@ namespace System.Web.Helpers.AntiXsrf {
 
    interface ITokenStore {
       AntiForgeryToken GetCookieToken(HttpContextBase httpContext);
+      AntiForgeryToken GetCookieToken(HttpContextBase httpContext, bool throwOnError);
       AntiForgeryToken GetFormToken(HttpContextBase httpContext);
+      AntiForgeryToken GetFormToken(HttpContextBase httpContext, bool throwOnError);
       void SaveCookieToken(HttpContextBase httpContext, AntiForgeryToken token);
    }
 }

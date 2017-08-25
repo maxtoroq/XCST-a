@@ -16,9 +16,26 @@ namespace System.Web.Helpers.AntiXsrf {
          _cryptoSystem = cryptoSystem;
       }
 
+      public AntiForgeryToken Deserialize(string serializedToken) {
+         return Deserialize(serializedToken, throwOnError: true);
+      }
+
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Failures are homogenized; caller handles appropriately.")]
       [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "MemoryStream is safe for multi-dispose.")]
-      public AntiForgeryToken Deserialize(string serializedToken) {
+      public AntiForgeryToken Deserialize(string serializedToken, bool throwOnError) {
+
+         AntiForgeryToken token = DeserializeImpl(serializedToken);
+
+         if (token == null
+            && throwOnError) {
+
+            throw HttpAntiForgeryException.CreateDeserializationFailedException();
+         }
+
+         return token;
+      }
+
+      AntiForgeryToken DeserializeImpl(string serializedToken) {
 
          try {
             using (MemoryStream stream = new MemoryStream(_cryptoSystem.Unprotect(serializedToken))) {
@@ -33,9 +50,7 @@ namespace System.Web.Helpers.AntiXsrf {
             // swallow all exceptions - homogenize error if something went wrong
          }
 
-         // if we reached this point, something went wrong deserializing
-
-         throw HttpAntiForgeryException.CreateDeserializationFailedException();
+         return null;
       }
 
       /* The serialized format of the anti-XSRF token is as follows:

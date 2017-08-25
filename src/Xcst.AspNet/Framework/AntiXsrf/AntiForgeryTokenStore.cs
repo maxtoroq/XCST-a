@@ -19,6 +19,10 @@ namespace System.Web.Helpers.AntiXsrf {
       }
 
       public AntiForgeryToken GetCookieToken(HttpContextBase httpContext) {
+         return GetCookieToken(httpContext, throwOnError: true);
+      }
+
+      public AntiForgeryToken GetCookieToken(HttpContextBase httpContext, bool throwOnError) {
 
          HttpCookie cookie = httpContext.Request.Cookies[_config.CookieName];
 
@@ -27,10 +31,14 @@ namespace System.Web.Helpers.AntiXsrf {
             return null;
          }
 
-         return _serializer.Deserialize(cookie.Value);
+         return _serializer.Deserialize(cookie.Value, throwOnError);
       }
 
       public AntiForgeryToken GetFormToken(HttpContextBase httpContext) {
+         return GetFormToken(httpContext, throwOnError: true);
+      }
+
+      public AntiForgeryToken GetFormToken(HttpContextBase httpContext, bool throwOnError) {
 
          string value = httpContext.Request.Form[_config.FormFieldName];
 
@@ -39,7 +47,7 @@ namespace System.Web.Helpers.AntiXsrf {
             return null;
          }
 
-         return _serializer.Deserialize(value);
+         return _serializer.Deserialize(value, throwOnError);
       }
 
       public void SaveCookieToken(HttpContextBase httpContext, AntiForgeryToken token) {

@@ -6,6 +6,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
    interface IAntiForgeryTokenSerializer {
       AntiForgeryToken Deserialize(string serializedToken);
+      AntiForgeryToken Deserialize(string serializedToken, bool throwOnError);
       string Serialize(AntiForgeryToken token);
    }
 }

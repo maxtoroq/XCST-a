@@ -95,15 +95,15 @@ namespace System.Web.Helpers.AntiXsrf {
 
          Exception ex = ValidateTokensImpl(httpContext, identity, sessionToken, fieldToken);
 
-         return ex != null;
+         return ex == null;
       }
 
       Exception ValidateTokensImpl(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
 
          // Were the tokens even present at all?
 
-         if (sessionToken == null) throw HttpAntiForgeryException.CreateCookieMissingException(_config.CookieName);
-         if (fieldToken == null) throw HttpAntiForgeryException.CreateFormFieldMissingException(_config.FormFieldName);
+         if (sessionToken == null) return HttpAntiForgeryException.CreateCookieMissingException(_config.CookieName);
+         if (fieldToken == null) return HttpAntiForgeryException.CreateFormFieldMissingException(_config.FormFieldName);
 
          // Do the tokens have the correct format?
 
