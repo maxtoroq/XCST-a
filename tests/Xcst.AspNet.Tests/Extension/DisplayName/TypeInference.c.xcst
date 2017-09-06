@@ -4,8 +4,6 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='Microsoft.VisualStudio.TestTools.UnitTesting'/>
-
    <c:type name='Foo'>
       <c:member name='bar' display-name='The Bar'/>
    </c:type>
@@ -15,11 +13,9 @@
          <c:variable name='name'>
             <a:display-name for='bar'/>
          </c:variable>
-         <c:void value='Assert.IsTrue(CompileType(name) == typeof(string))'/>
-         <c:void value='Assert.IsTrue(name == "The Bar")'/>
+         <c:void value='Assert.AreEqual(typeof(string), CompileType(name))'/>
+         <c:void value='Assert.AreEqual("The Bar", name)'/>
       </a:model>
    </c:template>
-
-   <c:template name='expected'/>
 
 </c:module>

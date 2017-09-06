@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.Emit;
 using Moq;
 using Xcst.Compiler;
 using Xcst.Web.Mvc;
+using TestAssert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace Xcst.Web.Tests.Extension {
 
@@ -25,108 +26,167 @@ namespace Xcst.Web.Tests.Extension {
             .GetType(typeName)
       };
 
+      static readonly QualifiedName InitialName = new QualifiedName("initial-template", "http://maxtoroq.github.io/XCST");
+      static readonly QualifiedName ExpectedName = new QualifiedName("expected");
+
       static ExtensionTestsHelper() {
          CompilerFactory.RegisterApplicationExtension();
       }
 
-      public static Tuple<Type, CompileResult> CompileFromFile(string fileName, bool correct) {
+      public static void RunXcstTest(string packageFile, bool correct, bool fail) {
 
-         using (var fileStream = File.OpenRead(fileName)) {
+         string usePackageBase = new StackFrame(1, true).GetMethod().DeclaringType.Namespace;
 
-            XcstCompiler compiler = CompilerFactory.CreateCompiler();
-            compiler.TargetNamespace = typeof(ExtensionTestsHelper).Namespace + ".Runtime";
-            compiler.TargetClass = "TestModule";
-            compiler.UseLineDirective = true;
-            compiler.UsePackageBase = new StackFrame(1, true).GetMethod().DeclaringType.Namespace;
+         CompileResult xcstResult;
+         string packageName;
 
-            compiler.SetTargetBaseTypes(typeof(TestBase));
+         try {
+            var codegenResult = GenerateCode(packageFile, usePackageBase);
+            xcstResult = codegenResult.Item1;
+            packageName = codegenResult.Item2;
 
-            compiler.SetParameter(
-               new QualifiedName("application-uri", XmlNamespaces.XcstApplication),
-               new Uri(Directory.GetCurrentDirectory())
-            );
+         } catch (CompileException ex) {
 
-            CompileResult xcstResult;
+            Console.WriteLine($"// {ex.Message}");
+            Console.WriteLine($"// Module URI: {ex.ModuleUri}");
+            Console.WriteLine($"// Line number: {ex.LineNumber}");
+
+            throw;
+         }
+
+         try {
+
+            Type packageType = CompileCode(xcstResult, packageName);
+
+            if (!correct) {
+               return;
+            }
 
             try {
-               xcstResult = compiler.Compile(fileStream, baseUri: new Uri(fileName, UriKind.Absolute));
 
-            } catch (CompileException ex) {
+               if (fail) {
 
-               if (!correct) {
-                  Console.WriteLine(ex.Message);
-                  Console.WriteLine($"Module URI: {ex.ModuleUri}");
-                  Console.WriteLine($"Line number: {ex.LineNumber}");
+                  if (!xcstResult.Templates.Contains(InitialName)) {
+                     TestAssert.Fail("A failing package should define an initial template.");
+                  } else if (xcstResult.Templates.Contains(ExpectedName)) {
+                     TestAssert.Fail("A failing package should not define an 'expected' template.");
+                  }
+
+                  SimplyRun(packageType);
+
+               } else {
+
+                  if (xcstResult.Templates.Contains(InitialName)) {
+
+                     if (xcstResult.Templates.Contains(ExpectedName)) {
+                        TestAssert.IsTrue(OutputEqualsToExpected(packageType));
+                     } else {
+                        SimplyRun(packageType);
+                     }
+
+                  } else if (xcstResult.Templates.Contains(ExpectedName)) {
+                     TestAssert.Fail("A package that defines an 'expected' template without an initial template makes no sense.");
+                  }
                }
 
+            } catch (RuntimeException ex) {
+
+               Console.WriteLine($"// {ex.Message}");
                throw;
             }
+
+         } finally {
 
             foreach (string unit in xcstResult.CompilationUnits) {
                Console.WriteLine(unit);
             }
-
-            if (!correct) {
-               return null;
-            }
-
-            SyntaxTree[] syntaxTrees = xcstResult.CompilationUnits
-               .Select(c => CSharpSyntaxTree.ParseText(c))
-               .ToArray();
-
-            MetadataReference[] references = {
-               MetadataReference.CreateFromFile(typeof(System.Object).Assembly.Location),
-               MetadataReference.CreateFromFile(typeof(System.Uri).Assembly.Location),
-               MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location),
-               MetadataReference.CreateFromFile(typeof(System.Xml.XmlWriter).Assembly.Location),
-               MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.DataType).Assembly.Location),
-               MetadataReference.CreateFromFile(typeof(Xcst.PackageModel.IXcstPackage).Assembly.Location),
-               MetadataReference.CreateFromFile(typeof(System.Web.HttpContext).Assembly.Location),
-               MetadataReference.CreateFromFile(typeof(System.Web.Mvc.ViewContext).Assembly.Location),
-               MetadataReference.CreateFromFile(typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location),
-               MetadataReference.CreateFromFile(typeof(Microsoft.VisualStudio.TestTools.UnitTesting.Assert).Assembly.Location),
-               MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location)
-            };
-
-            CSharpCompilation compilation = CSharpCompilation.Create(
-               Path.GetRandomFileName(),
-               syntaxTrees: syntaxTrees,
-               references: references,
-               options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-            using (var assemblyStream = new MemoryStream()) {
-
-               EmitResult csharpResult = compilation.Emit(assemblyStream);
-
-               if (!csharpResult.Success) {
-
-                  Diagnostic error = csharpResult.Diagnostics
-                     .Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error)
-                     .FirstOrDefault();
-
-                  throw new ArgumentException($"{error?.Id}: {error?.GetMessage() ?? "C# compilation failed."}", nameof(fileName));
-
-               } else {
-
-                  assemblyStream.Position = 0;
-
-                  Assembly assembly = Assembly.Load(assemblyStream.ToArray());
-                  Type type = assembly.GetType(compiler.TargetNamespace + "." + compiler.TargetClass);
-
-                  return Tuple.Create(type, xcstResult);
-               }
-            }
          }
       }
 
-      public static bool OutputEqualsToExpected(Type moduleType) {
+      static Tuple<CompileResult, string> GenerateCode(string packageFile, string usePackageBase) {
 
-         XcstViewPage module = (XcstViewPage)Activator.CreateInstance(moduleType);
+         XcstCompiler compiler = CompilerFactory.CreateCompiler();
+         compiler.TargetNamespace = typeof(ExtensionTestsHelper).Namespace + ".Runtime";
+         compiler.TargetClass = "TestModule";
+         compiler.UseLineDirective = true;
+         compiler.UsePackageBase = usePackageBase;
+         compiler.SetTargetBaseTypes(typeof(TestBase));
+
+         compiler.SetParameter(
+            new QualifiedName("application-uri", XmlNamespaces.XcstApplication),
+            new Uri(Directory.GetCurrentDirectory())
+         );
+
+         CompileResult result = compiler.Compile(new Uri(packageFile, UriKind.Absolute));
+
+         return Tuple.Create(result, compiler.TargetNamespace + "." + compiler.TargetClass);
+      }
+
+      static Type CompileCode(CompileResult result, string packageName) {
+
+         var parseOptions = new CSharpParseOptions(preprocessorSymbols: new[] { "DEBUG", "TRACE" });
+
+         SyntaxTree[] syntaxTrees = result.CompilationUnits
+            .Select(c => CSharpSyntaxTree.ParseText(c, parseOptions))
+            .ToArray();
+
+         // TODO: Should compiler give list of assembly references?
+
+         MetadataReference[] references = {
+            MetadataReference.CreateFromFile(typeof(System.Object).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(System.Uri).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(System.Xml.XmlWriter).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Xcst.PackageModel.IXcstPackage).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(System.Web.HttpContext).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(System.Web.Mvc.ViewContext).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Microsoft.VisualStudio.TestTools.UnitTesting.Assert).Assembly.Location),
+            MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location)
+         };
+
+         CSharpCompilation compilation = CSharpCompilation.Create(
+            Path.GetRandomFileName(),
+            syntaxTrees: syntaxTrees,
+            references: references,
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+         using (var assemblyStream = new MemoryStream()) {
+
+            EmitResult csharpResult = compilation.Emit(assemblyStream);
+
+            if (!csharpResult.Success) {
+
+               Diagnostic error = csharpResult.Diagnostics
+                  .Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error)
+                  .FirstOrDefault();
+
+               if (error != null) {
+                  Console.WriteLine($"// {error.Id}: {error.GetMessage()}");
+                  Console.WriteLine($"// Line number: {error.Location.GetLineSpan().StartLinePosition.Line}");
+               }
+
+               throw new CompileException("C# compilation failed.");
+            }
+
+            assemblyStream.Position = 0;
+
+            Assembly assembly = Assembly.Load(assemblyStream.ToArray());
+            Type type = assembly.GetType(packageName);
+
+            return type;
+         }
+      }
+
+      static XcstViewPage CreatePackage(Type packageType) {
+
+         XcstViewPage package = (XcstViewPage)Activator.CreateInstance(packageType);
 
          var httpContextMock = new Mock<HttpContextBase>();
          httpContextMock.Setup(c => c.Items).Returns(() => new System.Collections.Hashtable());
 
-         module.ViewContext = new ViewContext(
+         package.ViewContext = new ViewContext(
             new ControllerContext(
                new RequestContext(httpContextMock.Object, new RouteData())
             ),
@@ -135,10 +195,17 @@ namespace Xcst.Web.Tests.Extension {
             TextWriter.Null
          );
 
+         return package;
+      }
+
+      static bool OutputEqualsToExpected(Type packageType) {
+
+         XcstViewPage package = CreatePackage(packageType);
+
          var expectedDoc = new XDocument();
          var actualDoc = new XDocument();
 
-         XcstEvaluator evaluator = XcstEvaluator.Using(module);
+         XcstEvaluator evaluator = XcstEvaluator.Using(package);
 
          using (XmlWriter actualWriter = actualDoc.CreateWriter()) {
 
@@ -156,6 +223,16 @@ namespace Xcst.Web.Tests.Extension {
 
          return XDocumentNormalizer.DeepEqualsWithNormalization(expectedDoc, actualDoc);
       }
+
+      static void SimplyRun(Type packageType) {
+
+         XcstViewPage package = CreatePackage(packageType);
+
+         XcstEvaluator.Using(package)
+            .CallInitialTemplate()
+            .OutputTo(TextWriter.Null)
+            .Run();
+      }
    }
 
    public abstract class TestBase : XcstViewPage { }
@@ -164,6 +241,25 @@ namespace Xcst.Web.Tests.Extension {
 
       protected Type CompileType<T>(T obj) {
          return typeof(T);
+      }
+
+      public static class Assert {
+
+         public static void IsTrue(bool condition) {
+            TestAssert.IsTrue(condition);
+         }
+
+         public static void IsFalse(bool condition) {
+            TestAssert.IsFalse(condition);
+         }
+
+         public static void AreEqual<T>(T expected, T actual) {
+            TestAssert.AreEqual(expected, actual);
+         }
+
+         public static void IsNull(object value) {
+            TestAssert.IsNull(value);
+         }
       }
    }
 }

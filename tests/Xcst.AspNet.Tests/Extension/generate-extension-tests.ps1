@@ -39,7 +39,6 @@ function GenerateTests {
 using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace Xcst.Web.Tests {
 
@@ -88,8 +87,8 @@ function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, $category) {
             continue
          }
 
-         $correct = $fileName -like '*.c'
-         $fileName2 = $fileName.Substring(0, $fileName.LastIndexOf("."))
+         $fail = $fileName -like '*.f'
+         $correct = $fail -or $fileName -like '*.c'
          $testName = ($fileName -replace '[.-]', '_') -creplace '([a-z])([A-Z])', '$1_$2'
 
          WriteLine
@@ -98,35 +97,14 @@ function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, $category) {
 
          if (!$correct) {
             WriteLine "[ExpectedException(typeof(Xcst.Compiler.CompileException))]"
+         
+         } elseif ($fail) {
+            WriteLine "[ExpectedException(typeof(Xcst.RuntimeException))]"
          }
 
          WriteLine "public void $testName() {"
          PushIndent
-         WriteLine
-         WriteLine "var result = CompileFromFile(@""$($file.FullName)"", correct: $($correct.ToString().ToLower()));"
-
-         if ($correct) {
-
-            WriteLine "var moduleType = result.Item1;"
-
-            foreach ($testCase in ls $directory.FullName "$fileName2.*.xml") {
-
-               $testFileName = [IO.Path]::GetFileNameWithoutExtension($testCase.Name)
-
-               if ($testFileName -like '*.p' -or $testFileName -like '*.f') {
-
-                  WriteLine "Is$($testFileName.EndsWith(".p"))(OutputEqualsToDoc(moduleType, @""$($testCase.FullName)""));"
-               }
-            }
-
-            WriteLine
-            WriteLine "if (result.Item2.Templates.Contains(new QualifiedName(""expected""))) {"
-            PushIndent
-            WriteLine "IsTrue(OutputEqualsToExpected(moduleType));"
-            PopIndent
-            WriteLine "}"
-         }
-
+         WriteLine "RunXcstTest(@""$($file.FullName)"", correct: $($correct.ToString().ToLower()), fail: $($fail.ToString().ToLower()));"
          PopIndent
          WriteLine "}"
       }

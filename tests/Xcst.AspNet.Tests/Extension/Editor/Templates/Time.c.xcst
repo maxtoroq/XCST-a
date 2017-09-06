@@ -6,7 +6,6 @@
 
    <c:import-namespace ns='System'/>
    <c:import-namespace ns='System.Xml'/>
-   <c:import-namespace ns='Microsoft.VisualStudio.TestTools.UnitTesting'/>
 
    <c:type name='Foo'>
       <c:member name='d' as='DateTime' value='new DateTime()' data-type='Time'/>
@@ -26,7 +25,5 @@
       <c:void value='Assert.AreEqual("00:00:00.000", doc.DocumentElement.GetAttribute("value"))'/>
       <c:void value='Assert.IsFalse(doc.DocumentElement.HasAttribute("data-val-date"))'/>
    </c:template>
-
-   <c:template name='expected'/>
 
 </c:module>
