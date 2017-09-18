@@ -71,11 +71,11 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Xcst, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.0.31.0\lib\net45\Xcst.dll</HintPath>
-    </Reference>
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.31.0\lib\net45\Xcst.Compiler.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Compiler.0.32.0\lib\net45\Xcst.Compiler.dll</HintPath>
+    </Reference>
+    <Reference Include="Xcst.Runtime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xcst.Runtime.0.32.0\lib\net45\Xcst.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>
