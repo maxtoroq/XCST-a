@@ -65,7 +65,7 @@ function script:NuSpec {
 	
    } elseif ($projName -eq "Xcst.AspNet") {
       
-      "<description>XCST web pages for ASP.NET 4.5+</description>"
+      "<description>XCST web pages for ASP.NET 4.6+</description>"
 
       "<dependencies>"
          "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"

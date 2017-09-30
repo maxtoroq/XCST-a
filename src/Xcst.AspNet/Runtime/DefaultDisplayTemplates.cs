@@ -144,7 +144,7 @@ namespace Xcst.Web.Runtime {
 
          output.WriteStartElement("a");
          output.WriteAttributeString("href", "mailto:" + Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
-         output.WriteString(html.ViewData.TemplateInfo.FormattedModelValue);
+         output.WriteString(output.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
          output.WriteEndElement();
       }
 
@@ -224,14 +224,14 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void StringTemplate(HtmlHelper html, XcstWriter output) {
-         output.WriteString(html.ViewData.TemplateInfo.FormattedModelValue);
+         output.WriteString(output.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
       }
 
       public static void UrlTemplate(HtmlHelper html, XcstWriter output) {
 
          output.WriteStartElement("a");
          output.WriteAttributeString("href", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
-         output.WriteString(html.ViewData.TemplateInfo.FormattedModelValue);
+         output.WriteString(output.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
          output.WriteEndElement();
       }
 
