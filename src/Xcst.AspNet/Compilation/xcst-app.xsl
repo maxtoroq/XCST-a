@@ -763,14 +763,14 @@
          <with-param name="extension" select="true()"/>
       </call-template>
 
-      <variable name="new-output" select="concat(src:aux-variable('output'), '_', generate-id())"/>
+      <variable name="new-output" select="src:doc-output(., ())"/>
       <variable name="new-helper" select="(@helper-name/xcst:name(.), concat(src:aux-variable('model_helper'), '_', generate-id()))[1]"/>
 
       <text>[</text>
       <value-of select="src:string(src:aux-variable('member_template'))"/>
       <text>]</text>
       <text> = new </text>
-      <value-of select="src:global-identifier(concat('System.Action&lt;', src:global-identifier('System.Web.Mvc.HtmlHelper'), ', ', src:global-identifier('Xcst.XcstWriter'), '>'))"/>
+      <value-of select="src:global-identifier(concat('System.Action&lt;', src:global-identifier('System.Web.Mvc.HtmlHelper'), ', ', $new-output/@type, '>'))"/>
       <text>((</text>
       <value-of select="$new-helper, $new-output" separator=", "/>
       <text>) => </text>
