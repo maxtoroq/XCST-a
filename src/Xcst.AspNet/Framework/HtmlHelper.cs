@@ -13,7 +13,6 @@ using System.Web.Routing;
 using System.Web.WebPages;
 using System.Web.WebPages.Resources;
 using Xcst;
-using Xcst.PackageModel;
 using Xcst.Web.Runtime;
 
 namespace System.Web.Mvc {
@@ -413,7 +412,7 @@ namespace System.Web.Mvc {
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
 
-      public Action<TemplateContext, XcstWriter> MemberTemplate(ModelMetadata propertyMetadata) {
+      public XcstDelegate<object> MemberTemplate(ModelMetadata propertyMetadata) {
          return EditorInstructions.MemberTemplate(this, propertyMetadata);
       }
    }

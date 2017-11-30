@@ -44,6 +44,20 @@
          <with-param name="attribs" select="@name, @value"/>
       </call-template>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.TextBox</text>
@@ -51,7 +65,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -92,6 +106,20 @@
          <with-param name="attribs" select="@name, @value"/>
       </call-template>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.Password</text>
@@ -99,7 +127,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -136,6 +164,20 @@
          <with-param name="attribs" select="@name, @value"/>
       </call-template>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.Hidden</text>
@@ -143,7 +185,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -180,6 +222,20 @@
          <with-param name="attribs" select="@name, @value"/>
       </call-template>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('TextAreaInstructions')"/>
          <text>.TextArea</text>
@@ -187,7 +243,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -230,6 +286,20 @@
          <with-param name="attribs" select="@name, @checked"/>
       </call-template>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.CheckBox</text>
@@ -237,7 +307,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -277,6 +347,20 @@
          <with-param name="attribs" select="@name, @checked"/>
       </call-template>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.RadioButton</text>
@@ -284,7 +368,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -322,10 +406,22 @@
 
       <choose>
          <when test="$a:aspnetlib">
+            <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+            <variable name="doc-output" select="src:doc-output(., $output)"/>
+            <if test="not($output-is-doc)">
+               <c:variable name="{$doc-output}">
+                  <attribute name="value">
+                     <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+                     <text>.CastElement(</text>
+                     <value-of select="$output"/>
+                     <text>)</text>
+                  </attribute>
+               </c:variable>
+            </if>
             <variable name="expr">
                <call-template name="a:html-helper"/>
                <text>.AntiForgeryToken(</text>
-               <value-of select="$output"/>
+               <value-of select="$doc-output"/>
                <text>)</text>
             </variable>
             <c:void value="{$expr}"/>
@@ -348,12 +444,26 @@
          <with-param name="extension" select="true()"/>
       </call-template>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.HttpMethodOverride(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <text>, </text>
          <value-of select="src:expand-attribute(@method)"/>
          <text>)</text>
@@ -377,6 +487,20 @@
          <with-param name="attribs" select="@name, @value"/>
       </call-template>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('SelectInstructions')"/>
          <text>.</text>
@@ -386,7 +510,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <if test="not($for-model)">
             <text>, </text>
             <choose>
@@ -505,6 +629,20 @@
 
       <call-template name="a:validate-for"/>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="for-model" select="empty((@for, @name))"/>
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('LabelInstructions')"/>
@@ -516,7 +654,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <if test="not($for-model)">
             <text>, </text>
             <choose>
@@ -553,12 +691,26 @@
          <with-param name="extension" select="true()"/>
       </call-template>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('ValidationInstructions')"/>
          <text>.ValidationSummary(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <if test="@include-member-errors">
             <text>, includePropertyErrors: </text>
             <value-of select="@include-member-errors/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
@@ -585,6 +737,20 @@
 
       <call-template name="a:validate-for"/>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('ValidationInstructions')"/>
          <text>.ValidationMessage</text>
@@ -592,7 +758,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <text>, </text>
          <choose>
             <when test="@for">
@@ -634,6 +800,20 @@
 
       <call-template name="a:validate-for"/>
 
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
       <variable name="editor" select="self::a:editor"/>
       <variable name="for-model" select="empty((@for, @name))"/>
       <variable name="expr">
@@ -645,7 +825,7 @@
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
-         <value-of select="$output"/>
+         <value-of select="$doc-output"/>
          <if test="not($for-model)">
             <text>, </text>
             <choose>
@@ -763,7 +943,10 @@
          <with-param name="extension" select="true()"/>
       </call-template>
 
-      <variable name="new-output" select="src:doc-output(., ())"/>
+      <variable name="meta" as="element()">
+         <xcst:delegate/>
+      </variable>
+      <variable name="new-output" select="src:template-output($meta, .)"/>
       <variable name="new-helper" select="(@helper-name/xcst:name(.), concat(src:aux-variable('model_helper'), '_', generate-id()))[1]"/>
 
       <text>[</text>

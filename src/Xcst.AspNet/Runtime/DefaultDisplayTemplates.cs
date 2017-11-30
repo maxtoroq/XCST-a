@@ -23,7 +23,6 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
-using Xcst.PackageModel;
 using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Runtime {
@@ -198,7 +197,7 @@ namespace Xcst.Web.Runtime {
 
             if (!propertyMetadata.HideSurroundingHtml) {
 
-               Action<TemplateContext, XcstWriter> memberTemplate =
+               XcstDelegate<object> memberTemplate =
                   DisplayInstructions.MemberTemplate(html, propertyMetadata);
 
                if (memberTemplate != null) {

@@ -23,7 +23,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
-using Xcst.PackageModel;
 
 namespace Xcst.Web.Runtime {
 
@@ -86,7 +85,7 @@ namespace Xcst.Web.Runtime {
          return !propertyMetadata.IsComplexType;
       }
 
-      public static Action<TemplateContext, XcstWriter> MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) {
+      public static XcstDelegate<object> MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) {
          return EditorInstructions.MemberTemplate(html, propertyMetadata);
       }
    }

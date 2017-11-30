@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using Xcst.PackageModel;
 
 namespace Xcst.Web.Runtime {
 
@@ -69,16 +70,16 @@ namespace Xcst.Web.Runtime {
 
       // display text
 
-      public static void DisplayText(HtmlHelper html, XcstWriter output, string name) {
+      public static void DisplayText(HtmlHelper html, ISequenceWriter<string> output, string name) {
          DisplayTextHelper(html, output, ModelMetadata.FromStringExpression(name, html.ViewData));
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void DisplayTextFor<TModel, TResult>(HtmlHelper<TModel> html, XcstWriter output, Expression<Func<TModel, TResult>> expression) {
+      public static void DisplayTextFor<TModel, TResult>(HtmlHelper<TModel> html, ISequenceWriter<string> output, Expression<Func<TModel, TResult>> expression) {
          DisplayTextHelper(html, output, ModelMetadata.FromLambdaExpression(expression, html.ViewData));
       }
 
-      internal static void DisplayTextHelper(HtmlHelper html, XcstWriter output, ModelMetadata metadata) {
+      internal static void DisplayTextHelper(HtmlHelper html, ISequenceWriter<string> output, ModelMetadata metadata) {
 
          string text = metadata.SimpleDisplayText;
 

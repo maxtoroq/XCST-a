@@ -25,7 +25,6 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.UI.WebControls;
-using Xcst.PackageModel;
 using Xcst.Web.Configuration;
 
 #if !ASPNETLIB
@@ -234,7 +233,7 @@ namespace Xcst.Web.Runtime {
 
             if (!propertyMetadata.HideSurroundingHtml) {
 
-               Action<TemplateContext, XcstWriter> memberTemplate = EditorInstructions.MemberTemplate(html, propertyMetadata);
+               XcstDelegate<object> memberTemplate = EditorInstructions.MemberTemplate(html, propertyMetadata);
 
                if (memberTemplate != null) {
                   memberTemplate(null, output);

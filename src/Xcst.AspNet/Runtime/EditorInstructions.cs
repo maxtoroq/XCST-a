@@ -87,12 +87,12 @@ namespace Xcst.Web.Runtime {
          return !propertyMetadata.IsComplexType;
       }
 
-      public static Action<TemplateContext, XcstWriter> MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) {
+      public static XcstDelegate<object> MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (html == null) throw new ArgumentNullException(nameof(html));
          if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));
 
-         Action<HtmlHelper, XcstWriter> memberTemplate;
+         Action<HtmlHelper, ISequenceWriter<object>> memberTemplate;
 
          if (!html.ViewData.TryGetValue("__xcst_member_template", out memberTemplate)) {
             return null;
