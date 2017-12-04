@@ -5,6 +5,8 @@ before_build:
     Copy-Item .\packages\Microsoft.Net.Compilers.*\tools\*.exe .\samples\aspnet\Bin\roslyn
     Copy-Item .\packages\Microsoft.Net.Compilers.*\tools\*.dll .\samples\aspnet-mvc\Bin\roslyn
     Copy-Item .\packages\Microsoft.Net.Compilers.*\tools\*.exe .\samples\aspnet-mvc\Bin\roslyn
+    Copy-Item .\packages\Microsoft.Net.Compilers.*\tools\*.dll .\samples\aspnet-todo\Bin\roslyn
+    Copy-Item .\packages\Microsoft.Net.Compilers.*\tools\*.exe .\samples\aspnet-todo\Bin\roslyn
 
 version: '{build}'
 

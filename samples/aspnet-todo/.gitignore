@@ -1,0 +1,5 @@
+!Bin/
+Bin/**/*.dll
+Bin/**/*.exe
+Bin/**/*.pdb
+Bin/**/*.xml

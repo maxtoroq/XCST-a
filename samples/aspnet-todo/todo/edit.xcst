@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<c:module version='1.0' language='C#' xmlns:c='http://maxtoroq.github.io/XCST'>
+
+   <c:import-namespace ns='System'/>
+   <c:import-namespace ns='XcstTodo'/>
+
+   <c:import href='_common.xcst'/>
+
+   <c:template name='c:initial-template'>
+      <c:script>
+         <![CDATA[
+         
+         int id;
+         
+         if (String.IsNullOrEmpty(this.UrlData[0])
+            || !Int32.TryParse(this.UrlData[0], out id)) {
+            
+            this.Response.StatusCode = 404;
+            return;
+         }
+         
+         if (this.Request.HttpMethod == "DELETE") {
+            
+            this.db.Remove(id);
+            
+            this.Response.StatusCode = 204;
+            return;
+         }
+         
+         Todo todo = this.db.Find(id);
+         
+         if (todo == null) {
+            this.Response.StatusCode = 404;
+            return;
+         }
+         
+         if (this.Request.HttpMethod == "PATCH") {
+            if (TryBind(todo)) {
+               this.db.Update(todo);
+            }
+         }
+         ]]>
+      </c:script>
+      <c:set member='this.Response.ContentType'>application/json</c:set>
+      <c:call-template name='todo-to-json'>
+         <c:with-param name='todo' value='todo'/>
+      </c:call-template>
+   </c:template>
+
+</c:module>
