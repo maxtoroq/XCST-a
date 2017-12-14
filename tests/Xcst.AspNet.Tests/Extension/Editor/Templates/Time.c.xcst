@@ -12,14 +12,13 @@
    </c:type>
 
    <c:template name='c:initial-template'>
-      <c:variable name='doc' value='new XmlDocument()'/>
-      <c:using name='output' value='doc.CreateNavigator().AppendChild()'>
-         <c:result-document output='output'>
+      <c:variable name='doc' as='XmlDocument'>
+         <c:document>
             <a:model value='new Foo()'>
                <a:editor for='d'/>
             </a:model>
-         </c:result-document>
-      </c:using>
+         </c:document>
+      </c:variable>
       <c:void value='Assert.AreEqual("input", doc.DocumentElement.LocalName)'/>
       <c:void value='Assert.AreEqual("time", doc.DocumentElement.GetAttribute("type"))'/>
       <c:void value='Assert.AreEqual("00:00:00.000", doc.DocumentElement.GetAttribute("value"))'/>
