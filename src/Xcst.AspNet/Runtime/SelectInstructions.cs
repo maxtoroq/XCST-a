@@ -23,9 +23,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Web.Mvc;
-using EnumHelper = System.Web.Mvc.Html.EnumHelper;
 
 namespace Xcst.Web.Runtime {
 
@@ -69,93 +67,6 @@ namespace Xcst.Web.Runtime {
                                               IDictionary<string, object> htmlAttributes = null) {
 
          DropDownListHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, String.Empty, selectList, optionLabel, htmlAttributes);
-      }
-
-      // Unable to constrain TEnum.  Cannot include IComparable, IConvertible, IFormattable because Nullable<T> does
-      // not implement those interfaces (and Int32 does).  Enum alone is not compatible with expression restrictions
-      // because that requires a cast from all enum types.  And the struct generic constraint disallows passing a
-      // Nullable<T> expression.
-
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void EnumDropDownListFor<TModel, TEnum>(HtmlHelper<TModel> htmlHelper,
-                                                            XcstWriter output,
-                                                            Expression<Func<TModel, TEnum>> expression,
-                                                            string optionLabel = null,
-                                                            IDictionary<string, object> htmlAttributes = null) {
-
-         if (expression == null) throw new ArgumentNullException(nameof(expression));
-
-         ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-
-         if (metadata == null) {
-            throw new ArgumentException($"Unable to determine ModelMetadata for expression '{expression.ToString()}'.", nameof(expression));
-         }
-
-         if (metadata.ModelType == null) {
-            throw new ArgumentException($"Unable to determine type of expression '{expression.ToString()}'.", nameof(expression));
-         }
-
-         if (!EnumHelper.IsValidForEnumHelper(metadata.ModelType)) {
-
-            string formatString = HasFlags(metadata.ModelType) ?
-               "Return type '{0}' is not supported. Type must not have a '{1}' attribute."
-               : "Return type '{0}' is not supported.";
-
-            throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, formatString, metadata.ModelType.FullName, "Flags"));
-         }
-
-         // Run through same processing as SelectInternal() to determine selected value and ensure it is included
-         // in the select list.
-
-         string expressionName = ExpressionHelper.GetExpressionText(expression);
-         string expressionFullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(expressionName);
-
-         Enum currentValue = null;
-
-         if (!String.IsNullOrEmpty(expressionFullName)) {
-            currentValue = htmlHelper.GetModelStateValue(expressionFullName, metadata.ModelType) as Enum;
-         }
-
-         if (currentValue == null && !String.IsNullOrEmpty(expressionName)) {
-            
-            // Ignore any select list (enumerable with this name) in the view data
-
-            currentValue = htmlHelper.ViewData.Eval(expressionName) as Enum;
-         }
-
-         if (currentValue == null) {
-            currentValue = metadata.Model as Enum;
-         }
-
-         IList<SelectListItem> selectList = EnumHelper.GetSelectList(metadata.ModelType, currentValue);
-
-         if (!String.IsNullOrEmpty(optionLabel)
-            && selectList.Count != 0
-            && String.IsNullOrEmpty(selectList[0].Text)) {
-
-            // Were given an optionLabel and the select list has a blank initial slot.  Combine.
-
-            selectList[0].Text = optionLabel;
-
-            // Use the option label just once; don't pass it down the lower-level helpers.
-
-            optionLabel = null;
-         }
-
-         DropDownListHelper(htmlHelper, output, metadata, expressionName, selectList, optionLabel, htmlAttributes);
-      }
-
-      static bool HasFlags(Type type) {
-
-         Type checkedType = Nullable.GetUnderlyingType(type) ?? type;
-
-         return HasFlagsInternal(checkedType);
-      }
-
-      static bool HasFlagsInternal(Type type) {
-
-         FlagsAttribute attribute = type.GetCustomAttribute<FlagsAttribute>(inherit: false);
-         return attribute != null;
       }
 
       internal static void DropDownListHelper(HtmlHelper htmlHelper,

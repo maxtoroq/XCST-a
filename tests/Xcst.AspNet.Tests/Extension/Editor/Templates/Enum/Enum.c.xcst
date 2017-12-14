@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System'/>
+   <c:import-namespace ns='System.Xml'/>
+
+   <c:type name='Foo'>
+      <c:member name='Bar' as='DateTimeKind'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:variable name='doc' as='XmlDocument'>
+         <c:document>
+            <a:model as='Foo'>
+               <a:editor for='Bar'/>
+            </a:model>
+         </c:document>
+      </c:variable>
+      <c:void value='doc.DocumentElement.RemoveAllAttributes()'/>
+      <c:copy-of value='doc.DocumentElement'/>
+   </c:template>
+
+   <c:template name='expected'>
+      <select>
+         <option value=""/>
+         <option value="Unspecified">Unspecified</option>
+         <option value="Utc">Utc</option>
+         <option value="Local">Local</option>
+      </select>
+   </c:template>
+
+</c:module>

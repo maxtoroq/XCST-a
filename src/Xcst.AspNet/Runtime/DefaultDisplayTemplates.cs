@@ -157,7 +157,6 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void HtmlTemplate(HtmlHelper html, XcstWriter output) {
-
          output.WriteRaw(output.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
       }
 
@@ -241,6 +240,36 @@ namespace Xcst.Web.Runtime {
             output.WriteAttributeString("src", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
             output.WriteEndElement();
          }
+      }
+
+      public static void EnumTemplate(HtmlHelper html, XcstWriter output) {
+
+         ViewDataDictionary viewData = html.ViewData;
+
+         if (viewData.ModelMetadata.Model != null) {
+
+            if (viewData.ModelMetadata.EditFormatString != null) {
+               // undo formatting if applicable to edit mode, for consistency with editor template 
+               viewData.TemplateInfo.FormattedModelValue = viewData.ModelMetadata.Model;
+            }
+
+            if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelMetadata.Model) {
+
+               Type modelType = viewData.ModelMetadata.ModelType;
+               Type enumType = Nullable.GetUnderlyingType(modelType) ?? modelType;
+
+               if (enumType.IsEnum) {
+
+                  viewData.TemplateInfo.FormattedModelValue =
+                     DefaultEditorTemplates.EnumOptions(enumType, output)
+                        .Where(i => (i.Value ?? i.Text) == viewData.ModelMetadata.Model.ToString())
+                        .Select(i => i.Text)
+                        .First();
+               }
+            }
+         }
+
+         StringTemplate(html, output);
       }
    }
 }

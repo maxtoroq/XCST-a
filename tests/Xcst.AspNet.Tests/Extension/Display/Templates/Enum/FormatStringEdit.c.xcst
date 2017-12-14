@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System'/>
+
+   <c:type name='Foo'>
+      <c:member name='Bar' value='DateTimeKind.Local' as='DateTimeKind' format='{0:d}' apply-format-in-edit-mode='yes'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:model value='new Foo()'>
+            <a:display for='Bar'/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>Local</div>
+   </c:template>
+
+</c:module>

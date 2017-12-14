@@ -19,9 +19,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.UI.WebControls;
@@ -391,6 +394,30 @@ namespace Xcst.Web.Runtime {
          SelectInstructions.ListBoxHelper(html, output, viewData.ModelMetadata, String.Empty, options, htmlAttributes);
       }
 
+      public static void EnumTemplate(HtmlHelper html, XcstWriter output) {
+
+         string className = GetEditorCssClass(new EditorInfo("Enum", "select"), null);
+         IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
+         ViewDataDictionary viewData = html.ViewData;
+
+         Type modelType = viewData.ModelMetadata.ModelType;
+         Type enumType = Nullable.GetUnderlyingType(modelType) ?? modelType;
+
+         if (!enumType.IsEnum) {
+            throw new InvalidOperationException("Enum template can only be used on Enum members.");
+         }
+
+         string formatString = viewData.ModelMetadata.EditFormatString
+            ?? viewData.ModelMetadata.DisplayFormatString;
+
+         bool applyFormatInEdit = viewData.ModelMetadata.EditFormatString != null;
+
+         IList<SelectListItem> options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
+         string optionLabel = viewData.ModelMetadata.Watermark ?? String.Empty;
+
+         SelectInstructions.DropDownListHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, htmlAttributes);
+      }
+
       static void ApplyRfc3339DateFormattingIfNeeded(HtmlHelper html, string format) {
 
          if (html.Html5DateRenderingMode != Html5DateRenderingMode.Rfc3339) {
@@ -474,6 +501,54 @@ namespace Xcst.Web.Runtime {
          }
 
          return null;
+      }
+
+      internal static IList<SelectListItem> EnumOptions(Type enumType, XcstWriter output, string formatString = null, bool applyFormatInEdit = false) {
+
+         Debug.Assert(enumType.IsEnum);
+
+         var selectList = new List<SelectListItem>();
+
+         const BindingFlags BindingFlags = BindingFlags.DeclaredOnly
+            | BindingFlags.GetField
+            | BindingFlags.Public
+            | BindingFlags.Static;
+
+         foreach (FieldInfo field in enumType.GetFields(BindingFlags)) {
+
+            object enumValue = field.GetValue(null);
+
+            string value = (formatString != null && applyFormatInEdit) ?
+               String.Format(CultureInfo.CurrentCulture, formatString, enumValue)
+               : field.Name;
+
+            string text = (formatString != null && !applyFormatInEdit) ?
+               output.SimpleContent.Format(formatString, enumValue)
+               : GetDisplayName(field);
+
+            selectList.Add(new SelectListItem {
+               Value = value,
+               Text = text,
+            });
+         }
+
+         return selectList;
+      }
+
+      static string GetDisplayName(FieldInfo field) {
+
+         DisplayAttribute display = field.GetCustomAttribute<DisplayAttribute>(inherit: false);
+
+         if (display != null) {
+
+            string name = display.GetName();
+
+            if (!String.IsNullOrEmpty(name)) {
+               return name;
+            }
+         }
+
+         return field.Name;
       }
    }
 }

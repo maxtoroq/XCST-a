@@ -138,7 +138,9 @@ namespace Xcst.Web.Tests.Extension {
             MetadataReference.CreateFromFile(typeof(System.Xml.XmlWriter).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(System.Xml.Linq.XDocument).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Newtonsoft.Json.JsonWriter).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Xcst.PackageModel.IXcstPackage).Assembly.Location),
+            // Tests dependencies
             MetadataReference.CreateFromFile(typeof(System.Web.HttpContext).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(System.Web.Mvc.ViewContext).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location),

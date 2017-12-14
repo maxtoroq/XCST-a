@@ -97,6 +97,8 @@
     <Compile Include="..\XDocumentNormalizer.cs">
       <Link>XDocumentNormalizer.cs</Link>
     </Compile>
+    <Compile Include="Extension\Display\Templates\Enum\EnumWithDisplayName.cs" />
+    <Compile Include="Extension\Editor\Templates\Enum\EnumWithDisplayName.cs" />
     <Compile Include="Extension\ExtensionTests.generated.cs" />
     <Compile Include="Extension\ExtensionTestsHelper.cs" />
     <None Include="Extension\Directives\sessionstate.dupl.i.xcst" />
@@ -108,8 +110,24 @@
     <None Include="Extension\Directives\model.type.i.xcst" />
     <None Include="Extension\DisplayName\TypeInference.c.xcst" />
     <None Include="Extension\DisplayText\TypeInference.c.xcst" />
+    <None Include="Extension\Display\Templates\Enum\FormatStringEditAndDisplayName.c.xcst" />
+    <None Include="Extension\Display\Templates\Enum\FormatStringEdit.c.xcst" />
+    <None Include="Extension\Display\Templates\Enum\FormatStringAndDisplayName.c.xcst" />
+    <None Include="Extension\Display\Templates\Enum\DisplayName.c.xcst" />
+    <None Include="Extension\Display\Templates\Enum\FormatString.c.xcst" />
+    <None Include="Extension\Display\Templates\Enum\Null.c.xcst" />
+    <None Include="Extension\Display\Templates\Enum\Enum.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTime-local.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTimeOffset.c.xcst" />
+    <None Include="Extension\Editor\Templates\Enum\FormatStringEditAndDisplayName.c.xcst" />
+    <None Include="Extension\Editor\Templates\Enum\FormatStringEdit.c.xcst" />
+    <None Include="Extension\Editor\Templates\Enum\FormatStringAndDisplayName.c.xcst" />
+    <None Include="Extension\Editor\Templates\Enum\DisplayName.c.xcst" />
+    <None Include="Extension\Editor\Templates\Enum\FormatString.c.xcst" />
+    <None Include="Extension\Editor\Templates\Enum\SelectedWithFormatString.c.xcst" />
+    <None Include="Extension\Editor\Templates\Enum\Selected.c.xcst" />
+    <None Include="Extension\Editor\Templates\Enum\Nullable.c.xcst" />
+    <None Include="Extension\Editor\Templates\Enum\Enum.c.xcst" />
     <None Include="Extension\Editor\Templates\Time.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTime.c.xcst" />
     <None Include="Extension\Editor\Templates\Date.c.xcst" />

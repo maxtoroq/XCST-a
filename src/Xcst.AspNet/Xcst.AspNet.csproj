@@ -114,7 +114,6 @@
     <Compile Include="Framework\Common\CopyOnWriteDictionary.cs" />
     <Compile Include="Framework\DependencyResolver.cs" />
     <Compile Include="Framework\IDisplayMode.cs" />
-    <Compile Include="Framework\EnumHelper.cs" />
     <Compile Include="Framework\Common\Error.cs" />
     <Compile Include="Framework\ExpressionHelper.cs" />
     <Compile Include="Framework\ExpressionUtil\CachedExpressionCompiler.cs" />

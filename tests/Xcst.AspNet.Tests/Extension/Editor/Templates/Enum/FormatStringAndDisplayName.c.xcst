@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System'/>
+   <c:import-namespace ns='System.Xml'/>
+   <c:import-namespace ns='Xcst.Web.Tests.Extension.Editor.Templates.Enum'/>
+
+   <c:type name='Foo'>
+      <c:member name='Bar' as='EnumWithDisplayName' format='Position: {0}'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:variable name='doc' as='XmlDocument'>
+         <c:document>
+            <a:model as='Foo'>
+               <a:editor for='Bar'/>
+            </a:model>
+         </c:document>
+      </c:variable>
+      <c:void value='doc.DocumentElement.RemoveAllAttributes()'/>
+      <c:copy-of value='doc.DocumentElement'/>
+   </c:template>
+
+   <c:template name='expected'>
+      <select>
+         <option value=""/>
+         <option value="First">Position: First</option>
+         <option value="Second">Position: Second</option>
+      </select>
+   </c:template>
+
+</c:module>
