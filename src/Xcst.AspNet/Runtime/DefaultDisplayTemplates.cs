@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using Xcst.Web.Configuration;
@@ -260,11 +261,13 @@ namespace Xcst.Web.Runtime {
 
                if (enumType.IsEnum) {
 
-                  viewData.TemplateInfo.FormattedModelValue =
-                     DefaultEditorTemplates.EnumOptions(enumType, output)
-                        .Where(i => (i.Value ?? i.Text) == viewData.ModelMetadata.Model.ToString())
-                        .Select(i => i.Text)
-                        .First();
+                  FieldInfo enumField = enumType.GetField(viewData.ModelMetadata.Model.ToString());
+
+                  if (enumField != null) {
+
+                     viewData.TemplateInfo.FormattedModelValue =
+                        DefaultEditorTemplates.GetDisplayName(enumField);
+                  }
                }
             }
          }

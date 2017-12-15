@@ -535,7 +535,7 @@ namespace Xcst.Web.Runtime {
          return selectList;
       }
 
-      static string GetDisplayName(FieldInfo field) {
+      internal static string GetDisplayName(FieldInfo field) {
 
          DisplayAttribute display = field.GetCustomAttribute<DisplayAttribute>(inherit: false);
 
