@@ -36,13 +36,14 @@ namespace Xcst.Web.Tests.Extension {
 
       public static void RunXcstTest(string packageFile, bool correct, bool fail) {
 
+         var packageUri = new Uri(packageFile, UriKind.Absolute);
          string usePackageBase = new StackFrame(1, true).GetMethod().DeclaringType.Namespace;
 
          CompileResult xcstResult;
          string packageName;
 
          try {
-            var codegenResult = GenerateCode(packageFile, usePackageBase);
+            var codegenResult = GenerateCode(packageUri, usePackageBase);
             xcstResult = codegenResult.Item1;
             packageName = codegenResult.Item2;
 
@@ -57,7 +58,7 @@ namespace Xcst.Web.Tests.Extension {
 
          try {
 
-            Type packageType = CompileCode(xcstResult, packageName, packageFile);
+            Type packageType = CompileCode(xcstResult, packageName, packageUri);
 
             if (!correct) {
                return;
@@ -73,7 +74,7 @@ namespace Xcst.Web.Tests.Extension {
                      TestAssert.Fail("A failing package should not define an 'expected' template.");
                   }
 
-                  SimplyRun(packageType);
+                  SimplyRun(packageType, packageUri);
 
                } else {
 
@@ -82,7 +83,7 @@ namespace Xcst.Web.Tests.Extension {
                      if (xcstResult.Templates.Contains(ExpectedName)) {
                         TestAssert.IsTrue(OutputEqualsToExpected(packageType));
                      } else {
-                        SimplyRun(packageType);
+                        SimplyRun(packageType, packageUri);
                      }
 
                   } else if (xcstResult.Templates.Contains(ExpectedName)) {
@@ -104,7 +105,7 @@ namespace Xcst.Web.Tests.Extension {
          }
       }
 
-      static Tuple<CompileResult, string> GenerateCode(string packageFile, string usePackageBase) {
+      static Tuple<CompileResult, string> GenerateCode(Uri packageUri, string usePackageBase) {
 
          XcstCompiler compiler = CompilerFactory.CreateCompiler();
          compiler.TargetNamespace = typeof(ExtensionTestsHelper).Namespace + ".Runtime";
@@ -118,17 +119,17 @@ namespace Xcst.Web.Tests.Extension {
             new Uri(Directory.GetCurrentDirectory())
          );
 
-         CompileResult result = compiler.Compile(new Uri(packageFile, UriKind.Absolute));
+         CompileResult result = compiler.Compile(packageUri);
 
          return Tuple.Create(result, compiler.TargetNamespace + "." + compiler.TargetClass);
       }
 
-      static Type CompileCode(CompileResult result, string packageName, string packageFile) {
+      static Type CompileCode(CompileResult result, string packageName, Uri packageUri) {
 
          var parseOptions = new CSharpParseOptions(preprocessorSymbols: new[] { "DEBUG", "TRACE" });
 
          SyntaxTree[] syntaxTrees = result.CompilationUnits
-            .Select(c => CSharpSyntaxTree.ParseText(c, parseOptions, path: packageFile, encoding: Encoding.UTF8))
+            .Select(c => CSharpSyntaxTree.ParseText(c, parseOptions, path: packageUri.LocalPath, encoding: Encoding.UTF8))
             .ToArray();
 
          MetadataReference[] references = {
@@ -229,13 +230,15 @@ namespace Xcst.Web.Tests.Extension {
          return XDocumentNormalizer.DeepEqualsWithNormalization(expectedDoc, actualDoc);
       }
 
-      static void SimplyRun(Type packageType) {
+      static void SimplyRun(Type packageType, Uri packageUri) {
 
          XcstViewPage package = CreatePackage(packageType);
 
          XcstEvaluator.Using(package)
             .CallInitialTemplate()
             .OutputTo(TextWriter.Null)
+            .WithBaseUri(packageUri)
+            .WithBaseOutputUri(packageUri)
             .Run();
       }
    }
