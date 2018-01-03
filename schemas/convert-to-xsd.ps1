@@ -3,7 +3,7 @@ Push-Location (Split-Path $script:MyInvocation.MyCommand.Path)
 
 try {
 
-   $saxonPath = Resolve-Path ..\packages\Saxon-HE.*
+   $saxonPath = (Resolve-Path ..\packages\Saxon-HE.*)[0]
 
    java -jar \lib\trang\20091111\trang.jar -o any-process-contents=lax -o indent=3 xcst-app.rng xcst-app.xsd
 

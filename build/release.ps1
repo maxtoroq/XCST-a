@@ -116,7 +116,7 @@ function script:NuPack([string]$projName) {
 
    NuSpec | Out-File $nuspecPath -Encoding utf8
 
-   $saxonPath = Resolve-Path $solutionPath\packages\Saxon-HE.*
+   $saxonPath = (Resolve-Path $solutionPath\packages\Saxon-HE.*)[0]
    &"$saxonPath\tools\Transform" -s:$solutionPath\NOTICE.xml -xsl:pkg-notice.xsl -o:$tempPath\NOTICE.xml projectName=$projName
 
    &$nuget pack $nuspecPath -OutputDirectory $outputPath | Out-Host
