@@ -4,14 +4,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Web.Mvc.Properties;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace System.Web.Mvc {
 
    public sealed class JsonValueProviderFactory : ValueProviderFactory {
+
+      public static JsonSerializerSettings SerializationSettings { get; } = new JsonSerializerSettings {
+         // using same default as ASP.NET Core
+         MaxDepth = 32,
+         Converters = { new ExpandoObjectConverter() }
+      };
 
       static void AddToBackingStore(EntryLimitedDictionary backingStore, string prefix, object value) {
 
@@ -51,19 +59,22 @@ namespace System.Web.Mvc {
             return null;
          }
 
-         var reader = new StreamReader(controllerContext.HttpContext.Request.InputStream);
+         var textReader = new StreamReader(controllerContext.HttpContext.Request.InputStream);
+         var jsonReader = new JsonTextReader(textReader);
 
-         string bodyText = reader.ReadToEnd();
-
-         if (String.IsNullOrEmpty(bodyText)) {
-
-            // no JSON data
-
+         if (!jsonReader.Read()) {
             return null;
          }
 
-         var serializer = new JavaScriptSerializer();
-         object jsonData = serializer.DeserializeObject(bodyText);
+         JsonSerializer serializer = JsonSerializer.Create(SerializationSettings);
+
+         object jsonData;
+
+         if (jsonReader.TokenType == JsonToken.StartArray) {
+            jsonData = serializer.Deserialize<List<ExpandoObject>>(jsonReader);
+         } else {
+            jsonData = serializer.Deserialize<ExpandoObject>(jsonReader);
+         }
 
          return jsonData;
       }
