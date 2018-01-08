@@ -21,16 +21,14 @@ namespace Xcst.Web.Tests.Extension {
 
    static class ExtensionTestsHelper {
 
-      static readonly XcstCompilerFactory CompilerFactory = new XcstCompilerFactory {
-         EnableExtensions = true,
-         PackageTypeResolver = (typeName) => Assembly.GetExecutingAssembly()
-            .GetType(typeName)
-      };
+      static readonly XcstCompilerFactory CompilerFactory = new XcstCompilerFactory();
 
       static readonly QualifiedName InitialName = new QualifiedName("initial-template", "http://maxtoroq.github.io/XCST");
       static readonly QualifiedName ExpectedName = new QualifiedName("expected");
 
       static ExtensionTestsHelper() {
+         CompilerFactory.EnableExtensions = true;
+         CompilerFactory.PackageTypeResolver = typeName => Assembly.GetExecutingAssembly().GetType(typeName);
          CompilerFactory.RegisterApplicationExtension();
       }
 

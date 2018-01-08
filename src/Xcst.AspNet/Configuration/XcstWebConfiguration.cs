@@ -15,8 +15,6 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Web.Compilation;
-using System.Web.Hosting;
 using Xcst.Compiler;
 
 namespace Xcst.Web.Configuration {
@@ -27,18 +25,11 @@ namespace Xcst.Web.Configuration {
 
       public static XcstWebConfiguration Instance { get; } = new XcstWebConfiguration();
 
-      public XcstCompilerFactory CompilerFactory { get; } = new XcstCompilerFactory {
-         EnableExtensions = true,
-         PackageTypeResolver = typeName => BuildManager.GetType(typeName, throwOnError: false),
-         PackagesLocation = HostingEnvironment.MapPath("~/App_Code"),
-         PackageFileExtension = FileExtension
-      };
+      public XcstCompilerFactory CompilerFactory { get; } = new XcstCompilerFactory();
 
       internal IList<Func<object, IHttpHandler>> HttpHandlerFactories { get; } = new List<Func<object, IHttpHandler>>();
 
       public EditorsConfiguration Editors { get; } = new EditorsConfiguration();
-
-      private XcstWebConfiguration() { }
 
 #if ASPNETLIB
       public ModelBindingConfiguration ModelBinding { get; } = new ModelBindingConfiguration();
@@ -53,6 +44,13 @@ namespace Xcst.Web.Configuration {
          this.HttpHandlerFactories.Insert(0, handlerFactory);
       }
 #endif
+
+      private XcstWebConfiguration() {
+
+         this.CompilerFactory.PackageFileExtension = FileExtension;
+         this.CompilerFactory.EnableExtensions = true;
+         this.CompilerFactory.RegisterApplicationExtension();
+      }
    }
 
    public class EditorsConfiguration {

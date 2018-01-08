@@ -15,6 +15,7 @@
 using System;
 using System.ComponentModel;
 using System.Web.Compilation;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Xcst.Compiler;
@@ -37,20 +38,18 @@ namespace Xcst.Web {
 
             startWasCalled = true;
 
-            XcstWebConfiguration config = XcstWebConfiguration.Instance;
-
             System.Web.Mvc.PreApplicationStartCode.Start();
 
-#if ASPNETLIB
-            config.RegisterHandlerFactory(XcstPageHttpHandler.Create);
-            config.RegisterHandlerFactory(XcstViewPageHttpHandler.Create);
-#endif
-            config.CompilerFactory.RegisterApplicationExtension();
+            XcstWebConfiguration config = XcstWebConfiguration.Instance;
+            config.CompilerFactory.PackageTypeResolver = typeName => BuildManager.GetType(typeName, throwOnError: false);
+            config.CompilerFactory.PackagesLocation = HostingEnvironment.MapPath("~/App_Code");
 
             BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(PageBuildProvider<XcstViewPage>));
             ViewEngines.Engines.Add(new XcstViewEngine());
 
 #if ASPNETLIB
+            config.RegisterHandlerFactory(XcstPageHttpHandler.Create);
+            config.RegisterHandlerFactory(XcstViewPageHttpHandler.Create);
             DynamicModuleUtility.RegisterModule(typeof(XcstPageHttpModule));
 #endif
          }
