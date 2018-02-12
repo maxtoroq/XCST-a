@@ -8,17 +8,11 @@
    <c:template name='c:initial-template'>
       <c:choose>
          <c:when test='this.IsPost'>
-            <c:script>
-               <![CDATA[
-               
-               var todo = new Todo();
-               
-               if (TryBind(todo)) {
-                  this.db.Add(todo);
-                  this.Response.RedirectLocation = TodoUrl(todo);
-               }
-               ]]>
-            </c:script>
+            <c:variable name='todo' value='new Todo()'/>
+            <c:if test='TryBind(todo)'>
+               <c:void value='this.db.Add(todo)'/>
+               <c:set member='this.Response.RedirectLocation' value='TodoUrl(todo)'/>
+            </c:if>
             <c:set member='this.Response.StatusCode' value='201'/>
             <c:set member='this.Response.ContentType'>application/json</c:set>
             <c:call-template name='todo-to-json'>
