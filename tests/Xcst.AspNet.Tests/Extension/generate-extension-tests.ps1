@@ -24,25 +24,7 @@ function GenerateTests {
 
    $compilerPath = Resolve-Path ..\..\..\src\Xcst.AspNet\bin\$Configuration
 
-   # AssemblyResolve is used to enable loading newer versions of Xcst.Compiler's dependencies
-
-   $onAssemblyResolve = [ResolveEventHandler] {
-      param($sender, $e)
-      
-      $assemblyName = $e.Name.Substring(0, $e.Name.IndexOf(","))
-      $assemblyPath = "$compilerPath\$assemblyName.dll"
-
-      return [Reflection.Assembly]::LoadFrom((Resolve-Path $assemblyPath))
-   }
-
-   [AppDomain]::CurrentDomain.add_AssemblyResolve($onAssemblyResolve)
-
-   try {
-      Add-Type -Path $compilerPath\Xcst.Compiler.dll
-   } finally {
-      # Detach the event handler (not detaching can lead to stack overflow issues when closing PS)
-      [AppDomain]::CurrentDomain.remove_AssemblyResolve($onAssemblyResolve)
-   }
+   Add-Type -Path $compilerPath\Xcst.Compiler.dll
 
    $compilerFactory = New-Object Xcst.Compiler.XcstCompilerFactory
    $startDirectory = Get-Item .
