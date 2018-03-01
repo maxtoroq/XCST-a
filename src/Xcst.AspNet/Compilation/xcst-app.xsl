@@ -25,7 +25,7 @@
    <param name="a:application-uri" as="xs:anyURI"/>
    <param name="a:aspnetlib" select="true()" as="xs:boolean"/>
 
-   <variable name="a:html-attributes" select="'html-class', 'html-attributes'"/>
+   <variable name="a:html-attributes" select="'class', 'attributes'"/>
    <variable name="a:input-attributes" select="'for', 'name', 'value', $a:html-attributes"/>
 
    <!--
@@ -36,7 +36,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="$a:input-attributes, 'format', 'type', 'html-placeholder'"/>
+         <with-param name="optional" select="$a:input-attributes, 'format', 'type', 'placeholder'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -90,11 +90,9 @@
             <text>, format: </text>
             <value-of select="src:expand-attribute(@format)"/>
          </if>
-         <variable name="merge-attributes" select="@html-placeholder"/>
-         <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
-            <text>, htmlAttributes: </text>
-            <value-of select="a:html-attributes(@html-attributes, @html-class, $merge-attributes)"/>
-         </if>
+         <call-template name="a:html-attributes-param">
+            <with-param name="merge-attributes" select="@placeholder"/>
+         </call-template>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -104,7 +102,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="$a:input-attributes, 'rows', 'cols', 'html-placeholder'"/>
+         <with-param name="optional" select="$a:input-attributes, 'rows', 'cols', 'placeholder'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -154,11 +152,9 @@
             <text>, columns: </text>
             <value-of select="(@cols/src:integer(xcst:integer(., true()), src:expand-attribute(.)), '20')[1]"/>
          </if>
-         <variable name="merge-attributes" select="@html-placeholder"/>
-         <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
-            <text>, htmlAttributes: </text>
-            <value-of select="a:html-attributes(@html-attributes, @html-class, $merge-attributes)"/>
-         </if>
+         <call-template name="a:html-attributes-param">
+            <with-param name="merge-attributes" select="@placeholder"/>
+         </call-template>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -214,11 +210,7 @@
             <text>, isChecked: </text>
             <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
          </if>
-         <variable name="merge-attributes" select="()"/>
-         <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
-            <text>, htmlAttributes: </text>
-            <value-of select="a:html-attributes(@html-attributes, @html-class, $merge-attributes)"/>
-         </if>
+         <call-template name="a:html-attributes-param"/>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -277,11 +269,7 @@
             <text>, isChecked: </text>
             <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
          </if>
-         <variable name="merge-attributes" select="()"/>
-         <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
-            <text>, htmlAttributes: </text>
-            <value-of select="a:html-attributes(@html-attributes, @html-class, $merge-attributes)"/>
-         </if>
+         <call-template name="a:html-attributes-param"/>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -424,11 +412,7 @@
             <text>, multiple: </text>
             <value-of select="src:boolean($multiple)"/>
          </if>
-         <variable name="merge-attributes" select="()"/>
-         <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
-            <text>, htmlAttributes: </text>
-            <value-of select="a:html-attributes(@html-attributes, @html-class, $merge-attributes)"/>
-         </if>
+         <call-template name="a:html-attributes-param"/>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -560,11 +544,7 @@
             <text>, labelText: </text>
             <value-of select="src:expand-attribute(@text)"/>
          </if>
-         <variable name="merge-attributes" select="()"/>
-         <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
-            <text>, htmlAttributes: </text>
-            <value-of select="a:html-attributes(@html-attributes, @html-class, $merge-attributes)"/>
-         </if>
+         <call-template name="a:html-attributes-param"/>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -604,11 +584,7 @@
          </if>
          <text>, message: </text>
          <value-of select="(@message/src:expand-attribute(.), 'default(string)')[1]"/>
-         <variable name="merge-attributes" select="()"/>
-         <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
-            <text>, htmlAttributes: </text>
-            <value-of select="a:html-attributes(@html-attributes, @html-class, $merge-attributes)"/>
-         </if>
+         <call-template name="a:html-attributes-param"/>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -663,11 +639,7 @@
          </choose>
          <text>, </text>
          <value-of select="(@message/src:expand-attribute(.), 'default(string)')[1]"/>
-         <variable name="merge-attributes" select="()"/>
-         <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
-            <text>, htmlAttributes: </text>
-            <value-of select="a:html-attributes(@html-attributes, @html-class, $merge-attributes)"/>
-         </if>
+         <call-template name="a:html-attributes-param"/>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -681,7 +653,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="'for', 'name', 'template', 'html-field-name', 'html-attributes', 'with-params', 'options'"/>
+         <with-param name="optional" select="'for', 'name', 'template', 'html-field-name', 'attributes', 'with-params', 'options'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -746,7 +718,7 @@
 
    <template name="a:editor-additional-view-data">
       <variable name="setters" as="text()*">
-         <for-each select="@html-attributes, a:with-options, .[@options], a:member-template">
+         <for-each select="@attributes, a:with-options, .[@options], a:member-template">
             <variable name="setter">
                <apply-templates select="." mode="a:editor-additional-view-data"/>
             </variable>
@@ -769,7 +741,7 @@
       </if>
    </template>
 
-   <template match="@html-attributes" mode="a:editor-additional-view-data">
+   <template match="@attributes" mode="a:editor-additional-view-data">
       <text>[</text>
       <value-of select="src:string('htmlAttributes')"/>
       <text>] = </text>
@@ -1224,19 +1196,20 @@
       </choose>
    </template>
 
-   <function name="a:html-attributes" as="xs:string">
-      <param name="html-attributes" as="attribute()?"/>
-      <param name="html-class" as="attribute()?"/>
+   <template name="a:html-attributes-param">
+      <param name="attributes" select="@attributes" as="attribute()?"/>
+      <param name="class" select="@class" as="attribute()?"/>
       <param name="merge-attributes" as="attribute()*"/>
 
-      <variable name="expr">
+      <if test="not(empty(($attributes, $class, $merge-attributes)))">
+         <text>, htmlAttributes: </text>
          <value-of select="a:fully-qualified-helper('HtmlAttributesMerger')"/>
          <text>.Create(</text>
-         <value-of select="$html-attributes/xcst:expression(.)"/>
+         <value-of select="$attributes/xcst:expression(.)"/>
          <text>)</text>
-         <if test="$html-class">
+         <if test="$class">
             <text>.AddCssClass(</text>
-            <value-of select="src:expand-attribute($html-class)"/>
+            <value-of select="src:expand-attribute($class)"/>
             <text>)</text>
          </if>
          <for-each select="$merge-attributes">
@@ -1247,9 +1220,8 @@
             <text>)</text>
          </for-each>
          <text>.Attributes</text>
-      </variable>
-      <sequence select="string($expr)"/>
-   </function>
+      </if>
+   </template>
 
    <function name="a:fully-qualified-helper" as="xs:string">
       <param name="helper" as="xs:string"/>

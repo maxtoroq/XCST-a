@@ -33,7 +33,7 @@
             </xs:simpleType>
          </xs:attribute>
          <xs:attribute name="format" type="a:avt"/>
-         <xs:attribute name="html-placeholder" type="a:avt"/>
+         <xs:attributeGroup ref="a:text-box-attributes"/>
          <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
@@ -50,7 +50,7 @@
                <xs:union memberTypes="a:integer a:avt-expr"/>
             </xs:simpleType>
          </xs:attribute>
-         <xs:attribute name="html-placeholder" type="a:avt"/>
+         <xs:attributeGroup ref="a:text-box-attributes"/>
          <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
@@ -128,6 +128,9 @@
       <xs:attribute name="name" type="a:avt"/>
       <xs:attribute name="value" type="a:expression"/>
    </xs:attributeGroup>
+   <xs:attributeGroup name="text-box-attributes">
+      <xs:attribute name="placeholder" type="a:avt"/>
+   </xs:attributeGroup>
    <xs:element name="label" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attribute name="for" type="a:expression"/>
@@ -156,8 +159,8 @@
       </xs:complexType>
    </xs:element>
    <xs:attributeGroup name="html-attributes">
-      <xs:attribute name="html-class" type="a:avt"/>
-      <xs:attribute name="html-attributes" type="a:expression"/>
+      <xs:attribute name="class" type="a:avt"/>
+      <xs:attribute name="attributes" type="a:expression"/>
    </xs:attributeGroup>
    <xs:element name="editor" substitutionGroup="a:extension-instruction" type="a:editor-display-common"/>
    <xs:element name="display" substitutionGroup="a:extension-instruction" type="a:editor-display-common"/>
@@ -170,7 +173,7 @@
       <xs:attribute name="name" type="a:avt"/>
       <xs:attribute name="template" type="a:avt"/>
       <xs:attribute name="html-field-name" type="a:avt"/>
-      <xs:attribute name="html-attributes" type="a:expression"/>
+      <xs:attribute name="attributes" type="a:expression"/>
       <xs:attribute name="with-params" type="a:expression"/>
       <xs:attribute name="options" type="a:options-expr"/>
    </xs:complexType>

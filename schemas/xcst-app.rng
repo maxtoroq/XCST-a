@@ -101,11 +101,9 @@
                   <attribute name="format">
                      <ref name="avt"/>
                   </attribute>
-                  <attribute name="html-placeholder">
-                     <ref name="avt"/>
-                  </attribute>
                </choice>
             </zeroOrMore>
+            <ref name="text-box-attributes"/>
             <ref name="html-attributes"/>
          </element>
       </define>
@@ -127,11 +125,9 @@
                         <ref name="avt-expr"/>
                      </choice>
                   </attribute>
-                  <attribute name="html-placeholder">
-                     <ref name="avt"/>
-                  </attribute>
                </choice>
             </zeroOrMore>
+            <ref name="text-box-attributes"/>
             <ref name="html-attributes"/>
          </element>
       </define>
@@ -285,6 +281,16 @@
          </choice>
       </define>
 
+      <define name="text-box-attributes">
+         <choice>
+            <zeroOrMore>
+               <attribute name="placeholder">
+                  <ref name="avt"/>
+               </attribute>
+            </zeroOrMore>
+         </choice>
+      </define>
+
       <define name="label">
          <element name="label">
             <choice>
@@ -349,10 +355,10 @@
       <define name="html-attributes">
          <zeroOrMore>
             <choice>
-               <attribute name="html-class">
+               <attribute name="class">
                   <ref name="avt"/>
                </attribute>
-               <attribute name="html-attributes">
+               <attribute name="attributes">
                   <ref name="expression">
                      <docs:expression-type name="System.Object"/>
                      <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
@@ -400,7 +406,7 @@
                <attribute name="html-field-name">
                   <ref name="avt"/>
                </attribute>
-               <attribute name="html-attributes">
+               <attribute name="attributes">
                   <ref name="expression">
                      <docs:expression-type name="System.Object"/>
                      <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">

@@ -194,13 +194,13 @@
     <None Include="Extension\CheckBox\check-box.for.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.for_name.mutex.i.xcst" />
     <None Include="Extension\CheckBox\check-box.for_checked.mutex.i.xcst" />
-    <None Include="Extension\CheckBox\check-box.html-attributes.type.i.xcst" />
+    <None Include="Extension\CheckBox\check-box.attributes.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.checked.type.i.xcst" />
     <None Include="Extension\Select\select.foo.i.xcst" />
     <None Include="Extension\Select\select.for.type.i.xcst" />
     <None Include="Extension\Select\select.for_name.mutex.i.xcst" />
     <None Include="Extension\Select\select.for_value.mutex.i.xcst" />
-    <None Include="Extension\Select\select.html-attributes.type.i.xcst" />
+    <None Include="Extension\Select\select.attributes.type.i.xcst" />
     <None Include="Extension\Select\select.options.type.i.xcst" />
     <None Include="Extension\Select\select.multiple.type.i.xcst" />
     <None Include="Extension\Select\select.value.type.i.xcst" />
@@ -224,7 +224,7 @@
     <None Include="Extension\Input\input.type.type.i.xcst" />
     <None Include="Extension\Label\label.foo.i.xcst" />
     <None Include="Extension\Label\label.for_name.mutex.i.xcst" />
-    <None Include="Extension\Label\label.html-attributes.type.i.xcst" />
+    <None Include="Extension\Label\label.attributes.type.i.xcst" />
     <None Include="Extension\Select\Multiple\DynamicList.c.xcst" />
     <None Include="Extension\Select\Multiple\ModelSelected.c.xcst" />
     <None Include="Extension\Select\Multiple\NullList.c.xcst" />
@@ -239,27 +239,27 @@
     <None Include="Extension\RadioButton\radio-button.for.type.i.xcst" />
     <None Include="Extension\RadioButton\radio-button.for_checked.mutex.i.xcst" />
     <None Include="Extension\RadioButton\radio-button.for_name.mutex.i.xcst" />
-    <None Include="Extension\RadioButton\radio-button.html-attributes.type.i.xcst" />
+    <None Include="Extension\RadioButton\radio-button.attributes.type.i.xcst" />
     <None Include="Extension\TextArea\text-area.cols.type.i.xcst" />
     <None Include="Extension\TextArea\text-area.foo.i.xcst" />
     <None Include="Extension\TextArea\text-area.rows.type.i.xcst" />
     <None Include="Extension\TextArea\text-area.for.type.i.xcst" />
     <None Include="Extension\TextArea\text-area.for_name.mutex.i.xcst" />
     <None Include="Extension\TextArea\text-area.for_value.mutex.i.xcst" />
-    <None Include="Extension\TextArea\text-area.html-attributes.type.i.xcst" />
+    <None Include="Extension\TextArea\text-area.attributes.type.i.xcst" />
     <None Include="Extension\TextArea\text-area.value.type.i.xcst" />
     <None Include="Extension\Input\input.for_value.mutex.i.xcst" />
     <None Include="Extension\Input\input.for_name.mutex.i.xcst" />
-    <None Include="Extension\Input\input.html-attributes.type.i.xcst" />
+    <None Include="Extension\Input\input.attributes.type.i.xcst" />
     <None Include="Extension\Input\input.value.type.i.xcst" />
     <None Include="Extension\Input\input.for.type.i.xcst" />
     <None Include="Extension\Input\input.foo.i.xcst" />
     <None Include="Extension\ValidationMessage\validation-message.for.type.i.xcst" />
     <None Include="Extension\ValidationMessage\validation-message.for_name.mutex.i.xcst" />
     <None Include="Extension\ValidationMessage\validation-message.foo.i.xcst" />
-    <None Include="Extension\ValidationMessage\validation-message.html-attributes.type.i.xcst" />
+    <None Include="Extension\ValidationMessage\validation-message.attributes.type.i.xcst" />
     <None Include="Extension\ValidationSummary\validation-summary.foo.i.xcst" />
-    <None Include="Extension\ValidationSummary\validation-summary.html-attributes.type.i.xcst" />
+    <None Include="Extension\ValidationSummary\validation-summary.attributes.type.i.xcst" />
     <None Include="Extension\ValidationSummary\validation-summary.include-member-errors.type.i.xcst" />
     <None Include="Extension\DisplayName\display-name.foo.i.xcst" />
     <None Include="Extension\DisplayName\display-name.for.type.i.xcst" />
@@ -295,7 +295,7 @@
     <None Include="Extension\Editor\editor.for.type.i.xcst" />
     <None Include="Extension\Editor\editor.for_name.mutex.i.xcst" />
     <None Include="Extension\Editor\editor.with-params.type.i.xcst" />
-    <None Include="Extension\Editor\editor.html-attributes.type.i.xcst" />
+    <None Include="Extension\Editor\editor.attributes.type.i.xcst" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

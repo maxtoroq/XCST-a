@@ -16,7 +16,7 @@
    <c:template name='c:initial-template'>
       <c:choose>
          <c:when test='ViewData.ModelMetadata.IsNullableValueType'>
-            <a:select html-class='form-control' html-attributes='htmlAttributes'>
+            <a:select class='form-control' attributes='htmlAttributes'>
                <a:option value='""' selected='{!modelValue.HasValue}'/>
                <a:option value='"true"' selected='{modelValue.HasValue &amp;&amp; modelValue.Value}'>Yes</a:option>
                <a:option value='"false"' selected='{modelValue.HasValue &amp;&amp; !modelValue.Value}'>No</a:option>
@@ -25,7 +25,7 @@
          <c:otherwise>
             <div class='checkbox'>
                <label>
-                  <a:check-box checked='{modelValue.GetValueOrDefault()}' html-attributes='htmlAttributes'/>
+                  <a:check-box checked='{modelValue.GetValueOrDefault()}' attributes='htmlAttributes'/>
                </label>
             </div>
          </c:otherwise>

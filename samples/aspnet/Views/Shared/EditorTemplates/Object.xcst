@@ -42,7 +42,7 @@
                         </c:when>
                         <c:otherwise>
                            <div class='form-group'>
-                              <a:label name='{prop.PropertyName}' html-class='control-label {labelColumnClass}'/>
+                              <a:label name='{prop.PropertyName}' class='control-label {labelColumnClass}'/>
                               <div class='{fieldColumnClass}'>
                                  <a:editor name='{prop.PropertyName}' template='{editorTemplate}'/>
                                  <c:text> </c:text>

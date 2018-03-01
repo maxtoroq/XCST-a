@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:validation-message html-attributes=''/>
+      <a:validation-message attributes=''/>
    </c:template>
 
 </c:module>

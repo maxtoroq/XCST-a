@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:check-box html-attributes=''/>
+      <a:check-box attributes=''/>
    </c:template>
 
 </c:module>

@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:input html-attributes=''/>
+      <a:editor attributes=''/>
    </c:template>
 
 </c:module>
