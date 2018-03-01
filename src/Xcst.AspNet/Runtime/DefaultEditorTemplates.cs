@@ -47,7 +47,7 @@ namespace Xcst.Web.Runtime {
             string className = GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
             IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-            SelectInstructions.DropDownList(html, output, String.Empty, TriStateValues(value), optionLabel: null, htmlAttributes: htmlAttributes);
+            SelectInstructions.Select(html, output, String.Empty, TriStateValues(value), htmlAttributes: htmlAttributes);
 
          } else {
 
@@ -362,7 +362,7 @@ namespace Xcst.Web.Runtime {
             optionLabel = viewData.ModelMetadata.Watermark ?? String.Empty;
          }
 
-         SelectInstructions.DropDownListHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, htmlAttributes);
+         SelectInstructions.SelectHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, multiple: false, htmlAttributes: htmlAttributes);
       }
 
       public static void ListBoxTemplate(HtmlHelper html, XcstWriter output) {
@@ -373,7 +373,7 @@ namespace Xcst.Web.Runtime {
 
          IEnumerable<SelectListItem> options = Options(viewData);
 
-         SelectInstructions.ListBoxHelper(html, output, viewData.ModelMetadata, String.Empty, options, htmlAttributes);
+         SelectInstructions.SelectHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel: null, multiple: true, htmlAttributes: htmlAttributes);
       }
 
       public static void EnumTemplate(HtmlHelper html, XcstWriter output) {
@@ -397,7 +397,7 @@ namespace Xcst.Web.Runtime {
          IList<SelectListItem> options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
          string optionLabel = viewData.ModelMetadata.Watermark ?? String.Empty;
 
-         SelectInstructions.DropDownListHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, htmlAttributes);
+         SelectInstructions.SelectHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, multiple: false, htmlAttributes: htmlAttributes);
       }
 
       static void ApplyRfc3339DateFormattingIfNeeded(HtmlHelper html, string format) {

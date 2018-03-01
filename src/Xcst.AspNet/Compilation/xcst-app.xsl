@@ -361,15 +361,14 @@
       <c:void value="{$expr}"/>
    </template>
 
-   <template match="a:drop-down-list | a:list-box" mode="src:extension-instruction">
+   <template match="a:select" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
       <param name="indent" tunnel="yes"/>
 
-      <variable name="ddl" select="self::a:drop-down-list"/>
       <variable name="for-model" select="empty((@for, @name))"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="$a:input-attributes, 'options'"/>
+         <with-param name="optional" select="$a:input-attributes, 'options', 'multiple'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -393,8 +392,7 @@
 
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('SelectInstructions')"/>
-         <text>.</text>
-         <value-of select="if ($ddl) then 'DropDownList' else 'ListBox'"/>
+         <text>.Select</text>
          <if test="@for or $for-model">For</if>
          <if test="$for-model">Model</if>
          <text>(</text>
@@ -415,15 +413,16 @@
                </when>
             </choose>
          </if>
+         <variable name="multiple" select="(@multiple/xcst:boolean(.), false())[1]"/>
          <text>, </text>
          <call-template name="a:options">
             <with-param name="value" select="@value"/>
-            <with-param name="allowMultiple" select="not($ddl)"/>
+            <with-param name="multiple" select="$multiple"/>
             <with-param name="indent" select="$indent + 1" tunnel="yes"/>
          </call-template>
-         <if test="$ddl and @option-label">
-            <text>, optionLabel: </text>
-            <value-of select="src:expand-attribute(@option-label)"/>
+         <if test="$multiple">
+            <text>, multiple: </text>
+            <value-of select="src:boolean($multiple)"/>
          </if>
          <variable name="merge-attributes" select="()"/>
          <if test="not(empty((@html-attributes, @html-class, $merge-attributes)))">
@@ -437,7 +436,7 @@
 
    <template name="a:options">
       <param name="value" as="attribute()?"/>
-      <param name="allowMultiple" select="false()"/>
+      <param name="multiple" select="false()"/>
 
       <choose>
          <when test="a:option or @options">
@@ -457,17 +456,15 @@
             <if test="$value">
                <call-template name="src:line-number"/>
                <call-template name="src:new-line-indented"/>
-               <choose>
-                  <when test="$allowMultiple">
-                     <text>.WithSelectedValues((</text>
-                     <value-of select="src:global-identifier('System.Collections.IEnumerable')"/>
-                     <text>)</text>
-                  </when>
-                  <otherwise>.WithSelectedValue((object)</otherwise>
-               </choose>
+               <text>.WithSelectedValue((object)</text>
                <text>(</text>
                <value-of select="xcst:expression($value)"/>
-               <text>))</text>
+               <text>)</text>
+               <if test="$multiple">
+                  <text>, multiple: </text>
+                  <value-of select="src:boolean($multiple)"/>
+               </if>
+               <text>)</text>
             </if>
             <for-each select="a:option">
                <call-template name="xcst:validate-attribs">

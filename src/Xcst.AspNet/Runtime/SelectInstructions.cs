@@ -31,111 +31,71 @@ namespace Xcst.Web.Runtime {
 
    public static class SelectInstructions {
 
-      // DropDownList
+      // Select
 
-      public static void DropDownList(HtmlHelper htmlHelper,
-                                      XcstWriter output,
-                                      string name,
-                                      IEnumerable<SelectListItem> selectList = null,
-                                      string optionLabel = null,
-                                      IDictionary<string, object> htmlAttributes = null) {
+      public static void Select(
+            HtmlHelper htmlHelper,
+            XcstWriter output,
+            string name,
+            IEnumerable<SelectListItem> selectList = null,
+            bool multiple = false,
+            IDictionary<string, object> htmlAttributes = null) {
 
-         DropDownListHelper(htmlHelper, output, default(ModelMetadata), name, selectList, optionLabel, htmlAttributes);
+         SelectHelper(htmlHelper, output, default(ModelMetadata), name, selectList, default(string), multiple, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void DropDownListFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
-                                                            XcstWriter output,
-                                                            Expression<Func<TModel, TProperty>> expression,
-                                                            IEnumerable<SelectListItem> selectList = null,
-                                                            string optionLabel = null,
-                                                            IDictionary<string, object> htmlAttributes = null) {
+      public static void SelectFor<TModel, TProperty>(
+            HtmlHelper<TModel> htmlHelper,
+            XcstWriter output,
+            Expression<Func<TModel, TProperty>> expression,
+            IEnumerable<SelectListItem> selectList = null,
+            bool multiple = false,
+            IDictionary<string, object> htmlAttributes = null) {
 
          if (expression == null) throw new ArgumentNullException(nameof(expression));
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         DropDownListHelper(htmlHelper, output, metadata, expressionString, selectList, optionLabel, htmlAttributes);
+         SelectHelper(htmlHelper, output, metadata, expressionString, selectList, default(string), multiple, htmlAttributes);
       }
 
-      public static void DropDownListForModel(HtmlHelper htmlHelper,
-                                              XcstWriter output,
-                                              IEnumerable<SelectListItem> selectList = null,
-                                              string optionLabel = null,
-                                              IDictionary<string, object> htmlAttributes = null) {
+      public static void SelectForModel(
+            HtmlHelper htmlHelper,
+            XcstWriter output,
+            IEnumerable<SelectListItem> selectList = null,
+            bool multiple = false,
+            IDictionary<string, object> htmlAttributes = null) {
 
-         DropDownListHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, String.Empty, selectList, optionLabel, htmlAttributes);
+         SelectHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, String.Empty, selectList, default(string), multiple, htmlAttributes);
       }
 
-      internal static void DropDownListHelper(HtmlHelper htmlHelper,
-                                              XcstWriter output,
-                                              ModelMetadata metadata,
-                                              string expression,
-                                              IEnumerable<SelectListItem> selectList,
-                                              string optionLabel,
-                                              IDictionary<string, object> htmlAttributes) {
+      internal static void SelectHelper(
+            HtmlHelper htmlHelper,
+            XcstWriter output,
+            ModelMetadata metadata,
+            string expression,
+            IEnumerable<SelectListItem> selectList,
+            string optionLabel,
+            bool multiple,
+            IDictionary<string, object> htmlAttributes) {
 
-         if (optionLabel == null) {
-            if (selectList != null) {
+         if (!multiple
+            && optionLabel == null
+            && selectList != null) {
 
-               var optionList = selectList as OptionList;
+            var optionList = selectList as OptionList;
 
-               if (optionList != null
-                  && optionList.AddBlankOption) {
+            if (optionList != null
+               && optionList.AddBlankOption) {
 
-                  optionLabel = String.Empty;
-               }
+               optionLabel = String.Empty;
             }
          }
 
-         SelectInternal(htmlHelper, output, metadata, optionLabel, expression, selectList, allowMultiple: false, htmlAttributes: htmlAttributes);
-      }
-
-      // ListBox
-
-      public static void ListBox(HtmlHelper htmlHelper,
-                                 XcstWriter output,
-                                 string name,
-                                 IEnumerable<SelectListItem> selectList = null,
-                                 IDictionary<string, object> htmlAttributes = null) {
-
-         ListBoxHelper(htmlHelper, output, default(ModelMetadata), name, selectList, htmlAttributes);
-      }
-
-      [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void ListBoxFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
-                                                       XcstWriter output,
-                                                       Expression<Func<TModel, TProperty>> expression,
-                                                       IEnumerable<SelectListItem> selectList = null,
-                                                       IDictionary<string, object> htmlAttributes = null) {
-
-         if (expression == null) throw new ArgumentNullException(nameof(expression));
-
-         ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-         string expressionString = ExpressionHelper.GetExpressionText(expression);
-
-         ListBoxHelper(htmlHelper, output, metadata, expressionString, selectList, htmlAttributes);
-      }
-
-      public static void ListBoxForModel(HtmlHelper htmlHelper,
-                                         XcstWriter output,
-                                         IEnumerable<SelectListItem> selectList = null,
-                                         IDictionary<string, object> htmlAttributes = null) {
-
-         ListBoxHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, String.Empty, selectList, htmlAttributes);
-      }
-
-      internal static void ListBoxHelper(HtmlHelper htmlHelper,
-                                         XcstWriter output,
-                                         ModelMetadata metadata,
-                                         string name,
-                                         IEnumerable<SelectListItem> selectList,
-                                         IDictionary<string, object> htmlAttributes) {
-
-         SelectInternal(htmlHelper, output, metadata, optionLabel: null, name: name, selectList: selectList, allowMultiple: true, htmlAttributes: htmlAttributes);
+         SelectInternal(htmlHelper, output, metadata, optionLabel, expression, selectList, multiple, htmlAttributes);
       }
 
       // Helper methods
@@ -282,7 +242,7 @@ namespace Xcst.Web.Runtime {
          // Make optionLabel the first item that gets rendered.
 
          if (optionLabel != null) {
-            ListItemToOption(output, new SelectListItem() {
+            ListItemToOption(output, new SelectListItem {
                Text = optionLabel,
                Value = String.Empty,
                Selected = false

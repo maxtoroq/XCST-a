@@ -51,24 +51,19 @@ namespace Xcst.Web.Runtime {
          this.staticList = new List<SelectListItem>(staticOptionsCount);
       }
 
-      public OptionList WithSelectedValue(object selectedValue) {
+      public OptionList WithSelectedValue(object selectedValue, bool multiple = false) {
 
          if (selectedValue != null) {
-            this.selectedValues.Add(ValueString(selectedValue));
-         }
 
-         this.useSelectedValues = true;
+            if (multiple) {
 
-         return this;
-      }
+               this.selectedValues.UnionWith(
+                  ((IEnumerable)selectedValue).Cast<object>()
+                     .Select(ValueString));
 
-      public OptionList WithSelectedValues(IEnumerable selectedValues) {
-
-         if (selectedValues != null) {
-
-            this.selectedValues.UnionWith(
-               selectedValues.Cast<object>()
-                  .Select(ValueString));
+            } else {
+               this.selectedValues.Add(ValueString(selectedValue));
+            }
          }
 
          this.useSelectedValues = true;

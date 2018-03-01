@@ -87,16 +87,17 @@
          <xs:attribute name="method" use="required" type="a:avt"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="list-box" substitutionGroup="a:extension-instruction" type="a:select-common"/>
-   <xs:element name="drop-down-list" substitutionGroup="a:extension-instruction" type="a:select-common"/>
-   <xs:complexType name="select-common">
-      <xs:complexContent>
-         <xs:extension base="a:options">
-            <xs:attributeGroup ref="a:input-attributes"/>
-            <xs:attributeGroup ref="a:html-attributes"/>
-         </xs:extension>
-      </xs:complexContent>
-   </xs:complexType>
+   <xs:element name="select" substitutionGroup="a:extension-instruction">
+      <xs:complexType>
+         <xs:complexContent>
+            <xs:extension base="a:options">
+               <xs:attributeGroup ref="a:input-attributes"/>
+               <xs:attribute name="multiple" type="a:boolean"/>
+               <xs:attributeGroup ref="a:html-attributes"/>
+            </xs:extension>
+         </xs:complexContent>
+      </xs:complexType>
+   </xs:element>
    <xs:complexType name="options">
       <xs:sequence>
          <xs:element minOccurs="0" maxOccurs="unbounded" ref="a:option"/>

@@ -31,14 +31,13 @@
             <ref name="display"/>
             <ref name="display-name"/>
             <ref name="display-text"/>
-            <ref name="drop-down-list"/>
             <ref name="editor"/>
             <ref name="http-method-override"/>
             <ref name="input"/>
             <ref name="label"/>
-            <ref name="list-box"/>
             <ref name="model"/>
             <ref name="radio-button"/>
+            <ref name="select"/>
             <ref name="text-area"/>
             <ref name="validation-summary"/>
             <ref name="validation-message"/>
@@ -202,22 +201,17 @@
          </element>
       </define>
 
-      <define name="list-box">
-         <element name="list-box">
-            <ref name="select-common"/>
+      <define name="select">
+         <element name="select">
+            <ref name="input-attributes"/>
+            <ref name="options"/>
+            <optional>
+               <attribute name="multiple">
+                  <ref name="boolean"/>
+               </attribute>
+            </optional>
+            <ref name="html-attributes"/>
          </element>
-      </define>
-
-      <define name="drop-down-list">
-         <element name="drop-down-list">
-            <ref name="select-common"/>
-         </element>
-      </define>
-
-      <define name="select-common">
-         <ref name="input-attributes"/>
-         <ref name="options"/>
-         <ref name="html-attributes"/>
       </define>
 
       <define name="options">
