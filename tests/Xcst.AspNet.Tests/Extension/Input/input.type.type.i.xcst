@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:hidden for='a' value='""'/>
+      <a:input type=''/>
    </c:template>
 
 </c:module>

@@ -106,64 +106,6 @@ namespace Xcst.Web.Runtime {
                      htmlAttributes: attributes);
       }
 
-      // Hidden
-
-      public static void Hidden(HtmlHelper htmlHelper,
-                                XcstWriter output,
-                                string name,
-                                object value = null,
-                                IDictionary<string, object> htmlAttributes = null) {
-
-         HiddenHelper(htmlHelper, output, default(ModelMetadata), value, value == null, name, htmlAttributes);
-      }
-
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void HiddenFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
-                                                      XcstWriter output, Expression<Func<TModel, TProperty>> expression,
-                                                      IDictionary<string, object> htmlAttributes = null) {
-
-         ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-         string expressionString = ExpressionHelper.GetExpressionText(expression);
-
-         HiddenHelper(htmlHelper, output, metadata, metadata.Model, false, expressionString, htmlAttributes);
-      }
-
-      static void HiddenHelper(HtmlHelper htmlHelper,
-                               XcstWriter output,
-                               ModelMetadata metadata,
-                               object value,
-                               bool useViewData,
-                               string expression,
-                               IDictionary<string, object> htmlAttributes) {
-
-#if !ASPNETLIB
-         Binary binaryValue = value as Binary;
-
-         if (binaryValue != null) {
-            value = binaryValue.ToArray();
-         }
-#endif
-
-         byte[] byteArrayValue = value as byte[];
-
-         if (byteArrayValue != null) {
-            value = Convert.ToBase64String(byteArrayValue);
-         }
-
-         InputHelper(htmlHelper,
-                     output,
-                     InputType.Hidden,
-                     metadata,
-                     expression,
-                     value,
-                     useViewData,
-                     isChecked: false,
-                     setId: true,
-                     isExplicitValue: true,
-                     format: null,
-                     htmlAttributes: htmlAttributes);
-      }
-
       public static void HttpMethodOverride(HtmlHelper htmlHelper, XcstWriter output, string httpMethod) {
 
          if (String.IsNullOrEmpty(httpMethod)) throw new ArgumentNullException(nameof(httpMethod));
@@ -179,45 +121,6 @@ namespace Xcst.Web.Runtime {
          output.WriteAttributeString("name", "X-HTTP-Method-Override");
          output.WriteAttributeString("value", httpMethod);
          output.WriteEndElement();
-      }
-
-      // Password
-
-      public static void Password(HtmlHelper htmlHelper, XcstWriter output, string name, object value = null, IDictionary<string, object> htmlAttributes = null) {
-         PasswordHelper(htmlHelper, output, default(ModelMetadata), name, value, htmlAttributes);
-      }
-
-      [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void PasswordFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, IDictionary<string, object> htmlAttributes = null) {
-
-         if (expression == null) throw new ArgumentNullException(nameof(expression));
-
-         ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-         string expressionString = ExpressionHelper.GetExpressionText(expression);
-
-         PasswordHelper(htmlHelper, output, metadata, expressionString, null /* value */, htmlAttributes);
-      }
-
-      static void PasswordHelper(HtmlHelper htmlHelper,
-                                 XcstWriter output,
-                                 ModelMetadata metadata,
-                                 string name,
-                                 object value,
-                                 IDictionary<string, object> htmlAttributes) {
-
-         InputHelper(htmlHelper,
-                     output,
-                     InputType.Password,
-                     metadata,
-                     name,
-                     value,
-                     useViewData: false,
-                     isChecked: false,
-                     setId: true,
-                     isExplicitValue: true,
-                     format: null,
-                     htmlAttributes: htmlAttributes);
       }
 
       // RadioButton
@@ -336,62 +239,105 @@ namespace Xcst.Web.Runtime {
                      htmlAttributes: attributes);
       }
 
-      // TextBox
+      // Input
 
-      public static void TextBox(HtmlHelper htmlHelper,
-                                 XcstWriter output,
-                                 string name,
-                                 object value = null,
-                                 string format = null,
-                                 IDictionary<string, object> htmlAttributes = null) {
+      public static void Input(
+            HtmlHelper htmlHelper,
+            XcstWriter output,
+            string name,
+            object value = null,
+            string type = null,
+            string format = null,
+            IDictionary<string, object> htmlAttributes = null) {
 
-         InputHelper(htmlHelper,
-                     output,
-                     InputType.Text,
-                     metadata: null,
-                     name: name,
-                     value: value,
-                     useViewData: (value == null),
-                     isChecked: false,
-                     setId: true,
-                     isExplicitValue: true,
-                     format: format,
-                     htmlAttributes: htmlAttributes);
+         ModelMetadata metadata = null;
+         bool? useViewData = null;
+
+         InputImpl(htmlHelper, output, type, metadata, value, useViewData, name, format, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void TextBoxFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
-                                                       XcstWriter output,
-                                                       Expression<Func<TModel, TProperty>> expression,
-                                                       string format = null,
-                                                       IDictionary<string, object> htmlAttributes = null) {
+      public static void InputFor<TModel, TProperty>(
+            HtmlHelper<TModel> htmlHelper,
+            XcstWriter output,
+            Expression<Func<TModel, TProperty>> expression,
+            string type = null,
+            string format = null,
+            IDictionary<string, object> htmlAttributes = null) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-         string expressionString = ExpressionHelper.GetExpressionText(expression);
+         string exprString = ExpressionHelper.GetExpressionText(expression);
 
-         TextBoxHelper(htmlHelper, output, metadata, metadata.Model, expressionString, format, htmlAttributes);
+         bool useViewData = false;
+         object value = metadata.Model;
+
+         if (value != null
+            && GetInputType(type) == InputType.Password) {
+
+            value = null;
+         }
+
+         InputImpl(htmlHelper, output, type, metadata, value, useViewData, exprString, format, htmlAttributes);
       }
 
-      static void TextBoxHelper(HtmlHelper htmlHelper,
-                                XcstWriter output,
-                                ModelMetadata metadata,
-                                object model,
-                                string expression,
-                                string format,
-                                IDictionary<string, object> htmlAttributes) {
+      static void InputImpl(
+            HtmlHelper htmlHelper,
+            XcstWriter output,
+            string type,
+            ModelMetadata metadata,
+            object value,
+            bool? useViewData,
+            string expression,
+            string format,
+            IDictionary<string, object> htmlAttributes) {
 
-         InputHelper(htmlHelper,
-                     output,
-                     InputType.Text,
-                     metadata,
-                     expression,
-                     model,
-                     useViewData: false,
-                     isChecked: false,
-                     setId: true,
-                     isExplicitValue: true,
-                     format: format,
-                     htmlAttributes: htmlAttributes);
+         InputType? inputType = GetInputType(type);
+
+         if (type != null
+            && inputType == null
+            && !(htmlAttributes
+                  ?? (htmlAttributes = new Dictionary<string, object>()))
+                  .ContainsKey("type")) {
+
+            htmlAttributes["type"] = type;
+         }
+
+         if (inputType == InputType.Hidden) {
+
+#if !ASPNETLIB
+            Binary binaryValue = value as Binary;
+
+            if (binaryValue != null) {
+               value = binaryValue.ToArray();
+            }
+#endif
+
+            byte[] byteArrayValue = value as byte[];
+
+            if (byteArrayValue != null) {
+               value = Convert.ToBase64String(byteArrayValue);
+            }
+         }
+
+         if (useViewData == null) {
+
+            useViewData = (inputType == InputType.Password) ? false
+               : (value == null);
+         }
+
+         InputHelper(
+            htmlHelper,
+            output,
+            inputType ?? InputType.Text,
+            metadata: metadata,
+            name: expression,
+            value: value,
+            useViewData: useViewData.Value,
+            isChecked: false,
+            setId: true,
+            isExplicitValue: true,
+            format: format,
+            htmlAttributes: htmlAttributes);
       }
 
       // Helper methods
@@ -516,6 +462,24 @@ namespace Xcst.Web.Runtime {
 
       static RouteValueDictionary ToRouteValueDictionary(IDictionary<string, object> dictionary) {
          return (dictionary == null) ? new RouteValueDictionary() : new RouteValueDictionary(dictionary);
+      }
+
+      static InputType? GetInputType(string type) {
+
+         switch (type) {
+            case "checkbox":
+               return InputType.CheckBox;
+            case "hidden":
+               return InputType.Hidden;
+            case "password":
+               return InputType.Password;
+            case "radio":
+               return InputType.Radio;
+            case "text":
+               return InputType.Text;
+            default:
+               return null;
+         }
       }
 
       // Field Name

@@ -30,10 +30,6 @@ using System.Web.Routing;
 using System.Web.UI.WebControls;
 using Xcst.Web.Configuration;
 
-#if !ASPNETLIB
-using System.Data.Linq; 
-#endif
-
 namespace Xcst.Web.Runtime {
 
    static class DefaultEditorTemplates {
@@ -135,24 +131,10 @@ namespace Xcst.Web.Runtime {
 
          object model = viewData.Model;
 
-#if !ASPNETLIB
-         Binary modelAsBinary = model as Binary;
-
-         if (modelAsBinary != null) {
-            model = modelAsBinary.ToArray();
-         } 
-#endif
-
-         byte[] modelAsByteArray = model as byte[];
-
-         if (modelAsByteArray != null) {
-            model = Convert.ToBase64String(modelAsByteArray);
-         }
-
          string className = GetEditorCssClass(new EditorInfo("HiddenInput", "input", InputType.Hidden), null);
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputInstructions.Hidden(html, output, String.Empty, model, htmlAttributes);
+         InputInstructions.Input(html, output, String.Empty, model, type: "hidden", htmlAttributes: htmlAttributes);
       }
 
       public static void MultilineTextTemplate(HtmlHelper html, XcstWriter output) {
@@ -271,7 +253,7 @@ namespace Xcst.Web.Runtime {
          string className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputInstructions.Password(html, output, String.Empty, value, htmlAttributes);
+         InputInstructions.Input(html, output, String.Empty, value, type: "password", htmlAttributes: htmlAttributes);
       }
 
       public static void StringTemplate(HtmlHelper html, XcstWriter output) {
@@ -451,7 +433,7 @@ namespace Xcst.Web.Runtime {
 
          AddInputAttributes(html, htmlAttributes);
 
-         InputInstructions.TextBox(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes);
+         InputInstructions.Input(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes);
       }
 
       static void AddInputAttributes(HtmlHelper html, IDictionary<string, object> htmlAttributes) {

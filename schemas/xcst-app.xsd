@@ -24,23 +24,17 @@
    <xs:attributeGroup name="value-attribute-or-content">
       <xs:attribute name="value" type="a:expression"/>
    </xs:attributeGroup>
-   <xs:element name="text-box" substitutionGroup="a:extension-instruction">
+   <xs:element name="input" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attributeGroup ref="a:input-attributes"/>
+         <xs:attribute name="type">
+            <xs:simpleType>
+               <xs:union memberTypes="a:input-type a:avt-expr"/>
+            </xs:simpleType>
+         </xs:attribute>
          <xs:attribute name="format" type="a:avt"/>
-         <xs:attribute name="html-type" type="a:avt"/>
          <xs:attribute name="html-placeholder" type="a:avt"/>
-      </xs:complexType>
-   </xs:element>
-   <xs:element name="password" substitutionGroup="a:extension-instruction">
-      <xs:complexType>
-         <xs:attributeGroup ref="a:input-attributes"/>
-         <xs:attribute name="html-placeholder" type="a:avt"/>
-      </xs:complexType>
-   </xs:element>
-   <xs:element name="hidden" substitutionGroup="a:extension-instruction">
-      <xs:complexType>
-         <xs:attributeGroup ref="a:input-attributes"/>
+         <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="text-area" substitutionGroup="a:extension-instruction">
@@ -57,6 +51,7 @@
             </xs:simpleType>
          </xs:attribute>
          <xs:attribute name="html-placeholder" type="a:avt"/>
+         <xs:attributeGroup ref="a:html-attributes"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="check-box" substitutionGroup="a:extension-instruction">
@@ -98,6 +93,7 @@
       <xs:complexContent>
          <xs:extension base="a:options">
             <xs:attributeGroup ref="a:input-attributes"/>
+            <xs:attributeGroup ref="a:html-attributes"/>
          </xs:extension>
       </xs:complexContent>
    </xs:complexType>
@@ -130,7 +126,6 @@
       <xs:attribute name="for" type="a:expression"/>
       <xs:attribute name="name" type="a:avt"/>
       <xs:attribute name="value" type="a:expression"/>
-      <xs:attributeGroup ref="a:html-attributes"/>
    </xs:attributeGroup>
    <xs:element name="label" substitutionGroup="a:extension-instruction">
       <xs:complexType>
@@ -233,6 +228,11 @@
          <xs:enumeration value="false"/>
          <xs:enumeration value="1"/>
          <xs:enumeration value="0"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="input-type">
+      <xs:restriction base="xs:token">
+         <xs:minLength value="1"/>
       </xs:restriction>
    </xs:simpleType>
    <xs:simpleType name="avt">

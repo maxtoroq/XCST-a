@@ -33,15 +33,13 @@
             <ref name="display-text"/>
             <ref name="drop-down-list"/>
             <ref name="editor"/>
-            <ref name="hidden"/>
             <ref name="http-method-override"/>
+            <ref name="input"/>
             <ref name="label"/>
             <ref name="list-box"/>
             <ref name="model"/>
-            <ref name="password"/>
             <ref name="radio-button"/>
             <ref name="text-area"/>
-            <ref name="text-box"/>
             <ref name="validation-summary"/>
             <ref name="validation-message"/>
          </choice>
@@ -90,15 +88,18 @@
    <div>
       <ann:documentation>Forms</ann:documentation>
 
-      <define name="text-box">
-         <element name="text-box">
+      <define name="input">
+         <element name="input">
             <ref name="input-attributes"/>
             <zeroOrMore>
                <choice>
-                  <attribute name="format">
-                     <ref name="avt"/>
+                  <attribute name="type">
+                     <choice>
+                        <ref name="input-type"/>
+                        <ref name="avt-expr"/>
+                     </choice>
                   </attribute>
-                  <attribute name="html-type">
+                  <attribute name="format">
                      <ref name="avt"/>
                   </attribute>
                   <attribute name="html-placeholder">
@@ -106,23 +107,7 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-         </element>
-      </define>
-
-      <define name="password">
-         <element name="password">
-            <ref name="input-attributes"/>
-            <optional>
-               <attribute name="html-placeholder">
-                  <ref name="avt"/>
-               </attribute>
-            </optional>
-         </element>
-      </define>
-
-      <define name="hidden">
-         <element name="hidden">
-            <ref name="input-attributes"/>
+            <ref name="html-attributes"/>
          </element>
       </define>
 
@@ -148,6 +133,7 @@
                   </attribute>
                </choice>
             </zeroOrMore>
+            <ref name="html-attributes"/>
          </element>
       </define>
 
@@ -231,6 +217,7 @@
       <define name="select-common">
          <ref name="input-attributes"/>
          <ref name="options"/>
+         <ref name="html-attributes"/>
       </define>
 
       <define name="options">
@@ -302,7 +289,6 @@
                </choice>
             </zeroOrMore>
          </choice>
-         <ref name="html-attributes"/>
       </define>
 
       <define name="label">
@@ -565,6 +551,12 @@
             <value>1</value>
             <value>0</value>
          </choice>
+      </define>
+
+      <define name="input-type">
+         <data type="token">
+            <param name="minLength">1</param>
+         </data>
       </define>
 
       <define name="avt">
