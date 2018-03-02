@@ -162,8 +162,8 @@ namespace Xcst.Web.Runtime {
             bool replaceValidationMessageContents = String.IsNullOrEmpty(validationMessage);
 
             if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
-               attribs.AddDontReplace("data-valmsg-for", modelName);
-               attribs.AddDontReplace("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
+               attribs.MergeAttribute("data-valmsg-for", modelName);
+               attribs.MergeAttribute("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
             } else {
 
                FieldValidationMetadata fieldMetadata = ApplyFieldValidationMetadata(htmlHelper, modelMetadata, modelName);
@@ -234,7 +234,7 @@ namespace Xcst.Web.Runtime {
 
                   // Only put errors in the validation summary if they're supposed to be included there
 
-                  divAttribs.AddDontReplace("data-valmsg-summary", "true");
+                  divAttribs.MergeAttribute("data-valmsg-summary", "true");
                }
 
             } else {

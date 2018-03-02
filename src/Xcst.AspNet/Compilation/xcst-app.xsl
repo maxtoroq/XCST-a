@@ -26,7 +26,8 @@
    <param name="a:aspnetlib" select="true()" as="xs:boolean"/>
 
    <variable name="a:html-attributes" select="'class', 'attributes'"/>
-   <variable name="a:input-attributes" select="'for', 'name', 'value', $a:html-attributes"/>
+   <variable name="a:input-attributes" select="'for', 'name', 'value', 'disabled', $a:html-attributes"/>
+   <variable name="a:text-box-attributes" select="'readonly', 'placeholder', $a:input-attributes"/>
 
    <!--
       ## Forms
@@ -36,7 +37,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="$a:input-attributes, 'format', 'type', 'placeholder'"/>
+         <with-param name="optional" select="$a:text-box-attributes, 'format', 'type'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -92,6 +93,7 @@
          </if>
          <call-template name="a:html-attributes-param">
             <with-param name="merge-attributes" select="@placeholder"/>
+            <with-param name="bool-attributes" select="@disabled, @readonly"/>
          </call-template>
          <text>)</text>
       </variable>
@@ -102,7 +104,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="$a:input-attributes, 'rows', 'cols', 'placeholder'"/>
+         <with-param name="optional" select="$a:text-box-attributes, 'rows', 'cols'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -154,6 +156,7 @@
          </if>
          <call-template name="a:html-attributes-param">
             <with-param name="merge-attributes" select="@placeholder"/>
+            <with-param name="bool-attributes" select="@disabled, @readonly"/>
          </call-template>
          <text>)</text>
       </variable>
@@ -164,7 +167,7 @@
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="$a:html-attributes, 'for', 'name', 'checked'"/>
+         <with-param name="optional" select="$a:input-attributes[. ne 'value'], 'checked'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -210,7 +213,9 @@
             <text>, isChecked: </text>
             <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
          </if>
-         <call-template name="a:html-attributes-param"/>
+         <call-template name="a:html-attributes-param">
+            <with-param name="bool-attributes" select="@disabled"/>
+         </call-template>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -221,7 +226,7 @@
 
       <call-template name="xcst:validate-attribs">
          <with-param name="required" select="'value'"/>
-         <with-param name="optional" select="$a:html-attributes, 'for', 'name', 'checked'"/>
+         <with-param name="optional" select="$a:input-attributes[. ne 'value'], 'checked'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -269,7 +274,9 @@
             <text>, isChecked: </text>
             <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
          </if>
-         <call-template name="a:html-attributes-param"/>
+         <call-template name="a:html-attributes-param">
+            <with-param name="bool-attributes" select="@disabled"/>
+         </call-template>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -412,7 +419,9 @@
             <text>, multiple: </text>
             <value-of select="src:boolean($multiple)"/>
          </if>
-         <call-template name="a:html-attributes-param"/>
+         <call-template name="a:html-attributes-param">
+            <with-param name="bool-attributes" select="@disabled"/>
+         </call-template>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -1200,8 +1209,9 @@
       <param name="attributes" select="@attributes" as="attribute()?"/>
       <param name="class" select="@class" as="attribute()?"/>
       <param name="merge-attributes" as="attribute()*"/>
+      <param name="bool-attributes" as="attribute()*"/>
 
-      <if test="not(empty(($attributes, $class, $merge-attributes)))">
+      <if test="not(empty(($attributes, $class, $merge-attributes, $bool-attributes)))">
          <text>, htmlAttributes: </text>
          <value-of select="a:fully-qualified-helper('HtmlAttributesMerger')"/>
          <text>.Create(</text>
@@ -1213,10 +1223,17 @@
             <text>)</text>
          </if>
          <for-each select="$merge-attributes">
-            <text>.AddDontReplace(</text>
-            <value-of select="src:string(substring(local-name(), 6))"/>
+            <text>.MergeAttribute(</text>
+            <value-of select="src:string(local-name())"/>
             <text>, </text>
             <value-of select="src:expand-attribute(.)"/>
+            <text>)</text>
+         </for-each>
+         <for-each select="$bool-attributes">
+            <text>.MergeBoolean(</text>
+            <value-of select="src:string(local-name())"/>
+            <text>, </text>
+            <value-of select="src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
             <text>)</text>
          </for-each>
          <text>.Attributes</text>

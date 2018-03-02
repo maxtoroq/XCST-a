@@ -54,36 +54,16 @@ namespace Xcst.Web.Runtime {
          return this;
       }
 
-      public HtmlAttributesMerger AddDontReplace(string key, string value, bool omitIfNull = false) {
+      public HtmlAttributesMerger MergeBoolean(string key, bool value, bool replaceExisting = false) {
 
-         bool exists = this.Attributes.ContainsKey(key);
-
-         if (!exists) {
-            if (value != null
-               || !omitIfNull) {
-
-               this.Attributes[key] = value;
-            }
+         if (value) {
+            MergeAttribute(key, key, replaceExisting);
          }
 
          return this;
       }
 
-      public HtmlAttributesMerger AddReplace(string key, string value, bool removeIfNull = false) {
-
-         if (value == null
-            && removeIfNull) {
-
-            this.Attributes.Remove(key);
-         } else {
-
-            this.Attributes[key] = value;
-         }
-
-         return this;
-      }
-
-      public HtmlAttributesMerger MergeAttribute(string key, object value, bool replaceExisting) {
+      public HtmlAttributesMerger MergeAttribute(string key, object value, bool replaceExisting = false) {
 
          if (String.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
 

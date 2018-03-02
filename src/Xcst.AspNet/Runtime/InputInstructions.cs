@@ -364,8 +364,8 @@ namespace Xcst.Web.Runtime {
          output.WriteStartElement("input");
 
          var attribs = HtmlAttributesMerger.Create(htmlAttributes)
-            .AddDontReplace("type", HtmlHelper.GetInputTypeString(inputType))
-            .AddReplace("name", fullName);
+            .MergeAttribute("type", HtmlHelper.GetInputTypeString(inputType))
+            .MergeAttribute("name", fullName, replaceExisting: true);
 
          string valueParameter = htmlHelper.FormatValue(value, format);
          bool usedModelState = false;
@@ -398,10 +398,7 @@ namespace Xcst.Web.Runtime {
                   isChecked = htmlHelper.EvalBoolean(fullName);
                }
 
-               if (isChecked) {
-                  attribs.AddDontReplace("checked", "checked");
-               }
-
+               attribs.MergeBoolean("checked", isChecked);
                attribs.MergeAttribute("value", valueParameter, replaceExisting: isExplicitValue);
 
                break;

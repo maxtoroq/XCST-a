@@ -26,20 +26,21 @@
    </xs:attributeGroup>
    <xs:element name="input" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attributeGroup ref="a:input-attributes"/>
+         <xs:attributeGroup ref="a:input-for-name-value-attribs"/>
          <xs:attribute name="type">
             <xs:simpleType>
                <xs:union memberTypes="a:input-type a:avt-expr"/>
             </xs:simpleType>
          </xs:attribute>
          <xs:attribute name="format" type="a:avt"/>
-         <xs:attributeGroup ref="a:text-box-attributes"/>
-         <xs:attributeGroup ref="a:html-attributes"/>
+         <xs:attributeGroup ref="a:text-box-attribs"/>
+         <xs:attributeGroup ref="a:input-attribs"/>
+         <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="text-area" substitutionGroup="a:extension-instruction">
       <xs:complexType>
-         <xs:attributeGroup ref="a:input-attributes"/>
+         <xs:attributeGroup ref="a:input-for-name-value-attribs"/>
          <xs:attribute name="rows">
             <xs:simpleType>
                <xs:union memberTypes="a:integer a:avt-expr"/>
@@ -50,8 +51,9 @@
                <xs:union memberTypes="a:integer a:avt-expr"/>
             </xs:simpleType>
          </xs:attribute>
-         <xs:attributeGroup ref="a:text-box-attributes"/>
-         <xs:attributeGroup ref="a:html-attributes"/>
+         <xs:attributeGroup ref="a:text-box-attribs"/>
+         <xs:attributeGroup ref="a:input-attribs"/>
+         <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="check-box" substitutionGroup="a:extension-instruction">
@@ -63,7 +65,8 @@
                <xs:union memberTypes="a:boolean a:avt-expr"/>
             </xs:simpleType>
          </xs:attribute>
-         <xs:attributeGroup ref="a:html-attributes"/>
+         <xs:attributeGroup ref="a:input-attribs"/>
+         <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="radio-button" substitutionGroup="a:extension-instruction">
@@ -76,7 +79,8 @@
                <xs:union memberTypes="a:boolean a:avt-expr"/>
             </xs:simpleType>
          </xs:attribute>
-         <xs:attributeGroup ref="a:html-attributes"/>
+         <xs:attributeGroup ref="a:input-attribs"/>
+         <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="anti-forgery-token" substitutionGroup="a:extension-instruction">
@@ -91,9 +95,10 @@
       <xs:complexType>
          <xs:complexContent>
             <xs:extension base="a:options">
-               <xs:attributeGroup ref="a:input-attributes"/>
+               <xs:attributeGroup ref="a:input-for-name-value-attribs"/>
                <xs:attribute name="multiple" type="a:boolean"/>
-               <xs:attributeGroup ref="a:html-attributes"/>
+               <xs:attributeGroup ref="a:input-attribs"/>
+               <xs:attributeGroup ref="a:html-attribs"/>
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -120,15 +125,24 @@
          </xs:attribute>
       </xs:complexType>
    </xs:element>
-   <xs:simpleType name="options-expr">
-      <xs:restriction base="a:expression"/>
-   </xs:simpleType>
-   <xs:attributeGroup name="input-attributes">
+   <xs:attributeGroup name="input-for-name-value-attribs">
       <xs:attribute name="for" type="a:expression"/>
       <xs:attribute name="name" type="a:avt"/>
       <xs:attribute name="value" type="a:expression"/>
    </xs:attributeGroup>
-   <xs:attributeGroup name="text-box-attributes">
+   <xs:attributeGroup name="input-attribs">
+      <xs:attribute name="disabled">
+         <xs:simpleType>
+            <xs:union memberTypes="a:boolean a:avt-expr"/>
+         </xs:simpleType>
+      </xs:attribute>
+   </xs:attributeGroup>
+   <xs:attributeGroup name="text-box-attribs">
+      <xs:attribute name="readonly">
+         <xs:simpleType>
+            <xs:union memberTypes="a:boolean a:avt-expr"/>
+         </xs:simpleType>
+      </xs:attribute>
       <xs:attribute name="placeholder" type="a:avt"/>
    </xs:attributeGroup>
    <xs:element name="label" substitutionGroup="a:extension-instruction">
@@ -136,7 +150,7 @@
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
          <xs:attribute name="text" type="a:avt"/>
-         <xs:attributeGroup ref="a:html-attributes"/>
+         <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="validation-summary" substitutionGroup="a:extension-instruction">
@@ -147,7 +161,7 @@
             </xs:simpleType>
          </xs:attribute>
          <xs:attribute name="message" type="a:avt"/>
-         <xs:attributeGroup ref="a:html-attributes"/>
+         <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="validation-message" substitutionGroup="a:extension-instruction">
@@ -155,12 +169,12 @@
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
          <xs:attribute name="message" type="a:avt"/>
-         <xs:attributeGroup ref="a:html-attributes"/>
+         <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
-   <xs:attributeGroup name="html-attributes">
+   <xs:attributeGroup name="html-attribs">
       <xs:attribute name="class" type="a:avt"/>
-      <xs:attribute name="attributes" type="a:expression"/>
+      <xs:attribute name="attributes" type="a:expr-obj-dict"/>
    </xs:attributeGroup>
    <xs:element name="editor" substitutionGroup="a:extension-instruction" type="a:editor-display-common"/>
    <xs:element name="display" substitutionGroup="a:extension-instruction" type="a:editor-display-common"/>
@@ -173,8 +187,8 @@
       <xs:attribute name="name" type="a:avt"/>
       <xs:attribute name="template" type="a:avt"/>
       <xs:attribute name="html-field-name" type="a:avt"/>
-      <xs:attribute name="attributes" type="a:expression"/>
-      <xs:attribute name="with-params" type="a:expression"/>
+      <xs:attribute name="attributes" type="a:expr-obj-dict"/>
+      <xs:attribute name="with-params" type="a:expr-obj-dict"/>
       <xs:attribute name="options" type="a:options-expr"/>
    </xs:complexType>
    <xs:element name="with-options">
@@ -211,7 +225,7 @@
          <xs:attribute name="value" type="a:expression"/>
          <xs:attribute name="as" type="a:type_name"/>
          <xs:attribute name="html-field-prefix" type="a:avt"/>
-         <xs:attribute name="with-params" type="a:expression"/>
+         <xs:attribute name="with-params" type="a:expr-obj-dict"/>
          <xs:attribute name="helper-name" type="a:identifier"/>
       </xs:complexType>
    </xs:element>
@@ -260,6 +274,12 @@
       <xs:restriction base="xs:string">
          <xs:minLength value="1"/>
       </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="expr-obj-dict">
+      <xs:restriction base="a:expression"/>
+   </xs:simpleType>
+   <xs:simpleType name="options-expr">
+      <xs:restriction base="a:expression"/>
    </xs:simpleType>
    <xs:simpleType name="identifier">
       <xs:restriction base="xs:token">

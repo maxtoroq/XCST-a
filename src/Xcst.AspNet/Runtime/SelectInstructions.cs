@@ -210,12 +210,10 @@ namespace Xcst.Web.Runtime {
          output.WriteStartElement("select");
 
          var attribs = HtmlAttributesMerger.Create(htmlAttributes)
-            .AddReplace("name", fullName)
+            .MergeAttribute("name", fullName, replaceExisting: true)
             .GenerateId(fullName);
 
-         if (allowMultiple) {
-            attribs.AddDontReplace("multiple", "multiple");
-         }
+         attribs.MergeBoolean("multiple", allowMultiple);
 
          // If there are any errors for a named field, we add the css attribute.
 

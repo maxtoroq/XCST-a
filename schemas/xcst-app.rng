@@ -89,7 +89,7 @@
 
       <define name="input">
          <element name="input">
-            <ref name="input-attributes"/>
+            <ref name="input-for-name-value-attribs"/>
             <zeroOrMore>
                <choice>
                   <attribute name="type">
@@ -103,14 +103,15 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="text-box-attributes"/>
-            <ref name="html-attributes"/>
+            <ref name="text-box-attribs"/>
+            <ref name="input-attribs"/>
+            <ref name="html-attribs"/>
          </element>
       </define>
 
       <define name="text-area">
          <element name="text-area">
-            <ref name="input-attributes"/>
+            <ref name="input-for-name-value-attribs"/>
             <zeroOrMore>
                <choice>
                   <attribute name="rows">
@@ -127,8 +128,9 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="text-box-attributes"/>
-            <ref name="html-attributes"/>
+            <ref name="text-box-attribs"/>
+            <ref name="input-attribs"/>
+            <ref name="html-attribs"/>
          </element>
       </define>
 
@@ -152,7 +154,8 @@
                   </choice>
                </zeroOrMore>
             </choice>
-            <ref name="html-attributes"/>
+            <ref name="input-attribs"/>
+            <ref name="html-attribs"/>
          </element>
       </define>
 
@@ -179,7 +182,8 @@
                   </choice>
                </zeroOrMore>
             </choice>
-            <ref name="html-attributes"/>
+            <ref name="input-attribs"/>
+            <ref name="html-attribs"/>
          </element>
       </define>
 
@@ -199,14 +203,15 @@
 
       <define name="select">
          <element name="select">
-            <ref name="input-attributes"/>
+            <ref name="input-for-name-value-attribs"/>
             <ref name="options"/>
             <optional>
                <attribute name="multiple">
                   <ref name="boolean"/>
                </attribute>
             </optional>
-            <ref name="html-attributes"/>
+            <ref name="input-attribs"/>
+            <ref name="html-attribs"/>
          </element>
       </define>
 
@@ -242,28 +247,7 @@
          </zeroOrMore>
       </define>
 
-      <define name="options-expr">
-         <ref name="expression">
-            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
-               <docs:type-param name="System.Web.Mvc.SelectListItem"/>
-            </docs:expression-type>
-            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
-               <docs:type-param name="System.Collections.Generic.KeyValuePair&lt;TKey, TValue>" topic="5tbh8a42"/>
-            </docs:expression-type>
-            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
-               <docs:type-param name="System.Linq.IGrouping" topic="bb344977">
-                  <docs:type-param name="TGroupKey"/>
-                  <docs:type-param name="System.Collections.Generic.KeyValuePair&lt;TKey, TValue>" topic="5tbh8a42"/>
-               </docs:type-param>
-            </docs:expression-type>
-            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
-               <docs:type-param name="System.Linq.IGrouping&lt;TKey, TElement>" topic="bb344977"/>
-            </docs:expression-type>
-            <docs:expression-type name="System.Collections.IEnumerable"/>
-         </ref>
-      </define>
-
-      <define name="input-attributes">
+      <define name="input-for-name-value-attribs">
          <choice>
             <attribute name="for">
                <ref name="expression"/>
@@ -281,14 +265,33 @@
          </choice>
       </define>
 
-      <define name="text-box-attributes">
-         <choice>
-            <zeroOrMore>
+      <define name="input-attribs">
+         <zeroOrMore>
+            <choice>
+               <attribute name="disabled">
+                  <choice>
+                     <ref name="boolean"/>
+                     <ref name="avt-expr"/>
+                  </choice>
+               </attribute>
+            </choice>
+         </zeroOrMore>
+      </define>
+
+      <define name="text-box-attribs">
+         <zeroOrMore>
+            <choice>
+               <attribute name="readonly">
+                  <choice>
+                     <ref name="boolean"/>
+                     <ref name="avt-expr"/>
+                  </choice>
+               </attribute>
                <attribute name="placeholder">
                   <ref name="avt"/>
                </attribute>
-            </zeroOrMore>
-         </choice>
+            </choice>
+         </zeroOrMore>
       </define>
 
       <define name="label">
@@ -308,7 +311,7 @@
                   <ref name="avt"/>
                </attribute>
             </optional>
-            <ref name="html-attributes"/>
+            <ref name="html-attribs"/>
          </element>
       </define>
 
@@ -327,7 +330,7 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="html-attributes"/>
+            <ref name="html-attribs"/>
          </element>
       </define>
 
@@ -348,24 +351,18 @@
                   <ref name="avt"/>
                </attribute>
             </optional>
-            <ref name="html-attributes"/>
+            <ref name="html-attribs"/>
          </element>
       </define>
 
-      <define name="html-attributes">
+      <define name="html-attribs">
          <zeroOrMore>
             <choice>
                <attribute name="class">
                   <ref name="avt"/>
                </attribute>
                <attribute name="attributes">
-                  <ref name="expression">
-                     <docs:expression-type name="System.Object"/>
-                     <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
-                        <docs:type-param name="System.String"/>
-                        <docs:type-param name="System.Object"/>
-                     </docs:expression-type>
-                  </ref>
+                  <ref name="expr-obj-dict"/>
                </attribute>
             </choice>
          </zeroOrMore>
@@ -407,22 +404,10 @@
                   <ref name="avt"/>
                </attribute>
                <attribute name="attributes">
-                  <ref name="expression">
-                     <docs:expression-type name="System.Object"/>
-                     <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
-                        <docs:type-param name="System.String"/>
-                        <docs:type-param name="System.Object"/>
-                     </docs:expression-type>
-                  </ref>
+                  <ref name="expr-obj-dict"/>
                </attribute>
                <attribute name="with-params">
-                  <ref name="expression">
-                     <docs:expression-type name="System.Object"/>
-                     <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
-                        <docs:type-param name="System.String"/>
-                        <docs:type-param name="System.Object"/>
-                     </docs:expression-type>
-                  </ref>
+                  <ref name="expr-obj-dict"/>
                </attribute>
                <attribute name="options">
                   <ref name="options-expr"/>
@@ -512,13 +497,7 @@
                      <ref name="avt"/>
                   </attribute>
                   <attribute name="with-params">
-                     <ref name="expression">
-                        <docs:expression-type name="System.Object"/>
-                        <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
-                           <docs:type-param name="System.String"/>
-                           <docs:type-param name="System.Object"/>
-                        </docs:expression-type>
-                     </ref>
+                     <ref name="expr-obj-dict"/>
                   </attribute>
                   <attribute name="helper-name">
                      <ref name="identifier"/>
@@ -576,6 +555,37 @@
          <data type="string">
             <param name="minLength">1</param>
          </data>
+      </define>
+
+      <define name="expr-obj-dict">
+         <ref name="expression">
+            <docs:expression-type name="System.Object"/>
+            <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
+               <docs:type-param name="System.String"/>
+               <docs:type-param name="System.Object"/>
+            </docs:expression-type>
+         </ref>
+      </define>
+
+      <define name="options-expr">
+         <ref name="expression">
+            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
+               <docs:type-param name="System.Web.Mvc.SelectListItem"/>
+            </docs:expression-type>
+            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
+               <docs:type-param name="System.Collections.Generic.KeyValuePair&lt;TKey, TValue>" topic="5tbh8a42"/>
+            </docs:expression-type>
+            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
+               <docs:type-param name="System.Linq.IGrouping" topic="bb344977">
+                  <docs:type-param name="TGroupKey"/>
+                  <docs:type-param name="System.Collections.Generic.KeyValuePair&lt;TKey, TValue>" topic="5tbh8a42"/>
+               </docs:type-param>
+            </docs:expression-type>
+            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
+               <docs:type-param name="System.Linq.IGrouping&lt;TKey, TElement>" topic="bb344977"/>
+            </docs:expression-type>
+            <docs:expression-type name="System.Collections.IEnumerable"/>
+         </ref>
       </define>
 
       <define name="identifier">

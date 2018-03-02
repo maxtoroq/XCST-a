@@ -141,7 +141,7 @@ namespace Xcst.Web.Runtime {
 
          var attribs = HtmlAttributesMerger.Create(htmlAttributes)
             .GenerateId(fullName)
-            .AddReplace("name", fullName)
+            .MergeAttribute("name", fullName, replaceExisting: true)
             .MergeAttributes(rowsAndColumns, replaceExisting: rowsAndColumns != implicitRowsAndColumns); // Only force explicit rows/cols
 
          // If there are any errors for a named field, we add the CSS attribute.
