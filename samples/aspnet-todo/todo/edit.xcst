@@ -41,7 +41,7 @@
          }
          ]]>
       </c:script>
-      <c:set member='this.Response.ContentType'>application/json</c:set>
+      <c:set ref='this.Response.ContentType'>application/json</c:set>
       <c:call-template name='todo-to-json'>
          <c:with-param name='todo' value='todo'/>
       </c:call-template>
