@@ -246,14 +246,10 @@ namespace Xcst.Web.Runtime {
 
       public static void PasswordTemplate(HtmlHelper html, XcstWriter output) {
 
-         object value = (!XcstWebConfiguration.Instance.Editors.OmitPasswordValue) ?
-            html.ViewData.TemplateInfo.FormattedModelValue
-            : null;
-
          string className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputInstructions.Input(html, output, String.Empty, value, type: "password", htmlAttributes: htmlAttributes);
+         InputInstructions.Input(html, output, String.Empty, value: null, type: "password", htmlAttributes: htmlAttributes);
       }
 
       public static void StringTemplate(HtmlHelper html, XcstWriter output) {

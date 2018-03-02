@@ -184,6 +184,7 @@
     <None Include="Extension\Editor\Templates\Enum\Selected.c.xcst" />
     <None Include="Extension\Editor\Templates\Enum\Nullable.c.xcst" />
     <None Include="Extension\Editor\Templates\Enum\Enum.c.xcst" />
+    <None Include="Extension\Editor\Templates\Password.c.xcst" />
     <None Include="Extension\Editor\Templates\Time.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTime.c.xcst" />
     <None Include="Extension\Editor\Templates\Date.c.xcst" />
@@ -197,6 +198,7 @@
     <None Include="Extension\CheckBox\check-box.for_checked.mutex.i.xcst" />
     <None Include="Extension\CheckBox\check-box.attributes.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.checked.type.i.xcst" />
+    <None Include="Extension\Input\PasswordOmitValue.c.xcst" />
     <None Include="Extension\Input\input.disabled.type.i.xcst" />
     <None Include="Extension\Input\input.readonly.type.i.xcst" />
     <None Include="Extension\RadioButton\radio-button.disabled.type.i.xcst" />

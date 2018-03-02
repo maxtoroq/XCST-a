@@ -77,12 +77,6 @@ namespace Xcst.Web.Configuration {
 #endif
 
       public Func<EditorInfo, string, string> EditorCssClass { get; set; }
-
-      /// <summary>
-      /// Instruct the default password template not to output the <code>value</code> attribute.
-      /// </summary>
-
-      public bool OmitPasswordValue { get; set; }
    }
 
 #if ASPNETLIB
