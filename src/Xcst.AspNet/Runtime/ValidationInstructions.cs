@@ -32,37 +32,6 @@ namespace Xcst.Web.Runtime {
 
    public static class ValidationInstructions {
 
-      public static void Validate(HtmlHelper htmlHelper, string modelName) {
-
-         if (modelName == null) throw new ArgumentNullException(nameof(modelName));
-
-         ValidateHelper(htmlHelper,
-                        ModelMetadata.FromStringExpression(modelName, htmlHelper.ViewData),
-                        modelName);
-      }
-
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void ValidateFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression) {
-         ValidateHelper(htmlHelper,
-                        ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData),
-                        ExpressionHelper.GetExpressionText(expression));
-      }
-
-      static void ValidateHelper(HtmlHelper htmlHelper, ModelMetadata modelMetadata, string expression) {
-
-         FormContext formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
-
-         if (formContext == null
-            || htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
-
-            return; // nothing to do
-         }
-
-         string modelName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(expression);
-
-         ApplyFieldValidationMetadata(htmlHelper, modelMetadata, modelName);
-      }
-
       /// <summary>
       /// Displays a validation message if an error exists for the specified entry in the
       /// <see cref="ModelStateDictionary"/> object.
