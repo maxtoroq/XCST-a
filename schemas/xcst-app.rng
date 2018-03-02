@@ -38,7 +38,7 @@
             <ref name="model"/>
             <ref name="radio-button"/>
             <ref name="select"/>
-            <ref name="text-area"/>
+            <ref name="textarea"/>
             <ref name="validation-summary"/>
             <ref name="validation-message"/>
          </choice>
@@ -109,8 +109,8 @@
          </element>
       </define>
 
-      <define name="text-area">
-         <element name="text-area">
+      <define name="textarea">
+         <element name="textarea">
             <ref name="input-for-name-value-attribs"/>
             <zeroOrMore>
                <choice>

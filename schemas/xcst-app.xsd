@@ -38,7 +38,7 @@
          <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="text-area" substitutionGroup="a:extension-instruction">
+   <xs:element name="textarea" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attributeGroup ref="a:input-for-name-value-attribs"/>
          <xs:attribute name="rows">

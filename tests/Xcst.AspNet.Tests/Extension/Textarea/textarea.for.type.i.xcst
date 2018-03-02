@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:text-area attributes=''/>
+      <a:textarea for=''/>
    </c:template>
 
 </c:module>

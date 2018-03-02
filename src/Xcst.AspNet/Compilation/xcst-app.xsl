@@ -100,7 +100,7 @@
       <c:void value="{$expr}"/>
    </template>
 
-   <template match="a:text-area" mode="src:extension-instruction">
+   <template match="a:textarea" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
