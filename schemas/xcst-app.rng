@@ -32,7 +32,6 @@
             <ref name="display-name"/>
             <ref name="display-text"/>
             <ref name="editor"/>
-            <ref name="http-method-override"/>
             <ref name="input"/>
             <ref name="label"/>
             <ref name="model"/>
@@ -190,14 +189,6 @@
       <define name="anti-forgery-token">
          <element name="anti-forgery-token">
             <empty/>
-         </element>
-      </define>
-
-      <define name="http-method-override">
-         <element name="http-method-override">
-            <attribute name="method">
-               <ref name="avt"/>
-            </attribute>
          </element>
       </define>
 

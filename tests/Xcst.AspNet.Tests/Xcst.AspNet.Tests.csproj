@@ -224,7 +224,6 @@
     <None Include="Extension\Select\ValueResetsSelectedDynamic.c.xcst" />
     <None Include="Extension\Select\ModelSelected.c.xcst" />
     <None Include="Extension\Select\ValueResetsSelectedStatic.c.xcst" />
-    <None Include="Extension\HttpMethodOverride\http-method-override.foo.i.xcst" />
     <None Include="Extension\Input\HiddenByteArray.c.xcst" />
     <None Include="Extension\Input\input.type.type.i.xcst" />
     <None Include="Extension\Label\label.foo.i.xcst" />

@@ -86,11 +86,6 @@
    <xs:element name="anti-forgery-token" substitutionGroup="a:extension-instruction">
       <xs:complexType/>
    </xs:element>
-   <xs:element name="http-method-override" substitutionGroup="a:extension-instruction">
-      <xs:complexType>
-         <xs:attribute name="method" use="required" type="a:avt"/>
-      </xs:complexType>
-   </xs:element>
    <xs:element name="select" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:complexContent>

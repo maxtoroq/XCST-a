@@ -106,23 +106,6 @@ namespace Xcst.Web.Runtime {
                      htmlAttributes: attributes);
       }
 
-      public static void HttpMethodOverride(HtmlHelper htmlHelper, XcstWriter output, string httpMethod) {
-
-         if (String.IsNullOrEmpty(httpMethod)) throw new ArgumentNullException(nameof(httpMethod));
-
-         if (String.Equals(httpMethod, "GET", StringComparison.OrdinalIgnoreCase)
-            || String.Equals(httpMethod, "POST", StringComparison.OrdinalIgnoreCase)) {
-
-            throw new ArgumentException("The GET and POST HTTP methods are not supported.", nameof(httpMethod));
-         }
-
-         output.WriteStartElement("input");
-         output.WriteAttributeString("type", "hidden");
-         output.WriteAttributeString("name", "X-HTTP-Method-Override");
-         output.WriteAttributeString("value", httpMethod);
-         output.WriteEndElement();
-      }
-
       // RadioButton
 
       public static void RadioButton(HtmlHelper htmlHelper,

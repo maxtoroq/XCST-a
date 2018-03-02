@@ -321,41 +321,6 @@
       </choose>
    </template>
 
-   <template match="a:http-method-override" mode="src:extension-instruction">
-      <param name="output" tunnel="yes"/>
-
-      <call-template name="xcst:validate-attribs">
-         <with-param name="required" select="'method'"/>
-         <with-param name="extension" select="true()"/>
-      </call-template>
-
-      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
-      <variable name="doc-output" select="src:doc-output(., $output)"/>
-
-      <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
-      </if>
-
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
-         <text>.HttpMethodOverride(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <text>, </text>
-         <value-of select="src:expand-attribute(@method)"/>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
-   </template>
-
    <template match="a:select" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
       <param name="indent" tunnel="yes"/>
