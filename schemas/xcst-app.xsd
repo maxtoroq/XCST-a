@@ -126,6 +126,14 @@
       <xs:attribute name="value" type="a:expression"/>
    </xs:attributeGroup>
    <xs:attributeGroup name="input-attribs">
+      <xs:attributeGroup ref="a:input-attribs-except-autofocus"/>
+      <xs:attribute name="autofocus">
+         <xs:simpleType>
+            <xs:union memberTypes="a:boolean a:avt-expr"/>
+         </xs:simpleType>
+      </xs:attribute>
+   </xs:attributeGroup>
+   <xs:attributeGroup name="input-attribs-except-autofocus">
       <xs:attribute name="disabled">
          <xs:simpleType>
             <xs:union memberTypes="a:boolean a:avt-expr"/>

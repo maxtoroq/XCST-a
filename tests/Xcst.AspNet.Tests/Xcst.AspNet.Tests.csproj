@@ -156,6 +156,7 @@
     <Compile Include="Extension\ExtensionTests.generated.cs" />
     <Compile Include="Extension\ExtensionTestsHelper.cs" />
     <None Include="app.config" />
+    <None Include="Extension\CheckBox\check-box.autofocus.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.disabled.type.i.xcst" />
     <None Include="Extension\Directives\sessionstate.dupl.i.xcst" />
     <None Include="Extension\Directives\sessionstate.type.i.xcst" />
@@ -198,10 +199,13 @@
     <None Include="Extension\CheckBox\check-box.for_checked.mutex.i.xcst" />
     <None Include="Extension\CheckBox\check-box.attributes.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.checked.type.i.xcst" />
+    <None Include="Extension\Input\input.autofocus.type.i.xcst" />
     <None Include="Extension\Input\PasswordOmitValue.c.xcst" />
     <None Include="Extension\Input\input.disabled.type.i.xcst" />
     <None Include="Extension\Input\input.readonly.type.i.xcst" />
+    <None Include="Extension\RadioButton\radio-button.autofocus.type.i.xcst" />
     <None Include="Extension\RadioButton\radio-button.disabled.type.i.xcst" />
+    <None Include="Extension\Select\select.autofocus.type.i.xcst" />
     <None Include="Extension\Select\select.foo.i.xcst" />
     <None Include="Extension\Select\select.for.type.i.xcst" />
     <None Include="Extension\Select\select.for_name.mutex.i.xcst" />
@@ -247,6 +251,7 @@
     <None Include="Extension\RadioButton\radio-button.for_name.mutex.i.xcst" />
     <None Include="Extension\RadioButton\radio-button.attributes.type.i.xcst" />
     <None Include="Extension\Textarea\textarea.cols.type.i.xcst" />
+    <None Include="Extension\Textarea\textarea.autofocus.type.i.xcst" />
     <None Include="Extension\Textarea\textarea.readonly.type.i.xcst" />
     <None Include="Extension\Textarea\textarea.foo.i.xcst" />
     <None Include="Extension\Textarea\textarea.rows.type.i.xcst" />

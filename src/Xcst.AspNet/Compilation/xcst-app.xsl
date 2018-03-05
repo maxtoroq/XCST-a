@@ -26,7 +26,7 @@
    <param name="a:aspnetlib" select="true()" as="xs:boolean"/>
 
    <variable name="a:html-attributes" select="'class', 'attributes'"/>
-   <variable name="a:input-attributes" select="'for', 'name', 'value', 'disabled', $a:html-attributes"/>
+   <variable name="a:input-attributes" select="'for', 'name', 'value', 'disabled', 'autofocus', $a:html-attributes"/>
    <variable name="a:text-box-attributes" select="'readonly', 'placeholder', $a:input-attributes"/>
 
    <!--
@@ -93,7 +93,7 @@
          </if>
          <call-template name="a:html-attributes-param">
             <with-param name="merge-attributes" select="@placeholder"/>
-            <with-param name="bool-attributes" select="@disabled, @readonly"/>
+            <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
          </call-template>
          <text>)</text>
       </variable>
@@ -156,7 +156,7 @@
          </if>
          <call-template name="a:html-attributes-param">
             <with-param name="merge-attributes" select="@placeholder"/>
-            <with-param name="bool-attributes" select="@disabled, @readonly"/>
+            <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
          </call-template>
          <text>)</text>
       </variable>
@@ -214,7 +214,7 @@
             <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
          </if>
          <call-template name="a:html-attributes-param">
-            <with-param name="bool-attributes" select="@disabled"/>
+            <with-param name="bool-attributes" select="@disabled, @autofocus"/>
          </call-template>
          <text>)</text>
       </variable>
@@ -275,7 +275,7 @@
             <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
          </if>
          <call-template name="a:html-attributes-param">
-            <with-param name="bool-attributes" select="@disabled"/>
+            <with-param name="bool-attributes" select="@disabled, @autofocus"/>
          </call-template>
          <text>)</text>
       </variable>
@@ -385,7 +385,7 @@
             <value-of select="src:boolean($multiple)"/>
          </if>
          <call-template name="a:html-attributes-param">
-            <with-param name="bool-attributes" select="@disabled"/>
+            <with-param name="bool-attributes" select="@disabled, @autofocus"/>
          </call-template>
          <text>)</text>
       </variable>

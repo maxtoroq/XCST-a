@@ -257,6 +257,20 @@
       </define>
 
       <define name="input-attribs">
+         <ref name="input-attribs-except-autofocus"/>
+         <zeroOrMore>
+            <choice>
+               <attribute name="autofocus">
+                  <choice>
+                     <ref name="boolean"/>
+                     <ref name="avt-expr"/>
+                  </choice>
+               </attribute>
+            </choice>
+         </zeroOrMore>
+      </define>
+
+      <define name="input-attribs-except-autofocus">
          <zeroOrMore>
             <choice>
                <attribute name="disabled">
