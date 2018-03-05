@@ -32,6 +32,7 @@
             <ref name="display-name"/>
             <ref name="display-text"/>
             <ref name="editor"/>
+            <ref name="hidden"/>
             <ref name="input"/>
             <ref name="label"/>
             <ref name="model"/>
@@ -104,6 +105,14 @@
             </zeroOrMore>
             <ref name="text-box-attribs"/>
             <ref name="input-attribs"/>
+            <ref name="html-attribs"/>
+         </element>
+      </define>
+
+      <define name="hidden">
+         <element name="hidden">
+            <ref name="input-for-name-value-attribs"/>
+            <ref name="input-attribs-except-autofocus"/>
             <ref name="html-attribs"/>
          </element>
       </define>

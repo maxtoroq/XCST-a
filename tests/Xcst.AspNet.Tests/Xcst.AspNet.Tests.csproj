@@ -199,6 +199,13 @@
     <None Include="Extension\CheckBox\check-box.for_checked.mutex.i.xcst" />
     <None Include="Extension\CheckBox\check-box.attributes.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.checked.type.i.xcst" />
+    <None Include="Extension\Hidden\ByteArray.c.xcst" />
+    <None Include="Extension\Hidden\hidden.attributes.type.i.xcst" />
+    <None Include="Extension\Hidden\hidden.foo.i.xcst" />
+    <None Include="Extension\Hidden\hidden.for.type.i.xcst" />
+    <None Include="Extension\Hidden\hidden.for_name.mutex.i.xcst" />
+    <None Include="Extension\Hidden\hidden.for_value.mutex.i.xcst" />
+    <None Include="Extension\Hidden\hidden.value.type.i.xcst" />
     <None Include="Extension\Input\input.autofocus.type.i.xcst" />
     <None Include="Extension\Input\PasswordOmitValue.c.xcst" />
     <None Include="Extension\Input\input.disabled.type.i.xcst" />

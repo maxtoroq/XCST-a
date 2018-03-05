@@ -100,6 +100,66 @@
       <c:void value="{$expr}"/>
    </template>
 
+   <template match="a:hidden" mode="src:extension-instruction">
+      <param name="output" tunnel="yes"/>
+
+      <call-template name="xcst:validate-attribs">
+         <with-param name="optional" select="$a:input-attributes[. ne 'autofocus']"/>
+         <with-param name="extension" select="true()"/>
+      </call-template>
+
+      <call-template name="a:validate-for">
+         <with-param name="attribs" select="@name, @value"/>
+      </call-template>
+
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <c:variable name="{$doc-output}">
+            <attribute name="value">
+               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
+               <text>.CastElement(</text>
+               <value-of select="$output"/>
+               <text>)</text>
+            </attribute>
+         </c:variable>
+      </if>
+
+      <variable name="expr">
+         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
+         <text>.Input</text>
+         <if test="@for">For</if>
+         <text>(</text>
+         <call-template name="a:html-helper"/>
+         <text>, </text>
+         <value-of select="$doc-output"/>
+         <text>, </text>
+         <choose>
+            <when test="@for">
+               <variable name="param" select="src:aux-variable(generate-id())"/>
+               <value-of select="$param"/>
+               <text> => </text>
+               <value-of select="$param, xcst:expression(@for)" separator="."/>
+            </when>
+            <otherwise>
+               <value-of select="(@name/src:expand-attribute(.), src:string(''))[1]"/>
+               <if test="@value">
+                  <text>, </text>
+                  <value-of select="xcst:expression(@value)"/>
+               </if>
+            </otherwise>
+         </choose>
+         <text>, type: </text>
+         <value-of select="src:string('hidden')"/>
+         <call-template name="a:html-attributes-param">
+            <with-param name="bool-attributes" select="@disabled"/>
+         </call-template>
+         <text>)</text>
+      </variable>
+      <c:void value="{$expr}"/>
+   </template>
+
    <template match="a:textarea" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
 

@@ -38,6 +38,13 @@
          <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
+   <xs:element name="hidden" substitutionGroup="a:extension-instruction">
+      <xs:complexType>
+         <xs:attributeGroup ref="a:input-for-name-value-attribs"/>
+         <xs:attributeGroup ref="a:input-attribs-except-autofocus"/>
+         <xs:attributeGroup ref="a:html-attribs"/>
+      </xs:complexType>
+   </xs:element>
    <xs:element name="textarea" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attributeGroup ref="a:input-for-name-value-attribs"/>
