@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Drawing'/>
+   <c:import-namespace ns='System.Xml'/>
+
+   <c:type name='Foo'>
+      <c:member name='Color' as='Color?'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:variable name='doc' as='XmlDocument'>
+         <c:document>
+            <a:model value='new Foo { Color = Color.Red }' helper-name='htm'>
+               <a:editor for='Color'/>
+            </a:model>
+         </c:document>
+      </c:variable>
+      <c:void value='doc.DocumentElement.RemoveAttribute("id")'/>
+      <c:void value='doc.DocumentElement.RemoveAttribute("name")'/>
+      <c:void value='doc.DocumentElement.RemoveAttribute("class")'/>
+      <c:copy-of value='doc'/>
+   </c:template>
+
+   <c:template name='expected'>
+      <input type='color' value='#FF0000'/>
+   </c:template>
+
+</c:module>

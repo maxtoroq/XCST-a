@@ -142,6 +142,7 @@ namespace Xcst.Web.Tests {
             // Tests dependencies
             MetadataReference.CreateFromFile(typeof(System.Web.HttpContext).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(System.Web.Mvc.ViewContext).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(System.Drawing.Color).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Microsoft.VisualStudio.TestTools.UnitTesting.Assert).Assembly.Location),
             MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location)

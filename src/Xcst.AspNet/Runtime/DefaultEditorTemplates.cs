@@ -322,19 +322,18 @@ namespace Xcst.Web.Runtime {
 
       public static void ColorInputTemplate(HtmlHelper html, XcstWriter output) {
 
-         object value = null;
+         if (html.ViewData.Model is Color) {
 
-         if (html.ViewData.Model != null) {
+            Color color = (Color)html.ViewData.Model;
 
-            if (html.ViewData.Model is Color) {
-               Color color = (Color)html.ViewData.Model;
-               value = String.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
-            } else {
-               value = html.ViewData.Model;
+            if (html.ViewData.TemplateInfo.FormattedModelValue == html.ViewData.ModelMetadata.Model) {
+
+               html.ViewData.TemplateInfo.FormattedModelValue =
+                  String.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
             }
          }
 
-         HtmlInputTemplateHelper(html, output, "Color", "color", value);
+         HtmlInputTemplateHelper(html, output, "Color", "color");
       }
 
       public static void UploadTemplate(HtmlHelper html, XcstWriter output) {
@@ -419,10 +418,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void HtmlInputTemplateHelper(HtmlHelper html, XcstWriter output, string templateName, string inputType = null) {
-         HtmlInputTemplateHelper(html, output, templateName, inputType, html.ViewData.TemplateInfo.FormattedModelValue);
-      }
 
-      static void HtmlInputTemplateHelper(HtmlHelper html, XcstWriter output, string templateName, string inputType, object value) {
+         object value = html.ViewData.TemplateInfo.FormattedModelValue;
 
          string className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
          IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className, inputType: inputType);
