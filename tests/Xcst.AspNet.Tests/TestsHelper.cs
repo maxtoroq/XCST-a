@@ -17,16 +17,16 @@ using Xcst.Compiler;
 using Xcst.Web.Mvc;
 using TestAssert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace Xcst.Web.Tests.Extension {
+namespace Xcst.Web.Tests {
 
-   static class ExtensionTestsHelper {
+   static class TestsHelper {
 
       static readonly XcstCompilerFactory CompilerFactory = new XcstCompilerFactory();
 
       static readonly QualifiedName InitialName = new QualifiedName("initial-template", "http://maxtoroq.github.io/XCST");
       static readonly QualifiedName ExpectedName = new QualifiedName("expected");
 
-      static ExtensionTestsHelper() {
+      static TestsHelper() {
          CompilerFactory.EnableExtensions = true;
          CompilerFactory.PackageTypeResolver = typeName => Assembly.GetExecutingAssembly().GetType(typeName);
          CompilerFactory.RegisterApplicationExtension();
@@ -106,7 +106,7 @@ namespace Xcst.Web.Tests.Extension {
       static Tuple<CompileResult, string> GenerateCode(Uri packageUri, string usePackageBase) {
 
          XcstCompiler compiler = CompilerFactory.CreateCompiler();
-         compiler.TargetNamespace = typeof(ExtensionTestsHelper).Namespace + ".Runtime";
+         compiler.TargetNamespace = typeof(TestsHelper).Namespace + ".Runtime";
          compiler.TargetClass = "TestModule";
          compiler.UseLineDirective = true;
          compiler.UsePackageBase = usePackageBase;

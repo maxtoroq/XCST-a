@@ -153,8 +153,8 @@
     </Compile>
     <Compile Include="Extension\Display\Templates\Enum\EnumWithDisplayName.cs" />
     <Compile Include="Extension\Editor\Templates\Enum\EnumWithDisplayName.cs" />
-    <Compile Include="Extension\ExtensionTests.generated.cs" />
-    <Compile Include="Extension\ExtensionTestsHelper.cs" />
+    <Compile Include="Tests.generated.cs" />
+    <Compile Include="TestsHelper.cs" />
     <None Include="app.config" />
     <None Include="Extension\CheckBox\check-box.autofocus.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.disabled.type.i.xcst" />
@@ -189,7 +189,7 @@
     <None Include="Extension\Editor\Templates\Time.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTime.c.xcst" />
     <None Include="Extension\Editor\Templates\Date.c.xcst" />
-    <None Include="Extension\generate-extension-tests.ps1" />
+    <None Include="generate-tests.ps1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Extension\AntiForgeryToken\anti-forgery-token.foo.i.xcst" />
@@ -316,6 +316,7 @@
     <None Include="Extension\Editor\editor.for_name.mutex.i.xcst" />
     <None Include="Extension\Editor\editor.with-params.type.i.xcst" />
     <None Include="Extension\Editor\editor.attributes.type.i.xcst" />
+    <None Include="Framework\HtmlHelper\Value\UsesEditFormatString.c.xcst" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -352,7 +353,7 @@
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>powershell -NoProfile -ExecutionPolicy RemoteSigned -File $(ProjectDir)Extension\generate-extension-tests.ps1 $(ConfigurationName)</PreBuildEvent>
+    <PreBuildEvent>powershell -NoProfile -ExecutionPolicy RemoteSigned -File $(ProjectDir)generate-tests.ps1 $(ConfigurationName)</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

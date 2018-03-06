@@ -22,12 +22,11 @@ function WriteLine($line = "") {
 
 function GenerateTests {
 
-   $compilerPath = Resolve-Path ..\..\..\src\Xcst.AspNet\bin\$Configuration
+   $compilerPath = Resolve-Path ..\..\src\Xcst.AspNet\bin\$Configuration
 
    Add-Type -Path $compilerPath\Xcst.Compiler.dll
 
    $compilerFactory = New-Object Xcst.Compiler.XcstCompilerFactory
-   $startDirectory = Get-Item .
 
 @"
 //------------------------------------------------------------------------------
@@ -41,18 +40,16 @@ function GenerateTests {
 using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Xcst.Web.Tests {
-
-   using static Extension.ExtensionTestsHelper;
+using static Xcst.Web.Tests.TestsHelper;
 "@
-   PushIndent
-   GenerateTestsForDirectory $startDirectory $startDirectory.Name
-   PopIndent
-   "}"
+   foreach ($subDirectory in ls -Directory) {
+      GenerateTestsForDirectory $subDirectory $subDirectory.Name
+   }
 }
 
-function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, $category) {
+function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, [string]$relativeNs) {
+
+   $ns = "Xcst.AspNet.Tests.$relativeNs"
 
    foreach ($file in ls $directory.FullName *.pxcst) {
 
@@ -68,13 +65,13 @@ function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, $category) {
       }
    }
 
-   WriteLine
-   WriteLine "namespace $($directory.Name) {"
-   PushIndent
-
    $tests = ls $directory.FullName *.xcst
 
    if ($tests.Length -gt 0) {
+
+      WriteLine
+      WriteLine "namespace $ns {"
+      PushIndent
    
       WriteLine
       WriteLine "[TestClass]"
@@ -95,7 +92,7 @@ function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, $category) {
 
          WriteLine
          WriteLine "#line 1 ""$($file.FullName)"""
-         WriteLine "[TestMethod, TestCategory(""$category"")]"
+         WriteLine "[TestMethod, TestCategory(""$relativeNs"")]"
 
          if (!$correct) {
             WriteLine "[ExpectedException(typeof(Xcst.Compiler.CompileException))]"
@@ -113,19 +110,19 @@ function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, $category) {
 
       PopIndent
       WriteLine "}"
+
+      PopIndent
+      WriteLine "}"
    }
 
    foreach ($subDirectory in ls $directory.FullName -Directory) {
-      GenerateTestsForDirectory $subDirectory ($category + "." + $subDirectory.Name)
+      GenerateTestsForDirectory $subDirectory ($relativeNs + "." + $subDirectory.Name)
    }
-
-   PopIndent
-   WriteLine "}"
 }
 
 try {
 
-   GenerateTests | Out-File ExtensionTests.generated.cs -Encoding utf8
+   GenerateTests | Out-File Tests.generated.cs -Encoding utf8
 
 } finally {
    Pop-Location

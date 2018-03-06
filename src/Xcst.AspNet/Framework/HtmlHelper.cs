@@ -331,7 +331,9 @@ namespace System.Web.Mvc {
 
          if (name == null) throw new ArgumentNullException(nameof(name));
 
-         return ValueHelper(name, value: null, format: this.ViewData.ModelMetadata.EditFormatString, useViewData: true);
+         ModelMetadata metadata = ModelMetadata.FromStringExpression(name, this.ViewData);
+
+         return ValueHelper(name, value: null, format: metadata.EditFormatString, useViewData: true);
       }
 
       public string Value(string name, string format) {

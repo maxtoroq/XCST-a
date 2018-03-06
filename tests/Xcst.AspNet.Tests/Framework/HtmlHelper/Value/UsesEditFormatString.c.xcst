@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='bar' as='decimal' format='{0:#.#}' apply-format-in-edit-mode='yes'/>
+   </c:type>
+
+   <c:template name='c:initial-template' expand-text='yes'>
+      <a:model value='new Foo { bar = 0.1m }' helper-name='htm'>
+         <ul>
+            <li>{htm.Value("bar")}</li>
+            <li>{htm.ValueFor(p => p.bar)}</li>
+         </ul>
+      </a:model>
+   </c:template>
+
+   <c:template name='expected'>
+      <ul>
+         <li>.1</li>
+         <li>.1</li>
+      </ul>
+   </c:template>
+
+</c:module>
