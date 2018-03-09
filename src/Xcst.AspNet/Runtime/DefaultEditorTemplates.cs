@@ -340,6 +340,10 @@ namespace Xcst.Web.Runtime {
          HtmlInputTemplateHelper(html, output, "Upload", inputType: "file");
       }
 
+      public static void HttpPostedFileBaseTemplate(HtmlHelper html, XcstWriter output) {
+         HtmlInputTemplateHelper(html, output, "HttpPostedFileBase", inputType: "file");
+      }
+
       public static void DropDownListTemplate(HtmlHelper html, XcstWriter output) {
 
          string className = GetEditorCssClass(new EditorInfo("DropDownList", "select"), null);

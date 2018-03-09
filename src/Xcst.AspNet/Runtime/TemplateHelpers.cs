@@ -84,6 +84,7 @@ namespace Xcst.Web.Runtime {
             { nameof(Decimal), DefaultEditorTemplates.DecimalTemplate },
             { nameof(String), DefaultEditorTemplates.StringTemplate },
             { nameof(Object), DefaultEditorTemplates.ObjectTemplate },
+            { nameof(HttpPostedFileBase), DefaultEditorTemplates.HttpPostedFileBaseTemplate }
          };
 
       static string CacheItemId = Guid.NewGuid().ToString();
