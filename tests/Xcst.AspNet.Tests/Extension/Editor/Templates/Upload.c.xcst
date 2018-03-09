@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Web'/>
+
+   <c:type name='Foo'>
+      <c:member name='f' as='string' data-type='Upload'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:model value='new Foo { f = @"c:\foo.txt" }' helper-name='htm'>
+            <a:editor for='f'/>
+            <a:editor for='f' attributes='new { value = htm.ViewData.Model.f }'/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <input type='file' id='f' name='f' class='text-box single-line'/>
+         <input type='file' id='f' name='f' value='c:\foo.txt' class='text-box single-line'/>
+      </div>
+   </c:template>
+
+</c:module>

@@ -5,24 +5,22 @@
    extension-element-prefixes='a'>
 
    <c:import-namespace ns='System'/>
-   <c:import-namespace ns='System.Xml'/>
 
    <c:type name='Foo'>
       <c:member name='d' as='DateTime' value='new DateTime()' data-type='Date'/>
    </c:type>
 
    <c:template name='c:initial-template'>
-      <c:variable name='doc' as='XmlDocument'>
-         <c:document>
-            <a:model value='new Foo()'>
-               <a:editor for='d'/>
-            </a:model>
-         </c:document>
-      </c:variable>
-      <c:void value='Assert.AreEqual("input", doc.DocumentElement.LocalName)'/>
-      <c:void value='Assert.AreEqual("date", doc.DocumentElement.GetAttribute("type"))'/>
-      <c:void value='Assert.AreEqual("0001-01-01", doc.DocumentElement.GetAttribute("value"))'/>
-      <c:void value='Assert.IsTrue(doc.DocumentElement.HasAttribute("data-val-date"))'/>
+      <a:model value='new Foo()'>
+         <a:editor for='d'/>
+      </a:model>
+   </c:template>
+
+   <c:template name='expected'>
+      <input type='date' id='d' name='d' value='0001-01-01' class='text-box single-line'
+         data-val='true'
+         data-val-date='The field d must be a date.'
+         data-val-required='The d field is required.'/>
    </c:template>
 
 </c:module>

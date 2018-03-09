@@ -54,6 +54,8 @@ namespace Xcst.Web.Tests {
             throw;
          }
 
+         bool printCode = true;
+
          try {
 
             Type packageType = CompileCode(xcstResult, packageName, packageUri);
@@ -79,7 +81,8 @@ namespace Xcst.Web.Tests {
                   if (xcstResult.Templates.Contains(InitialName)) {
 
                      if (xcstResult.Templates.Contains(ExpectedName)) {
-                        TestAssert.IsTrue(OutputEqualsToExpected(packageType));
+                        bool equals = printCode = OutputEqualsToExpected(packageType);
+                        TestAssert.IsTrue(equals);
                      } else {
                         SimplyRun(packageType, packageUri);
                      }
@@ -97,8 +100,10 @@ namespace Xcst.Web.Tests {
 
          } finally {
 
-            foreach (string unit in xcstResult.CompilationUnits) {
-               Console.WriteLine(unit);
+            if (printCode) {
+               foreach (string unit in xcstResult.CompilationUnits) {
+                  Console.WriteLine(unit);
+               }
             }
          }
       }
@@ -226,7 +231,19 @@ namespace Xcst.Web.Tests {
                .Run();
          }
 
-         return XDocumentNormalizer.DeepEqualsWithNormalization(expectedDoc, actualDoc);
+         XDocument normalizedExpected = XDocumentNormalizer.Normalize(expectedDoc);
+         XDocument normalizedActual = XDocumentNormalizer.Normalize(actualDoc);
+         bool equals = XNode.DeepEquals(normalizedExpected, normalizedActual);
+
+         if (!equals) {
+            Console.WriteLine("<!-- expected -->");
+            Console.WriteLine(normalizedExpected.ToString());
+            Console.WriteLine();
+            Console.WriteLine("<!-- actual -->");
+            Console.WriteLine(normalizedActual.ToString());
+         }
+
+         return equals;
       }
 
       static void SimplyRun(Type packageType, Uri packageUri) {

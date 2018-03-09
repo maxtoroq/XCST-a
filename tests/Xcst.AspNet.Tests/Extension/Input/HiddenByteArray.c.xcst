@@ -9,11 +9,11 @@
    <c:variable name='arr' value='new byte[] { 1, 2 }' as='byte[]'/>
 
    <c:template name='c:initial-template'>
-      <a:input type='hidden' name='foo' value='arr'/>
+      <a:input type='hidden' name='h' value='arr'/>
    </c:template>
 
    <c:template name='expected'>
-      <input type='hidden' id='foo' name='foo' value='{Convert.ToBase64String(arr)}'/>
+      <input type='hidden' id='h' name='h' value='{Convert.ToBase64String(arr)}'/>
    </c:template>
 
 </c:module>

@@ -5,28 +5,21 @@
    extension-element-prefixes='a'>
 
    <c:import-namespace ns='System.Drawing'/>
-   <c:import-namespace ns='System.Xml'/>
 
    <c:type name='Foo'>
-      <c:member name='Color' as='Color?'/>
+      <c:member name='c' as='Color'/>
    </c:type>
 
    <c:template name='c:initial-template'>
-      <c:variable name='doc' as='XmlDocument'>
-         <c:document>
-            <a:model value='new Foo { Color = Color.Red }' helper-name='htm'>
-               <a:editor for='Color'/>
-            </a:model>
-         </c:document>
-      </c:variable>
-      <c:void value='doc.DocumentElement.RemoveAttribute("id")'/>
-      <c:void value='doc.DocumentElement.RemoveAttribute("name")'/>
-      <c:void value='doc.DocumentElement.RemoveAttribute("class")'/>
-      <c:copy-of value='doc'/>
+      <a:model value='new Foo { c = Color.Red }'>
+         <a:editor for='c'/>
+      </a:model>
    </c:template>
 
    <c:template name='expected'>
-      <input type='color' value='#FF0000'/>
+      <input type='color' id='c' name='c' value='#FF0000' class='text-box single-line'
+         data-val='true'
+         data-val-required='The c field is required.'/>
    </c:template>
 
 </c:module>
