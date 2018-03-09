@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='f' as='string'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:model value='new Foo { f = "foo" }' helper-name='htm'>
+            <a:input type='file' for='f'/>
+            <a:input type='file' name='f'/>
+            <a:input type='file' name='f' attributes='new { value = htm.ViewData.Model.f }'/>
+         </a:model>
+         <a:model value='"foo"' html-field-prefix='f'>
+            <a:input type='file'/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <input type='file' id='f' name='f'/>
+         <input type='file' id='f' name='f'/>
+         <input type='file' id='f' name='f' value='foo'/>
+         <input type='file' id='f' name='f'/>
+      </div>
+   </c:template>
+
+</c:module>

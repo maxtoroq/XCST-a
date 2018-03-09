@@ -396,12 +396,25 @@ namespace Xcst.Web.Runtime {
 
             default:
 
-               string attemptedValue = (string)htmlHelper.GetModelStateValue(fullName, typeof(string));
+               bool addValue = true;
+               string typeAttr = attribs.Attributes["type"]?.ToString();
 
-               string val = attemptedValue
-                  ?? ((useViewData) ? htmlHelper.EvalString(fullName, format) : valueParameter);
+               if (String.Equals(typeAttr, "file", StringComparison.OrdinalIgnoreCase)
+                  || String.Equals(typeAttr, "image", StringComparison.OrdinalIgnoreCase)) {
 
-               attribs.MergeAttribute("value", val, replaceExisting: isExplicitValue);
+                  // 'value' attribute is not needed for 'file' and 'image' input types.
+                  addValue = false;
+               }
+
+               if (addValue) {
+
+                  string attemptedValue = (string)htmlHelper.GetModelStateValue(fullName, typeof(string));
+
+                  string valueAttr = attemptedValue
+                     ?? ((useViewData) ? htmlHelper.EvalString(fullName, format) : valueParameter);
+
+                  attribs.MergeAttribute("value", valueAttr, replaceExisting: isExplicitValue);
+               }
 
                break;
          }
