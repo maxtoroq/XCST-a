@@ -12,5 +12,21 @@ See the [project home][1] for more information.
 
 - [XCST][2]
 
+Building
+--------
+Run the following commands in PowerShell to build the everything (source, samples and tests).
+
+```powershell
+# clone
+git clone https://github.com/maxtoroq/XCST-a.git
+cd XCST-a
+
+# restore packages
+.\build\restore-packages.ps1
+
+# build solution
+MSBuild
+```
+
 [1]: http://maxtoroq.github.io/XCST/
 [2]: https://github.com/maxtoroq/XCST
