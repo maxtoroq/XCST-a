@@ -14,7 +14,7 @@ See the [project home][1] for more information.
 
 Building
 --------
-Run the following commands in PowerShell to build the everything (source, samples and tests).
+Run the following commands in PowerShell to build everything (source, samples and tests).
 
 ```powershell
 # clone
