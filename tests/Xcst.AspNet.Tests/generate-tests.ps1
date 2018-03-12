@@ -49,7 +49,7 @@ using static Xcst.Web.Tests.TestsHelper;
 
 function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, [string]$relativeNs) {
 
-   $ns = "Xcst.AspNet.Tests.$relativeNs"
+   $ns = "Xcst.Web.Tests.$relativeNs"
 
    foreach ($file in ls $directory.FullName *.pxcst) {
 

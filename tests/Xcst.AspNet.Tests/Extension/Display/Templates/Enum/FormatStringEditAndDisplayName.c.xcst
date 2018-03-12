@@ -4,8 +4,6 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='Xcst.Web.Tests.Extension.Display.Templates.Enum'/>
-
    <c:type name='Foo'>
       <c:member name='Bar' value='EnumWithDisplayName.Second' as='EnumWithDisplayName' format='{0:d}' apply-format-in-edit-mode='yes'/>
    </c:type>

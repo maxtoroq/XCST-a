@@ -6,7 +6,6 @@
 
    <c:import-namespace ns='System'/>
    <c:import-namespace ns='System.Xml'/>
-   <c:import-namespace ns='Xcst.Web.Tests.Extension.Editor.Templates.Enum'/>
 
    <c:type name='Foo'>
       <c:member name='Bar' as='EnumWithDisplayName'/>
