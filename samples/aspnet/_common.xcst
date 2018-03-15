@@ -4,6 +4,6 @@
 
    <c:import href="_layout.xcst" />
 
-   <c:validation required-error-message='Required field cannot be left blank.'/>
+   <c:validation required-message='Required field cannot be left blank.'/>
 
 </c:module>
