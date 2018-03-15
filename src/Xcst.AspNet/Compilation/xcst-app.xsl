@@ -865,7 +865,7 @@
    <template match="@display" mode="src:scaffold-column-attribute">
       <next-match/>
       <variable name="display" select="xcst:non-string(.)"/>
-      <variable name="scaffold" select="if ($display = ('view-only', 'edit-only')) then true() else xcst:boolean(.)"/>
+      <variable name="scaffold" select="if ($display = ('view-only', 'edit-only', 'hidden')) then true() else xcst:boolean(.)"/>
       <if test="$scaffold">
          <call-template name="src:line-hidden"/>
          <call-template name="src:new-line-indented"/>
@@ -876,6 +876,12 @@
          <text>, Edit = </text>
          <value-of select="src:boolean($display ne 'view-only')"/>
          <text>)]</text>
+         <if test="$display eq 'hidden'">
+            <call-template name="src:new-line-indented"/>
+            <text>[</text>
+            <value-of select="src:global-identifier('System.Web.Mvc.HiddenInput')"/>
+            <text>(DisplayValue = false)]</text>
+         </if>
       </if>
    </template>
 

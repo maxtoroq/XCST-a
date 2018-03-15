@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='a' as='string' display='yes'/>
+      <c:member name='b' as='string' display='no'/>
+      <c:member name='c' as='string' display='edit-only'/>
+      <c:member name='d' as='string' display='view-only'/>
+      <c:member name='e' as='string' display='hidden'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:model value='new Foo()'>
+            <a:editor/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <div class='editor-label'>
+            <label for='a'>a</label>
+         </div>
+         <div class='editor-field'>
+            <input type='text' id='a' name='a' value='' class='text-box single-line'/>
+            <c:text> </c:text>
+            <span class='field-validation-valid' data-valmsg-for='a' data-valmsg-replace='true'/>
+         </div>
+         <div class='editor-label'>
+            <label for='c'>c</label>
+         </div>
+         <div class='editor-field'>
+            <input type='text' id='c' name='c' value='' class='text-box single-line'/>
+            <c:text> </c:text>
+            <span class='field-validation-valid' data-valmsg-for='c' data-valmsg-replace='true'/>
+         </div>
+         <input type='hidden' id='e' name='e' value=''/>
+      </div>
+   </c:template>
+
+</c:module>

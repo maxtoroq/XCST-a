@@ -175,6 +175,8 @@
     <None Include="Extension\Display\Templates\Enum\FormatString.c.xcst" />
     <None Include="Extension\Display\Templates\Enum\Null.c.xcst" />
     <None Include="Extension\Display\Templates\Enum\Enum.c.xcst" />
+    <None Include="Extension\Display\Templates\Object.c.xcst" />
+    <None Include="Extension\Editor\Templates\Object.c.xcst" />
     <None Include="Extension\Editor\Templates\Upload.c.xcst" />
     <None Include="Extension\Editor\Templates\HttpPostedFileBase.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTime-local.c.xcst" />
