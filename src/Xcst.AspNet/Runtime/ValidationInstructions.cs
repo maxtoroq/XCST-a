@@ -144,7 +144,7 @@ namespace Xcst.Web.Runtime {
                // client validation always requires an ID
 
                attribs.GenerateId(modelName + "_validationMessage");
-               fieldMetadata.ValidationMessageId = attribs.Attributes["id"].ToString();
+               fieldMetadata.ValidationMessageId = attribs["id"].ToString();
             }
          }
 
@@ -209,7 +209,7 @@ namespace Xcst.Web.Runtime {
             } else {
                // client val summaries need an ID
                divAttribs.GenerateId("validationSummary");
-               formContext.ValidationSummaryId = divAttribs.Attributes["id"].ToString();
+               formContext.ValidationSummaryId = divAttribs["id"].ToString();
                formContext.ReplaceValidationSummary = includePropertyErrors;
             }
          }

@@ -397,7 +397,7 @@ namespace Xcst.Web.Runtime {
             default:
 
                bool addValue = true;
-               string typeAttr = attribs.Attributes["type"]?.ToString();
+               string typeAttr = attribs["type"]?.ToString();
 
                if (String.Equals(typeAttr, "file", StringComparison.OrdinalIgnoreCase)
                   || String.Equals(typeAttr, "image", StringComparison.OrdinalIgnoreCase)) {

@@ -24,6 +24,8 @@ namespace Xcst.Web.Runtime {
 
       public IDictionary<string, object> Attributes { get; }
 
+      public object this[string key] => Attributes[key];
+
       public static HtmlAttributesMerger Create() {
          return new HtmlAttributesMerger(new Dictionary<string, object>());
       }
