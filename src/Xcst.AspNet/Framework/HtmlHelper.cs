@@ -75,6 +75,15 @@ namespace System.Web.Mvc {
 
       public RouteCollection RouteCollection { get; private set; }
 
+      /// <summary>
+      /// Set this property to <see cref="Mvc.Html5DateRenderingMode.Rfc3339"/> to have templated helpers such as Html.EditorFor render date and time
+      /// values as Rfc3339 compliant strings.
+      /// </summary>
+      /// <remarks>
+      /// The scope of this setting is for the current view alone. Sub views and parent views
+      /// will default to <see cref="Mvc.Html5DateRenderingMode.CurrentCulture"/> unless explicitly set otherwise.
+      /// </remarks>
+
       [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "The usage of the property is as an instance property of the helper.")]
       public Html5DateRenderingMode Html5DateRenderingMode { get; set; }
 
@@ -173,15 +182,6 @@ namespace System.Web.Mvc {
       public static IDictionary<string, object> ObjectToDictionary(object value) {
          return TypeHelpers.ObjectToDictionary(value);
       }
-
-      /// <summary>
-      /// Set this property to <see cref="Mvc.Html5DateRenderingMode.Rfc3339"/> to have templated helpers such as Html.EditorFor render date and time
-      /// values as Rfc3339 compliant strings.
-      /// </summary>
-      /// <remarks>
-      /// The scope of this setting is for the current view alone. Sub views and parent views
-      /// will default to <see cref="Mvc.Html5DateRenderingMode.CurrentCulture"/> unless explicitly set otherwise.
-      /// </remarks>
 
       [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
       public string AttributeEncode(string value) {
