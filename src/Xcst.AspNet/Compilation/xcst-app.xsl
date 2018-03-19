@@ -885,6 +885,37 @@
       </if>
    </template>
 
+   <template match="c:member" mode="src:member-attribute-extra">
+      <next-match/>
+      <apply-templates select="@a:*" mode="a:src.member-attribute-extra"/>
+   </template>
+
+   <template match="@a:file-extensions" mode="a:src.member-attribute-extra">
+      <variable name="setters" as="text()*">
+         <value-of select="src:verbatim-string(xcst:non-string(.))"/>
+         <call-template name="src:validation-setters">
+            <with-param name="name" select="node-name(.)"/>
+         </call-template>
+      </variable>
+      <c:metadata name="{src:global-identifier('Xcst.Web.Mvc.FileExtensionsAttribute')}"
+         value="{string-join($setters, ', ')}"/>
+   </template>
+
+   <template match="@a:file-max-length" mode="a:src.member-attribute-extra">
+      <variable name="setters" as="text()*">
+         <value-of select="src:integer(xcst:integer(.))"/>
+         <call-template name="src:validation-setters">
+            <with-param name="name" select="node-name(.)"/>
+         </call-template>
+      </variable>
+      <c:metadata name="{src:global-identifier('Xcst.Web.Mvc.FileMaxLengthAttribute')}"
+         value="{string-join($setters, ', ')}"/>
+   </template>
+
+   <template match="@a:*" mode="a:src.member-attribute-extra">
+      <sequence select="error((), concat('Attribute ''a:', local-name(), ''' is not allowed on element ', name(..)), src:error-object(.))"/>
+   </template>
+
    <template match="a:display-name" mode="src:extension-instruction">
       <param name="src:current-mode" as="xs:QName" required="yes" tunnel="yes"/>
 

@@ -187,6 +187,8 @@
     </Compile>
     <Compile Include="Framework\BrowserOverriding\BrowserHelpers.cs" />
     <Compile Include="Framework\BrowserOverriding\BrowserOverrideStore.cs" />
+    <Compile Include="Mvc\FileMaxLengthAttribute.cs" />
+    <Compile Include="Mvc\FileExtensionsAttribute.cs" />
     <Compile Include="Mvc\ShowForAttribute.cs" />
     <Compile Include="Runtime\DefaultDisplayTemplates.cs" />
     <Compile Include="Runtime\DefaultEditorTemplates.cs" />
