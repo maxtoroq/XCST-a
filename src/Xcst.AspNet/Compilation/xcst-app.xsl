@@ -912,6 +912,8 @@
          value="{string-join($setters, ', ')}"/>
    </template>
 
+   <template match="@a:file-extensions-message | @a:file-max-length-message" mode="a:src.member-attribute-extra"/>
+
    <template match="@a:*" mode="a:src.member-attribute-extra">
       <sequence select="error((), concat('Attribute ''a:', local-name(), ''' is not allowed on element ', name(..)), src:error-object(.))"/>
    </template>

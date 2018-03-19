@@ -157,6 +157,15 @@
     <Compile Include="Tests.generated.cs" />
     <Compile Include="TestsHelper.cs" />
     <None Include="app.config" />
+    <None Include="Extension\Attributes\validation.file-extensions-message.type.c.xcst" />
+    <None Include="Extension\Attributes\validation.file-max-length-message.type.c.xcst" />
+    <None Include="Extension\Attributes\member.foo.i.xcst" />
+    <None Include="Extension\Attributes\member.file-max-length-message.type.c.xcst" />
+    <None Include="Extension\Attributes\member.file-extensions-message.type.c.xcst" />
+    <None Include="Extension\Attributes\member.file-max-length.type.c.xcst" />
+    <None Include="Extension\Attributes\member.file-max-length.type.i.xcst" />
+    <None Include="Extension\Attributes\member.file-extensions.type.i.xcst" />
+    <None Include="Extension\Attributes\member.file-extensions.type.c.xcst" />
     <None Include="Extension\CheckBox\check-box.autofocus.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.disabled.type.i.xcst" />
     <None Include="Extension\Directives\sessionstate.dupl.i.xcst" />
