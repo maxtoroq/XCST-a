@@ -75,15 +75,6 @@ namespace System.Web.Mvc {
 
       public RouteCollection RouteCollection { get; private set; }
 
-      /// <summary>
-      /// Set this property to <see cref="Mvc.Html5DateRenderingMode.Rfc3339"/> to have templated helpers such as Html.EditorFor render date and time
-      /// values as Rfc3339 compliant strings.
-      /// </summary>
-      /// <remarks>
-      /// The scope of this setting is for the current view alone. Sub views and parent views
-      /// will default to <see cref="Mvc.Html5DateRenderingMode.CurrentCulture"/> unless explicitly set otherwise.
-      /// </remarks>
-
       [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "The usage of the property is as an instance property of the helper.")]
       public Html5DateRenderingMode Html5DateRenderingMode { get; set; }
 
@@ -183,25 +174,6 @@ namespace System.Web.Mvc {
          return TypeHelpers.ObjectToDictionary(value);
       }
 
-      [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-      public string AttributeEncode(string value) {
-         return (!String.IsNullOrEmpty(value)) ? HttpUtility.HtmlAttributeEncode(value) : String.Empty;
-      }
-
-      public string AttributeEncode(object value) {
-         return AttributeEncode(Convert.ToString(value, CultureInfo.InvariantCulture));
-      }
-
-      [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-      public string Encode(string value) {
-         return (!String.IsNullOrEmpty(value)) ? HttpUtility.HtmlEncode(value) : String.Empty;
-      }
-
-      [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-      public string Encode(object value) {
-         return value != null ? HttpUtility.HtmlEncode(value) : String.Empty;
-      }
-
       internal string EvalString(string key) {
          return Convert.ToString(this.ViewData.Eval(key), CultureInfo.CurrentCulture);
       }
@@ -269,30 +241,6 @@ namespace System.Web.Mvc {
          UnobtrusiveValidationAttributesGenerator.GetValidationAttributes(clientRules, results);
 
          return results;
-      }
-
-      /// <summary>
-      /// Wraps HTML markup in an IHtmlString, which will enable HTML markup to be
-      /// rendered to the output without getting HTML encoded.
-      /// </summary>
-      /// <param name="value">HTML markup string.</param>
-      /// <returns>An IHtmlString that represents HTML markup.</returns>
-
-      [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-      public IHtmlString Raw(string value) {
-         return new HtmlString(value);
-      }
-
-      /// <summary>
-      /// Wraps HTML markup from the string representation of an object in an IHtmlString,
-      /// which will enable HTML markup to be rendered to the output without getting HTML encoded.
-      /// </summary>
-      /// <param name="value">object with string representation as HTML markup</param>
-      /// <returns>An IHtmlString that represents HTML markup.</returns>
-
-      [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-      public IHtmlString Raw(object value) {
-         return new HtmlString(value?.ToString());
       }
 
       public void AntiForgeryToken(XcstWriter output) {
