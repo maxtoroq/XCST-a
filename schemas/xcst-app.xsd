@@ -229,6 +229,30 @@
          <xs:attribute name="name" type="a:avt"/>
       </xs:complexType>
    </xs:element>
+   <xs:attributeGroup name="member-extensions">
+      <xs:attribute name="file-extensions" form="qualified" type="a:file-extensions">
+         <xs:annotation>
+            <xs:documentation>A comma-separated list of valid file extensions for this member.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="file-max-length" form="qualified" type="a:integer">
+         <xs:annotation>
+            <xs:documentation>A maximum valid file length for this member.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+   </xs:attributeGroup>
+   <xs:attributeGroup name="member-or-validation-extensions">
+      <xs:attribute name="file-extensions-message" form="qualified" type="a:string">
+         <xs:annotation>
+            <xs:documentation>An error message for the a:file-extensions attribute.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="file-max-length-message" form="qualified" type="a:string">
+         <xs:annotation>
+            <xs:documentation>An error message for the a:file-max-length attribute.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+   </xs:attributeGroup>
    <xs:element name="model" substitutionGroup="a:extension-instruction">
       <xs:complexType mixed="true">
          <xs:group ref="a:sequence-constructor"/>
@@ -259,6 +283,11 @@
       </xs:restriction>
    </xs:simpleType>
    <xs:simpleType name="input-type">
+      <xs:restriction base="xs:token">
+         <xs:minLength value="1"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="file-extensions">
       <xs:restriction base="xs:token">
          <xs:minLength value="1"/>
       </xs:restriction>

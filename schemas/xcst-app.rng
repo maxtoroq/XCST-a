@@ -18,13 +18,14 @@
    xmlns:ann="http://relaxng.org/ns/compatibility/annotations/1.0"
    xmlns:docs="http://maxtoroq.github.io/XCST/docs"
    xmlns:a="http://maxtoroq.github.io/XCST/application"
+   xmlns:c="http://maxtoroq.github.io/XCST"
    ns="http://maxtoroq.github.io/XCST/application"
    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
 
    <div>
       <ann:documentation>Categories</ann:documentation>
 
-      <define name="extension-instruction">
+      <define name="extension-instruction" docs:display-type="true">
          <choice>
             <ref name="anti-forgery-token"/>
             <ref name="check-box"/>
@@ -488,6 +489,36 @@
             </choice>
          </element>
       </define>
+
+      <define name="member-extensions" docs:extends="c:member" docs:attrib-group="Validation">
+         <zeroOrMore>
+            <choice>
+               <attribute name="a:file-extensions">
+                  <ann:documentation>A comma-separated list of valid file extensions for this member.</ann:documentation>
+                  <ref name="file-extensions"/>
+               </attribute>
+               <attribute name="a:file-max-length">
+                  <ann:documentation>A maximum valid file length for this member.</ann:documentation>
+                  <ref name="integer"/>
+               </attribute>
+            </choice>
+         </zeroOrMore>
+      </define>
+
+      <define name="member-or-validation-extensions" docs:extends="c:member c:validation" docs:attrib-group="Validation">
+         <zeroOrMore>
+            <choice>
+               <attribute name="a:file-extensions-message">
+                  <ann:documentation>An error message for the a:file-extensions attribute.</ann:documentation>
+                  <ref name="string"/>
+               </attribute>
+               <attribute name="a:file-max-length-message">
+                  <ann:documentation>An error message for the a:file-max-length attribute.</ann:documentation>
+                  <ref name="string"/>
+               </attribute>
+            </choice>
+         </zeroOrMore>
+      </define>
    </div>
 
    <div>
@@ -547,6 +578,12 @@
       </define>
 
       <define name="input-type">
+         <data type="token">
+            <param name="minLength">1</param>
+         </data>
+      </define>
+
+      <define name="file-extensions">
          <data type="token">
             <param name="minLength">1</param>
          </data>
