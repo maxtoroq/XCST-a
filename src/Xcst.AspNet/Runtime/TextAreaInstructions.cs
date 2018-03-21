@@ -159,9 +159,7 @@ namespace Xcst.Web.Runtime {
 
          string value;
 
-         if (modelState != null
-            && modelState.Value != null) {
-
+         if (modelState?.Value != null) {
             value = modelState.Value.AttemptedValue;
 
          } else if (modelMetadata.Model != null) {

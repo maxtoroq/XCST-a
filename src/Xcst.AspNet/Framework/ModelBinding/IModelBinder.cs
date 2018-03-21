@@ -136,7 +136,7 @@ namespace System.Web.Mvc {
          AttributeList allAttrs = new AttributeList(TypeDescriptorHelper.Get(type).GetAttributes());
          CustomModelBinderAttribute binder = allAttrs.SingleOfTypeDefaultOrError<Attribute, CustomModelBinderAttribute, Type>(errorAction, type);
 
-         return (binder == null) ? null : binder.GetBinder();
+         return binder?.GetBinder();
       }
 
       internal static IModelBinder GetBinderFromAttributes(ICustomAttributeProvider element, Action<ICustomAttributeProvider> errorAction) {
@@ -151,7 +151,7 @@ namespace System.Web.Mvc {
 
          CustomModelBinderAttribute binder = attrs.SingleDefaultOrError(errorAction, element);
 
-         return (binder == null) ? null : binder.GetBinder();
+         return binder?.GetBinder();
       }
 
       static ModelBinderDictionary CreateDefaultBinderDictionary() {

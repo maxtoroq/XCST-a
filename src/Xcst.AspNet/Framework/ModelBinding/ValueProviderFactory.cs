@@ -168,9 +168,7 @@ namespace System.Web.Mvc {
 
          var enumeratedProvider = provider as IEnumerableValueProvider;
 
-         return (enumeratedProvider != null) ?
-            enumeratedProvider.GetKeysFromPrefix(prefix)
-            : null;
+         return enumeratedProvider?.GetKeysFromPrefix(prefix);
       }
 
       protected override void InsertItem(int index, IValueProvider item) {

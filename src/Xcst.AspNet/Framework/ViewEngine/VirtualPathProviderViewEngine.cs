@@ -260,9 +260,7 @@ namespace System.Web.Mvc {
 
                      string cacheValue = String.Empty;
 
-                     if (displayInfoToCache != null
-                        && displayInfoToCache.FilePath != null) {
-
+                     if (displayInfoToCache?.FilePath != null) {
                         cacheValue = displayInfoToCache.FilePath;
                      }
 

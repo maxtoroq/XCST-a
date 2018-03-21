@@ -355,9 +355,7 @@ namespace Xcst.Web.Runtime {
          IEnumerable<SelectListItem> options = Options(viewData);
          OptionList optionList = options as OptionList;
 
-         if (optionList != null
-            && optionList.AddBlankOption) {
-
+         if (optionList?.AddBlankOption == true) {
             optionLabel = viewData.ModelMetadata.Watermark ?? String.Empty;
          }
 

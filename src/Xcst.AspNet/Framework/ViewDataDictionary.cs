@@ -126,7 +126,7 @@ namespace System.Web.Mvc {
 
       public object Eval(string expression) {
          ViewDataInfo info = GetViewDataInfo(expression);
-         return (info != null) ? info.Value : null;
+         return info?.Value;
       }
 
       public string Eval(string expression, string format) {
@@ -371,8 +371,7 @@ namespace System.Web.Mvc {
 
       public string GetFullHtmlFieldName(string partialFieldName) {
 
-         if (partialFieldName != null
-            && partialFieldName.StartsWith("[", StringComparison.Ordinal)) {
+         if (partialFieldName?.StartsWith("[", StringComparison.Ordinal) == true) {
 
             // See Codeplex #544 - the partialFieldName might represent an indexer access, in which case combining
             // with a 'dot' would be invalid.

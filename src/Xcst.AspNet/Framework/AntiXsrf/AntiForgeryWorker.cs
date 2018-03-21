@@ -47,17 +47,7 @@ namespace System.Web.Helpers.AntiXsrf {
       }
 
       private static IIdentity ExtractIdentity(HttpContextBase httpContext) {
-
-         if (httpContext != null) {
-
-            IPrincipal user = httpContext.User;
-
-            if (user != null) {
-               return user.Identity;
-            }
-         }
-
-         return null;
+         return httpContext?.User?.Identity;
       }
 
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Caller will just regenerate token in case of failure.")]

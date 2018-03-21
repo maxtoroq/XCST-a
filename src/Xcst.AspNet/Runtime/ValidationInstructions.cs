@@ -108,7 +108,7 @@ namespace Xcst.Web.Runtime {
          }
 
          ModelState modelState = htmlHelper.ViewData.ModelState[modelName];
-         ModelErrorCollection modelErrors = (modelState == null) ? null : modelState.Errors;
+         ModelErrorCollection modelErrors = modelState?.Errors;
          ModelError modelError = (((modelErrors == null) || (modelErrors.Count == 0)) ? null : modelErrors.FirstOrDefault(m => !String.IsNullOrEmpty(m.ErrorMessage)) ?? modelErrors[0]);
 
          if (modelError == null
@@ -152,6 +152,7 @@ namespace Xcst.Web.Runtime {
 
          if (!String.IsNullOrEmpty(validationMessage)) {
             output.WriteString(validationMessage);
+
          } else if (modelError != null) {
             output.WriteString(GetUserErrorMessageOrDefault(htmlHelper.ViewContext.HttpContext, modelError, modelState));
          }
@@ -323,9 +324,7 @@ namespace Xcst.Web.Runtime {
             return null;
          }
 
-         string attemptedValue = (modelState.Value != null) ?
-            modelState.Value.AttemptedValue
-            : null;
+         string attemptedValue = modelState.Value?.AttemptedValue;
 
          string messageFormat = XcstWebConfiguration.Instance.Editors.DefaultValidationMessage?.Invoke()
             ?? "The value '{0}' is invalid.";

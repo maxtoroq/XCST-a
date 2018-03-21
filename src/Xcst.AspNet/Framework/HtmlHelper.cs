@@ -608,7 +608,7 @@ namespace System.Web.WebPages {
             return base.Name;
          }
          protected set {
-            base.Name = (value == null) ? null : value.Replace('_', '-');
+            base.Name = value?.Replace('_', '-');
          }
       }
 

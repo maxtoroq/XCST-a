@@ -41,8 +41,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
          // populate Username and ClaimUid
 
-         if (identity != null
-            && identity.IsAuthenticated) {
+         if (identity?.IsAuthenticated == true) {
 
             if (!_config.SuppressIdentityHeuristicChecks) {
 
@@ -79,7 +78,7 @@ namespace System.Web.Helpers.AntiXsrf {
       }
 
       public bool IsCookieTokenValid(AntiForgeryToken cookieToken) {
-         return (cookieToken != null && cookieToken.IsSessionToken);
+         return cookieToken?.IsSessionToken == true;
       }
 
       public void ValidateTokens(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
@@ -122,8 +121,7 @@ namespace System.Web.Helpers.AntiXsrf {
          string currentUsername = String.Empty;
          BinaryBlob currentClaimUid = null;
 
-         if (identity != null
-            && identity.IsAuthenticated) {
+         if (identity?.IsAuthenticated == true) {
 
             currentClaimUid = _claimUidExtractor.ExtractClaimUid(identity);
 

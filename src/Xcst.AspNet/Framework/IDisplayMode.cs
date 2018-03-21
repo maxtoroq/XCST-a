@@ -218,7 +218,7 @@ namespace System.Web.WebPages {
       }
 
       internal static IDisplayMode GetDisplayMode(HttpContextBase context) {
-         return (context != null) ? context.Items[_displayModeKey] as IDisplayMode : null;
+         return context?.Items[_displayModeKey] as IDisplayMode;
       }
 
       internal static void SetDisplayMode(HttpContextBase context, IDisplayMode displayMode) {

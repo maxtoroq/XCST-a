@@ -88,9 +88,7 @@ namespace Xcst.Web.Runtime {
 
             var optionList = selectList as OptionList;
 
-            if (optionList != null
-               && optionList.AddBlankOption) {
-
+            if (optionList?.AddBlankOption == true) {
                optionLabel = String.Empty;
             }
          }
@@ -102,11 +100,7 @@ namespace Xcst.Web.Runtime {
 
       static IEnumerable<SelectListItem> GetSelectData(HtmlHelper htmlHelper, string name) {
 
-         object o = null;
-
-         if (htmlHelper.ViewData != null) {
-            o = htmlHelper.ViewData.Eval(name);
-         }
+         object o = htmlHelper.ViewData?.Eval(name);
 
          if (o == null) {
             throw new InvalidOperationException($"There is no ViewData item of type 'IEnumerable<SelectListItem>' that has the key '{name}'.");

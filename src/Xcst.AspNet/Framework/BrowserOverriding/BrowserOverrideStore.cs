@@ -83,23 +83,14 @@ namespace System.Web.WebPages {
 
                HttpCookie currentOverriddenBrowserCookie = responseCookies[BrowserOverrideCookieName];
 
-               if (currentOverriddenBrowserCookie.Value != null) {
-                  return currentOverriddenBrowserCookie.Value;
-               } else {
-                  // The cookie has no value. It was cleared on the current request so return null.
-                  return null;
-               }
+               return currentOverriddenBrowserCookie.Value;
             }
          }
 
          // If there was no cookie found in the response check the request.
          var requestOverrideCookie = httpContext.Request.Cookies[BrowserOverrideCookieName];
 
-         if (requestOverrideCookie != null) {
-            return requestOverrideCookie.Value;
-         }
-
-         return null;
+         return requestOverrideCookie?.Value;
       }
 
       /// <summary>
