@@ -157,6 +157,9 @@
     <Compile Include="Tests.generated.cs" />
     <Compile Include="TestsHelper.cs" />
     <None Include="app.config" />
+    <None Include="Extension\Attributes\SkipBinding.c.xcst" />
+    <None Include="Extension\Attributes\member.skip-binding.type.c.xcst" />
+    <None Include="Extension\Attributes\member.skip-binding.type.i.xcst" />
     <None Include="Extension\Attributes\validation.file-extensions-message.type.c.xcst" />
     <None Include="Extension\Attributes\validation.file-max-length-message.type.c.xcst" />
     <None Include="Extension\Attributes\member.foo.i.xcst" />

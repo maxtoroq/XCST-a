@@ -240,6 +240,11 @@
             <xs:documentation>A maximum valid file length for this member.</xs:documentation>
          </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="skip-binding" form="qualified" type="a:boolean">
+         <xs:annotation>
+            <xs:documentation>Specifies if this member should be excluded from model binding.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
    </xs:attributeGroup>
    <xs:attributeGroup name="member-or-validation-extensions">
       <xs:attribute name="file-extensions-message" form="qualified" type="a:string">

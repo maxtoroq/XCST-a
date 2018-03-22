@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Collections.Specialized'/>
+   <c:import-namespace ns='System.Web.Mvc'/>
+
+   <c:type name='Foo'>
+      <c:member name='color' as='string' a:skip-binding='yes'/>
+      <c:member name='animal' as='string'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:script>
+         <![CDATA[
+         
+         var valueProvider = new NameValueCollectionValueProvider(
+            new NameValueCollection {
+               { "color", "red" },
+               { "animal", "dog" }
+            },
+            null
+         );
+         
+         var foo = new Foo();
+         
+         TryBind(foo, valueProvider: valueProvider);
+         
+         Assert.IsNull(foo.color);
+         Assert.AreEqual("dog", foo.animal);
+         ]]>
+      </c:script>
+   </c:template>
+
+</c:module>

@@ -501,6 +501,10 @@
                   <ann:documentation>A maximum valid file length for this member.</ann:documentation>
                   <ref name="integer"/>
                </attribute>
+               <attribute name="a:skip-binding" docs:attrib-group="Model Binding">
+                  <ann:documentation>Specifies if this member should be excluded from model binding.</ann:documentation>
+                  <ref name="boolean"/>
+               </attribute>
             </choice>
          </zeroOrMore>
       </define>

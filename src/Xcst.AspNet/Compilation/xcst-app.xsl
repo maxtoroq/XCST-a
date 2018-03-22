@@ -885,6 +885,15 @@
       </if>
    </template>
 
+   <template match="c:type | c:member" mode="src:type-attribute-extra">
+      <next-match/>
+      <variable name="excluded" select="c:member[@a:skip-binding[xcst:boolean(.)]]/xcst:name(@name)"/>
+      <if test="not(empty($excluded))">
+         <c:metadata name="{src:global-identifier('System.Web.Mvc.Bind')}"
+            value="Exclude = {src:string(string-join($excluded, ','))}"/>
+      </if>
+   </template>
+
    <template match="c:member" mode="src:member-attribute-extra">
       <next-match/>
       <apply-templates select="@a:*" mode="a:src.member-attribute-extra"/>
@@ -912,7 +921,7 @@
          value="{string-join($setters, ', ')}"/>
    </template>
 
-   <template match="@a:file-extensions-message | @a:file-max-length-message" mode="a:src.member-attribute-extra"/>
+   <template match="@a:file-extensions-message | @a:file-max-length-message | @a:skip-binding" mode="a:src.member-attribute-extra"/>
 
    <template match="@a:*" mode="a:src.member-attribute-extra">
       <sequence select="error((), concat('Attribute ''a:', local-name(), ''' is not allowed on element ', name(..)), src:error-object(.))"/>
