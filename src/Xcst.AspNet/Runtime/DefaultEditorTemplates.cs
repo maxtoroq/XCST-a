@@ -214,32 +214,54 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => EditorInstructions.ShowForEdit(html, pm))) {
+         var filteredProperties = modelMetadata.Properties
+            .Where(p => EditorInstructions.ShowForEdit(html, p));
 
-            if (!propertyMetadata.HideSurroundingHtml) {
+         var groupedProperties = filteredProperties.GroupBy(p => p.GroupName());
 
-               XcstDelegate<object> memberTemplate = EditorInstructions.MemberTemplate(html, propertyMetadata);
+         bool createFieldset = groupedProperties.Any(g => g.Key != null);
 
-               if (memberTemplate != null) {
-                  memberTemplate(null, output);
-                  continue;
-               }
+         foreach (var group in groupedProperties) {
 
-               output.WriteStartElement("div");
-               output.WriteAttributeString("class", "editor-label");
-               LabelInstructions.LabelHelper(html, output, propertyMetadata, propertyMetadata.PropertyName);
+            if (createFieldset) {
+               output.WriteStartElement("fieldset");
+               output.WriteStartElement("legend");
+               output.WriteString(group.Key);
                output.WriteEndElement();
-
-               output.WriteStartElement("div");
-               output.WriteAttributeString("class", "editor-field");
             }
 
-            templateHelper(html, output, propertyMetadata, propertyMetadata.PropertyName, null /* templateName */, DataBoundControlMode.Edit, null /* additionalViewData */);
+            foreach (ModelMetadata propertyMeta in group) {
 
-            if (!propertyMetadata.HideSurroundingHtml) {
-               output.WriteString(" ");
-               ValidationInstructions.ValidationMessageHelper(html, output, propertyMetadata, propertyMetadata.PropertyName, null, null, null);
-               output.WriteEndElement(); // </div>
+               if (!propertyMeta.HideSurroundingHtml) {
+
+                  XcstDelegate<object> memberTemplate =
+                     EditorInstructions.MemberTemplate(html, propertyMeta);
+
+                  if (memberTemplate != null) {
+                     memberTemplate(null, output);
+                     continue;
+                  }
+
+                  output.WriteStartElement("div");
+                  output.WriteAttributeString("class", "editor-label");
+                  LabelInstructions.LabelHelper(html, output, propertyMeta, propertyMeta.PropertyName);
+                  output.WriteEndElement();
+
+                  output.WriteStartElement("div");
+                  output.WriteAttributeString("class", "editor-field");
+               }
+
+               templateHelper(html, output, propertyMeta, propertyMeta.PropertyName, null /* templateName */, DataBoundControlMode.Edit, null /* additionalViewData */);
+
+               if (!propertyMeta.HideSurroundingHtml) {
+                  output.WriteString(" ");
+                  ValidationInstructions.ValidationMessageHelper(html, output, propertyMeta, propertyMeta.PropertyName, null, null, null);
+                  output.WriteEndElement(); // </div>
+               }
+            }
+
+            if (createFieldset) {
+               output.WriteEndElement(); // </fieldset>
             }
          }
       }

@@ -28,32 +28,60 @@
             </c:choose>
          </c:when>
          <c:otherwise>
-            <c:for-each name='prop' in='ViewData.ModelMetadata.Properties.Where(x => Html.ShowForEdit(x))'>
-               <c:variable name='editorTemplate' value='prop.TemplateHint ?? prop.DataTypeName'/>
-               <c:choose>
-                  <c:when test='prop.HideSurroundingHtml'>
-                     <a:editor name='{prop.PropertyName}' template='{editorTemplate}'/>
-                  </c:when>
-                  <c:otherwise>
-                     <c:variable name='memberTemplate' value='Html.MemberTemplate(prop)'/>
-                     <c:choose>
-                        <c:when test='memberTemplate != null'>
-                           <c:evaluate-delegate delegate='memberTemplate'/>
-                        </c:when>
-                        <c:otherwise>
-                           <div class='form-group'>
-                              <a:label name='{prop.PropertyName}' class='control-label {labelColumnClass}'/>
-                              <div class='{fieldColumnClass}'>
-                                 <a:editor name='{prop.PropertyName}' template='{editorTemplate}'/>
-                                 <c:text> </c:text>
-                                 <a:validation-message name='{prop.PropertyName}'/>
-                              </div>
-                           </div>
-                        </c:otherwise>
-                     </c:choose>
-                  </c:otherwise>
-               </c:choose>
-            </c:for-each>
+            <c:variable name='filteredProperties' value='ViewData.ModelMetadata.Properties.Where(x => Html.ShowForEdit(x))'/>
+            <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => p.GroupName)'/>
+            <c:variable name='createFieldset' value='groupedProperties.Any(g => g.Key != null)'/>
+            <c:choose>
+               <c:when test='createFieldset'>
+                  <c:for-each name='group' in='groupedProperties'>
+                     <fieldset>
+                        <legend>{group.Key}</legend>
+                        <c:for-each name='propertyMeta' in='group'>
+                           <c:call-template name='property-template'>
+                              <c:with-param name='propertyMeta' value='propertyMeta'/>
+                           </c:call-template>
+                        </c:for-each>
+                     </fieldset>
+                  </c:for-each>
+               </c:when>
+               <c:otherwise>
+                  <c:for-each name='propertyMeta' in='filteredProperties'>
+                     <c:call-template name='property-template'>
+                        <c:with-param name='propertyMeta' value='propertyMeta'/>
+                     </c:call-template>
+                  </c:for-each>
+               </c:otherwise>
+            </c:choose>
+         </c:otherwise>
+      </c:choose>
+   </c:template>
+
+   <c:template name='property-template'>
+      <c:param name='propertyMeta' as='ModelMetadata' required='yes'/>
+
+      <c:variable name='propertyName' value='propertyMeta.PropertyName'/>
+      <c:variable name='editorTemplate' value='propertyMeta.TemplateHint ?? propertyMeta.DataTypeName'/>
+      <c:choose>
+         <c:when test='propertyMeta.HideSurroundingHtml'>
+            <a:editor name='{propertyName}' template='{editorTemplate}'/>
+         </c:when>
+         <c:otherwise>
+            <c:variable name='memberTemplate' value='Html.MemberTemplate(propertyMeta)'/>
+            <c:choose>
+               <c:when test='memberTemplate != null'>
+                  <c:evaluate-delegate delegate='memberTemplate'/>
+               </c:when>
+               <c:otherwise>
+                  <div class='form-group'>
+                     <a:label name='{propertyName}' class='control-label {labelColumnClass}'/>
+                     <div class='{fieldColumnClass}'>
+                        <a:editor name='{propertyName}' template='{editorTemplate}'/>
+                        <c:text> </c:text>
+                        <a:validation-message name='{propertyName}'/>
+                     </div>
+                  </div>
+               </c:otherwise>
+            </c:choose>
          </c:otherwise>
       </c:choose>
    </c:template>

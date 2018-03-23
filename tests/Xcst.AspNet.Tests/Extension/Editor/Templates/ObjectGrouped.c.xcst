@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Order'>
+      <c:member name='FirstName' as='string' group='Personal'/>
+      <c:member name='LastName' as='string' group='Personal'/>
+      <c:member name='AddressLine1' as='string' group='Address'/>
+      <c:member name='AddressLine2' as='string' group='Address'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:model value='new Order()'>
+            <a:editor/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <fieldset>
+            <legend>Personal</legend>
+            <div class='editor-label'>
+               <label for='FirstName'>FirstName</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='FirstName' name='FirstName' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='FirstName' data-valmsg-replace='true'/>
+            </div>
+            <div class='editor-label'>
+               <label for='LastName'>LastName</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='LastName' name='LastName' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='LastName' data-valmsg-replace='true'/>
+            </div>
+         </fieldset>
+         <fieldset>
+            <legend>Address</legend>
+            <div class='editor-label'>
+               <label for='AddressLine1'>AddressLine1</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='AddressLine1' name='AddressLine1' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='AddressLine1' data-valmsg-replace='true'/>
+            </div>
+            <div class='editor-label'>
+               <label for='AddressLine2'>AddressLine2</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='AddressLine2' name='AddressLine2' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='AddressLine2' data-valmsg-replace='true'/>
+            </div>
+         </fieldset>
+      </div>
+   </c:template>
+
+</c:module>

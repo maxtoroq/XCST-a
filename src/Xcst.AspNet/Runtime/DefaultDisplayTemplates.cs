@@ -193,31 +193,52 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         foreach (ModelMetadata propertyMetadata in modelMetadata.Properties.Where(pm => DisplayInstructions.ShowForDisplay(html, pm))) {
+         var filteredProperties = modelMetadata.Properties
+            .Where(p => DisplayInstructions.ShowForDisplay(html, p));
 
-            if (!propertyMetadata.HideSurroundingHtml) {
+         var groupedProperties = filteredProperties.GroupBy(p => p.GroupName());
 
-               XcstDelegate<object> memberTemplate =
-                  DisplayInstructions.MemberTemplate(html, propertyMetadata);
+         bool createFieldset = groupedProperties.Any(g => g.Key != null);
 
-               if (memberTemplate != null) {
-                  memberTemplate(null, output);
-                  continue;
-               }
+         foreach (var group in groupedProperties) {
 
-               output.WriteStartElement("div");
-               output.WriteAttributeString("class", "display-label");
-               output.WriteString(propertyMetadata.GetDisplayName() ?? String.Empty);
+            if (createFieldset) {
+               output.WriteStartElement("fieldset");
+               output.WriteStartElement("legend");
+               output.WriteString(group.Key);
                output.WriteEndElement();
-
-               output.WriteStartElement("div");
-               output.WriteAttributeString("class", "display-field");
             }
 
-            templateHelper(html, output, propertyMetadata, propertyMetadata.PropertyName, null /* templateName */, DataBoundControlMode.ReadOnly, null /* additionalViewData */);
+            foreach (ModelMetadata propertyMeta in group) {
 
-            if (!propertyMetadata.HideSurroundingHtml) {
-               output.WriteEndElement(); // </div>
+               if (!propertyMeta.HideSurroundingHtml) {
+
+                  XcstDelegate<object> memberTemplate =
+                     DisplayInstructions.MemberTemplate(html, propertyMeta);
+
+                  if (memberTemplate != null) {
+                     memberTemplate(null, output);
+                     continue;
+                  }
+
+                  output.WriteStartElement("div");
+                  output.WriteAttributeString("class", "display-label");
+                  output.WriteString(propertyMeta.GetDisplayName() ?? String.Empty);
+                  output.WriteEndElement();
+
+                  output.WriteStartElement("div");
+                  output.WriteAttributeString("class", "display-field");
+               }
+
+               templateHelper(html, output, propertyMeta, propertyMeta.PropertyName, null /* templateName */, DataBoundControlMode.ReadOnly, null /* additionalViewData */);
+
+               if (!propertyMeta.HideSurroundingHtml) {
+                  output.WriteEndElement(); // </div>
+               }
+            }
+
+            if (createFieldset) {
+               output.WriteEndElement(); // </fieldset>
             }
          }
       }

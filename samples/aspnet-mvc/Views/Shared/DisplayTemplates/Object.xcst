@@ -25,24 +25,25 @@
             </c:choose>
          </c:when>
          <c:otherwise>
-            <c:for-each name='prop' in='ViewData.ModelMetadata.Properties.Where(x => DisplayInstructions.ShowForDisplay(Html, x))'>
-               <c:variable name='displayTemplate' value='prop.TemplateHint ?? prop.DataTypeName'/>
+            <c:for-each name='propertyMeta' in='ViewData.ModelMetadata.Properties.Where(x => DisplayInstructions.ShowForDisplay(Html, x))'>
+               <c:variable name='propertyName' value='propertyMeta.PropertyName'/>
+               <c:variable name='displayTemplate' value='propertyMeta.TemplateHint ?? propertyMeta.DataTypeName'/>
                <c:choose>
-                  <c:when test='prop.HideSurroundingHtml'>
-                     <a:display name='{prop.PropertyName}' template='{displayTemplate}'/>
+                  <c:when test='propertyMeta.HideSurroundingHtml'>
+                     <a:display name='{propertyName}' template='{displayTemplate}'/>
                   </c:when>
                   <c:otherwise>
-                     <c:variable name='memberTemplate' value='DisplayInstructions.MemberTemplate(Html, prop)'/>
+                     <c:variable name='memberTemplate' value='DisplayInstructions.MemberTemplate(Html, propertyMeta)'/>
                      <c:choose>
                         <c:when test='memberTemplate != null'>
                            <c:evaluate-delegate delegate='memberTemplate'/>
                         </c:when>
                         <c:otherwise>
                            <div class='form-group'>
-                              <a:label name='{prop.PropertyName}' class='control-label {labelColumnClass}'/>
+                              <a:label name='{propertyName}' class='control-label {labelColumnClass}'/>
                               <div class='{fieldColumnClass}'>
                                  <p class='form-control-static'>
-                                    <a:display name='{prop.PropertyName}' template='{displayTemplate}'/>
+                                    <a:display name='{propertyName}' template='{displayTemplate}'/>
                                  </p>
                               </div>
                            </div>

@@ -33,6 +33,14 @@ namespace Xcst.Web {
          (Action<TemplateInfo, HashSet<object>>)Delegate.CreateDelegate(typeof(Action<TemplateInfo, HashSet<object>>), typeof(TemplateInfo).GetProperty("VisitedObjects", BindingFlags.Instance | BindingFlags.NonPublic).GetSetMethod(nonPublic: true));
 #endif
 
+      public static string GroupName(this ModelMetadata metadata) {
+#if ASPNETLIB
+         return metadata.GroupName;
+#else
+         return null;
+#endif
+      }
+
       public static Type RealModelType(this ModelMetadata metadata) {
 #if ASPNETLIB
          return metadata.RealModelType;

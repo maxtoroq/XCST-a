@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='FirstName' as='string' value='"John"' group='Personal'/>
+      <c:member name='LastName' as='string' value='"Doe"' group='Personal'/>
+      <c:member name='AddressLine1' as='string' value='"123 street"' group='Address'/>
+      <c:member name='AddressLine2' as='string' value='"hills"' group='Address'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:model value='new Foo()'>
+            <a:display/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <fieldset>
+            <legend>Personal</legend>
+            <div class='display-label'>FirstName</div>
+            <div class='display-field'>John</div>
+            <div class='display-label'>LastName</div>
+            <div class='display-field'>Doe</div>
+         </fieldset>
+         <fieldset>
+            <legend>Address</legend>
+            <div class='display-label'>AddressLine1</div>
+            <div class='display-field'>123 street</div>
+            <div class='display-label'>AddressLine2</div>
+            <div class='display-field'>hills</div>
+         </fieldset>
+      </div>
+   </c:template>
+
+</c:module>
