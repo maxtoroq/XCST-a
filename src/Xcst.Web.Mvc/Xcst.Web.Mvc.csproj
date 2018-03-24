@@ -117,6 +117,12 @@
     <Compile Include="..\Xcst.AspNet\Framework\UrlRewriterHelper.cs">
       <Link>Framework\UrlRewriterHelper.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Mvc\FileExtensionsAttribute.cs">
+      <Link>Mvc\FileExtensionsAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\Mvc\FileMaxLengthAttribute.cs">
+      <Link>Mvc\FileMaxLengthAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\ShowForAttribute.cs">
       <Link>Mvc\ShowForAttribute.cs</Link>
     </Compile>
