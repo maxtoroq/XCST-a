@@ -14,15 +14,8 @@
 
    <c:template name='c:initial-template' expand-text='yes'>
       <c:choose>
-         <c:when test='Model == null'>{ViewData.ModelMetadata.NullDisplayText}</c:when>
-         <c:when test='ViewData.TemplateInfo.TemplateDepth > 1'>
-            <c:variable name='displayText' value='ViewData.ModelMetadata.SimpleDisplayText'/>
-            <c:choose>
-               <c:when test='ViewData.ModelMetadata.HtmlEncode'>{displayText}</c:when>
-               <c:otherwise>
-                  <c:value-of value='displayText' disable-output-escaping='yes'/>
-               </c:otherwise>
-            </c:choose>
+         <c:when test='Model == null || ViewData.TemplateInfo.TemplateDepth > 1'>
+            <a:display-text/>
          </c:when>
          <c:otherwise>
             <c:for-each name='propertyMeta' in='ViewData.ModelMetadata.Properties.Where(x => DisplayInstructions.ShowForDisplay(Html, x))'>

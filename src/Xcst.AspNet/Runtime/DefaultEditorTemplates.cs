@@ -196,21 +196,7 @@ namespace Xcst.Web.Runtime {
          ModelMetadata modelMetadata = viewData.ModelMetadata;
 
          if (viewData.TemplateInfo.TemplateDepth > 1) {
-
-            if (modelMetadata.Model == null) {
-               output.WriteString(modelMetadata.NullDisplayText);
-               return;
-            }
-
-            // DDB #224751
-            string text = modelMetadata.SimpleDisplayText;
-
-            if (modelMetadata.HtmlEncode) {
-               output.WriteString(text);
-            } else {
-               output.WriteRaw(text);
-            }
-
+            MetadataInstructions.DisplayTextHelper(html, output, modelMetadata);
             return;
          }
 

@@ -170,26 +170,10 @@ namespace Xcst.Web.Runtime {
          ViewDataDictionary viewData = html.ViewData;
          ModelMetadata modelMetadata = viewData.ModelMetadata;
 
-         if (modelMetadata.Model == null) {
+         if (modelMetadata.Model == null
+            || viewData.TemplateInfo.TemplateDepth > 1) {
 
-            // DDB #225237
-
-            output.WriteString(modelMetadata.NullDisplayText);
-            return;
-         }
-
-         if (viewData.TemplateInfo.TemplateDepth > 1) {
-
-            // DDB #224751
-
-            string text = modelMetadata.SimpleDisplayText;
-
-            if (modelMetadata.HtmlEncode) {
-               output.WriteString(text);
-            } else {
-               output.WriteRaw(text);
-            }
-
+            MetadataInstructions.DisplayTextHelper(html, output, modelMetadata);
             return;
          }
 
