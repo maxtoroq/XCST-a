@@ -186,7 +186,29 @@
       <xs:attribute name="class" type="a:avt"/>
       <xs:attribute name="attributes" type="a:expr-obj-dict"/>
    </xs:attributeGroup>
-   <xs:element name="editor" substitutionGroup="a:extension-instruction" type="a:editor-display-common"/>
+   <xs:element name="editor" substitutionGroup="a:extension-instruction">
+      <xs:complexType>
+         <xs:complexContent>
+            <xs:extension base="a:editor-display-common">
+               <xs:attribute name="autofocus">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:boolean a:avt-expr"/>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="disabled">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:boolean a:avt-expr"/>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="readonly">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:boolean a:avt-expr"/>
+                  </xs:simpleType>
+               </xs:attribute>
+            </xs:extension>
+         </xs:complexContent>
+      </xs:complexType>
+   </xs:element>
    <xs:element name="display" substitutionGroup="a:extension-instruction" type="a:editor-display-common"/>
    <xs:complexType name="editor-display-common">
       <xs:sequence>

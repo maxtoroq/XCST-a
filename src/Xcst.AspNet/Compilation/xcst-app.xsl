@@ -686,8 +686,10 @@
    <template match="a:editor | a:display" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
 
+      <variable name="editor" select="self::a:editor"/>
+
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="'for', 'name', 'template', 'html-field-name', 'attributes', 'with-params', 'options'"/>
+         <with-param name="optional" select="'for', 'name', 'template', 'html-field-name', 'attributes', 'with-params', 'options', ('autofocus', 'disabled', 'readonly')[$editor]"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -707,7 +709,6 @@
          </c:variable>
       </if>
 
-      <variable name="editor" select="self::a:editor"/>
       <variable name="for-model" select="empty((@for, @name))"/>
       <variable name="expr">
          <value-of select="a:fully-qualified-helper(concat((if ($editor) then 'Editor' else 'Display'), 'Instructions'))"/>
@@ -751,8 +752,22 @@
    </template>
 
    <template name="a:editor-additional-view-data">
+      <variable name="editor" select="self::a:editor"/>
+      <variable name="boolean-attribs" select="(@autofocus, @disabled, @readonly)[$editor]"/>
       <variable name="setters" as="text()*">
-         <for-each select="@attributes, a:with-options, .[@options], a:member-template">
+         <if test="$boolean-attribs">
+            <value-of>
+               <text>[</text>
+               <value-of select="src:string('htmlAttributes')"/>
+               <text>] = </text>
+               <call-template name="a:html-attributes-param">
+                  <with-param name="bool-attributes" select="$boolean-attribs"/>
+                  <with-param name="class" select="()"/>
+                  <with-param name="omit-param" select="true()"/>
+               </call-template>
+            </value-of>
+         </if>
+         <for-each select="@attributes[not($boolean-attribs)], a:with-options, .[@options], a:member-template">
             <variable name="setter">
                <apply-templates select="." mode="a:editor-additional-view-data"/>
             </variable>
@@ -1283,9 +1298,12 @@
       <param name="class" select="@class" as="attribute()?"/>
       <param name="merge-attributes" as="attribute()*"/>
       <param name="bool-attributes" as="attribute()*"/>
+      <param name="omit-param" select="false()"/>
 
       <if test="not(empty(($attributes, $class, $merge-attributes, $bool-attributes)))">
-         <text>, htmlAttributes: </text>
+         <if test="not($omit-param)">
+            <text>, htmlAttributes: </text>
+         </if>
          <value-of select="a:fully-qualified-helper('HtmlAttributesMerger')"/>
          <text>.Create(</text>
          <value-of select="$attributes/xcst:expression(.)"/>

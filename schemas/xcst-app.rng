@@ -390,6 +390,28 @@
       <define name="editor">
          <element name="editor">
             <ref name="editor-display-common"/>
+            <zeroOrMore>
+               <choice>
+                  <attribute name="autofocus">
+                     <choice>
+                        <ref name="boolean"/>
+                        <ref name="avt-expr"/>
+                     </choice>
+                  </attribute>
+                  <attribute name="disabled">
+                     <choice>
+                        <ref name="boolean"/>
+                        <ref name="avt-expr"/>
+                     </choice>
+                  </attribute>
+                  <attribute name="readonly">
+                     <choice>
+                        <ref name="boolean"/>
+                        <ref name="avt-expr"/>
+                     </choice>
+                  </attribute>
+               </choice>
+            </zeroOrMore>
          </element>
       </define>
 
