@@ -689,7 +689,7 @@
       <variable name="editor" select="self::a:editor"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="'for', 'name', 'template', 'html-field-name', 'attributes', 'with-params', 'options', ('autofocus', 'disabled', 'readonly')[$editor]"/>
+         <with-param name="optional" select="'for', 'name', 'template', 'field-name', 'attributes', 'with-params', 'options', ('autofocus', 'disabled', 'readonly')[$editor]"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -741,9 +741,9 @@
             </when>
             <otherwise>null</otherwise>
          </choose>
-         <if test="@html-field-name">
+         <if test="@field-name">
             <text>, htmlFieldName: </text>
-            <value-of select="src:expand-attribute(@html-field-name)"/>
+            <value-of select="src:expand-attribute(@field-name)"/>
          </if>
          <call-template name="a:editor-additional-view-data"/>
          <text>)</text>

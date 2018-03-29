@@ -189,6 +189,7 @@
     <None Include="Extension\Display\Templates\Enum\Enum.c.xcst" />
     <None Include="Extension\Display\Templates\ObjectGrouped.c.xcst" />
     <None Include="Extension\Display\Templates\Object.c.xcst" />
+    <None Include="Extension\Editor\editor.field-name.type.c.xcst" />
     <None Include="Extension\Editor\editor.autofocus.type.c.xcst" />
     <None Include="Extension\Editor\editor.disabled.type.c.xcst" />
     <None Include="Extension\Editor\editor.disabled.type.i.xcst" />

@@ -218,7 +218,7 @@
       <xs:attribute name="for" type="a:expression"/>
       <xs:attribute name="name" type="a:avt"/>
       <xs:attribute name="template" type="a:avt"/>
-      <xs:attribute name="html-field-name" type="a:avt"/>
+      <xs:attribute name="field-name" type="a:avt"/>
       <xs:attribute name="attributes" type="a:expr-obj-dict"/>
       <xs:attribute name="with-params" type="a:expr-obj-dict"/>
       <xs:attribute name="options" type="a:options-expr"/>

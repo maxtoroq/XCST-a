@@ -437,7 +437,7 @@
                <attribute name="template">
                   <ref name="avt"/>
                </attribute>
-               <attribute name="html-field-name">
+               <attribute name="field-name">
                   <ref name="avt"/>
                </attribute>
                <attribute name="attributes">
