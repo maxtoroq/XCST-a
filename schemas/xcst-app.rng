@@ -564,7 +564,7 @@
             </oneOrMore>
             <zeroOrMore>
                <choice>
-                  <attribute name="html-field-prefix">
+                  <attribute name="field-prefix">
                      <ref name="avt"/>
                   </attribute>
                   <attribute name="with-params">

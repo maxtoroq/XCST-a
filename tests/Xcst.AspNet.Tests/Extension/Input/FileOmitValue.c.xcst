@@ -15,7 +15,7 @@
             <a:input type='file' name='f'/>
             <a:input type='file' name='f' attributes='new { value = htm.ViewData.Model.f }'/>
          </a:model>
-         <a:model value='"foo"' html-field-prefix='f'>
+         <a:model value='"foo"' field-prefix='f'>
             <a:input type='file'/>
          </a:model>
       </div>

@@ -285,7 +285,7 @@
          <xs:group ref="a:sequence-constructor"/>
          <xs:attribute name="value" type="a:expression"/>
          <xs:attribute name="as" type="a:type_name"/>
-         <xs:attribute name="html-field-prefix" type="a:avt"/>
+         <xs:attribute name="field-prefix" type="a:avt"/>
          <xs:attribute name="with-params" type="a:expr-obj-dict"/>
          <xs:attribute name="helper-name" type="a:identifier"/>
       </xs:complexType>

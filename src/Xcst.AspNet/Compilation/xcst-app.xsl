@@ -1051,7 +1051,7 @@
    <template match="a:model" mode="src:extension-instruction">
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="'value', 'as', 'html-field-prefix', 'helper-name', 'with-params'"/>
+         <with-param name="optional" select="'value', 'as', 'field-prefix', 'helper-name', 'with-params'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -1074,9 +1074,9 @@
       <call-template name="a:html-helper"/>
       <text>, </text>
       <value-of select="(@value/xcst:expression(.), concat('default(', ($type, 'object')[1], ')'))[1]"/>
-      <if test="@html-field-prefix">
+      <if test="@field-prefix">
          <text>, htmlFieldPrefix: </text>
-         <value-of select="src:expand-attribute(@html-field-prefix)"/>
+         <value-of select="src:expand-attribute(@field-prefix)"/>
       </if>
       <if test="@with-params">
          <text>, additionalViewData: </text>

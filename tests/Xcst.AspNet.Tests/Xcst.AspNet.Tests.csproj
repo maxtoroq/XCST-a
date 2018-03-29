@@ -217,6 +217,7 @@
     <None Include="Extension\Editor\Templates\DateTime.c.xcst" />
     <None Include="Extension\Editor\Templates\Date.c.xcst" />
     <None Include="Extension\Input\FileOmitValue.c.xcst" />
+    <None Include="Extension\Model\model.field-prefix.type.c.xcst" />
     <None Include="generate-tests.ps1" />
   </ItemGroup>
   <ItemGroup>

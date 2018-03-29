@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='c:initial-template'>
-      <a:model value='new[] { "blue" }' html-field-prefix='color'>
+      <a:model value='new[] { "blue" }' field-prefix='color'>
          <a:select multiple='yes'>
             <a:option>red</a:option>
             <a:option>blue</a:option>
