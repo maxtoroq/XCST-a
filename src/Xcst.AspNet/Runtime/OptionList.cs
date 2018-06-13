@@ -105,9 +105,9 @@ namespace Xcst.Web.Runtime {
 
       public OptionList ConcatDynamicList(IEnumerable<SelectListItem> list) {
 
-         EnsureSingleCall();
-
          if (list != null) {
+
+            this.dynamicList = new List<SelectListItem>();
 
             foreach (SelectListItem item in list) {
 
@@ -126,9 +126,9 @@ namespace Xcst.Web.Runtime {
 
       public OptionList ConcatDynamicList<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> list) {
 
-         EnsureSingleCall();
-
          if (list != null) {
+
+            this.dynamicList = new List<SelectListItem>();
 
             foreach (var pair in list) {
 
@@ -144,9 +144,9 @@ namespace Xcst.Web.Runtime {
 
       public OptionList ConcatDynamicList<TGroupKey, TKey, TValue>(IEnumerable<IGrouping<TGroupKey, KeyValuePair<TKey, TValue>>> list) {
 
-         EnsureSingleCall();
-
          if (list != null) {
+
+            this.dynamicList = new List<SelectListItem>();
 
             foreach (var group in list) {
 
@@ -170,9 +170,9 @@ namespace Xcst.Web.Runtime {
 
       public OptionList ConcatDynamicList<TKey, TElement>(IEnumerable<IGrouping<TKey, TElement>> list) {
 
-         EnsureSingleCall();
-
          if (list != null) {
+
+            this.dynamicList = new List<SelectListItem>();
 
             foreach (IGrouping<TKey, TElement> group in list) {
 
@@ -195,9 +195,9 @@ namespace Xcst.Web.Runtime {
 
       public OptionList ConcatDynamicList(IEnumerable list) {
 
-         EnsureSingleCall();
-
          if (list != null) {
+
+            this.dynamicList = new List<SelectListItem>();
 
             foreach (object item in list) {
 
@@ -210,18 +210,7 @@ namespace Xcst.Web.Runtime {
          return this;
       }
 
-      void EnsureSingleCall() {
-
-         if (this.dynamicList != null) {
-            throw new InvalidOperationException();
-         }
-      }
-
       void AddDynamicOption(SelectListItem item) {
-
-         if (this.dynamicList == null) {
-            this.dynamicList = new List<SelectListItem>();
-         }
 
          item.Selected = IsSelected(item);
 

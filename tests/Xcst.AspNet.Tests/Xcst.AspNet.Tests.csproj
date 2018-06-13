@@ -218,6 +218,7 @@
     <None Include="Extension\Editor\Templates\Date.c.xcst" />
     <None Include="Extension\Input\FileOmitValue.c.xcst" />
     <None Include="Extension\Model\model.field-prefix.type.c.xcst" />
+    <None Include="Extension\Select\DynamicListEmpty.c.xcst" />
     <None Include="generate-tests.ps1" />
   </ItemGroup>
   <ItemGroup>
@@ -255,7 +256,7 @@
     <None Include="Extension\Select\DynamicListIGrouping.c.xcst" />
     <None Include="Extension\Select\DynamicListIEnumerable.c.xcst" />
     <None Include="Extension\Select\DynamicListIEnumerableKeyValuePair.c.xcst" />
-    <None Include="Extension\Select\NullList.c.xcst" />
+    <None Include="Extension\Select\DynamicListNull.c.xcst" />
     <None Include="Extension\Select\StaticAndDynamicList.c.xcst" />
     <None Include="Extension\Select\StaticList.c.xcst" />
     <None Include="Extension\Select\option.foo.i.xcst" />
