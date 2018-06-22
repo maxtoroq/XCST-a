@@ -28,7 +28,6 @@ namespace Xcst.Web.Tests {
 
       static TestsHelper() {
          CompilerFactory.EnableExtensions = true;
-         CompilerFactory.PackageTypeResolver = typeName => Assembly.GetExecutingAssembly().GetType(typeName);
          CompilerFactory.RegisterApplicationExtension();
       }
 
@@ -108,12 +107,20 @@ namespace Xcst.Web.Tests {
          }
       }
 
-      static Tuple<CompileResult, string> GenerateCode(Uri packageUri, MethodBase testMethod) {
+      public static XcstCompiler CreateCompiler() {
 
          XcstCompiler compiler = CompilerFactory.CreateCompiler();
+         compiler.UseLineDirective = true;
+         compiler.PackageTypeResolver = n => Assembly.GetExecutingAssembly().GetType(n);
+
+         return compiler;
+      }
+
+      static Tuple<CompileResult, string> GenerateCode(Uri packageUri, MethodBase testMethod) {
+
+         XcstCompiler compiler = CreateCompiler();
          compiler.TargetNamespace = testMethod.DeclaringType.Namespace;
          compiler.TargetClass = testMethod.Name;
-         compiler.UseLineDirective = true;
          compiler.UsePackageBase = testMethod.DeclaringType.Namespace;
          compiler.SetTargetBaseTypes(typeof(TestBase));
 

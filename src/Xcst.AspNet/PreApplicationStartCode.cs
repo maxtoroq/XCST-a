@@ -41,8 +41,6 @@ namespace Xcst.Web {
             System.Web.Mvc.PreApplicationStartCode.Start();
 
             XcstWebConfiguration config = XcstWebConfiguration.Instance;
-            config.CompilerFactory.PackageTypeResolver = typeName => BuildManager.GetType(typeName, throwOnError: false);
-            config.CompilerFactory.PackagesLocation = HostingEnvironment.MapPath("~/App_Code");
 
             BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(PageBuildProvider<XcstViewPage>));
             ViewEngines.Engines.Add(new XcstViewEngine());

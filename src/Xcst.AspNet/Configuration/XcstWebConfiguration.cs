@@ -47,7 +47,6 @@ namespace Xcst.Web.Configuration {
 
       private XcstWebConfiguration() {
 
-         this.CompilerFactory.PackageFileExtension = FileExtension;
          this.CompilerFactory.EnableExtensions = true;
          this.CompilerFactory.RegisterApplicationExtension();
       }

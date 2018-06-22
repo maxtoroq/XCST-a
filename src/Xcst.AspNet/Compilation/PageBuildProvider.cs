@@ -79,6 +79,10 @@ namespace Xcst.Web.Compilation {
 
       protected virtual void ConfigureCompiler(XcstCompiler compiler) {
 
+         compiler.PackageTypeResolver = typeName => BuildManager.GetType(typeName, throwOnError: false);
+         compiler.PackagesLocation = HostingEnvironment.MapPath("~/App_Code");
+         compiler.PackageFileExtension = XcstWebConfiguration.FileExtension;
+
          if (this.IsFileInCodeDir) {
             compiler.NamedPackage = true;
          } else {
