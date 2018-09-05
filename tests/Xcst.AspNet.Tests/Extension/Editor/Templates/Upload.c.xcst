@@ -4,8 +4,6 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='System.Web'/>
-
    <c:type name='Foo'>
       <c:member name='f' as='string' data-type='Upload'/>
    </c:type>

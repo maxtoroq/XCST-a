@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using Xcst.PackageModel;
@@ -84,6 +85,11 @@ namespace Xcst.Web.Runtime {
             return false;
          } 
 #endif
+
+         if (propertyMetadata.ModelType == typeof(HttpPostedFileBase)) {
+            return true;
+         }
+
          return !propertyMetadata.IsComplexType;
       }
 
