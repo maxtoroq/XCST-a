@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 
 namespace System.Web.Mvc {
@@ -18,7 +16,6 @@ namespace System.Web.Mvc {
       static readonly object _lastFormNumKey = new object();
 
       DynamicViewDataDictionary _dynamicViewDataDictionary;
-      Func<string> _formIdGenerator;
 
       // We need a default FormContext if the user uses html <form> instead of an MvcForm
 
@@ -48,16 +45,6 @@ namespace System.Web.Mvc {
             return HttpContext.Items[_formContextKey] as FormContext ?? _defaultFormContext;
          }
          set { HttpContext.Items[_formContextKey] = value; }
-      }
-
-      internal Func<string> FormIdGenerator {
-         get {
-            if (_formIdGenerator == null) {
-               _formIdGenerator = DefaultFormIdGenerator;
-            }
-            return _formIdGenerator;
-         }
-         set { _formIdGenerator = value; }
       }
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The property setter is only here to support mocking this type and should not be called at runtime.")]
@@ -96,22 +83,8 @@ namespace System.Web.Mvc {
          this.TempData = tempData;
       }
 
-      string DefaultFormIdGenerator() {
-
-         int formNum = IncrementFormCount(this.HttpContext.Items);
-
-         return String.Format(CultureInfo.InvariantCulture, "form{0}", formNum);
-      }
-
       internal FormContext GetFormContextForClientValidation() {
          return (this.ClientValidationEnabled) ? this.FormContext : null;
-      }
-
-      static int IncrementFormCount(IDictionary items) {
-         object lastFormNum = items[_lastFormNumKey];
-         int newFormNum = (lastFormNum != null) ? ((int)lastFormNum) + 1 : 0;
-         items[_lastFormNumKey] = newFormNum;
-         return newFormNum;
       }
    }
 
