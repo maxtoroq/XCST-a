@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Web.Mvc'/>
+
+   <c:type name='Foo'>
+      <c:member name='color' as='string'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <!-- value overrides selected of static option -->
+         <a:select name='color' value='"red"' class='a'>
+            <a:option>red</a:option>
+            <a:option selected='true'>blue</a:option>
+         </a:select>
+         <!-- value overrides selected of dynamic option -->
+         <a:select name='color' value='"red"' options='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue", Selected = true } }' class='b'/>
+         <!-- model selected -->
+         <a:model value='"blue"' field-prefix='color'>
+            <a:select class='c'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+            </a:select>
+            <!--
+            <a:select value='"red"' class='d'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+            </a:select>
+            -->
+         </a:model>
+         <a:model value='new Foo { color = "blue" }'>
+            <a:select for='color' class='e'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+            </a:select>
+            <a:select name='color' class='f'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+            </a:select>
+            <!--
+            <a:select name='color' value='"red"' class='g'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+            </a:select>
+            -->
+         </a:model>
+         <a:model value='new Foo { color = "blue" }' field-prefix='x'>
+            <a:select for='color' class='h'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+            </a:select>
+            <a:select name='color' class='i'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+            </a:select>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <select name="color" id="color" class="a">
+            <option selected="selected">red</option>
+            <option>blue</option>
+         </select>
+         <select name="color" id="color" class="b">
+            <option value=""/>
+            <option selected="selected">red</option>
+            <option>blue</option>
+         </select>
+         <select name="color" id="color" class="c">
+            <option>red</option>
+            <option selected="selected">blue</option>
+         </select>
+         <!--
+         <select name="color" id="color" class="d">
+            <option selected="selected">red</option>
+            <option>blue</option>
+         </select>
+         -->
+         <select name="color" id="color" class="e">
+            <option>red</option>
+            <option selected="selected">blue</option>
+         </select>
+         <select name="color" id="color" class="f">
+            <option>red</option>
+            <option selected="selected">blue</option>
+         </select>
+         <!--
+         <select name="color" id="color" class="g">
+            <option selected="selected">red</option>
+            <option>blue</option>
+         </select>
+         -->
+         <select name="x.color" id="x_color" class="h">
+            <option>red</option>
+            <option selected="selected">blue</option>
+         </select>
+         <select name="x.color" id="x_color" class="i">
+            <option>red</option>
+            <option selected="selected">blue</option>
+         </select>
+      </div>
+   </c:template>
+
+</c:module>

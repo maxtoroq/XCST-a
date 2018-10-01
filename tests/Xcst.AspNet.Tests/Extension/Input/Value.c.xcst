@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='p' as='string'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:model value='new Foo { p = "property" }'>
+            <a:input for='p'/>
+            <a:input name='p'/>
+            <a:input name='p' value='"explicit"'/>
+            <a:input name='p' attributes='new { value = "attribs" }'/>
+            <a:input name='p' value='"explicit"' attributes='new { value = "attribs" }'/>
+         </a:model>
+         <a:model value='"model"' field-prefix='p'>
+            <a:input/>
+            <a:input value='"explicit"'/>
+         </a:model>
+         <a:model value='new Foo { p = "property" }' field-prefix='x'>
+            <a:input for='p'/>
+            <!--
+            <a:input name='p'/>
+            -->
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <input type='text' id='p' name='p' value='property'/>
+         <input type='text' id='p' name='p' value='property'/>
+         <input type='text' id='p' name='p' value='explicit'/>
+         <input type='text' id='p' name='p' value='property'/>
+         <input type='text' id='p' name='p' value='explicit'/>
+         <input type='text' id='p' name='p' value='model'/>
+         <input type='text' id='p' name='p' value='explicit'/>
+         <input type='text' id='x_p' name='x.p' value='property'/>
+         <!--
+         <input type='text' id='x_p' name='x.p' value='property'/>
+         -->
+      </div>
+   </c:template>
+
+</c:module>

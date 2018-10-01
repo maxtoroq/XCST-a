@@ -4,18 +4,20 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <!--
+      This test ensures <a:input type='checkbox'/> does not behave like <a:check-box/>
+   -->
+
    <c:template name='c:initial-template'>
-      <a:select name='color' value='new[] { "red" }' multiple='yes'>
-         <a:option>red</a:option>
-         <a:option selected='true'>blue</a:option>
-      </a:select>
+      <div>
+         <a:input type='checkbox' name='b'/>
+      </div>
    </c:template>
 
    <c:template name='expected'>
-      <select name="color" id="color" multiple="multiple">
-         <option selected="selected">red</option>
-         <option>blue</option>
-      </select>
+      <div>
+         <input type='checkbox' id='b' name='b' value=''/>
+      </div>
    </c:template>
 
 </c:module>

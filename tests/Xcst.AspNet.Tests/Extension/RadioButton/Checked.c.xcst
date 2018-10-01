@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='p' as='string'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:model value='new Foo { p = "property" }'>
+            <!-- different value -->
+            <a:radio-button for='p' value='"foo"' class='a'/>
+            <a:radio-button name='p' value='"foo"' class='b'/>
+
+            <!-- same value -->
+            <a:radio-button for='p' value='"property"' class='c'/>
+            <a:radio-button name='p' value='"property"' class='d'/>
+
+            <!-- explicit checked -->
+            <a:radio-button name='p' value='"foo"' checked='yes' class='e'/>
+            <a:radio-button name='p' value='"property"' checked='no' class='f'/>
+            <a:radio-button name='p' value='"property"' checked='no' attributes='new { @checked = "checked" }' class='g'/>
+
+            <!-- checked attribute -->
+            <a:radio-button for='p' value='"foo"' attributes='new { @checked = "checked" }' class='h'/>
+            <a:radio-button name='p' value='"foo"' attributes='new { @checked = "checked" }' class='i'/>
+         </a:model>
+         <a:model value='"model"' field-prefix='p'>
+            <!-- different value -->
+            <a:radio-button value='"foo"' class='j'/>
+
+            <!-- same value -->
+            <a:radio-button value='"model"' class='k'/>
+
+            <!-- explicit checked -->
+            <a:radio-button value='"foo"' checked='yes' class='l'/>
+            <a:radio-button value='"model"' checked='no' class='m'/>
+            <a:radio-button value='"model"' checked='no' attributes='new { @checked = "checked" }' class='n'/>
+
+            <!-- checked attribute -->
+            <a:radio-button value='"foo"' attributes='new { @checked = "checked" }' class='o'/>
+         </a:model>
+         <a:model value='new Foo { p = "property" }' field-prefix='x'>
+            <a:radio-button for='p' value='"property"' class='p'/>
+            <a:radio-button name='p' value='"property"' class='q'/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <input type='radio' id='p' name='p' value='foo' class='a'/>
+         <input type='radio' id='p' name='p' value='foo' class='b'/>
+         <input type='radio' id='p' name='p' value='property' checked='checked' class='c'/>
+         <input type='radio' id='p' name='p' value='property' checked='checked' class='d'/>
+         <input type='radio' id='p' name='p' value='foo' checked='checked' class='e'/>
+         <input type='radio' id='p' name='p' value='property' class='f'/>
+         <input type='radio' id='p' name='p' value='property' class='g'/>
+         <input type='radio' id='p' name='p' value='foo' class='h'/>
+         <input type='radio' id='p' name='p' value='foo' checked='checked' class='i'/>
+         <input type='radio' id='p' name='p' value='foo' class='j'/>
+         <input type='radio' id='p' name='p' value='model' checked='checked' class='k'/>
+         <input type='radio' id='p' name='p' value='foo' checked='checked' class='l'/>
+         <input type='radio' id='p' name='p' value='model' class='m'/>
+         <input type='radio' id='p' name='p' value='model' class='n'/>
+         <input type='radio' id='p' name='p' value='foo' class='o'/>
+         <input type='radio' id='x_p' name='x.p' value='property' checked='checked' class='p'/>
+         <input type='radio' id='x_p' name='x.p' value='property' checked='checked' class='q'/>
+      </div>
+   </c:template>
+
+</c:module>

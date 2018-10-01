@@ -171,6 +171,7 @@
     <None Include="Extension\Attributes\member.file-extensions.type.c.xcst" />
     <None Include="Extension\CheckBox\check-box.autofocus.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.disabled.type.i.xcst" />
+    <None Include="Extension\CheckBox\Checked.c.xcst" />
     <None Include="Extension\Directives\sessionstate.dupl.i.xcst" />
     <None Include="Extension\Directives\sessionstate.type.i.xcst" />
     <None Include="Extension\Directives\model.dupl.i.xcst" />
@@ -217,9 +218,17 @@
     <None Include="Extension\Editor\Templates\Time.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTime.c.xcst" />
     <None Include="Extension\Editor\Templates\Date.c.xcst" />
+    <None Include="Extension\Hidden\Value.c.xcst" />
+    <None Include="Extension\Input\Attributes.c.xcst" />
     <None Include="Extension\Input\FileOmitValue.c.xcst" />
+    <None Include="Extension\Input\NoCheckBox.c.xcst" />
+    <None Include="Extension\Input\Value.c.xcst" />
     <None Include="Extension\Model\model.field-prefix.type.c.xcst" />
+    <None Include="Extension\RadioButton\Checked.c.xcst" />
     <None Include="Extension\Select\DynamicListEmpty.c.xcst" />
+    <None Include="Extension\Select\Multiple\Selected.c.xcst" />
+    <None Include="Extension\Select\Selected.c.xcst" />
+    <None Include="Extension\Textarea\Value.c.xcst" />
     <None Include="generate-tests.ps1" />
   </ItemGroup>
   <ItemGroup>
@@ -265,21 +274,15 @@
     <None Include="Extension\Select\option.selected.type.i.xcst" />
     <None Include="Extension\Select\option.value.type.i.xcst" />
     <None Include="Extension\Select\DynamicList.c.xcst" />
-    <None Include="Extension\Select\ValueResetsSelectedDynamic.c.xcst" />
-    <None Include="Extension\Select\ModelSelected.c.xcst" />
-    <None Include="Extension\Select\ValueResetsSelectedStatic.c.xcst" />
     <None Include="Extension\Input\HiddenByteArray.c.xcst" />
     <None Include="Extension\Input\input.type.type.i.xcst" />
     <None Include="Extension\Label\label.foo.i.xcst" />
     <None Include="Extension\Label\label.for_name.mutex.i.xcst" />
     <None Include="Extension\Label\label.attributes.type.i.xcst" />
     <None Include="Extension\Select\Multiple\DynamicList.c.xcst" />
-    <None Include="Extension\Select\Multiple\ModelSelected.c.xcst" />
     <None Include="Extension\Select\Multiple\NullList.c.xcst" />
     <None Include="Extension\Select\Multiple\StaticAndDynamicList.c.xcst" />
     <None Include="Extension\Select\Multiple\StaticList.c.xcst" />
-    <None Include="Extension\Select\Multiple\ValueResetsSelectedDynamic.c.xcst" />
-    <None Include="Extension\Select\Multiple\ValueResetsSelectedStatic.c.xcst" />
     <None Include="Extension\RadioButton\radio-button.value.req.i.xcst" />
     <None Include="Extension\RadioButton\radio-button.value.type.i.xcst" />
     <None Include="Extension\RadioButton\radio-button.checked.type.i.xcst" />

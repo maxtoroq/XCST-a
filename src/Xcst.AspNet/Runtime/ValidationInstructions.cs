@@ -32,19 +32,6 @@ namespace Xcst.Web.Runtime {
 
    public static class ValidationInstructions {
 
-      /// <summary>
-      /// Displays a validation message if an error exists for the specified entry in the
-      /// <see cref="ModelStateDictionary"/> object.
-      /// </summary>
-      /// <param name="htmlHelper">The HTML helper instance that this method operates on.</param>
-      /// <param name="modelName">The name of the model object being validated.</param>
-      /// <param name="validationMessage">The message to display if the specified entry contains an error.</param>
-      /// <param name="htmlAttributes">An <see cref="IDictionary{TKey,TValue}"/> that contains the HTML attributes
-      /// for the element.</param>
-      /// <param name="tag">The tag to be set for the wrapping HTML element of the validation message.</param>
-      /// <returns>null if the model object is valid and client-side validation is disabled.
-      /// Otherwise, a <paramref name="tag"/> element that contains an error message.</returns>
-
       [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
       public static void ValidationMessage(HtmlHelper htmlHelper,
                                            XcstWriter output,
@@ -59,21 +46,6 @@ namespace Xcst.Web.Runtime {
 
          ValidationMessageHelper(htmlHelper, output, metadata, modelName, validationMessage, htmlAttributes, tag);
       }
-
-      /// <summary>
-      /// Returns the HTML markup for a validation-error message for the specified expression.
-      /// </summary>
-      /// <typeparam name="TModel">The type of the model.</typeparam>
-      /// <typeparam name="TProperty">The type of the property.</typeparam>
-      /// <param name="htmlHelper">The HTML helper instance that this method operates on.</param>
-      /// <param name="expression">An expression that identifies the object that contains the properties to render.
-      /// </param>
-      /// <param name="validationMessage">The message to display if a validation error occurs.</param>
-      /// <param name="htmlAttributes">An <see cref="IDictionary{TKey,TValue}"/> that contains the HTML attributes
-      /// for the element.</param>
-      /// <param name="tag">The tag to be set for the wrapping HTML element of the validation message.</param>
-      /// <returns>null if the model object is valid and client-side validation is disabled.
-      /// Otherwise, a <paramref name="tag"/> element that contains an error message.</returns>
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void ValidationMessageFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,

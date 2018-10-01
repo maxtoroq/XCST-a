@@ -350,6 +350,7 @@ namespace System.Web.Mvc {
 
             return metadata;
          }
+
          return metadataProvider.GetMetadataForType(modelAccessor, modelType);
       }
 

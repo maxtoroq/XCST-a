@@ -10,13 +10,15 @@
 
    <c:template name='c:initial-template'>
       <div>
-         <a:model value='new Foo { f = "foo" }' helper-name='htm'>
+         <a:model value='new Foo { f = "property" }'>
             <a:input type='file' for='f'/>
             <a:input type='file' name='f'/>
-            <a:input type='file' name='f' attributes='new { value = htm.ViewData.Model.f }'/>
+            <a:input type='file' name='f' value='"explicit"'/>
+            <a:input type='file' name='f' attributes='new { value = "attrib" }'/>
          </a:model>
-         <a:model value='"foo"' field-prefix='f'>
+         <a:model value='"model"' field-prefix='f'>
             <a:input type='file'/>
+            <a:input type='file' value='"explicit"'/>
          </a:model>
       </div>
    </c:template>
@@ -25,7 +27,9 @@
       <div>
          <input type='file' id='f' name='f'/>
          <input type='file' id='f' name='f'/>
-         <input type='file' id='f' name='f' value='foo'/>
+         <input type='file' id='f' name='f'/>
+         <input type='file' id='f' name='f' value='attrib'/>
+         <input type='file' id='f' name='f'/>
          <input type='file' id='f' name='f'/>
       </div>
    </c:template>

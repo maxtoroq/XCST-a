@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Web.Mvc'/>
+
+   <c:type name='Foo'>
+      <c:member name='color' as='string[]'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <!-- value overrides selected of static option -->
+         <a:select name='color' value='new[] { "red", "blue" }' multiple='yes' class='a'>
+            <a:option>red</a:option>
+            <a:option selected='true'>blue</a:option>
+            <a:option selected='true'>green</a:option>
+         </a:select>
+         <!-- value overrides selected of dynamic option -->
+         <a:select name='color' value='new[] { "red", "blue" }' options='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue", Selected = true }, new SelectListItem { Text = "green", Selected = true } }' multiple='yes' class='b'/>
+         <!-- model selected -->
+         <a:model value='new[] { "red", "blue" }' field-prefix='color'>
+            <a:select multiple='yes' class='c'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+               <a:option>green</a:option>
+            </a:select>
+            <!--
+            <a:select value='new[] { "blue", "green" }' multiple='yes' class='d'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+               <a:option>green</a:option>
+            </a:select>
+            -->
+         </a:model>
+         <a:model value='new Foo { color = new[] { "red", "blue" } }'>
+            <a:select for='color' multiple='yes' class='e'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+               <a:option>green</a:option>
+            </a:select>
+            <a:select name='color' multiple='yes' class='f'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+               <a:option>green</a:option>
+            </a:select>
+            <!--
+            <a:select name='color' value='new[] { "blue", "green" }' multiple='yes' class='g'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+               <a:option>green</a:option>
+            </a:select>
+            -->
+         </a:model>
+         <a:model value='new Foo { color = new[] { "red", "blue" } }' field-prefix='x'>
+            <a:select for='color' multiple='yes' class='h'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+               <a:option>green</a:option>
+            </a:select>
+            <a:select name='color' multiple='yes' class='i'>
+               <a:option>red</a:option>
+               <a:option>blue</a:option>
+               <a:option>green</a:option>
+            </a:select>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <select name="color" id="color" multiple='multiple' class="a">
+            <option selected="selected">red</option>
+            <option selected="selected">blue</option>
+            <option>green</option>
+         </select>
+         <select name="color" id="color" multiple='multiple' class="b">
+            <option selected="selected">red</option>
+            <option selected="selected">blue</option>
+            <option>green</option>
+         </select>
+         <select name="color" id="color" multiple='multiple' class="c">
+            <option selected="selected">red</option>
+            <option selected="selected">blue</option>
+            <option>green</option>
+         </select>
+         <!--
+         <select name="color" id="color" multiple='multiple' class="d">
+            <option>red</option>
+            <option selected="selected">blue</option>
+            <option selected="selected">green</option>
+         </select>
+         -->
+         <select name="color" id="color" multiple='multiple' class="e">
+            <option selected="selected">red</option>
+            <option selected="selected">blue</option>
+            <option>green</option>
+         </select>
+         <select name="color" id="color" multiple='multiple' class="f">
+            <option selected="selected">red</option>
+            <option selected="selected">blue</option>
+            <option>green</option>
+         </select>
+         <!--
+         <select name="color" id="color" multiple='multiple' class="g">
+            <option>red</option>
+            <option selected="selected">blue</option>
+            <option selected="selected">green</option>
+         </select>
+         -->
+         <select name="x.color" id="x_color" multiple='multiple' class="h">
+            <option selected="selected">red</option>
+            <option selected="selected">blue</option>
+            <option>green</option>
+         </select>
+         <select name="x.color" id="x_color" multiple='multiple' class="i">
+            <option selected="selected">red</option>
+            <option selected="selected">blue</option>
+            <option>green</option>
+         </select>
+      </div>
+   </c:template>
+
+</c:module>

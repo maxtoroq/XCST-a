@@ -33,11 +33,15 @@
       ## Forms
    -->
 
-   <template match="a:input" mode="src:extension-instruction">
+   <template match="a:input | a:hidden" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
 
+      <variable name="hidden" select="self::a:hidden"/>
+
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="$a:text-box-attributes, 'format', 'type'"/>
+         <with-param name="optional" select="
+            if ($hidden) then $a:input-attributes[. ne 'autofocus']
+            else $a:text-box-attributes, 'format', 'type'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -59,102 +63,58 @@
          </c:variable>
       </if>
 
+      <variable name="for-model" select="empty((@for, @name))"/>
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.Input</text>
          <if test="@for">For</if>
+         <if test="$for-model">ForModel</if>
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
          <value-of select="$doc-output"/>
-         <text>, </text>
          <choose>
             <when test="@for">
+               <text>, </text>
                <variable name="param" select="src:aux-variable(generate-id())"/>
                <value-of select="$param"/>
                <text> => </text>
                <value-of select="$param, xcst:expression(@for)" separator="."/>
             </when>
             <otherwise>
-               <value-of select="(@name/src:expand-attribute(.), src:string(''))[1]"/>
+               <if test="@name">
+                  <text>, </text>
+                  <value-of select="src:expand-attribute(@name)"/>
+               </if>
                <if test="@value">
                   <text>, </text>
                   <value-of select="xcst:expression(@value)"/>
                </if>
             </otherwise>
          </choose>
-         <if test="@type">
-            <text>, type: </text>
-            <value-of select="@type/a:src.input-type(a:input-type(., true()), src:expand-attribute(.))"/>
-         </if>
-         <if test="@format">
-            <text>, format: </text>
-            <value-of select="src:expand-attribute(@format)"/>
-         </if>
-         <call-template name="a:html-attributes-param">
-            <with-param name="merge-attributes" select="@placeholder"/>
-            <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
-         </call-template>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
-   </template>
-
-   <template match="a:hidden" mode="src:extension-instruction">
-      <param name="output" tunnel="yes"/>
-
-      <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="$a:input-attributes[. ne 'autofocus']"/>
-         <with-param name="extension" select="true()"/>
-      </call-template>
-
-      <call-template name="a:validate-for">
-         <with-param name="attribs" select="@name, @value"/>
-      </call-template>
-
-      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
-      <variable name="doc-output" select="src:doc-output(., $output)"/>
-
-      <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
-      </if>
-
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
-         <text>.Input</text>
-         <if test="@for">For</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <text>, </text>
          <choose>
-            <when test="@for">
-               <variable name="param" select="src:aux-variable(generate-id())"/>
-               <value-of select="$param"/>
-               <text> => </text>
-               <value-of select="$param, xcst:expression(@for)" separator="."/>
+            <when test="$hidden">
+               <text>, type: </text>
+               <value-of select="src:string('hidden')"/>
+               <call-template name="a:html-attributes-param">
+                  <with-param name="bool-attributes" select="@disabled"/>
+               </call-template>
             </when>
             <otherwise>
-               <value-of select="(@name/src:expand-attribute(.), src:string(''))[1]"/>
-               <if test="@value">
-                  <text>, </text>
-                  <value-of select="xcst:expression(@value)"/>
+               <if test="@type">
+                  <text>, type: </text>
+                  <value-of select="@type/a:src.input-type(a:input-type(., true()), src:expand-attribute(.))"/>
                </if>
+               <if test="@format">
+                  <text>, format: </text>
+                  <value-of select="src:expand-attribute(@format)"/>
+               </if>
+               <call-template name="a:html-attributes-param">
+                  <with-param name="merge-attributes" select="@placeholder"/>
+                  <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
+               </call-template>
             </otherwise>
          </choose>
-         <text>, type: </text>
-         <value-of select="src:string('hidden')"/>
-         <call-template name="a:html-attributes-param">
-            <with-param name="bool-attributes" select="@disabled"/>
-         </call-template>
          <text>)</text>
       </variable>
       <c:void value="{$expr}"/>
@@ -249,30 +209,35 @@
          </c:variable>
       </if>
 
+      <variable name="for-model" select="empty((@for, @name))"/>
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.CheckBox</text>
          <if test="@for">For</if>
+         <if test="$for-model">ForModel</if>
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
          <value-of select="$doc-output"/>
-         <text>, </text>
          <choose>
             <when test="@for">
+               <text>, </text>
                <variable name="param" select="src:aux-variable(generate-id())"/>
                <value-of select="$param"/>
                <text> => </text>
                <value-of select="$param, xcst:expression(@for)" separator="."/>
             </when>
             <otherwise>
-               <value-of select="(@name/src:expand-attribute(.), src:string(''))[1]"/>
+               <if test="@name">
+                  <text>, </text>
+                  <value-of select="src:expand-attribute(@name)"/>
+               </if>
+               <if test="@checked">
+                  <text>, isChecked: </text>
+                  <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
+               </if>
             </otherwise>
          </choose>
-         <if test="not(@for) and @checked">
-            <text>, isChecked: </text>
-            <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
-         </if>
          <call-template name="a:html-attributes-param">
             <with-param name="bool-attributes" select="@disabled, @autofocus"/>
          </call-template>
@@ -308,25 +273,28 @@
          </c:variable>
       </if>
 
+      <variable name="for-model" select="empty((@for, @name))"/>
       <variable name="expr">
          <value-of select="a:fully-qualified-helper('InputInstructions')"/>
          <text>.RadioButton</text>
          <if test="@for">For</if>
+         <if test="$for-model">ForModel</if>
          <text>(</text>
          <call-template name="a:html-helper"/>
          <text>, </text>
          <value-of select="$doc-output"/>
-         <text>, </text>
          <choose>
             <when test="@for">
+               <text>, </text>
                <variable name="param" select="src:aux-variable(generate-id())"/>
                <value-of select="$param"/>
                <text> => </text>
                <value-of select="$param, xcst:expression(@for)" separator="."/>
             </when>
-            <otherwise>
-               <value-of select="(@name/src:expand-attribute(.), src:string(''))[1]"/>
-            </otherwise>
+            <when test="@name">
+               <text>, </text>
+               <value-of select="src:expand-attribute(@name)"/>
+            </when>
          </choose>
          <text>, </text>
          <value-of select="xcst:expression(@value)"/>

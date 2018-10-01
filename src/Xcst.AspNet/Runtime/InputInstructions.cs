@@ -25,264 +25,306 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using System.Web.Routing;
 
 namespace Xcst.Web.Runtime {
+
+   using HtmlAttribs = IDictionary<string, object>;
 
    /// <exclude/>
 
    public static class InputInstructions {
 
-      // CheckBox
+      // NOTES:
+      // - To simplify implementation, and also as a small perf tweak,
+      //   htmlAttributes parameters are modified, caller should make copy if necessary.
 
-      public static void CheckBox(HtmlHelper htmlHelper,
-                                  XcstWriter output,
-                                  string name,
-                                  IDictionary<string, object> htmlAttributes = null) {
+      //////////////////////////
+      // CheckBox
+      //////////////////////////
+
+      public static void CheckBox(
+            HtmlHelper htmlHelper, XcstWriter output, string name, HtmlAttribs htmlAttributes = null) {
 
          CheckBoxHelper(htmlHelper, output, default(ModelMetadata), name, isChecked: null, htmlAttributes: htmlAttributes);
       }
 
-      public static void CheckBox(HtmlHelper htmlHelper,
-                                  XcstWriter output,
-                                  string name,
-                                  bool isChecked,
-                                  IDictionary<string, object> htmlAttributes = null) {
+      public static void CheckBox(
+            HtmlHelper htmlHelper, XcstWriter output, string name, bool isChecked, HtmlAttribs htmlAttributes = null) {
 
          CheckBoxHelper(htmlHelper, output, default(ModelMetadata), name, isChecked, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void CheckBoxFor<TModel>(HtmlHelper<TModel> htmlHelper,
-                                             XcstWriter output,
-                                             Expression<Func<TModel, bool>> expression,
-                                             IDictionary<string, object> htmlAttributes = null) {
+      public static void CheckBoxFor<TModel>(
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, bool>> expression, HtmlAttribs htmlAttributes = null) {
 
          if (expression == null) throw new ArgumentNullException(nameof(expression));
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-         bool? isChecked = null;
+         string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         if (metadata.Model != null) {
+         CheckBoxForMetadata(htmlHelper, output, metadata, expressionString, /*isChecked: */null, htmlAttributes);
+      }
+
+      public static void CheckBoxForModel(
+            HtmlHelper htmlHelper, XcstWriter output, HtmlAttribs htmlAttributes = null) {
+
+         ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
+
+         CheckBoxForMetadata(htmlHelper, output, metadata, /*expression: */String.Empty, /*isChecked: */null, htmlAttributes);
+      }
+
+      public static void CheckBoxForModel(
+            HtmlHelper htmlHelper, XcstWriter output, bool isChecked, HtmlAttribs htmlAttributes = null) {
+
+         ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
+
+         CheckBoxForMetadata(htmlHelper, output, metadata, /*expression: */String.Empty, isChecked, htmlAttributes);
+      }
+
+      static void CheckBoxForMetadata(
+            HtmlHelper htmlHelper,
+            XcstWriter output,
+            ModelMetadata/*?*/ metadata,
+            string expression,
+            bool? isChecked,
+            HtmlAttribs htmlAttributes) {
+
+         object model = metadata?.Model;
+
+         if (isChecked == null
+            && model != null) {
 
             bool modelChecked;
 
-            if (Boolean.TryParse(metadata.Model.ToString(), out modelChecked)) {
+            if (Boolean.TryParse(model.ToString(), out modelChecked)) {
                isChecked = modelChecked;
             }
          }
 
-         string expressionString = ExpressionHelper.GetExpressionText(expression);
-
-         CheckBoxHelper(htmlHelper, output, metadata, expressionString, isChecked, htmlAttributes);
+         CheckBoxHelper(htmlHelper, output, metadata, expression, isChecked, htmlAttributes);
       }
 
-      static void CheckBoxHelper(HtmlHelper htmlHelper,
-                                 XcstWriter output,
-                                 ModelMetadata metadata,
-                                 string name,
-                                 bool? isChecked,
-                                 IDictionary<string, object> htmlAttributes) {
+      static void CheckBoxHelper(
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata/*?*/ metadata, string name, bool? isChecked, HtmlAttribs/*?*/ htmlAttributes) {
 
-         RouteValueDictionary attributes = ToRouteValueDictionary(htmlAttributes);
+         bool explicitChecked = isChecked.HasValue;
 
-         bool explicitValue = isChecked.HasValue;
-
-         if (explicitValue) {
-            attributes.Remove("checked"); // Explicit value must override dictionary
+         if (explicitChecked) {
+            htmlAttributes?.Remove("checked"); // Explicit value must override dictionary
          }
 
-         InputHelper(htmlHelper,
-                     output,
-                     InputType.CheckBox,
-                     metadata,
-                     name,
-                     value: "true",
-                     useViewData: !explicitValue,
-                     isChecked: isChecked ?? false,
-                     setId: true,
-                     isExplicitValue: false,
-                     format: null,
-                     htmlAttributes: attributes);
+         InputHelper(
+            htmlHelper,
+            output,
+            InputType.CheckBox,
+            metadata,
+            name,
+            value: "true",
+            useViewData: !explicitChecked,
+            isChecked: isChecked ?? false,
+            setId: true,
+            isExplicitValue: false,
+            format: null,
+            htmlAttributes: htmlAttributes);
+
+         string fullName = Name(htmlHelper, name);
+
+         // Render an additional <input type="hidden".../> for checkboxes. This
+         // addresses scenarios where unchecked checkboxes are not sent in the request.
+         // Sending a hidden input makes it possible to know that the checkbox was present
+         // on the page when the request was submitted.
+
+         output.WriteStartElement("input");
+         output.WriteAttributeString("type", HtmlHelper.GetInputTypeString(InputType.Hidden));
+         output.WriteAttributeString("name", fullName);
+         output.WriteAttributeString("value", "false");
+         output.WriteEndElement();
       }
 
+      //////////////////////////
       // RadioButton
+      //////////////////////////
 
-      public static void RadioButton(HtmlHelper htmlHelper,
-                                     XcstWriter output,
-                                     string name,
-                                     object value,
-                                     IDictionary<string, object> htmlAttributes = null) {
-
-         // Determine whether or not to render the checked attribute based on the contents of ViewData.
-
-         string valueString = Convert.ToString(value, CultureInfo.CurrentCulture);
-         bool isChecked = (!String.IsNullOrEmpty(name)) && (String.Equals(htmlHelper.EvalString(name), valueString, StringComparison.OrdinalIgnoreCase));
-
-         // checked attributes is implicit, so we need to ensure that the dictionary takes precedence.
-
-         RouteValueDictionary attributes = ToRouteValueDictionary(htmlAttributes);
-
-         if (attributes.ContainsKey("checked")) {
-            InputHelper(htmlHelper,
-                        output,
-                        InputType.Radio,
-                        metadata: null,
-                        name: name,
-                        value: value,
-                        useViewData: false,
-                        isChecked: false,
-                        setId: true,
-                        isExplicitValue: true,
-                        format: null,
-                        htmlAttributes: attributes);
-            return;
-         }
-
-         RadioButton(htmlHelper, output, name, value, isChecked, htmlAttributes);
-      }
-
-      public static void RadioButton(HtmlHelper htmlHelper,
-                                     XcstWriter output,
-                                     string name,
-                                     object value,
-                                     bool isChecked,
-                                     IDictionary<string, object> htmlAttributes = null) {
+      public static void RadioButton(
+            HtmlHelper htmlHelper, XcstWriter output, string name, object value, HtmlAttribs htmlAttributes = null) {
 
          if (value == null) throw new ArgumentNullException(nameof(value));
 
-         // checked attribute is an explicit parameter so it takes precedence.
-         RouteValueDictionary attributes = ToRouteValueDictionary(htmlAttributes);
-         attributes.Remove("checked");
+         // checked attributes is implicit, so we need to ensure that the dictionary takes precedence.
 
-         InputHelper(htmlHelper,
-                     output,
-                     InputType.Radio,
-                     metadata: null,
-                     name: name,
-                     value: value,
-                     useViewData: false,
-                     isChecked: isChecked,
-                     setId: true,
-                     isExplicitValue: true,
-                     format: null,
-                     htmlAttributes: attributes);
+         if (htmlAttributes?.ContainsKey("checked") == true) {
+            RadioButtonHelper(htmlHelper, output, /*metadata: */null, name, value, /*isChecked: */null, htmlAttributes);
+            return;
+         }
+
+         bool isChecked = RadioButtonValueEquals(value, htmlHelper.EvalString(name));
+
+         RadioButtonHelper(htmlHelper, output, /*metadata: */null, name, value, isChecked, htmlAttributes);
+      }
+
+      public static void RadioButton(
+            HtmlHelper htmlHelper, XcstWriter output, string name, object value, bool isChecked, HtmlAttribs htmlAttributes = null) {
+
+         if (value == null) throw new ArgumentNullException(nameof(value));
+
+         RadioButtonHelper(htmlHelper, output, /*metadata: */null, name, value, isChecked, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void RadioButtonFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
-                                                           XcstWriter output,
-                                                           Expression<Func<TModel, TProperty>> expression,
-                                                           object value,
-                                                           IDictionary<string, object> htmlAttributes = null) {
+      public static void RadioButtonFor<TModel, TProperty>(
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, object value, HtmlAttribs htmlAttributes = null) {
+
+         if (value == null) throw new ArgumentNullException(nameof(value));
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         RadioButtonHelper(htmlHelper, output, metadata, metadata.Model, expressionString, value, null /* isChecked */, htmlAttributes);
+         RadioButtonForMetadata(htmlHelper, output, metadata, expressionString, value, /*isChecked: */null, htmlAttributes);
       }
 
-      static void RadioButtonHelper(HtmlHelper htmlHelper,
-                                    XcstWriter output,
-                                    ModelMetadata metadata,
-                                    object model,
-                                    string name,
-                                    object value,
-                                    bool? isChecked,
-                                    IDictionary<string, object> htmlAttributes) {
+      public static void RadioButtonForModel(
+            HtmlHelper htmlHelper, XcstWriter output, object value, HtmlAttribs htmlAttributes = null) {
 
-         if (value == null) throw new ArgumentNullException(nameof(value));
+         ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
 
-         RouteValueDictionary attributes = ToRouteValueDictionary(htmlAttributes);
-
-         bool explicitValue = isChecked.HasValue;
-
-         if (explicitValue) {
-            attributes.Remove("checked"); // Explicit value must override dictionary
-         } else {
-
-            string valueString = Convert.ToString(value, CultureInfo.CurrentCulture);
-
-            isChecked = model != null
-               && !String.IsNullOrEmpty(name)
-               && String.Equals(model.ToString(), valueString, StringComparison.OrdinalIgnoreCase);
-         }
-
-         InputHelper(htmlHelper,
-                     output,
-                     InputType.Radio,
-                     metadata,
-                     name,
-                     value,
-                     useViewData: false,
-                     isChecked: isChecked ?? false,
-                     setId: true,
-                     isExplicitValue: true,
-                     format: null,
-                     htmlAttributes: attributes);
+         RadioButtonForMetadata(htmlHelper, output, metadata, String.Empty, value, /*isChecked: */null, htmlAttributes);
       }
 
-      // Input
+      public static void RadioButtonForModel(
+            HtmlHelper htmlHelper, XcstWriter output, object value, bool isChecked, HtmlAttribs htmlAttributes = null) {
 
-      public static void Input(
+         ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
+
+         RadioButtonForMetadata(htmlHelper, output, metadata, String.Empty, value, /*isChecked: */isChecked, htmlAttributes);
+      }
+
+      static void RadioButtonForMetadata(
             HtmlHelper htmlHelper,
             XcstWriter output,
-            string name,
-            object value = null,
-            string type = null,
-            string format = null,
-            IDictionary<string, object> htmlAttributes = null) {
+            ModelMetadata/*?*/ metadata,
+            string expression,
+            object value,
+            bool? isChecked,
+            HtmlAttribs htmlAttributes) {
 
-         ModelMetadata metadata = null;
-         bool? useViewData = null;
+         object model = metadata?.Model;
 
-         InputImpl(htmlHelper, output, type, metadata, value, useViewData, name, format, htmlAttributes);
+         if (isChecked == null
+            && model != null) {
+
+            isChecked = RadioButtonValueEquals(value, model.ToString());
+         }
+
+         RadioButtonHelper(htmlHelper, output, metadata, expression, value, isChecked, htmlAttributes);
+      }
+
+      static void RadioButtonHelper(
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata/*?*/ metadata, string name, object value, bool? isChecked, HtmlAttribs/*?*/ htmlAttributes) {
+
+         bool explicitChecked = isChecked.HasValue;
+
+         if (explicitChecked) {
+            htmlAttributes?.Remove("checked"); // Explicit value must override dictionary
+         }
+
+         InputHelper(
+            htmlHelper,
+            output,
+            InputType.Radio,
+            metadata,
+            name,
+            value,
+            useViewData: false,
+            isChecked: isChecked.GetValueOrDefault(),
+            setId: true,
+            isExplicitValue: true,
+            format: null,
+            htmlAttributes: htmlAttributes);
+      }
+
+      static bool RadioButtonValueEquals(object value, string viewDataValue) {
+
+         string valueString = Convert.ToString(value, CultureInfo.CurrentCulture);
+
+         return String.Equals(viewDataValue, valueString, StringComparison.OrdinalIgnoreCase);
+      }
+
+      //////////////////////////
+      // Input
+      //////////////////////////
+
+      public static void Input(
+            HtmlHelper htmlHelper, XcstWriter output, string name, object value = null, string type = null, string format = null, HtmlAttribs htmlAttributes = null) {
+
+         InputImpl(htmlHelper, output, type, /*metadata: */null, name, value, /*useViewData: */null, format, htmlAttributes);
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void InputFor<TModel, TProperty>(
-            HtmlHelper<TModel> htmlHelper,
-            XcstWriter output,
-            Expression<Func<TModel, TProperty>> expression,
-            string type = null,
-            string format = null,
-            IDictionary<string, object> htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string type = null, string format = null, HtmlAttribs htmlAttributes = null) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string exprString = ExpressionHelper.GetExpressionText(expression);
 
-         bool useViewData = false;
-         object value = metadata.Model;
+         InputForMetadata(htmlHelper, output, type, metadata, exprString, /*value: */null, format, htmlAttributes);
+      }
 
-         if (value != null
-            && GetInputType(type) == InputType.Password) {
+      public static void InputForModel(
+            HtmlHelper htmlHelper, XcstWriter output, object value = null, string type = null, string format = null, HtmlAttribs htmlAttributes = null) {
 
-            value = null;
+         ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
+
+         InputForMetadata(htmlHelper, output, type, metadata, /*expression: */String.Empty, value, format, htmlAttributes);
+      }
+
+      static void InputForMetadata(
+            HtmlHelper htmlHelper,
+            XcstWriter output,
+            string/*?*/ type,
+            ModelMetadata/*?*/ metadata,
+            string expression,
+            object/*?*/ value,
+            string/*?*/ format,
+            HtmlAttribs/*?*/ htmlAttributes) {
+
+         if (value == null
+            && metadata != null
+            && GetInputType(type) != InputType.Password) {
+
+            value = metadata.Model;
          }
 
-         InputImpl(htmlHelper, output, type, metadata, value, useViewData, exprString, format, htmlAttributes);
+         InputImpl(htmlHelper, output, type, metadata, expression, value, /*useViewData: */false, format, htmlAttributes);
       }
 
       static void InputImpl(
             HtmlHelper htmlHelper,
             XcstWriter output,
-            string type,
-            ModelMetadata metadata,
-            object value,
-            bool? useViewData,
+            string/*?*/ type,
+            ModelMetadata/*?*/ metadata,
             string expression,
-            string format,
-            IDictionary<string, object> htmlAttributes) {
+            object/*?*/ value,
+            bool? useViewData,
+            string/*?*/ format,
+            HtmlAttribs/*?*/ htmlAttributes) {
 
          InputType? inputType = GetInputType(type);
+         bool checkBoxOrRadio = inputType == InputType.CheckBox
+            || inputType == InputType.Radio;
 
          if (type != null
-            && inputType == null
+            && (inputType == null || checkBoxOrRadio)
             && !(htmlAttributes
                   ?? (htmlAttributes = new Dictionary<string, object>()))
                   .ContainsKey("type")) {
 
             htmlAttributes["type"] = type;
+         }
+
+         if (checkBoxOrRadio) {
+            // Don't want Input() to behave like RadioButton() or CheckBox()
+            inputType = null;
          }
 
          if (inputType == InputType.Hidden) {
@@ -303,9 +345,7 @@ namespace Xcst.Web.Runtime {
          }
 
          if (useViewData == null) {
-
-            useViewData = (inputType == InputType.Password) ? false
-               : (value == null);
+            useViewData = (value == null);
          }
 
          InputHelper(
@@ -323,22 +363,39 @@ namespace Xcst.Web.Runtime {
             htmlAttributes: htmlAttributes);
       }
 
-      // Helper methods
+      static InputType? GetInputType(string type) {
 
-      static void InputHelper(HtmlHelper htmlHelper,
-                              XcstWriter output,
-                              InputType inputType,
-                              ModelMetadata metadata,
-                              string name,
-                              object value,
-                              bool useViewData,
-                              bool isChecked,
-                              bool setId,
-                              bool isExplicitValue,
-                              string format,
-                              IDictionary<string, object> htmlAttributes) {
+         switch (type) {
+            case "checkbox":
+               return InputType.CheckBox;
+            case "hidden":
+               return InputType.Hidden;
+            case "password":
+               return InputType.Password;
+            case "radio":
+               return InputType.Radio;
+            case "text":
+               return InputType.Text;
+            default:
+               return null;
+         }
+      }
 
-         string fullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+      static void InputHelper(
+            HtmlHelper htmlHelper,
+            XcstWriter output,
+            InputType inputType,
+            ModelMetadata/*?*/ metadata,
+            string name,
+            object value,
+            bool useViewData,
+            bool isChecked,
+            bool setId,
+            bool isExplicitValue,
+            string format,
+            HtmlAttribs/*?*/ htmlAttributes) {
+
+         string fullName = Name(htmlHelper, name);
 
          if (String.IsNullOrEmpty(fullName)) {
             throw new ArgumentNullException(nameof(name));
@@ -372,10 +429,16 @@ namespace Xcst.Web.Runtime {
                   string modelStateValue = htmlHelper.GetModelStateValue(fullName, typeof(string)) as string;
 
                   if (modelStateValue != null) {
+
+                     // for CheckBox, valueParameter is "true"
+
                      isChecked = String.Equals(modelStateValue, valueParameter, StringComparison.Ordinal);
                      usedModelState = true;
                   }
                }
+
+               // useViewData is always false when called from RadioButton
+               // the following condition is for CheckBox
 
                if (!usedModelState && useViewData) {
                   isChecked = htmlHelper.EvalBoolean(fullName);
@@ -437,45 +500,11 @@ namespace Xcst.Web.Runtime {
             .WriteTo(output);
 
          output.WriteEndElement();
-
-         if (inputType == InputType.CheckBox) {
-
-            // Render an additional <input type="hidden".../> for checkboxes. This
-            // addresses scenarios where unchecked checkboxes are not sent in the request.
-            // Sending a hidden input makes it possible to know that the checkbox was present
-            // on the page when the request was submitted.
-
-            output.WriteStartElement("input");
-            output.WriteAttributeString("type", HtmlHelper.GetInputTypeString(InputType.Hidden));
-            output.WriteAttributeString("name", fullName);
-            output.WriteAttributeString("value", "false");
-            output.WriteEndElement();
-         }
       }
 
-      static RouteValueDictionary ToRouteValueDictionary(IDictionary<string, object> dictionary) {
-         return (dictionary == null) ? new RouteValueDictionary() : new RouteValueDictionary(dictionary);
-      }
-
-      static InputType? GetInputType(string type) {
-
-         switch (type) {
-            case "checkbox":
-               return InputType.CheckBox;
-            case "hidden":
-               return InputType.Hidden;
-            case "password":
-               return InputType.Password;
-            case "radio":
-               return InputType.Radio;
-            case "text":
-               return InputType.Text;
-            default:
-               return null;
-         }
-      }
-
-      // Field Name
+      //////////////////////////
+      // Name
+      //////////////////////////
 
       public static string Name(HtmlHelper html, string name) {
          return html.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
