@@ -55,7 +55,7 @@ namespace Xcst.Web.Mvc {
 
          var tempData = new TempDataDictionary(); ;
 
-         this.page.ViewContext = new ViewContext(controllerContext, this.page.ViewData, tempData, context.Response.Output);
+         this.page.ViewContext = new ViewContext(controllerContext, this.page.ViewData, tempData);
       }
 
       protected override void RenderPage(XcstPage page, HttpContextBase context) {

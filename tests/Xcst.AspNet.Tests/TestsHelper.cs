@@ -208,8 +208,7 @@ namespace Xcst.Web.Tests {
                new RequestContext(httpContextMock.Object, new RouteData())
             ),
             new ViewDataDictionary(),
-            new TempDataDictionary(),
-            TextWriter.Null
+            new TempDataDictionary()
          );
 
          return package;

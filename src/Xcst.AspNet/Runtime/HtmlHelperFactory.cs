@@ -67,15 +67,7 @@ namespace Xcst.Web.Runtime {
 
          // new ViewContext resets FormContext
 
-         var newViewContext = new ViewContext(
-            currentViewContext,
-#if !ASPNETLIB
-            currentViewContext.View,
-#endif
-            container.ViewData,
-            currentViewContext.TempData,
-            currentViewContext.Writer
-         );
+         var newViewContext = currentHtml.ViewContext.Clone(viewData: container.ViewData);
 
          return new HtmlHelper<TModel>(newViewContext, container, currentHtml.RouteCollection) {
             Html5DateRenderingMode = currentHtml.Html5DateRenderingMode

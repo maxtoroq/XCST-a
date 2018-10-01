@@ -11,15 +11,14 @@
    </c:type>
 
    <c:template name='c:initial-template'>
+      <c:set ref='this.ViewContext.ClientValidationEnabled' value='false'/>
       <a:model value='new Foo { c = Color.Red }'>
          <a:editor for='c'/>
       </a:model>
    </c:template>
 
    <c:template name='expected'>
-      <input type='color' id='c' name='c' value='#FF0000' class='text-box single-line'
-         data-val='true'
-         data-val-required='The c field is required.'/>
+      <input type='color' id='c' name='c' value='#FF0000' class='text-box single-line'/>
    </c:template>
 
 </c:module>

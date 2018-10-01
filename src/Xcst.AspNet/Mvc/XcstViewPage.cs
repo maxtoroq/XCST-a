@@ -183,14 +183,12 @@ namespace Xcst.Web.Mvc {
 
          if (viewPage != null) {
 
-            viewPage.ViewContext = new ViewContext(
-               this.ViewContext,
+            viewPage.ViewContext = this.ViewContext.Clone(
 #if !ASPNETLIB
-               new XcstView(this.ViewContext, viewPage.VirtualPath),
+               view: new XcstView(this.ViewContext, viewPage.VirtualPath),
 #endif
-               new ViewDataDictionary(this.ViewData),
-               this.TempData,
-               this.ViewContext.Writer
+               viewData: new ViewDataDictionary(this.ViewData),
+               tempData: this.TempData
             );
          }
       }

@@ -11,15 +11,14 @@
    </c:type>
 
    <c:template name='c:initial-template'>
+      <c:set ref='this.ViewContext.ClientValidationEnabled' value='false'/>
       <a:model value='new Foo()'>
          <a:editor for='d'/>
       </a:model>
    </c:template>
 
    <c:template name='expected'>
-      <input type='datetime-local' id='d' name='d' value='0001-01-01T00:00:00.000' class='text-box single-line'
-         data-val='true'
-         data-val-required='The d field is required.'/>
+      <input type='datetime-local' id='d' name='d' value='0001-01-01T00:00:00.000' class='text-box single-line'/>
    </c:template>
 
 </c:module>

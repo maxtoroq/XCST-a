@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Web.Mvc;
 
@@ -105,5 +106,30 @@ namespace Xcst.Web {
          return (viewContext.ClientValidationEnabled) ? viewContext.FormContext : null;
       }
 #endif
+
+      internal static ViewContext Clone(
+            this ViewContext context,
+            IView view = null,
+            ViewDataDictionary viewData = null,
+            TempDataDictionary tempData = null,
+            TextWriter writer = null) {
+
+         return new ViewContext(
+            context,
+#if !ASPNETLIB
+            view ?? context.View,
+#endif
+            viewData ?? context.ViewData,
+            tempData ?? context.TempData
+#if !ASPNETLIB
+            , writer ?? context.Writer
+#endif
+         ) {
+            ClientValidationEnabled = context.ClientValidationEnabled,
+            UnobtrusiveJavaScriptEnabled = context.UnobtrusiveJavaScriptEnabled,
+            ValidationMessageElement = context.ValidationMessageElement,
+            ValidationSummaryMessageElement = context.ValidationSummaryMessageElement
+         };
+      }
    }
 }

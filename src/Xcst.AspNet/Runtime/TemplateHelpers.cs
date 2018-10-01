@@ -356,13 +356,10 @@ namespace Xcst.Web.Runtime {
       static HtmlHelper MakeHtmlHelper(HtmlHelper html, ViewDataDictionary viewData) {
 
          var newHelper = new HtmlHelper(
-            new ViewContext(
-               html.ViewContext,
-#if !ASPNETLIB
-               html.ViewContext.View,
-#endif
-               viewData, html.ViewContext.TempData, html.ViewContext.Writer),
-            new ViewDataContainer(viewData));
+            html.ViewContext.Clone(viewData: viewData),
+            new ViewDataContainer(viewData),
+            html.RouteCollection
+         );
 
          newHelper.Html5DateRenderingMode = html.Html5DateRenderingMode;
 
@@ -375,27 +372,16 @@ namespace Xcst.Web.Runtime {
          XcstView xcstView = view as XcstView;
 
          if (xcstView != null) {
-            xcstView.RenderXcstView(
-               new ViewContext(
-                  html.ViewContext,
-#if !ASPNETLIB
-                  view,
-#endif
-                  viewData, html.ViewContext.TempData, html.ViewContext.Writer),
-               output);
+
+            ViewContext context = html.ViewContext.Clone(view: view, viewData: viewData);
+            xcstView.RenderXcstView(context, output);
 
          } else {
 
             using (StringWriter writer = new StringWriter(CultureInfo.InvariantCulture)) {
 
-               view.Render(
-                  new ViewContext(
-                     html.ViewContext,
-#if !ASPNETLIB
-                     view,
-#endif
-                     viewData, html.ViewContext.TempData, writer),
-                  writer);
+               ViewContext context = html.ViewContext.Clone(view: view, viewData: viewData, writer: writer);
+               view.Render(context, writer);
 
                output.WriteRaw(writer.ToString());
             }
