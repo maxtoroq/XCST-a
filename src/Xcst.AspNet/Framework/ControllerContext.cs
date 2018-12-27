@@ -2,7 +2,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Web.Routing;
-using System.Web.WebPages;
 
 namespace System.Web.Mvc {
 
@@ -19,11 +18,6 @@ namespace System.Web.Mvc {
       RouteData _routeData;
       IDependencyResolver _resolver;
       ITempDataProvider _tempDataProvider;
-
-      internal IDisplayMode DisplayMode {
-         get { return DisplayModeProvider.GetDisplayMode(HttpContext); }
-         set { DisplayModeProvider.SetDisplayMode(HttpContext, value); }
-      }
 
       public virtual HttpContextBase HttpContext {
          get {

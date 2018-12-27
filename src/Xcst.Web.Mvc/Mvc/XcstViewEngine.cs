@@ -18,19 +18,14 @@ using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Mvc {
 
-#if !ASPNETLIB
-   public
-#endif
-   class XcstViewEngine : BuildManagerViewEngine {
+   public class XcstViewEngine : BuildManagerViewEngine {
 
       public XcstViewEngine() {
 
          const string fileExtension = XcstWebConfiguration.FileExtension;
 
          this.ViewLocationFormats = new[] {
-#if !ASPNETLIB
             "~/Views/{1}/{0}." + fileExtension,
-#endif
             "~/Views/Shared/{0}." + fileExtension
          };
 

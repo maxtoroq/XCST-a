@@ -83,12 +83,21 @@ namespace Xcst.Web.Compilation {
          compiler.PackagesLocation = HostingEnvironment.MapPath("~/App_Code");
          compiler.PackageFileExtension = XcstWebConfiguration.FileExtension;
 
+         compiler.SetTargetBaseTypes(typeof(TPage));
+
+         string[] baseTypes = compiler.TargetBaseTypes;
+
          if (this.IsFileInCodeDir) {
             compiler.NamedPackage = true;
+            compiler.TargetBaseTypes = null;
          } else {
-            compiler.SetTargetBaseTypes(typeof(TPage));
             compiler.TargetNamespace = this.GeneratedTypeNamespace;
             compiler.TargetClass = this.GeneratedTypeName;
+
+            compiler.SetParameter(
+               new QualifiedName("default-model", XmlNamespaces.XcstApplication),
+               "dynamic"
+            );
          }
 
          compiler.UseLineDirective = true;
@@ -109,6 +118,11 @@ namespace Xcst.Web.Compilation {
          compiler.SetParameter(
             new QualifiedName("aspnetlib", XmlNamespaces.XcstApplication),
             aspnetlib
+         );
+
+         compiler.SetParameter(
+            new QualifiedName("base-types", XmlNamespaces.XcstApplication),
+            baseTypes
          );
       }
 
@@ -147,7 +161,7 @@ namespace Xcst.Web.Compilation {
                         },
                         Members = {
                            new CodeMemberProperty {
-                              Name = "FileDependencies",
+                              Name = nameof(IFileDependent.FileDependencies),
                               PrivateImplementationType = new CodeTypeReference(typeof(IFileDependent)),
                               Type = new CodeTypeReference(fileArray.CreateType, 1),
                               GetStatements = {

@@ -109,7 +109,9 @@ namespace Xcst.Web {
 
       internal static ViewContext Clone(
             this ViewContext context,
+#if !ASPNETLIB
             IView view = null,
+#endif
             ViewDataDictionary viewData = null,
             TempDataDictionary tempData = null,
             TextWriter writer = null) {

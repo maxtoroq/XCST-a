@@ -63,8 +63,6 @@ namespace Xcst.Web.Runtime {
             }
          }
 
-         ViewContext currentViewContext = currentHtml.ViewContext;
-
          // new ViewContext resets FormContext
 
          var newViewContext = currentHtml.ViewContext.Clone(viewData: container.ViewData);

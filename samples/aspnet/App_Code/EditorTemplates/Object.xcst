@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<c:module version='1.0' language='C#'
+<?model dynamic?>
+<c:package name='Samples.Templates.Editor.ObjectPackage' version='1.0' language='C#'
    xmlns:c='http://maxtoroq.github.io/XCST'
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
@@ -11,7 +12,7 @@
    <c:param name='labelColumnClass'>col-md-3</c:param>
    <c:param name='fieldColumnClass'>col-md-9</c:param>
 
-   <c:template name='c:initial-template' expand-text='yes'>
+   <c:template name='c:initial-template' visibility='public' expand-text='yes'>
       <c:choose>
          <c:when test='ViewData.TemplateInfo.TemplateDepth > 1'>
             <a:display-text/>
@@ -75,4 +76,4 @@
       </c:choose>
    </c:template>
 
-</c:module>
+</c:package>

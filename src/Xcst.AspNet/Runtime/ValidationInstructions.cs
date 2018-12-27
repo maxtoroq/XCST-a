@@ -298,7 +298,7 @@ namespace Xcst.Web.Runtime {
 
          string attemptedValue = modelState.Value?.AttemptedValue;
 
-         string messageFormat = XcstWebConfiguration.Instance.Editors.DefaultValidationMessage?.Invoke()
+         string messageFormat = XcstWebConfiguration.Instance.EditorTemplates.DefaultValidationMessage?.Invoke()
             ?? "The value '{0}' is invalid.";
 
          return String.Format(CultureInfo.CurrentCulture, messageFormat, attemptedValue);

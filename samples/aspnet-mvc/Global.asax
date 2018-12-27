@@ -21,7 +21,7 @@
 
    void ConfigureXcst(XcstWebConfiguration config) {
 
-      config.Editors.EditorCssClass = (info, defaultClass) =>
+      config.EditorTemplates.EditorCssClass = (info, defaultClass) =>
          (info.InputType == InputType.Text
             || info.InputType == InputType.Password
             || info.TagName != "input") ? "form-control"

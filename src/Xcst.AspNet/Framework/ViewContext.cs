@@ -12,7 +12,6 @@ namespace System.Web.Mvc {
       // to RenderPartial(), RenderAction(), etc.
 
       static readonly object _formContextKey = new object();
-      static readonly object _lastFormNumKey = new object();
 
       DynamicViewDataDictionary _dynamicViewDataDictionary;
 

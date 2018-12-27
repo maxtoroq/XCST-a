@@ -22,12 +22,15 @@
    xmlns:src="http://maxtoroq.github.io/XCST/compiled"
    xmlns:xcst="http://maxtoroq.github.io/XCST/syntax">
 
-   <param name="a:application-uri" as="xs:anyURI"/>
+   <param name="a:application-uri" as="xs:anyURI?"/>
    <param name="a:aspnetlib" select="true()" as="xs:boolean"/>
+   <param name="a:base-types" as="xs:string*"/>
+   <param name="a:default-model" as="xs:string?"/>
 
    <variable name="a:html-attributes" select="'class', 'attributes'"/>
    <variable name="a:input-attributes" select="'for', 'name', 'value', 'disabled', 'autofocus', $a:html-attributes"/>
    <variable name="a:text-box-attributes" select="'readonly', 'placeholder', $a:input-attributes"/>
+   <variable name="a:href-fn" select="not($src:named-package) and $a:application-uri"/>
 
    <!--
       ## Forms
@@ -1063,18 +1066,11 @@
    -->
 
    <template match="/" mode="src:main">
-      <choose>
-         <when test="not($src:named-package)">
-            <next-match>
-               <with-param name="a:directives" tunnel="yes">
-                  <apply-templates select="processing-instruction()" mode="a:directive"/>
-               </with-param>
-            </next-match>
-         </when>
-         <otherwise>
-            <next-match/>
-         </otherwise>
-      </choose>
+      <next-match>
+         <with-param name="a:directives" tunnel="yes">
+            <apply-templates select="processing-instruction()" mode="a:directive"/>
+         </with-param>
+      </next-match>
    </template>
 
    <template match="processing-instruction(inherits) | processing-instruction(model)" mode="a:directive">
@@ -1107,7 +1103,7 @@
       <param name="class" tunnel="yes"/>
 
       <next-match/>
-      <if test="not($src:named-package)">
+      <if test="$a:href-fn">
          <call-template name="src:new-line-indented"/>
          <text>using static </text>
          <value-of select="$class, a:functions-type-name(.)" separator="."/>
@@ -1118,14 +1114,35 @@
    <template match="c:module | c:package" mode="src:base-types" as="xs:string*">
       <param name="a:directives" as="node()?" tunnel="yes"/>
 
-      <if test="not($src:named-package)">
-         <sequence select="
-            if ($a:directives/inherits) then string($a:directives/inherits)
-            else concat($src:base-types[1], '&lt;', ($a:directives/model, 'dynamic')[1], '>')"/>
-         <sequence select="$src:base-types[position() gt 1]"/>
-         <if test="$a:directives/sessionstate">
-            <sequence select="src:global-identifier('Xcst.Web.ISessionStateAware')"/>
-         </if>
+      <variable name="base-types" select="
+         if (exists($src:base-types)) then $src:base-types
+         else $a:base-types"/>
+
+      <choose>
+         <when test="$a:directives/inherits">
+            <sequence select="string($a:directives/inherits)"/>
+         </when>
+         <!--
+            First condition is always true for pages.
+            Second condition can be true for packages in App_Code.
+         -->
+         <when test="exists($src:base-types) or (exists($a:base-types) and $a:directives/model)">
+            <choose>
+               <!--
+                  Second condition is always false for packages in App_Code.
+               -->
+               <when test="$a:directives/model or $a:default-model">
+                  <sequence select="concat($base-types[1], '&lt;', ($a:directives/model, $a:default-model)[1], '>')"/>
+               </when>
+               <otherwise>
+                  <sequence select="$base-types[1]"/>
+               </otherwise>
+            </choose>
+         </when>
+      </choose>
+      <sequence select="$base-types[position() gt 1]"/>
+      <if test="$a:directives/sessionstate">
+         <sequence select="src:global-identifier('Xcst.Web.ISessionStateAware')"/>
       </if>
    </template>
 
@@ -1135,33 +1152,33 @@
       <param name="a:directives" as="node()?" tunnel="yes"/>
 
       <next-match/>
-      <if test="not($src:named-package)">
 
-         <variable name="module-pos" select="
-            for $pos in (1 to count($modules)) 
-            return if ($modules[$pos] is current()) then $pos else ()"/>
-         <variable name="principal-module" select="$module-pos eq count($modules)"/>
+      <variable name="module-pos" select="
+         for $pos in (1 to count($modules))
+         return if ($modules[$pos] is current()) then $pos else ()"/>
+      <variable name="principal-module" select="$module-pos eq count($modules)"/>
 
-         <if test="$a:aspnetlib
-            and $a:directives/sessionstate
-            and $principal-module">
+      <if test="$a:aspnetlib
+         and $a:directives/sessionstate
+         and $principal-module">
 
-            <value-of select="$src:new-line"/>
-            <call-template name="src:new-line-indented"/>
-            <value-of select="src:global-identifier('System.Web.SessionState.SessionStateBehavior')"/>
-            <text> </text>
-            <value-of select="src:global-identifier('Xcst.Web.ISessionStateAware'), 'SessionStateBehavior'" separator="."/>
-            <call-template name="src:open-brace"/>
-            <call-template name="src:new-line-indented">
-               <with-param name="increase" select="1"/>
-            </call-template>
-            <text>get { return </text>
-            <value-of select="src:global-identifier('System.Web.SessionState.SessionStateBehavior'), $a:directives/sessionstate" separator="."/>
-            <value-of select="$src:statement-delimiter"/>
-            <text> }</text>
-            <call-template name="src:close-brace"/>
-         </if>
+         <value-of select="$src:new-line"/>
+         <call-template name="src:new-line-indented"/>
+         <value-of select="src:global-identifier('System.Web.SessionState.SessionStateBehavior')"/>
+         <text> </text>
+         <value-of select="src:global-identifier('Xcst.Web.ISessionStateAware'), 'SessionStateBehavior'" separator="."/>
+         <call-template name="src:open-brace"/>
+         <call-template name="src:new-line-indented">
+            <with-param name="increase" select="1"/>
+         </call-template>
+         <text>get { return </text>
+         <value-of select="src:global-identifier('System.Web.SessionState.SessionStateBehavior'), $a:directives/sessionstate" separator="."/>
+         <value-of select="$src:statement-delimiter"/>
+         <text> }</text>
+         <call-template name="src:close-brace"/>
+      </if>
 
+      <if test="$a:href-fn">
          <variable name="module-uri" select="document-uri(root(.))"/>
          <variable name="functions-type" select="a:functions-type-name(.)"/>
          <value-of select="$src:new-line"/>

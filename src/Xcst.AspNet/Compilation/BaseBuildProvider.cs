@@ -16,6 +16,7 @@ using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Web;
 using System.Web.Compilation;
@@ -73,6 +74,7 @@ namespace Xcst.Web.Compilation {
 
       protected virtual string GeneratedTypeNamePrefix => null;
 
+      [SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "s")]
       protected string GeneratedTypeNamespace {
          get {
             if (_GeneratedTypeNamespace == null) {

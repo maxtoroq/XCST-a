@@ -129,12 +129,6 @@
     <Compile Include="..\Xcst.AspNet\PreApplicationStartCode.cs">
       <Link>PreApplicationStartCode.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc\XcstView.cs">
-      <Link>Mvc\XcstView.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc\XcstViewEngine.cs">
-      <Link>Mvc\XcstViewEngine.cs</Link>
-    </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\XcstViewPage.cs">
       <Link>Mvc\XcstViewPage.cs</Link>
     </Compile>
@@ -192,6 +186,8 @@
     <Compile Include="..\XmlNamespaces.cs">
       <Link>XmlNamespaces.cs</Link>
     </Compile>
+    <Compile Include="Mvc\XcstView.cs" />
+    <Compile Include="Mvc\XcstViewEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -15,10 +15,8 @@
 using System;
 using System.ComponentModel;
 using System.Web.Compilation;
-using System.Web.Hosting;
 using System.Web.Mvc;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-using Xcst.Compiler;
 using Xcst.Web.Compilation;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
@@ -43,12 +41,13 @@ namespace Xcst.Web {
             XcstWebConfiguration config = XcstWebConfiguration.Instance;
 
             BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(PageBuildProvider<XcstViewPage>));
-            ViewEngines.Engines.Add(new XcstViewEngine());
 
 #if ASPNETLIB
             config.RegisterHandlerFactory(XcstPageHttpHandler.Create);
             config.RegisterHandlerFactory(XcstViewPageHttpHandler.Create);
             DynamicModuleUtility.RegisterModule(typeof(XcstPageHttpModule));
+#else
+            ViewEngines.Engines.Add(new XcstViewEngine());
 #endif
          }
       }

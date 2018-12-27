@@ -460,7 +460,7 @@ namespace Xcst.Web.Runtime {
 
       internal static string GetEditorCssClass(EditorInfo editorInfo, string defaultCssClass) {
 
-         Func<EditorInfo, string, string> customFn = XcstWebConfiguration.Instance.Editors.EditorCssClass;
+         Func<EditorInfo, string, string> customFn = XcstWebConfiguration.Instance.EditorTemplates.EditorCssClass;
 
          if (customFn != null) {
             return customFn(editorInfo, defaultCssClass);

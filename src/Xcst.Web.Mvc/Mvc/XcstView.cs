@@ -15,8 +15,8 @@
 using System;
 using System.IO;
 using System.Web;
+using System.Web.Compilation;
 using System.Web.Mvc;
-using BuildManager = System.Web.Compilation.BuildManager;
 
 namespace Xcst.Web.Mvc {
 

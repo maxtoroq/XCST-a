@@ -125,8 +125,8 @@ namespace Xcst.Web.Tests {
          compiler.SetTargetBaseTypes(typeof(TestBase));
 
          compiler.SetParameter(
-            new QualifiedName("application-uri", XmlNamespaces.XcstApplication),
-            new Uri(Directory.GetCurrentDirectory())
+            new QualifiedName("default-model", XmlNamespaces.XcstApplication),
+            "dynamic"
          );
 
          CompileResult result = compiler.Compile(packageUri);

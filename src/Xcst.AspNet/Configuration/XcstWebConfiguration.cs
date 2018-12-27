@@ -15,7 +15,9 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
+using System.Web.Mvc;
 using Xcst.Compiler;
+using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Configuration {
 
@@ -29,9 +31,11 @@ namespace Xcst.Web.Configuration {
 
       internal IList<Func<object, IHttpHandler>> HttpHandlerFactories { get; } = new List<Func<object, IHttpHandler>>();
 
-      public EditorsConfiguration Editors { get; } = new EditorsConfiguration();
+      public EditorTemplatesConfiguration EditorTemplates { get; } = new EditorTemplatesConfiguration();
 
 #if ASPNETLIB
+      public DisplayTemplatesConfiguration DisplayTemplates { get; } = new DisplayTemplatesConfiguration();
+
       public ModelBindingConfiguration ModelBinding { get; } = new ModelBindingConfiguration();
 
       /// <summary>
@@ -52,7 +56,7 @@ namespace Xcst.Web.Configuration {
       }
    }
 
-   public class EditorsConfiguration {
+   public class EditorTemplatesConfiguration {
 
       /// <summary>
       /// Default message used by <code>a:validation-message</code> and <code>a:validation-summary</code>
@@ -73,12 +77,19 @@ namespace Xcst.Web.Configuration {
       /// </summary>
 
       public Func<string> DateValidationMessage { get; set; }
+
+      public Func<string, ViewContext, XcstViewPage> TemplateFactory { get; set; }
 #endif
 
       public Func<EditorInfo, string, string> EditorCssClass { get; set; }
    }
 
 #if ASPNETLIB
+
+   public class DisplayTemplatesConfiguration {
+      public Func<string, ViewContext, XcstViewPage> TemplateFactory { get; set; }
+   }
+
    public class ModelBindingConfiguration {
 
       /// <summary>

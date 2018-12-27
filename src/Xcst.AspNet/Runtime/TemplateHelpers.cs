@@ -27,6 +27,7 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Runtime {
@@ -99,150 +100,6 @@ namespace Xcst.Web.Runtime {
 
       internal delegate void TemplateHelperDelegate(HtmlHelper html, XcstWriter output, ModelMetadata metadata, string htmlFieldName,
                                                     string templateName, DataBoundControlMode mode, object additionalViewData);
-
-      static void ExecuteTemplate(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, string templateName, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
-
-         Dictionary<string, ActionCacheItem> actionCache = GetActionCache(html);
-         Dictionary<string, Action<HtmlHelper, XcstWriter>> defaultActions = getDefaultActions(mode);
-         string modeViewPath = _modeViewPaths[mode];
-
-         ModelMetadata metadata = viewData.ModelMetadata;
-         var options = DefaultEditorTemplates.Options(viewData);
-
-         string[] templateHints = {
-            templateName,
-            metadata.TemplateHint,
-            ((options != null) ?
-               TypeHelpers.IsIEnumerableNotString(metadata.ModelType) ? "ListBox"
-               : "DropDownList"
-               : null),
-            metadata.DataTypeName
-         };
-
-         foreach (string viewName in getViewNames(metadata, templateHints)) {
-
-            string fullViewName = modeViewPath + "/" + viewName;
-            ActionCacheItem cacheItem;
-
-            if (actionCache.TryGetValue(fullViewName, out cacheItem)) {
-
-               if (cacheItem != null) {
-                  cacheItem.Execute(html, output, viewData);
-                  return;
-               }
-
-            } else {
-
-               ViewEngineResult viewEngineResult = ViewEngines.Engines.FindPartialView(html.ViewContext, fullViewName);
-
-               if (viewEngineResult.View != null) {
-
-                  actionCache[fullViewName] = new ActionCacheViewItem { ViewName = fullViewName };
-
-                  RenderView(html, output, viewData, viewEngineResult);
-                  return;
-               }
-
-               Action<HtmlHelper, XcstWriter> defaultAction;
-
-               if (defaultActions.TryGetValue(viewName, out defaultAction)) {
-
-                  actionCache[fullViewName] = new ActionCacheCodeItem { Action = defaultAction };
-
-                  defaultAction(MakeHtmlHelper(html, viewData), output);
-                  return;
-               }
-
-               actionCache[fullViewName] = null;
-            }
-         }
-
-         throw new InvalidOperationException($"Unable to locate an appropriate template for type {metadata.RealModelType().FullName}.");
-      }
-
-      static Dictionary<string, ActionCacheItem> GetActionCache(HtmlHelper html) {
-
-         HttpContextBase context = html.ViewContext.HttpContext;
-         Dictionary<string, ActionCacheItem> result;
-
-         if (!context.Items.Contains(CacheItemId)) {
-            result = new Dictionary<string, ActionCacheItem>();
-            context.Items[CacheItemId] = result;
-         } else {
-            result = (Dictionary<string, ActionCacheItem>)context.Items[CacheItemId];
-         }
-
-         return result;
-      }
-
-      static Dictionary<string, Action<HtmlHelper, XcstWriter>> GetDefaultActions(DataBoundControlMode mode) {
-         return mode == DataBoundControlMode.ReadOnly ? _defaultDisplayActions : _defaultEditorActions;
-      }
-
-      static IEnumerable<string> GetViewNames(ModelMetadata metadata, params string[] templateHints) {
-
-         foreach (string templateHint in templateHints.Where(s => !String.IsNullOrEmpty(s))) {
-            yield return templateHint;
-         }
-
-         // We don't want to search for Nullable<T>, we want to search for T (which should handle both T and Nullable<T>)
-
-         Type fieldType = Nullable.GetUnderlyingType(metadata.RealModelType()) ?? metadata.RealModelType();
-
-         // TODO: Make better string names for generic types
-
-         yield return fieldType.Name;
-
-         if (fieldType == typeof(string)) {
-
-            // Nothing more to provide
-
-            yield break;
-
-         } else if (!metadata.IsComplexType) {
-
-            // IsEnum is false for the Enum class itself
-
-            if (fieldType.IsEnum) {
-
-               // Same as fieldType.BaseType.Name in this case
-
-               yield return "Enum";
-
-            } else if (fieldType == typeof(DateTimeOffset)) {
-               yield return "DateTime";
-            }
-
-            yield return "String";
-
-         } else if (fieldType.IsInterface) {
-
-            if (typeof(IEnumerable).IsAssignableFrom(fieldType)) {
-               yield return "Collection";
-            }
-
-            yield return "Object";
-
-         } else {
-
-            bool isEnumerable = typeof(IEnumerable).IsAssignableFrom(fieldType);
-
-            while (true) {
-
-               fieldType = fieldType.BaseType;
-
-               if (fieldType == null) {
-                  break;
-               }
-
-               if (isEnumerable && fieldType == typeof(Object)) {
-                  yield return "Collection";
-               }
-
-               yield return fieldType.Name;
-            }
-         }
-      }
 
       public static void Template(HtmlHelper html, XcstWriter output, string expression, string templateName, string htmlFieldName, DataBoundControlMode mode, object additionalViewData) {
          Template(html, output, expression, templateName, htmlFieldName, mode, additionalViewData, TemplateHelper);
@@ -351,7 +208,168 @@ namespace Xcst.Web.Runtime {
          executeTemplate(html, output, viewData, templateName, mode, GetViewNames, GetDefaultActions);
       }
 
-      // Helpers
+      static void ExecuteTemplate(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, string templateName, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
+
+         Dictionary<string, ActionCacheItem> actionCache = GetActionCache(html);
+         Dictionary<string, Action<HtmlHelper, XcstWriter>> defaultActions = getDefaultActions(mode);
+         string modeViewPath = _modeViewPaths[mode];
+
+         ModelMetadata metadata = viewData.ModelMetadata;
+         var options = DefaultEditorTemplates.Options(viewData);
+
+         string[] templateHints = {
+            templateName,
+            metadata.TemplateHint,
+            ((options != null) ?
+               TypeHelpers.IsIEnumerableNotString(metadata.ModelType) ? "ListBox"
+               : "DropDownList"
+               : null),
+            metadata.DataTypeName
+         };
+
+         XcstWebConfiguration config = XcstWebConfiguration.Instance;
+
+         foreach (string viewName in getViewNames(metadata, templateHints)) {
+
+#if ASPNETLIB
+            XcstViewPage viewPage = ((mode == DataBoundControlMode.ReadOnly) ?
+               config.DisplayTemplates.TemplateFactory
+               : config.EditorTemplates.TemplateFactory)?.Invoke(viewName, html.ViewContext);
+
+            if (viewPage != null) {
+               RenderViewPage(html, output, viewData, viewPage);
+               return;
+            }
+#endif
+
+            string fullViewName = modeViewPath + "/" + viewName;
+            ActionCacheItem cacheItem;
+
+            if (actionCache.TryGetValue(fullViewName, out cacheItem)) {
+
+               if (cacheItem != null) {
+                  cacheItem.Execute(html, output, viewData);
+                  return;
+               }
+
+            } else {
+
+#if !ASPNETLIB
+               ViewEngineResult viewEngineResult = ViewEngines.Engines.FindPartialView(html.ViewContext, fullViewName);
+
+               if (viewEngineResult.View != null) {
+
+                  actionCache[fullViewName] = new ActionCacheViewItem { ViewName = fullViewName };
+
+                  RenderView(html, output, viewData, viewEngineResult);
+                  return;
+               }
+#endif
+
+               Action<HtmlHelper, XcstWriter> defaultAction;
+
+               if (defaultActions.TryGetValue(viewName, out defaultAction)) {
+
+                  var item = new ActionCacheCodeItem {
+                     Action = defaultAction
+                  };
+
+                  actionCache[fullViewName] = item;
+
+                  item.Execute(html, output, viewData);
+                  return;
+               }
+
+               actionCache[fullViewName] = null;
+            }
+         }
+
+         throw new InvalidOperationException($"Unable to locate an appropriate template for type {metadata.RealModelType().FullName}.");
+      }
+
+      static Dictionary<string, ActionCacheItem> GetActionCache(HtmlHelper html) {
+
+         HttpContextBase context = html.ViewContext.HttpContext;
+         Dictionary<string, ActionCacheItem> result;
+
+         if (!context.Items.Contains(CacheItemId)) {
+            result = new Dictionary<string, ActionCacheItem>();
+            context.Items[CacheItemId] = result;
+         } else {
+            result = (Dictionary<string, ActionCacheItem>)context.Items[CacheItemId];
+         }
+
+         return result;
+      }
+
+      static Dictionary<string, Action<HtmlHelper, XcstWriter>> GetDefaultActions(DataBoundControlMode mode) {
+         return mode == DataBoundControlMode.ReadOnly ? _defaultDisplayActions : _defaultEditorActions;
+      }
+
+      static IEnumerable<string> GetViewNames(ModelMetadata metadata, params string[] templateHints) {
+
+         foreach (string templateHint in templateHints.Where(s => !String.IsNullOrEmpty(s))) {
+            yield return templateHint;
+         }
+
+         // We don't want to search for Nullable<T>, we want to search for T (which should handle both T and Nullable<T>)
+
+         Type fieldType = Nullable.GetUnderlyingType(metadata.RealModelType()) ?? metadata.RealModelType();
+
+         // TODO: Make better string names for generic types
+
+         yield return fieldType.Name;
+
+         if (fieldType == typeof(string)) {
+
+            // Nothing more to provide
+
+            yield break;
+
+         } else if (!metadata.IsComplexType) {
+
+            // IsEnum is false for the Enum class itself
+
+            if (fieldType.IsEnum) {
+
+               // Same as fieldType.BaseType.Name in this case
+
+               yield return nameof(Enum);
+
+            } else if (fieldType == typeof(DateTimeOffset)) {
+               yield return nameof(DateTime);
+            }
+
+            yield return nameof(String);
+
+         } else if (fieldType.IsInterface) {
+
+            if (typeof(IEnumerable).IsAssignableFrom(fieldType)) {
+               yield return "Collection";
+            }
+
+            yield return nameof(Object);
+
+         } else {
+
+            bool isEnumerable = typeof(IEnumerable).IsAssignableFrom(fieldType);
+
+            while (true) {
+
+               fieldType = fieldType.BaseType;
+
+               if (fieldType == null) {
+                  break;
+               }
+
+               if (isEnumerable && fieldType == typeof(Object)) {
+                  yield return "Collection";
+               }
+
+               yield return fieldType.Name;
+            }
+         }
+      }
 
       static HtmlHelper MakeHtmlHelper(HtmlHelper html, ViewDataDictionary viewData) {
 
@@ -366,6 +384,7 @@ namespace Xcst.Web.Runtime {
          return newHelper;
       }
 
+#if !ASPNETLIB
       static void RenderView(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, ViewEngineResult viewEngineResult) {
 
          IView view = viewEngineResult.View;
@@ -387,6 +406,24 @@ namespace Xcst.Web.Runtime {
             }
          }
       }
+#endif
+
+      static void RenderViewPage(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, XcstViewPage viewPage) {
+
+         ViewContext context = html.ViewContext.Clone(viewData: viewData);
+
+         viewPage.ViewContext = context;
+
+         XcstEvaluator evaluator = XcstEvaluator.Using(viewPage);
+
+         foreach (var item in context.ViewData) {
+            evaluator.WithParam(item.Key, item.Value);
+         }
+
+         evaluator.CallInitialTemplate()
+            .OutputTo(output)
+            .Run();
+      }
 
       abstract class ActionCacheItem {
          public abstract void Execute(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData);
@@ -401,6 +438,7 @@ namespace Xcst.Web.Runtime {
          }
       }
 
+#if !ASPNETLIB
       class ActionCacheViewItem : ActionCacheItem {
 
          public string ViewName { get; set; }
@@ -412,6 +450,7 @@ namespace Xcst.Web.Runtime {
             RenderView(html, output, viewData, viewEngineResult);
          }
       }
+#endif
 
       class ViewDataContainer : IViewDataContainer {
 

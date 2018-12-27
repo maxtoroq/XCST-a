@@ -66,13 +66,13 @@ namespace System.Web.Mvc {
 
       static string GetFieldMustBeNumericResource(ControllerContext controllerContext) {
 
-         return XcstWebConfiguration.Instance.Editors.NumberValidationMessage?.Invoke()
+         return XcstWebConfiguration.Instance.EditorTemplates.NumberValidationMessage?.Invoke()
             ?? MvcResources.ClientDataTypeModelValidatorProvider_FieldMustBeNumeric;
       }
 
       static string GetFieldMustBeDateResource(ControllerContext controllerContext) {
 
-         return XcstWebConfiguration.Instance.Editors.DateValidationMessage?.Invoke()
+         return XcstWebConfiguration.Instance.EditorTemplates.DateValidationMessage?.Invoke()
             ?? MvcResources.ClientDataTypeModelValidatorProvider_FieldMustBeDate;
       }
 

@@ -113,7 +113,6 @@
     <Compile Include="Framework\ControllerContext.cs" />
     <Compile Include="Framework\Common\CopyOnWriteDictionary.cs" />
     <Compile Include="Framework\DependencyResolver.cs" />
-    <Compile Include="Framework\IDisplayMode.cs" />
     <Compile Include="Framework\Common\Error.cs" />
     <Compile Include="Framework\ExpressionHelper.cs" />
     <Compile Include="Framework\ExpressionUtil\CachedExpressionCompiler.cs" />
@@ -169,24 +168,11 @@
     <Compile Include="Framework\ValueProviderResult.cs" />
     <Compile Include="Framework\ViewContext.cs" />
     <Compile Include="Framework\ViewDataDictionary.cs" />
-    <Compile Include="Framework\ViewEngine\Compilation\BuildManagerCompiledView.cs" />
-    <Compile Include="Framework\ViewEngine\Compilation\BuildManagerViewEngine.cs" />
-    <Compile Include="Framework\ViewEngine\Compilation\IBuildManager.cs" />
-    <Compile Include="Framework\ViewEngine\Compilation\IViewPageActivator.cs" />
-    <Compile Include="Framework\ViewEngine\Compilation\TypeCacheUtil.cs" />
-    <Compile Include="Framework\ViewEngine\Compilation\WebPages\BuildManagerWrapper.cs" />
-    <Compile Include="Framework\ViewEngine\Compilation\WebPages\FileExistenceCache.cs" />
-    <Compile Include="Framework\ViewEngine\Compilation\WebPages\IVirtualPathUtility.cs" />
-    <Compile Include="Framework\ViewEngine\IViewEngine.cs" />
-    <Compile Include="Framework\ViewEngine\IViewLocationCache.cs" />
-    <Compile Include="Framework\ViewEngine\VirtualPathProviderViewEngine.cs" />
     <Compile Include="Framework\Common\WebPageResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>WebPageResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Framework\BrowserOverriding\BrowserHelpers.cs" />
-    <Compile Include="Framework\BrowserOverriding\BrowserOverrideStore.cs" />
     <Compile Include="Mvc\FileMaxLengthAttribute.cs" />
     <Compile Include="Mvc\FileExtensionsAttribute.cs" />
     <Compile Include="Mvc\ShowForAttribute.cs" />
@@ -210,8 +196,6 @@
     <Compile Include="Runtime\OptionList.cs" />
     <Compile Include="Runtime\UrlUtil.cs" />
     <Compile Include="Mvc\XcstViewPage.cs" />
-    <Compile Include="Mvc\XcstView.cs" />
-    <Compile Include="Mvc\XcstViewEngine.cs" />
     <Compile Include="Mvc\XcstViewPageHttpHandler.cs" />
     <Compile Include="Mvc\XcstViewPageOfTModel.cs" />
     <Compile Include="UrlDataList.cs" />
