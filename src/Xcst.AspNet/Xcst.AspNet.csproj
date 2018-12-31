@@ -70,6 +70,7 @@
     <Compile Include="Compilation\BaseBuildProvider.cs" />
     <Compile Include="Compilation\PageBuildProvider.cs" />
     <Compile Include="Compiler\ApplicationExtensionConfiguration.cs" />
+    <Compile Include="ExtensionlessUrlModule.cs" />
     <Compile Include="Framework\AntiXsrf\AntiForgery.cs" />
     <Compile Include="Framework\AntiXsrf\AntiForgeryConfig.cs" />
     <Compile Include="Framework\AntiXsrf\AntiForgeryConfigWrapper.cs" />
@@ -200,12 +201,9 @@
     <Compile Include="Mvc\XcstViewPageOfTModel.cs" />
     <Compile Include="UrlDataList.cs" />
     <Compile Include="Framework\UrlRewriterHelper.cs" />
-    <Compile Include="WebPageRoute.cs" />
-    <Compile Include="WebPagesDeployment.cs" />
     <Compile Include="XcstPage.cs" />
     <Compile Include="XcstPageHttpHandler.cs" />
     <Compile Include="XcstPageHttpHandlerFactory.cs" />
-    <Compile Include="XcstPageHttpModule.cs" />
     <Compile Include="Configuration\XcstWebConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -80,7 +80,7 @@ namespace Xcst.Web {
             if (_UrlData == null
                && Context != null) {
 
-               _UrlData = new UrlDataList(WebPageRoute.GetPathInfo(Context));
+               _UrlData = new UrlDataList(ExtensionlessUrlModule.GetPathInfo(Context));
             }
             return _UrlData;
          }
