@@ -137,8 +137,8 @@ namespace System.Web.WebPages {
 
       delegate TValue ByRefFunc<TDeclaringType, TValue>(ref TDeclaringType arg);
 
-      static readonly MethodInfo _callPropertyGetterOpenGenericMethod = typeof(PropertyHelper).GetMethod("CallPropertyGetter", BindingFlags.NonPublic | BindingFlags.Static);
-      static readonly MethodInfo _callPropertyGetterByReferenceOpenGenericMethod = typeof(PropertyHelper).GetMethod("CallPropertyGetterByReference", BindingFlags.NonPublic | BindingFlags.Static);
+      static readonly MethodInfo _callPropertyGetterOpenGenericMethod = typeof(PropertyHelper).GetMethod(nameof(CallPropertyGetter), BindingFlags.NonPublic | BindingFlags.Static);
+      static readonly MethodInfo _callPropertyGetterByReferenceOpenGenericMethod = typeof(PropertyHelper).GetMethod(nameof(CallPropertyGetterByReference), BindingFlags.NonPublic | BindingFlags.Static);
 
       static object CallPropertyGetter<TDeclaringType, TValue>(Func<TDeclaringType, TValue> getter, object @this) {
          return getter((TDeclaringType)@this);
@@ -152,7 +152,7 @@ namespace System.Web.WebPages {
 
       // Implementation of the fast setter.
 
-      static readonly MethodInfo _callPropertySetterOpenGenericMethod = typeof(PropertyHelper).GetMethod("CallPropertySetter", BindingFlags.NonPublic | BindingFlags.Static);
+      static readonly MethodInfo _callPropertySetterOpenGenericMethod = typeof(PropertyHelper).GetMethod(nameof(CallPropertySetter), BindingFlags.NonPublic | BindingFlags.Static);
 
       static void CallPropertySetter<TDeclaringType, TValue>(Action<TDeclaringType, TValue> setter, object @this, object value) {
          setter((TDeclaringType)@this, (TValue)value);

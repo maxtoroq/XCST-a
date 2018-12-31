@@ -19,7 +19,7 @@ namespace System.Web.Mvc {
       static readonly Dictionary<Type, TryGetValueDelegate> _tryGetValueDelegateCache = new Dictionary<Type, TryGetValueDelegate>();
       static readonly ReaderWriterLockSlim _tryGetValueDelegateCacheLock = new ReaderWriterLockSlim();
 
-      static readonly MethodInfo _strongTryGetValueImplInfo = typeof(TypeHelpers).GetMethod("StrongTryGetValueImpl", BindingFlags.NonPublic | BindingFlags.Static);
+      static readonly MethodInfo _strongTryGetValueImplInfo = typeof(TypeHelpers).GetMethod(nameof(StrongTryGetValueImpl), BindingFlags.NonPublic | BindingFlags.Static);
 
       public static readonly Assembly MsCorLibAssembly = typeof(string).Assembly;
       public static readonly Assembly MvcAssembly = typeof(ControllerContext).Assembly;

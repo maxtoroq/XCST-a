@@ -790,8 +790,8 @@ namespace System.Web.Mvc {
 
       static class CollectionHelpers {
 
-         static readonly MethodInfo _replaceCollectionMethod = typeof(CollectionHelpers).GetMethod("ReplaceCollectionImpl", BindingFlags.Static | BindingFlags.NonPublic);
-         static readonly MethodInfo _replaceDictionaryMethod = typeof(CollectionHelpers).GetMethod("ReplaceDictionaryImpl", BindingFlags.Static | BindingFlags.NonPublic);
+         static readonly MethodInfo _replaceCollectionMethod = typeof(CollectionHelpers).GetMethod(nameof(ReplaceCollectionImpl), BindingFlags.Static | BindingFlags.NonPublic);
+         static readonly MethodInfo _replaceDictionaryMethod = typeof(CollectionHelpers).GetMethod(nameof(ReplaceDictionaryImpl), BindingFlags.Static | BindingFlags.NonPublic);
 
          [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
          public static void ReplaceCollection(Type collectionType, object collection, object newContents) {
