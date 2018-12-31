@@ -2,14 +2,13 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Configuration;
 using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Web.Mvc.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Xcst.Web.Configuration;
 
 namespace System.Web.Mvc {
 
@@ -125,20 +124,10 @@ namespace System.Web.Mvc {
 
          static int GetMaximumDepth() {
 
-            NameValueCollection appSettings = ConfigurationManager.AppSettings;
+            int maxMembers = XcstWebConfiguration.Instance.ModelBinding.MaxJsonDeserializerMembers;
 
-            if (appSettings != null) {
-
-               string[] valueArray = appSettings.GetValues("aspnet:MaxJsonDeserializerMembers");
-
-               if (valueArray != null && valueArray.Length > 0) {
-
-                  int result;
-
-                  if (Int32.TryParse(valueArray[0], out result)) {
-                     return result;
-                  }
-               }
+            if (maxMembers > -1) {
+               return maxMembers;
             }
 
             return 1000; // Fallback default

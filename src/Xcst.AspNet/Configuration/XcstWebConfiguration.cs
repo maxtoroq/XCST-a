@@ -102,6 +102,8 @@ namespace Xcst.Web.Configuration {
       /// </summary>
 
       public Func<string> DefaultRequiredPropertyValueErrorMessage { get; set; }
+
+      public int MaxJsonDeserializerMembers { get; set; } = -1;
    }
 #endif
 }
