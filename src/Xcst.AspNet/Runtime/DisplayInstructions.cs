@@ -18,7 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+#if !ASPNETLIB
 using System.Data;
+#endif
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Web.Mvc;
