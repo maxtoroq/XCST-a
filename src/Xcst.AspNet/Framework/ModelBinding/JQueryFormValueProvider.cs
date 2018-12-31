@@ -17,13 +17,7 @@ namespace System.Web.Mvc {
       /// <param name="controllerContext">The context on which the ValueProvider operates.</param>
 
       public JQueryFormValueProvider(ControllerContext controllerContext)
-         : this(controllerContext, new UnvalidatedRequestValuesWrapper(controllerContext.HttpContext.Request.Unvalidated)) { }
-
-      // For unit testing
-
-      internal JQueryFormValueProvider(ControllerContext controllerContext, IUnvalidatedRequestValues unvalidatedValues)
          : base(controllerContext.HttpContext.Request.Form,
-            unvalidatedValues.Form,
             CultureInfo.CurrentCulture,
             jQueryToMvcRequestNormalizationRequired: true) { }
    }
@@ -33,23 +27,6 @@ namespace System.Web.Mvc {
    /// </summary>
 
    public sealed class JQueryFormValueProviderFactory : ValueProviderFactory {
-
-      readonly UnvalidatedRequestValuesAccessor _unvalidatedValuesAccessor;
-
-      /// <summary>
-      /// Constructs a new instance of the factory which provides JQuery form ValueProviders.
-      /// </summary>
-
-      public JQueryFormValueProviderFactory()
-         : this(unvalidatedValuesAccessor: null) { }
-
-      // For unit testing
-
-      internal JQueryFormValueProviderFactory(UnvalidatedRequestValuesAccessor unvalidatedValuesAccessor) {
-
-         _unvalidatedValuesAccessor = unvalidatedValuesAccessor
-            ?? (cc => new UnvalidatedRequestValuesWrapper(cc.HttpContext.Request.Unvalidated));
-      }
 
       /// <summary>
       /// Returns the suitable ValueProvider.
@@ -61,7 +38,7 @@ namespace System.Web.Mvc {
 
          if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
 
-         return new JQueryFormValueProvider(controllerContext, _unvalidatedValuesAccessor(controllerContext));
+         return new JQueryFormValueProvider(controllerContext);
       }
    }
 }

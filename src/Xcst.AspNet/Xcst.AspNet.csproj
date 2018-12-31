@@ -47,10 +47,6 @@
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xcst.Compiler.0.44.0\lib\net46\Xcst.Compiler.dll</HintPath>
     </Reference>
@@ -108,7 +104,6 @@
     <Compile Include="Framework\DataAnnotations\DataTypeUtil.cs" />
     <Compile Include="Framework\DataAnnotations\ValidatableObjectAdapter.cs" />
     <Compile Include="Framework\AdditionalMetaDataAttribute.cs" />
-    <Compile Include="Framework\AllowHtmlAttribute.cs" />
     <Compile Include="Framework\ControllerContext.cs" />
     <Compile Include="Framework\Common\CopyOnWriteDictionary.cs" />
     <Compile Include="Framework\DependencyResolver.cs" />
@@ -138,7 +133,6 @@
     <Compile Include="Framework\ModelBinding\HttpPostedFileBaseModelBinder.cs" />
     <Compile Include="Framework\ModelBinding\IModelBinder.cs" />
     <Compile Include="Framework\ModelBinding\IModelBinderProvider.cs" />
-    <Compile Include="Framework\ModelBinding\IUnvalidatedRequestValues.cs" />
     <Compile Include="Framework\ModelBinding\IValueProvider.cs" />
     <Compile Include="Framework\ModelBinding\JQueryFormValueProvider.cs" />
     <Compile Include="Framework\ModelBinding\JsonValueProviderFactory.cs" />

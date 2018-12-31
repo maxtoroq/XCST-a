@@ -16,8 +16,6 @@ using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Microsoft.Web.Infrastructure.DynamicValidationHelper;
-using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Mvc {
 
@@ -49,20 +47,13 @@ namespace Xcst.Web.Mvc {
          RequestContext requestContext = context.Request.RequestContext
             ?? new RequestContext(context, new RouteData());
 
-         var controllerContext = new ControllerContext(requestContext) {
-            ValidateRequest = XcstWebConfiguration.Instance.ValidateRequest
-         };
-
+         var controllerContext = new ControllerContext(requestContext);
          var tempData = new TempDataDictionary(); ;
 
          this.page.ViewContext = new ViewContext(controllerContext, this.page.ViewData, tempData);
       }
 
       protected override void RenderPage(XcstPage page, HttpContextBase context) {
-
-         if (this.page.ViewContext.ValidateRequest) {
-            ValidateRequest(this.page.ViewContext);
-         }
 
          ITempDataProvider tempDataProvider = this.page.ViewContext.TempDataProvider;
 
@@ -72,20 +63,6 @@ namespace Xcst.Web.Mvc {
             base.RenderPage(page, context);
          } finally {
             PossiblySaveTempData(tempDataProvider);
-         }
-      }
-
-      static void ValidateRequest(ControllerContext controllerContext) {
-
-         if (!controllerContext.IsChildAction) {
-
-            HttpContext current = HttpContext.Current;
-
-            if (current != null) {
-               ValidationUtility.EnableDynamicValidation(current);
-            }
-
-            controllerContext.HttpContext.Request.ValidateInput();
          }
       }
 

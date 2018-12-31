@@ -32,10 +32,4 @@ namespace System.Web.Mvc {
    public interface IEnumerableValueProvider : IValueProvider {
       IDictionary<string, string> GetKeysFromPrefix(string prefix);
    }
-
-   // Represents a special IValueProvider that has the ability to skip request validation.
-
-   public interface IUnvalidatedValueProvider : IValueProvider {
-      ValueProviderResult GetValue(string key, bool skipValidation);
-   }
 }

@@ -10,11 +10,10 @@ using System.Web.Mvc.Properties;
 namespace System.Web.Mvc {
 
    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Target = "jQueryToMvcRequestNormalizationRequired", Justification = "jQuery is usually spelled like this. Hence suppressing this message.")]
-   public class NameValueCollectionValueProvider : IValueProvider, IUnvalidatedValueProvider, IEnumerableValueProvider {
+   public class NameValueCollectionValueProvider : IValueProvider, IEnumerableValueProvider {
 
       PrefixContainer _prefixContainer;
       NameValueCollection _collection;
-      NameValueCollection _unvalidatedCollection;
       CultureInfo _culture;
       bool _jQueryToMvcRequestNormalizationRequired;
 
@@ -41,10 +40,7 @@ namespace System.Web.Mvc {
       }
 
       public NameValueCollectionValueProvider(NameValueCollection collection, CultureInfo culture)
-         : this(collection, unvalidatedCollection: null, culture: culture) { }
-
-      public NameValueCollectionValueProvider(NameValueCollection collection, NameValueCollection unvalidatedCollection, CultureInfo culture)
-         : this(collection, unvalidatedCollection, culture, jQueryToMvcRequestNormalizationRequired: false) { }
+         : this(collection, culture, jQueryToMvcRequestNormalizationRequired: false) { }
 
       /// <summary>
       /// Initializes Name Value collection provider.
@@ -59,13 +55,11 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "j", Justification = "jQuery is not accepted as a valid variable name in this class")]
       public NameValueCollectionValueProvider(
             NameValueCollection collection,
-            NameValueCollection unvalidatedCollection,
             CultureInfo culture,
             bool jQueryToMvcRequestNormalizationRequired) {
 
          if (collection == null) throw new ArgumentNullException(nameof(collection));
 
-         _unvalidatedCollection = unvalidatedCollection ?? collection;
          _collection = collection;
          _culture = culture;
          _jQueryToMvcRequestNormalizationRequired = jQueryToMvcRequestNormalizationRequired;
@@ -76,10 +70,6 @@ namespace System.Web.Mvc {
       }
 
       public virtual ValueProviderResult GetValue(string key) {
-         return GetValue(key, skipValidation: false);
-      }
-
-      public virtual ValueProviderResult GetValue(string key, bool skipValidation) {
 
          if (key == null) throw new ArgumentNullException(nameof(key));
 
@@ -89,7 +79,7 @@ namespace System.Web.Mvc {
          if (placeholder == null) {
             return null;
          } else {
-            return (skipValidation) ? placeholder.UnvalidatedResult : placeholder.ValidatedResult;
+            return placeholder.ValidatedResult;
          }
       }
 
@@ -105,7 +95,7 @@ namespace System.Web.Mvc {
          // and validated entries at the time the key or value is looked at. For example, GetKey() will throw if the
          // value fails request validation, even though the value's not being looked at (M.W.I can't tell the difference).
 
-         foreach (string key in _unvalidatedCollection) {
+         foreach (string key in _collection) {
 
             if (key != null) {
 
@@ -118,7 +108,7 @@ namespace System.Web.Mvc {
                // need to look up values lazily, as eagerly looking at the collection might trigger validation
 
                tempValues[normalizedKey] =
-                   new ValueProviderResultPlaceholder(key, _collection, _unvalidatedCollection, _culture);
+                   new ValueProviderResultPlaceholder(key, _collection, _culture);
             }
          }
 
@@ -201,10 +191,8 @@ namespace System.Web.Mvc {
       sealed class ValueProviderResultPlaceholder {
 
          ValueProviderResult _validatedResult;
-         ValueProviderResult _unvalidatedResult;
          string _key;
          NameValueCollection _validatedCollection;
-         NameValueCollection _unvalidatedCollection;
          CultureInfo _culture;
 
          public ValueProviderResult ValidatedResult {
@@ -216,19 +204,9 @@ namespace System.Web.Mvc {
             }
          }
 
-         public ValueProviderResult UnvalidatedResult {
-            get {
-               if (_unvalidatedResult == null) {
-                  _unvalidatedResult = GetResultFromCollection(_key, _unvalidatedCollection, _culture);
-               }
-               return _unvalidatedResult;
-            }
-         }
-
-         public ValueProviderResultPlaceholder(string key, NameValueCollection validatedCollection, NameValueCollection unvalidatedCollection, CultureInfo culture) {
+         public ValueProviderResultPlaceholder(string key, NameValueCollection validatedCollection, CultureInfo culture) {
             _key = key;
             _validatedCollection = validatedCollection;
-            _unvalidatedCollection = unvalidatedCollection;
             _culture = culture;
          }
 

@@ -37,7 +37,6 @@ namespace System.Web.Mvc {
       IEnumerable<ModelMetadata> _properties;
       ModelMetadata[] _propertiesInternal;
       Type _realModelType;
-      bool _requestValidationEnabled = true;
       bool _showForDisplay = true;
       bool _showForEdit = true;
       string _simpleDisplayText;
@@ -163,11 +162,6 @@ namespace System.Web.Mvc {
 
             return _realModelType;
          }
-      }
-
-      public virtual bool RequestValidationEnabled {
-         get { return _requestValidationEnabled; }
-         set { _requestValidationEnabled = value; }
       }
 
       public virtual string ShortDisplayName { get; set; }

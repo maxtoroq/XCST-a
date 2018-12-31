@@ -96,7 +96,7 @@ namespace System.Web.Mvc {
       }
    }
 
-   public class ValueProviderCollection : Collection<IValueProvider>, IValueProvider, IUnvalidatedValueProvider, IEnumerableValueProvider {
+   public class ValueProviderCollection : Collection<IValueProvider>, IValueProvider, IEnumerableValueProvider {
 
       public ValueProviderCollection() { }
 
@@ -120,10 +120,6 @@ namespace System.Web.Mvc {
       }
 
       public virtual ValueProviderResult GetValue(string key) {
-         return GetValue(key, skipValidation: false);
-      }
-
-      public virtual ValueProviderResult GetValue(string key, bool skipValidation) {
 
          // Performance sensitive.
          // Caching the count is faster for Collection<T>
@@ -132,7 +128,7 @@ namespace System.Web.Mvc {
 
          for (int i = 0; i < providerCount; i++) {
 
-            ValueProviderResult result = GetValueFromProvider(this[i], key, skipValidation);
+            ValueProviderResult result = this[i].GetValue(key);
 
             if (result != null) {
                return result;
@@ -149,19 +145,6 @@ namespace System.Web.Mvc {
              where result != null && result.Any()
              select result).FirstOrDefault()
             ?? new Dictionary<string, string>();
-      }
-
-      internal static ValueProviderResult GetValueFromProvider(IValueProvider provider, string key, bool skipValidation) {
-
-         // Since IUnvalidatedValueProvider is a superset of IValueProvider, it's always OK to use the
-         // IUnvalidatedValueProvider-supplied members if they're present. Otherwise just call the
-         // normal IValueProvider members.
-
-         var unvalidatedProvider = provider as IUnvalidatedValueProvider;
-
-         return (unvalidatedProvider != null) ?
-            unvalidatedProvider.GetValue(key, skipValidation)
-            : provider.GetValue(key);
       }
 
       internal static IDictionary<string, string> GetKeysFromPrefixFromProvider(IValueProvider provider, string prefix) {

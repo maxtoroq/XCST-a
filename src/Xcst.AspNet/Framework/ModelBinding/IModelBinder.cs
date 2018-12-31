@@ -82,10 +82,6 @@ namespace System.Web.Mvc {
 
       public IValueProvider ValueProvider { get; set; }
 
-      internal IUnvalidatedValueProvider UnvalidatedValueProvider {
-         get { return (ValueProvider as IUnvalidatedValueProvider) ?? new UnvalidatedValueProviderWrapper(ValueProvider); }
-      }
-
       public ModelBindingContext()
          : this(null) { }
 
@@ -97,30 +93,6 @@ namespace System.Web.Mvc {
          if (bindingContext != null) {
             this.ModelState = bindingContext.ModelState;
             this.ValueProvider = bindingContext.ValueProvider;
-         }
-      }
-
-      // Used to wrap an IValueProvider in an IUnvalidatedValueProvider
-
-      sealed class UnvalidatedValueProviderWrapper : IValueProvider, IUnvalidatedValueProvider {
-
-         readonly IValueProvider _backingProvider;
-
-         public UnvalidatedValueProviderWrapper(IValueProvider backingProvider) {
-            _backingProvider = backingProvider;
-         }
-
-         public ValueProviderResult GetValue(string key, bool skipValidation) {
-            // 'skipValidation' isn't understood by the backing provider and can be ignored
-            return GetValue(key);
-         }
-
-         public bool ContainsPrefix(string prefix) {
-            return _backingProvider.ContainsPrefix(prefix);
-         }
-
-         public ValueProviderResult GetValue(string key) {
-            return _backingProvider.GetValue(key);
          }
       }
    }

@@ -69,7 +69,6 @@ function script:NuSpec {
 
       "<dependencies>"
          "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
-         "<dependency id='Microsoft.Web.Infrastructure' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Microsoft.Web.Infrastructure'']').Attributes['allowedVersions'].Value)'/>"
       "</dependencies>"
 
       "<frameworkAssemblies>"

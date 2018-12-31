@@ -22,14 +22,9 @@ namespace System.Web.Mvc {
 
       internal FormCollection(
             ControllerContext controllerContext,
-            Func<NameValueCollection> validatedValuesThunk,
-            Func<NameValueCollection> unvalidatedValuesThunk) {
+            Func<NameValueCollection> validatedValuesThunk) {
 
-         var c = (controllerContext.ValidateRequest) ?
-            validatedValuesThunk()
-            : unvalidatedValuesThunk();
-
-         Add(c);
+         Add(validatedValuesThunk());
       }
 
       public ValueProviderResult GetValue(string name) {
@@ -84,8 +79,7 @@ namespace System.Web.Mvc {
 
                return new FormCollection(
                   controllerContext,
-                  () => controllerContext.HttpContext.Request.Form,
-                  () => controllerContext.HttpContext.Request.Unvalidated.Form);
+                  () => controllerContext.HttpContext.Request.Form);
             }
          }
       }

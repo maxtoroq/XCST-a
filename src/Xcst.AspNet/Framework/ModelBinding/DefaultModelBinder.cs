@@ -178,9 +178,7 @@ namespace System.Web.Mvc {
 
          if (!performedFallback) {
 
-            bool performRequestValidation = ShouldPerformRequestValidation(controllerContext, bindingContext);
-
-            ValueProviderResult valueProviderResult = bindingContext.UnvalidatedValueProvider.GetValue(bindingContext.ModelName, skipValidation: !performRequestValidation);
+            ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
             if (valueProviderResult != null) {
                return BindSimpleModel(controllerContext, bindingContext, valueProviderResult);
@@ -615,27 +613,6 @@ namespace System.Web.Mvc {
 
             bindingContext.ModelState.AddModelError(modelStateKey, GetValueRequiredResource(controllerContext));
          }
-      }
-
-      static bool ShouldPerformRequestValidation(ControllerContext controllerContext, ModelBindingContext bindingContext) {
-
-         if (controllerContext == null
-            || bindingContext == null
-            || bindingContext.ModelMetadata == null) {
-
-            // To make unit testing easier, if the caller hasn't specified enough contextual information we just default
-            // to always pulling the data from a collection that goes through request validation.
-
-            return true;
-         }
-
-         // We should perform request validation only if both the controller and the model ask for it. This is the
-         // default behavior for both. If either the controller (via [ValidateInput(false)]) or the model (via [AllowHtml])
-         // opts out, we don't validate.
-
-         return (
-            controllerContext.ValidateRequest
-               && bindingContext.ModelMetadata.RequestValidationEnabled);
       }
 
       static bool ShouldUpdateProperty(PropertyDescriptor property, Predicate<string> propertyFilter) {

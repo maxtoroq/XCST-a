@@ -59,8 +59,6 @@ namespace System.Web.Mvc {
          set { _routeData = value; }
       }
 
-      public bool ValidateRequest { get; set; } = true;
-
       /// <summary>
       /// Represents a replaceable dependency resolver providing services.
       /// By default, it uses the <see cref="DependencyResolver.CurrentCache"/>. 
@@ -94,7 +92,6 @@ namespace System.Web.Mvc {
          if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
 
          this.RequestContext = controllerContext.RequestContext;
-         this.ValidateRequest = controllerContext.ValidateRequest;
       }
 
       public ControllerContext(HttpContextBase httpContext, RouteData routeData)

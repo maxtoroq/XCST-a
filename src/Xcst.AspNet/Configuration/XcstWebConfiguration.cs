@@ -42,8 +42,6 @@ namespace Xcst.Web.Configuration {
       /// Instructs the ASP.NET runtime to perform request validation. The default is true.
       /// </summary>
 
-      public bool ValidateRequest { get; set; } = true;
-
       public void RegisterHandlerFactory(Func<object, IHttpHandler> handlerFactory) {
          this.HttpHandlerFactories.Insert(0, handlerFactory);
       }
