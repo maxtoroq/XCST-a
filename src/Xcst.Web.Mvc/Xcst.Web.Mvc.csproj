@@ -114,9 +114,6 @@
     <Compile Include="..\Xcst.AspNet\Framework\Common\TypeHelpers.cs">
       <Link>Framework\Common\TypeHelpers.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Framework\UrlRewriterHelper.cs">
-      <Link>Framework\UrlRewriterHelper.cs</Link>
-    </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\FileExtensionsAttribute.cs">
       <Link>Mvc\FileExtensionsAttribute.cs</Link>
     </Compile>
@@ -173,9 +170,6 @@
     </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\TextAreaInstructions.cs">
       <Link>Runtime\TextAreaInstructions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Runtime\UrlUtil.cs">
-      <Link>Runtime\UrlUtil.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\ValidationInstructions.cs">
       <Link>Runtime\ValidationInstructions.cs</Link>

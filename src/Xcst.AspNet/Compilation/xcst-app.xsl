@@ -30,7 +30,7 @@
    <variable name="a:html-attributes" select="'class', 'attributes'"/>
    <variable name="a:input-attributes" select="'for', 'name', 'value', 'disabled', 'autofocus', $a:html-attributes"/>
    <variable name="a:text-box-attributes" select="'readonly', 'placeholder', $a:input-attributes"/>
-   <variable name="a:href-fn" select="not($src:named-package) and $a:application-uri"/>
+   <variable name="a:href-fn" select="$a:aspnetlib and not($src:named-package) and $a:application-uri"/>
 
    <!--
       ## Forms
