@@ -42,8 +42,8 @@ namespace Xcst.Web {
             BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(PageBuildProvider<XcstViewPage>));
 
 #if ASPNETLIB
-            config.RegisterHandlerFactory(XcstPageHttpHandler.Create);
-            config.RegisterHandlerFactory(XcstViewPageHttpHandler.Create);
+            config.RegisterHandlerFactory(XcstPageHandler.Create);
+            config.RegisterHandlerFactory(XcstViewPageHandler.Create);
 #else
             ViewEngines.Engines.Add(new XcstViewEngine());
 #endif

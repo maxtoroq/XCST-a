@@ -21,22 +21,22 @@ using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Mvc {
 
-   public class XcstViewPageHttpHandler : XcstPageHttpHandler {
+   public class XcstViewPageHandler : XcstPageHandler {
 
       readonly XcstViewPage page;
 
-      public XcstViewPageHttpHandler(XcstViewPage page)
+      public XcstViewPageHandler(XcstViewPage page)
          : base(page) {
 
          this.page = page;
       }
 
-      internal new static XcstViewPageHttpHandler Create(object instance) {
+      internal new static XcstViewPageHandler Create(object instance) {
 
          XcstViewPage page = instance as XcstViewPage;
 
          if (page != null) {
-            return new XcstViewPageHttpHandler(page);
+            return new XcstViewPageHandler(page);
          }
 
          return null;

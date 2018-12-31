@@ -21,18 +21,18 @@ using Xcst.Web.Configuration;
 
 namespace Xcst.Web {
 
-   public class XcstPageHttpHandler : IHttpHandler, IRequiresSessionState {
+   public class XcstPageHandler : IHttpHandler, IRequiresSessionState {
 
       readonly XcstPage page;
 
       public bool IsReusable => false;
 
-      internal static XcstPageHttpHandler Create(object instance) {
+      internal static XcstPageHandler Create(object instance) {
 
          XcstPage page = instance as XcstPage;
 
          if (page != null) {
-            return new XcstPageHttpHandler(page);
+            return new XcstPageHandler(page);
          }
 
          return null;
@@ -60,7 +60,7 @@ namespace Xcst.Web {
             ?? instance as IHttpHandler;
       }
 
-      public XcstPageHttpHandler(XcstPage page) {
+      public XcstPageHandler(XcstPage page) {
 
          if (page == null) throw new ArgumentNullException(nameof(page));
 

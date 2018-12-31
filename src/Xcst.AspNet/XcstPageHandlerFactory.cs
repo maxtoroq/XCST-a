@@ -17,10 +17,10 @@ using System.Web;
 
 namespace Xcst.Web {
 
-   public class XcstPageHttpHandlerFactory : IHttpHandlerFactory {
+   public class XcstPageHandlerFactory : IHttpHandlerFactory {
 
       public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated) {
-         return XcstPageHttpHandler.CreateFromVirtualPath(url);
+         return XcstPageHandler.CreateFromVirtualPath(url);
       }
 
       public void ReleaseHandler(IHttpHandler handler) { }

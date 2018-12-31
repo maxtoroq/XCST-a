@@ -197,13 +197,13 @@
     <Compile Include="Runtime\OptionList.cs" />
     <Compile Include="Runtime\UrlUtil.cs" />
     <Compile Include="Mvc\XcstViewPage.cs" />
-    <Compile Include="Mvc\XcstViewPageHttpHandler.cs" />
+    <Compile Include="Mvc\XcstViewPageHandler.cs" />
     <Compile Include="Mvc\XcstViewPageOfTModel.cs" />
     <Compile Include="UrlDataList.cs" />
     <Compile Include="Framework\UrlRewriterHelper.cs" />
     <Compile Include="XcstPage.cs" />
-    <Compile Include="XcstPageHttpHandler.cs" />
-    <Compile Include="XcstPageHttpHandlerFactory.cs" />
+    <Compile Include="XcstPageHandler.cs" />
+    <Compile Include="XcstPageHandlerFactory.cs" />
     <Compile Include="Configuration\XcstWebConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>

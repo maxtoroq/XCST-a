@@ -81,11 +81,11 @@ namespace Xcst.Web {
 
          SetPathInfo(context, pathInfo);
 
-         IHttpHandler handler = XcstPageHttpHandler.CreateFromVirtualPath(virtualPath);
+         IHttpHandler handler = XcstPageHandler.CreateFromVirtualPath(virtualPath);
 
          if (handler != null) {
 
-            (handler as XcstPageHttpHandler)?.SetUpSessionState(context);
+            (handler as XcstPageHandler)?.SetUpSessionState(context);
 
             context.RemapHandler(handler);
          }
