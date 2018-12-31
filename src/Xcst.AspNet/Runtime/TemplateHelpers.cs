@@ -74,7 +74,9 @@ namespace Xcst.Web.Runtime {
             { "DropDownList", DefaultEditorTemplates.DropDownListTemplate },
             { "ListBox", DefaultEditorTemplates.ListBoxTemplate },
             { nameof(Enum), DefaultEditorTemplates.EnumTemplate },
+#if !ASPNETLIB
             { nameof(Color), DefaultEditorTemplates.ColorInputTemplate },
+#endif
             { nameof(Byte), DefaultEditorTemplates.ByteInputTemplate },
             { nameof(SByte), DefaultEditorTemplates.SByteInputTemplate },
             { nameof(Int32), DefaultEditorTemplates.Int32InputTemplate },

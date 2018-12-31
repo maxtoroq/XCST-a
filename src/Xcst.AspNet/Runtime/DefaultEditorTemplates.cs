@@ -328,6 +328,7 @@ namespace Xcst.Web.Runtime {
          HtmlInputTemplateHelper(html, output, "UInt64", inputType: "number");
       }
 
+#if !ASPNETLIB
       public static void ColorInputTemplate(HtmlHelper html, XcstWriter output) {
 
          if (html.ViewData.Model is Color) {
@@ -343,6 +344,7 @@ namespace Xcst.Web.Runtime {
 
          HtmlInputTemplateHelper(html, output, "Color", "color");
       }
+#endif
 
       public static void UploadTemplate(HtmlHelper html, XcstWriter output) {
          HtmlInputTemplateHelper(html, output, "Upload", inputType: "file");
