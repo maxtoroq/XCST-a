@@ -159,7 +159,7 @@ namespace System.Web.Mvc {
             int indexClose = key.IndexOf(']', indexOpen);
 
             if (indexClose == -1) {
-               throw Error.Argument("key", MvcResources.JQuerySyntaxMissingClosingBracket);
+               throw new ArgumentException(MvcResources.JQuerySyntaxMissingClosingBracket, nameof(key));
             }
 
             if (indexClose == indexOpen + 1) {

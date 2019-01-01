@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Web.Mvc.Properties;
 
 namespace System.Web.Mvc {
 
@@ -100,7 +101,7 @@ namespace System.Web.Mvc {
 
       public FieldValidationMetadata GetValidationMetadataForField(string fieldName, bool createIfNotFound) {
 
-         if (String.IsNullOrEmpty(fieldName)) throw Error.ParameterCannotBeNullOrEmpty(nameof(fieldName));
+         if (String.IsNullOrEmpty(fieldName)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(fieldName));
 
          FieldValidationMetadata metadata;
 

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -18,13 +19,6 @@ namespace System.Web.Mvc {
          if (collection == null) throw new ArgumentNullException(nameof(collection));
 
          Add(collection);
-      }
-
-      internal FormCollection(
-            ControllerContext controllerContext,
-            Func<NameValueCollection> validatedValuesThunk) {
-
-         Add(validatedValuesThunk());
       }
 
       public ValueProviderResult GetValue(string name) {
@@ -49,11 +43,39 @@ namespace System.Web.Mvc {
       #region IValueProvider Members
 
       bool IValueProvider.ContainsPrefix(string prefix) {
-         return ValueProviderUtil.CollectionContainsPrefix(this.AllKeys, prefix);
+         return CollectionContainsPrefix(this.AllKeys, prefix);
       }
 
       ValueProviderResult IValueProvider.GetValue(string key) {
          return GetValue(key);
+      }
+
+      static bool CollectionContainsPrefix(IEnumerable<string> collection, string prefix) {
+
+         foreach (string key in collection) {
+
+            if (key != null) {
+
+               if (prefix.Length == 0) {
+                  return true; // shortcut - non-null key matches empty prefix
+               }
+
+               if (key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) {
+
+                  if (key.Length == prefix.Length) {
+                     return true; // exact match
+                  } else {
+                     switch (key[prefix.Length]) {
+                        case '.': // known separator characters
+                        case '[':
+                           return true;
+                     }
+                  }
+               }
+            }
+         }
+
+         return false; // nothing found
       }
 
       #endregion
@@ -77,9 +99,7 @@ namespace System.Web.Mvc {
 
                if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
 
-               return new FormCollection(
-                  controllerContext,
-                  () => controllerContext.HttpContext.Request.Form);
+               return new FormCollection(controllerContext.HttpContext.Request.Form);
             }
          }
       }

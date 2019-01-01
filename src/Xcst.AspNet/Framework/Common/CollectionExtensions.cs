@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -11,22 +10,6 @@ namespace System.Collections.Generic {
    /// </summary>
 
    static class CollectionExtensions {
-
-      /// <summary>
-      /// Return a new array with the value added to the end. Slow and best suited to long lived arrays with few writes relative to reads.
-      /// </summary>
-
-      public static T[] AppendAndReallocate<T>(this T[] array, T value) {
-
-         Contract.Assert(array != null);
-
-         int originalLength = array.Length;
-         T[] newArray = new T[originalLength + 1];
-         array.CopyTo(newArray, 0);
-         newArray[originalLength] = value;
-
-         return newArray;
-      }
 
       /// <summary>
       /// Return the enumerable as an Array, copying if required. Optimized for common case where it is an Array. 
@@ -44,85 +27,6 @@ namespace System.Collections.Generic {
          }
 
          return array;
-      }
-
-      /// <summary>
-      /// Return the enumerable as a Collection of T, copying if required. Optimized for the common case where it is 
-      /// a Collection of T and avoiding a copy if it implements IList of T. Avoid mutating the return value.
-      /// </summary>
-
-      public static Collection<T> AsCollection<T>(this IEnumerable<T> enumerable) {
-
-         Contract.Assert(enumerable != null);
-
-         Collection<T> collection = enumerable as Collection<T>;
-
-         if (collection != null) {
-            return collection;
-         }
-
-         // Check for IList so that collection can wrap it instead of copying
-
-         IList<T> list = enumerable as IList<T>;
-
-         if (list == null) {
-            list = new List<T>(enumerable);
-         }
-
-         return new Collection<T>(list);
-      }
-
-      /// <summary>
-      /// Return the enumerable as a IList of T, copying if required. Avoid mutating the return value.
-      /// </summary>
-
-      public static IList<T> AsIList<T>(this IEnumerable<T> enumerable) {
-
-         Contract.Assert(enumerable != null);
-
-         IList<T> list = enumerable as IList<T>;
-
-         if (list != null) {
-            return list;
-         }
-
-         return new List<T>(enumerable);
-      }
-
-      /// <summary>
-      /// Return the enumerable as a List of T, copying if required. Optimized for common case where it is an List of T 
-      /// or a ListWrapperCollection of T. Avoid mutating the return value.
-      /// </summary>
-
-      public static List<T> AsList<T>(this IEnumerable<T> enumerable) {
-
-         Contract.Assert(enumerable != null);
-
-         var list = enumerable as List<T>;
-
-         if (list != null) {
-            return list;
-         }
-
-         var listWrapper = enumerable as ListWrapperCollection<T>;
-
-         if (listWrapper != null) {
-            return listWrapper.ItemsList;
-         }
-
-         return new List<T>(enumerable);
-      }
-
-      /// <summary>
-      /// Remove values from the list starting at the index start.
-      /// </summary>
-
-      public static void RemoveFrom<T>(this List<T> list, int start) {
-
-         Contract.Assert(list != null);
-         Contract.Assert(start >= 0 && start <= list.Count);
-
-         list.RemoveRange(start, list.Count - start);
       }
 
       /// <summary>
@@ -274,6 +178,7 @@ namespace System.Collections.Generic {
       /// <summary>
       /// Convert the list to a Dictionary using the keySelector to extract keys from values and the specified comparer. Optimized for IList of T input. No checking for other types.
       /// </summary>
+
       private static Dictionary<TKey, TValue> ToDictionaryFastNoCheck<TKey, TValue>(IList<TValue> list, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer) {
 
          Contract.Assert(list != null);

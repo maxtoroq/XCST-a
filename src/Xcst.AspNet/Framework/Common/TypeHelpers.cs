@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Web.Mvc.Properties;
 using System.Web.Routing;
 using System.Web.WebPages;
 

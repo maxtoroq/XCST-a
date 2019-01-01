@@ -90,7 +90,6 @@
     <Compile Include="Framework\Common\AttributeList.cs" />
     <Compile Include="Framework\Common\CollectionExtensions.cs" />
     <Compile Include="Framework\Common\DictionaryExtensions.cs" />
-    <Compile Include="Framework\Common\ListWrapperCollection.cs" />
     <Compile Include="Framework\Common\PrefixContainer.cs" />
     <Compile Include="Framework\Common\PropertyHelper.cs" />
     <Compile Include="Framework\Common\TypeDescriptorHelper.cs" />
@@ -106,7 +105,6 @@
     <Compile Include="Framework\ControllerContext.cs" />
     <Compile Include="Framework\Common\CopyOnWriteDictionary.cs" />
     <Compile Include="Framework\DependencyResolver.cs" />
-    <Compile Include="Framework\Common\Error.cs" />
     <Compile Include="Framework\ExpressionHelper.cs" />
     <Compile Include="Framework\ExpressionUtil\CachedExpressionCompiler.cs" />
     <Compile Include="Framework\ExpressionUtil\ExpressionFingerprint.cs" />
@@ -140,7 +138,6 @@
     <Compile Include="Framework\ModelBinding\QueryStringValueProvider.cs" />
     <Compile Include="Framework\ModelBinding\RouteDataValueProvider.cs" />
     <Compile Include="Framework\ModelBinding\ValueProviderFactory.cs" />
-    <Compile Include="Framework\ModelBinding\ValueProviderUtil.cs" />
     <Compile Include="Framework\ModelStateDictionary.cs" />
     <Compile Include="Framework\Common\MvcResources.Designer.cs">
       <DependentUpon>MvcResources.resx</DependentUpon>

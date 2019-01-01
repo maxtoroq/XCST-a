@@ -458,11 +458,11 @@ namespace System.Web.Mvc {
             base.SetModel((TModel)value);
          } else {
 
-            InvalidOperationException exception = (value != null) ?
-               Error.ViewDataDictionary_WrongTModelType(value.GetType(), typeof(TModel))
-               : Error.ViewDataDictionary_ModelCannotBeNull(typeof(TModel));
+            string errorMessage = (value != null) ?
+               String.Format(CultureInfo.CurrentCulture, MvcResources.ViewDataDictionary_WrongTModelType, value.GetType(), typeof(TModel))
+               : String.Format(CultureInfo.CurrentCulture, MvcResources.ViewDataDictionary_ModelCannotBeNull, typeof(TModel));
 
-            throw exception;
+            throw new InvalidOperationException(errorMessage);
          }
       }
    }

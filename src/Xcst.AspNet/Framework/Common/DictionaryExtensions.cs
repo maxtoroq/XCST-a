@@ -2,7 +2,6 @@
 
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
-using System.Linq;
 
 namespace System.Collections.Generic {
 
@@ -115,10 +114,6 @@ namespace System.Collections.Generic {
                }
             }
          }
-      }
-
-      public static bool DoesAnyKeyHavePrefix<TValue>(IDictionary<string, TValue> dictionary, string prefix) {
-         return FindKeysWithPrefix(dictionary, prefix).Any();
       }
 
       public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue @default) {
