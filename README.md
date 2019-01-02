@@ -1,6 +1,6 @@
 [XCST][1] web pages for ASP.NET
 ===============================
-This repository provides integration of XCST with ASP.NET for web application development. It includes a set of extension instructions known as the "application extension".
+This repository provides integration of XCST with ASP.NET for web application development. It includes a set of extension instructions known as the "application extension" based on a [trimmed down fork](src/Xcst.AspNet/Framework) of ASP.NET MVC 5.
 
 See the [project home][1] for more information.
 
