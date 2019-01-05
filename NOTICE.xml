@@ -11,13 +11,13 @@
    <website>http://maxtoroq.github.io/XCST/</website>
    <copyright>2015-2019 Max Toro Q.</copyright>
    <authors>Max Toro Q.</authors>
-   <license name="Apache 2" src="LICENSE.txt" url="http://www.apache.org/licenses/LICENSE-2.0"/>
+   <license name="Apache-2.0" src="LICENSE.txt"/>
    <foreign-work type="source">
       <notice>
          <work>ASP.NET</work>
          <website>http://aspnetwebstack.codeplex.com/</website>
          <copyright>Microsoft Open Technologies, Inc.</copyright>
-         <license name="Apache 2"><![CDATA[Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved.
+         <license name="Apache-2.0"><![CDATA[Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved.
 Microsoft Open Technologies would like to thank its contributors, a list
 of whom are at http://aspnetwebstack.codeplex.com/wikipage?title=Contributors.
 
