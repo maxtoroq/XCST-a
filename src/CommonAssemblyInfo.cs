@@ -4,7 +4,7 @@ using static Xcst.AssemblyInfo;
 
 [assembly: AssemblyProduct("XCST")]
 [assembly: AssemblyCompany("http://maxtoroq.github.io/XCST/")]
-[assembly: AssemblyCopyright("2015-2018 Max Toro Q.")]
+[assembly: AssemblyCopyright("2015-2019 Max Toro Q.")]
 [assembly: AssemblyVersion(XcstAssemblyVersion)]
 [assembly: AssemblyFileVersion(XcstAssemblyFileVersion)]
 [assembly: AssemblyInformationalVersion(XcstAssemblyInformationalVersion)]
