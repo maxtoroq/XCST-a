@@ -1180,40 +1180,43 @@
 
       <if test="$a:href-fn">
          <variable name="module-uri" select="document-uri(root(.))"/>
+         <variable name="relative-uri" select="src:make-relative-uri($a:application-uri, $module-uri)"/>
          <variable name="functions-type" select="a:functions-type-name(.)"/>
          <value-of select="$src:new-line"/>
          <call-template name="src:new-line-indented"/>
          <text>internal static class </text>
          <value-of select="$functions-type"/>
          <call-template name="src:open-brace"/>
-         <value-of select="$src:new-line"/>
-         <call-template name="src:new-line-indented">
-            <with-param name="increase" select="1"/>
-         </call-template>
-         <text>static readonly string BasePath = </text>
-         <value-of select="src:global-identifier('System.Web.VirtualPathUtility')"/>
-         <text>.ToAbsolute(</text>
-         <value-of select="src:verbatim-string(concat('~/', src:make-relative-uri($a:application-uri, $module-uri)))"/>
-         <text>)</text>
-         <value-of select="$src:statement-delimiter"/>
-         <value-of select="$src:new-line"/>
-         <call-template name="src:new-line-indented">
-            <with-param name="increase" select="1"/>
-         </call-template>
-         <text>public static string Href(string path, params object[] pathParts)</text>
-         <call-template name="src:open-brace"/>
-         <call-template name="src:new-line-indented">
-            <with-param name="increase" select="2"/>
-         </call-template>
-         <text>return </text>
-         <value-of select="a:fully-qualified-helper('UrlUtil')"/>
-         <text>.GenerateClientUrl(</text>
-         <value-of select="$functions-type, 'BasePath'" separator="."/>
-         <text>, path, pathParts)</text>
-         <value-of select="$src:statement-delimiter"/>
-         <call-template name="src:close-brace">
-            <with-param name="indent" select="$indent + 1" tunnel="yes"/>
-         </call-template>
+         <if test="not(starts-with($relative-uri, '..'))">
+            <value-of select="$src:new-line"/>
+            <call-template name="src:new-line-indented">
+               <with-param name="increase" select="1"/>
+            </call-template>
+            <text>static readonly string BasePath = </text>
+            <value-of select="src:global-identifier('System.Web.VirtualPathUtility')"/>
+            <text>.ToAbsolute(</text>
+            <value-of select="src:verbatim-string(concat('~/', $relative-uri))"/>
+            <text>)</text>
+            <value-of select="$src:statement-delimiter"/>
+            <value-of select="$src:new-line"/>
+            <call-template name="src:new-line-indented">
+               <with-param name="increase" select="1"/>
+            </call-template>
+            <text>public static string Href(string path, params object[] pathParts)</text>
+            <call-template name="src:open-brace"/>
+            <call-template name="src:new-line-indented">
+               <with-param name="increase" select="2"/>
+            </call-template>
+            <text>return </text>
+            <value-of select="a:fully-qualified-helper('UrlUtil')"/>
+            <text>.GenerateClientUrl(</text>
+            <value-of select="$functions-type, 'BasePath'" separator="."/>
+            <text>, path, pathParts)</text>
+            <value-of select="$src:statement-delimiter"/>
+            <call-template name="src:close-brace">
+               <with-param name="indent" select="$indent + 1" tunnel="yes"/>
+            </call-template>
+         </if>
          <call-template name="src:close-brace"/>
       </if>
    </template>
