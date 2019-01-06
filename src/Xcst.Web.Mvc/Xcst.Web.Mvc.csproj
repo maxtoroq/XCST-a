@@ -123,9 +123,6 @@
     <Compile Include="..\Xcst.AspNet\Mvc\ShowForAttribute.cs">
       <Link>Mvc\ShowForAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\PreApplicationStartCode.cs">
-      <Link>PreApplicationStartCode.cs</Link>
-    </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\XcstViewPage.cs">
       <Link>Mvc\XcstViewPage.cs</Link>
     </Compile>
@@ -182,6 +179,7 @@
     </Compile>
     <Compile Include="Mvc\XcstView.cs" />
     <Compile Include="Mvc\XcstViewEngine.cs" />
+    <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

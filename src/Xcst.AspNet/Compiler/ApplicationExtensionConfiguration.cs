@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using Xcst.Web;
 using Xcst.Web.Compilation;
 
 namespace Xcst.Compiler {
@@ -24,7 +23,7 @@ namespace Xcst.Compiler {
 
          compilerFactory.RegisterExtension(
             new Uri(XmlNamespaces.XcstApplication),
-            () => typeof(PreApplicationStartCode).Assembly.GetManifestResourceStream($"{typeof(PageBuildProvider<>).Namespace}.xcst-app.xsl")
+            () => typeof(PageBuildProvider).Assembly.GetManifestResourceStream($"{typeof(PageBuildProvider).Namespace}.xcst-app.xsl")
          );
       }
    }

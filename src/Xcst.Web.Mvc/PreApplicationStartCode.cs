@@ -37,16 +37,8 @@ namespace Xcst.Web {
 
             System.Web.Mvc.PreApplicationStartCode.Start();
 
-            XcstWebConfiguration config = XcstWebConfiguration.Instance;
-
-            BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(PageBuildProvider<XcstViewPage>));
-
-#if ASPNETLIB
-            config.RegisterHandlerFactory(XcstPageHandler.Create);
-            config.RegisterHandlerFactory(XcstViewPageHandler.Create);
-#else
+            BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(ViewPageBuildProvider));
             ViewEngines.Engines.Add(new XcstViewEngine());
-#endif
          }
       }
    }

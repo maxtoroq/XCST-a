@@ -16,6 +16,7 @@ using System;
 using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -23,11 +24,12 @@ using System.Web.Compilation;
 using System.Web.Hosting;
 using Xcst.Compiler;
 using Xcst.Web.Configuration;
+using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Compilation {
 
    [BuildProviderAppliesTo(BuildProviderAppliesTo.Web | BuildProviderAppliesTo.Code)]
-   public class PageBuildProvider<TPage> : BaseBuildProvider where TPage : class {
+   public class PageBuildProvider : BaseBuildProvider {
 
       readonly Uri applicationUri = new Uri(HostingEnvironment.ApplicationPhysicalPath, UriKind.Absolute);
       CompileResult result;
@@ -61,6 +63,19 @@ namespace Xcst.Web.Compilation {
          }
       }
 
+      protected Type PageType { get; }
+
+      public PageBuildProvider()
+         : this(typeof(XcstPage)) { }
+
+      protected PageBuildProvider(Type pageType) {
+
+         if (pageType == null) throw new ArgumentNullException(nameof(pageType));
+         if (!pageType.IsClass) throw new ArgumentException("pageType must be a class.", nameof(pageType));
+
+         this.PageType = pageType;
+      }
+
       protected override string ParsePath() {
 
          using (Stream source = OpenStream()) {
@@ -82,48 +97,27 @@ namespace Xcst.Web.Compilation {
          compiler.PackageTypeResolver = typeName => BuildManager.GetType(typeName, throwOnError: false);
          compiler.PackagesLocation = HostingEnvironment.MapPath("~/App_Code");
          compiler.PackageFileExtension = XcstWebConfiguration.FileExtension;
-
-         compiler.SetTargetBaseTypes(typeof(TPage));
-
-         string[] baseTypes = compiler.TargetBaseTypes;
+         compiler.UseLineDirective = true;
 
          if (this.IsFileInCodeDir) {
             compiler.NamedPackage = true;
-            compiler.TargetBaseTypes = null;
          } else {
+            compiler.SetTargetBaseTypes(this.PageType);
             compiler.TargetNamespace = this.GeneratedTypeNamespace;
             compiler.TargetClass = this.GeneratedTypeName;
-
-            compiler.SetParameter(
-               new QualifiedName("default-model", XmlNamespaces.XcstApplication),
-               "dynamic"
-            );
          }
-
-         compiler.UseLineDirective = true;
 
          compiler.SetParameter(
             new QualifiedName("application-uri", XmlNamespaces.XcstApplication),
             this.applicationUri
          );
 
-         bool aspnetlib =
-#if ASPNETLIB
-            true
-#else
-            false
-#endif
-            ;
-
+#if !ASPNETLIB
          compiler.SetParameter(
             new QualifiedName("aspnetlib", XmlNamespaces.XcstApplication),
-            aspnetlib
+            false
          );
-
-         compiler.SetParameter(
-            new QualifiedName("base-types", XmlNamespaces.XcstApplication),
-            baseTypes
-         );
+#endif
       }
 
       protected override IEnumerable<CodeCompileUnit> BuildCompileUnits() {
@@ -187,8 +181,45 @@ namespace Xcst.Web.Compilation {
          assemblyBuilder.AddAssemblyReference(typeof(Xcst.PackageModel.IXcstPackage).Assembly);
 
          if (!this.IsFileInCodeDir) {
-            assemblyBuilder.AddAssemblyReference(typeof(TPage).Assembly);
+            assemblyBuilder.AddAssemblyReference(this.PageType.Assembly);
             assemblyBuilder.GenerateTypeFactory(this.GeneratedTypeFullName);
+         }
+      }
+   }
+
+   public class ViewPageBuildProvider : PageBuildProvider {
+
+      public ViewPageBuildProvider()
+         : this(typeof(XcstViewPage)) { }
+
+      protected ViewPageBuildProvider(Type pageType)
+         : base(pageType) { }
+
+      protected override void ConfigureCompiler(XcstCompiler compiler) {
+
+         base.ConfigureCompiler(compiler);
+
+         if (this.IsFileInCodeDir) {
+
+            Debug.Assert(compiler.TargetBaseTypes == null);
+
+            compiler.SetTargetBaseTypes(this.PageType);
+
+            string[] baseTypes = compiler.TargetBaseTypes;
+
+            compiler.TargetBaseTypes = null;
+
+            compiler.SetParameter(
+               new QualifiedName("base-types", XmlNamespaces.XcstApplication),
+               baseTypes
+            );
+
+         } else {
+
+            compiler.SetParameter(
+               new QualifiedName("default-model", XmlNamespaces.XcstApplication),
+               "dynamic"
+            );
          }
       }
    }

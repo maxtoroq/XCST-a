@@ -144,7 +144,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Framework\PreApplicationStartCode.cs" />
     <Compile Include="Framework\SelectList.cs" />
     <Compile Include="Framework\TempDataDictionary.cs" />
     <Compile Include="Framework\UrlHelper.cs" />
@@ -179,7 +178,6 @@
     <Compile Include="Runtime\TemplateHelpers.cs" />
     <Compile Include="Runtime\TextAreaInstructions.cs" />
     <Compile Include="Runtime\ValidationInstructions.cs" />
-    <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\HtmlAttributesMerger.cs" />
     <Compile Include="Runtime\OptionList.cs" />

@@ -29,14 +29,17 @@ namespace Xcst.Web.Configuration {
 
       public XcstCompilerFactory CompilerFactory { get; } = new XcstCompilerFactory();
 
-      internal IList<Func<object, IHttpHandler>> HttpHandlerFactories { get; } = new List<Func<object, IHttpHandler>>();
-
       public EditorTemplatesConfiguration EditorTemplates { get; } = new EditorTemplatesConfiguration();
 
 #if ASPNETLIB
       public DisplayTemplatesConfiguration DisplayTemplates { get; } = new DisplayTemplatesConfiguration();
 
       public ModelBindingConfiguration ModelBinding { get; } = new ModelBindingConfiguration();
+
+      internal IList<Func<object, IHttpHandler>> HttpHandlerFactories { get; } = new List<Func<object, IHttpHandler>> {
+         XcstViewPageHandler.Create,
+         XcstPageHandler.Create
+      };
 
       /// <summary>
       /// Instructs the ASP.NET runtime to perform request validation. The default is true.
