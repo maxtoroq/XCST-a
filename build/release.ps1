@@ -84,6 +84,11 @@ function script:NuSpec {
       "<file src='$solutionPath\LICENSE.txt'/>"
       "<file src='$solutionPath\schemas\*.rng' target='schemas'/>"
       "<file src='$solutionPath\schemas\*.xsd' target='schemas'/>"
+
+   if ($projName -eq "Xcst.AspNet") {
+      "<file src='$(Resolve-Path Web.config.transform)' target='content'/>"
+   }
+
       "<file src='$projPath\bin\$configuration\$projName.*' target='lib\$targetFxMoniker'/>"
    "</files>"
 
