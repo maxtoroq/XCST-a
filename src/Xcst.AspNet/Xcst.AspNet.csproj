@@ -164,6 +164,7 @@
     <Compile Include="Mvc\FileMaxLengthAttribute.cs" />
     <Compile Include="Mvc\FileExtensionsAttribute.cs" />
     <Compile Include="Mvc\ShowForAttribute.cs" />
+    <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="Runtime\DefaultDisplayTemplates.cs" />
     <Compile Include="Runtime\DefaultEditorTemplates.cs" />
     <Compile Include="Runtime\DisplayInstructions.cs" />

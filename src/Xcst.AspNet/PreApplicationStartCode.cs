@@ -35,10 +35,11 @@ namespace Xcst.Web {
 
             startWasCalled = true;
 
+#if !ASPNETLIB
             System.Web.Mvc.PreApplicationStartCode.Start();
-
-            BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(ViewPageBuildProvider));
             ViewEngines.Engines.Add(new XcstViewEngine());
+#endif
+            BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(ViewPageBuildProvider));
          }
       }
    }

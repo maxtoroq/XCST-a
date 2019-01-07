@@ -129,6 +129,9 @@
     <Compile Include="..\Xcst.AspNet\Mvc\XcstViewPageOfTModel.cs">
       <Link>Mvc\XcstViewPageOfTModel.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\PreApplicationStartCode.cs">
+      <Link>PreApplicationStartCode.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\DefaultDisplayTemplates.cs">
       <Link>Runtime\DefaultDisplayTemplates.cs</Link>
     </Compile>
@@ -179,7 +182,6 @@
     </Compile>
     <Compile Include="Mvc\XcstView.cs" />
     <Compile Include="Mvc\XcstViewEngine.cs" />
-    <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
