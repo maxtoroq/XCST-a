@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Max Toro Q.
+﻿// Copyright 2019 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,18 +13,21 @@
 // limitations under the License.
 
 using System;
-using Xcst.Web.Compilation;
+using System.IO;
+using Xcst;
+using Xcst.Compiler;
 
-namespace Xcst.Compiler {
+[assembly: XcstExtension(XmlNamespaces.XcstApplication, typeof(Xcst.Web.ExtensionLoader))]
 
-   public static class ApplicationExtensionConfiguration {
+namespace Xcst.Web {
 
-      public static void RegisterApplicationExtension(this XcstCompilerFactory compilerFactory) {
+   class ExtensionLoader : XcstExtensionLoader {
 
-         compilerFactory.RegisterExtension(
-            new Uri(XmlNamespaces.XcstApplication),
-            () => typeof(PageBuildProvider).Assembly.GetManifestResourceStream($"{typeof(PageBuildProvider).Namespace}.xcst-app.xsl")
-         );
+      public override Stream LoadSource() {
+
+         return typeof(ExtensionLoader)
+            .Assembly
+            .GetManifestResourceStream($"{typeof(ExtensionLoader).Namespace}.xcst-app.xsl");
       }
    }
 }

@@ -28,7 +28,7 @@ namespace Xcst.Web.Tests {
 
       static TestsHelper() {
          CompilerFactory.EnableExtensions = true;
-         CompilerFactory.RegisterApplicationExtension();
+         CompilerFactory.RegisterExtensionsForAssembly(typeof(XcstViewPage).Assembly);
       }
 
       public static void RunXcstTest(string packageFile, bool correct, bool fail) {

@@ -53,7 +53,7 @@ namespace Xcst.Web.Configuration {
       private XcstWebConfiguration() {
 
          this.CompilerFactory.EnableExtensions = true;
-         this.CompilerFactory.RegisterApplicationExtension();
+         this.CompilerFactory.RegisterExtensionsForAssembly(typeof(XcstWebConfiguration).Assembly);
       }
    }
 

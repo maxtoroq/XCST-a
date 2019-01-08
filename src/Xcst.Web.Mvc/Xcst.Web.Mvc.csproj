@@ -77,10 +77,10 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.44.0\lib\net46\Xcst.Compiler.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Compiler.0.48.0\lib\net46\Xcst.Compiler.dll</HintPath>
     </Reference>
     <Reference Include="Xcst.Runtime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Runtime.0.44.0\lib\net46\Xcst.Runtime.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Runtime.0.48.0\lib\net46\Xcst.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -93,14 +93,14 @@
     <Compile Include="..\Xcst.AspNet\Compilation\PageBuildProvider.cs">
       <Link>Compilation\PageBuildProvider.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Compiler\ApplicationExtensionConfiguration.cs">
-      <Link>Compiler\ApplicationExtensionConfiguration.cs</Link>
-    </Compile>
     <Compile Include="..\Xcst.AspNet\Configuration\EditorInfo.cs">
       <Link>Configuration\EditorInfo.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Configuration\XcstWebConfiguration.cs">
       <Link>Configuration\XcstWebConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet\ExtensionLoader.cs">
+      <Link>ExtensionLoader.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\FrameworkExtensions.cs">
       <Link>FrameworkExtensions.cs</Link>
@@ -185,8 +185,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Xcst.AspNet\Compilation\xcst-app.xsl">
-      <Link>Compilation\xcst-app.xsl</Link>
+    <EmbeddedResource Include="..\Xcst.AspNet\xcst-app.xsl">
+      <Link>xcst-app.xsl</Link>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

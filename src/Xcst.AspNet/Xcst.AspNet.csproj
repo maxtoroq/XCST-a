@@ -47,10 +47,10 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.44.0\lib\net46\Xcst.Compiler.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Compiler.0.48.0\lib\net46\Xcst.Compiler.dll</HintPath>
     </Reference>
     <Reference Include="Xcst.Runtime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Runtime.0.44.0\lib\net46\Xcst.Runtime.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Runtime.0.48.0\lib\net46\Xcst.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -61,8 +61,8 @@
       <Link>XmlNamespaces.cs</Link>
     </Compile>
     <Compile Include="Compilation\BaseBuildProvider.cs" />
+    <Compile Include="ExtensionLoader.cs" />
     <Compile Include="Compilation\PageBuildProvider.cs" />
-    <Compile Include="Compiler\ApplicationExtensionConfiguration.cs" />
     <Compile Include="ExtensionlessUrlModule.cs" />
     <Compile Include="Framework\AntiXsrf\AntiForgery.cs" />
     <Compile Include="Framework\AntiXsrf\AntiForgeryConfig.cs" />
@@ -194,7 +194,7 @@
     <Compile Include="Configuration\XcstWebConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Compilation\xcst-app.xsl">
+    <EmbeddedResource Include="xcst-app.xsl">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Framework\Common\MvcResources.resx">
