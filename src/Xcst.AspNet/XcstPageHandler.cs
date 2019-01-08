@@ -38,7 +38,7 @@ namespace Xcst.Web {
          return null;
       }
 
-      public static IHttpHandler CreateFromVirtualPath(string virtualPath) {
+      public static IHttpHandler CreateFromVirtualPath(string virtualPath, string pathInfo = null) {
 
          object instance = BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(object));
 
@@ -50,6 +50,7 @@ namespace Xcst.Web {
 
          if (page != null) {
             page.VirtualPath = virtualPath;
+            page.PathInfo = pathInfo;
          }
 
          return XcstWebConfiguration.Instance

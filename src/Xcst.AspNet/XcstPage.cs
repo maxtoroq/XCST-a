@@ -37,6 +37,10 @@ namespace Xcst.Web {
 
       public virtual string VirtualPath { get; set; }
 
+#if ASPNETLIB
+      public virtual string PathInfo { get; set; }
+#endif
+
       // HttpContextWrapper Request/Response/Session return a new instance every time
       // need to cache result
 
@@ -77,12 +81,8 @@ namespace Xcst.Web {
 #if ASPNETLIB
       public virtual IList<string> UrlData {
          get {
-            if (_UrlData == null
-               && Context != null) {
-
-               _UrlData = new UrlDataList(ExtensionlessUrlModule.GetPathInfo(Context));
-            }
-            return _UrlData;
+            return _UrlData
+               ?? (_UrlData = new UrlDataList(PathInfo ?? Request?.PathInfo?.TrimStart('/')));
          }
          set { _UrlData = value; }
       }

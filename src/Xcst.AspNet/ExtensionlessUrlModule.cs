@@ -28,7 +28,6 @@ namespace Xcst.Web {
    public class ExtensionlessUrlModule : IHttpModule {
 
       static readonly object _hasBeenRegisteredKey = new object();
-      static readonly object _pathInfoKey = new object();
 
       public void Dispose() { }
 
@@ -79,9 +78,7 @@ namespace Xcst.Web {
             throw new HttpException(404, "Files with leading underscores (\"_\") cannot be served.");
          }
 
-         SetPathInfo(context, pathInfo);
-
-         IHttpHandler handler = XcstPageHandler.CreateFromVirtualPath(virtualPath);
+         IHttpHandler handler = XcstPageHandler.CreateFromVirtualPath(virtualPath, pathInfo);
 
          if (handler != null) {
 
@@ -89,14 +86,6 @@ namespace Xcst.Web {
 
             context.RemapHandler(handler);
          }
-      }
-
-      internal static string GetPathInfo(HttpContextBase context) {
-         return (string)context.Items[_pathInfoKey];
-      }
-
-      static void SetPathInfo(HttpContextBase context, string pathInfo) {
-         context.Items[_pathInfoKey] = pathInfo;
       }
 
       /// <summary>
