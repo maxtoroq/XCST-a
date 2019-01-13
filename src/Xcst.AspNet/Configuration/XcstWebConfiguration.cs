@@ -13,10 +13,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Web;
 using System.Web.Mvc;
-using Xcst.Compiler;
 using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Configuration {
@@ -27,34 +24,15 @@ namespace Xcst.Web.Configuration {
 
       public static XcstWebConfiguration Instance { get; } = new XcstWebConfiguration();
 
-      public XcstCompilerFactory CompilerFactory { get; } = new XcstCompilerFactory();
-
       public EditorTemplatesConfiguration EditorTemplates { get; } = new EditorTemplatesConfiguration();
 
 #if ASPNETLIB
       public DisplayTemplatesConfiguration DisplayTemplates { get; } = new DisplayTemplatesConfiguration();
 
       public ModelBindingConfiguration ModelBinding { get; } = new ModelBindingConfiguration();
-
-      internal IList<Func<object, IHttpHandler>> HttpHandlerFactories { get; } = new List<Func<object, IHttpHandler>> {
-         XcstViewPageHandler.Create,
-         XcstPageHandler.Create
-      };
-
-      /// <summary>
-      /// Instructs the ASP.NET runtime to perform request validation. The default is true.
-      /// </summary>
-
-      public void RegisterHandlerFactory(Func<object, IHttpHandler> handlerFactory) {
-         this.HttpHandlerFactories.Insert(0, handlerFactory);
-      }
 #endif
 
-      private XcstWebConfiguration() {
-
-         this.CompilerFactory.EnableExtensions = true;
-         this.CompilerFactory.RegisterExtensionsForAssembly(typeof(XcstWebConfiguration).Assembly);
-      }
+      private XcstWebConfiguration() { }
    }
 
    public class EditorTemplatesConfiguration {

@@ -78,7 +78,7 @@ namespace Xcst.Web {
             throw new HttpException(404, "Files with leading underscores (\"_\") cannot be served.");
          }
 
-         IHttpHandler handler = XcstPageHandler.CreateFromVirtualPath(virtualPath, pathInfo);
+         IHttpHandler handler = XcstPageHandlerFactory.CreateFromVirtualPath(virtualPath, pathInfo);
 
          if (handler != null) {
 

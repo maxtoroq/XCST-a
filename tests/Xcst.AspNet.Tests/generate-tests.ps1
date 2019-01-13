@@ -22,7 +22,7 @@ function WriteLine($line = "") {
 
 function GenerateTests {
 
-   $compilerPath = Resolve-Path ..\..\src\Xcst.AspNet\bin\$Configuration
+   $compilerPath = Resolve-Path ..\..\src\Xcst.AspNet.Compilation\bin\$Configuration
 
    Add-Type -Path $compilerPath\Xcst.Compiler.dll
 

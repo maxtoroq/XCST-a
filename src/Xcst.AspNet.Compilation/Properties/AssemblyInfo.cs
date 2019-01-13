@@ -2,10 +2,10 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Web;
-using PreApplicationStartCode = Xcst.Web.Mvc.PreApplicationStartCode;
+using PreApplicationStartCode = Xcst.Web.Compilation.PreApplicationStartCode;
 
-[assembly: AssemblyTitle("Xcst.Web.Mvc.dll")]
-[assembly: AssemblyDescription("Xcst.Web.Mvc.dll")]
+[assembly: AssemblyTitle("Xcst.AspNet.Compilation.dll")]
+[assembly: AssemblyDescription("Xcst.AspNet.Compilation.dll")]
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
 [assembly: PreApplicationStartMethod(typeof(PreApplicationStartCode), nameof(PreApplicationStartCode.Start))]

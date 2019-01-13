@@ -36,9 +36,6 @@
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="saxon9he-api, Version=9.7.0.21, Culture=neutral, PublicKeyToken=e1fdd002d5083fe6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Saxon-HE.9.7.0.21\lib\net40\saxon9he-api.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -46,9 +43,6 @@
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.48.0\lib\net46\Xcst.Compiler.dll</HintPath>
-    </Reference>
     <Reference Include="Xcst.Runtime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xcst.Runtime.0.48.0\lib\net46\Xcst.Runtime.dll</HintPath>
     </Reference>
@@ -57,13 +51,6 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\XmlNamespaces.cs">
-      <Link>XmlNamespaces.cs</Link>
-    </Compile>
-    <Compile Include="Compilation\BaseBuildProvider.cs" />
-    <Compile Include="ExtensionLoader.cs" />
-    <Compile Include="Compilation\PageBuildProvider.cs" />
-    <Compile Include="ExtensionlessUrlModule.cs" />
     <Compile Include="Framework\AntiXsrf\AntiForgery.cs" />
     <Compile Include="Framework\AntiXsrf\AntiForgeryConfig.cs" />
     <Compile Include="Framework\AntiXsrf\AntiForgeryConfigWrapper.cs" />
@@ -164,7 +151,6 @@
     <Compile Include="Mvc\FileMaxLengthAttribute.cs" />
     <Compile Include="Mvc\FileExtensionsAttribute.cs" />
     <Compile Include="Mvc\ShowForAttribute.cs" />
-    <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="Runtime\DefaultDisplayTemplates.cs" />
     <Compile Include="Runtime\DefaultEditorTemplates.cs" />
     <Compile Include="Runtime\DisplayInstructions.cs" />
@@ -190,13 +176,9 @@
     <Compile Include="Framework\UrlRewriterHelper.cs" />
     <Compile Include="XcstPage.cs" />
     <Compile Include="XcstPageHandler.cs" />
-    <Compile Include="XcstPageHandlerFactory.cs" />
     <Compile Include="Configuration\XcstWebConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="xcst-app.xsl">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Framework\Common\MvcResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MvcResources.Designer.cs</LastGenOutput>

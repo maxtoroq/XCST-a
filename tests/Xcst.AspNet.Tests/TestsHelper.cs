@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using Moq;
 using Xcst.Compiler;
+using Xcst.Web.Compilation;
 using Xcst.Web.Mvc;
 using TestAssert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
@@ -28,7 +29,7 @@ namespace Xcst.Web.Tests {
 
       static TestsHelper() {
          CompilerFactory.EnableExtensions = true;
-         CompilerFactory.RegisterExtensionsForAssembly(typeof(XcstViewPage).Assembly);
+         CompilerFactory.RegisterExtensionsForAssembly(typeof(PageBuildProvider).Assembly);
       }
 
       public static void RunXcstTest(string packageFile, bool correct, bool fail) {

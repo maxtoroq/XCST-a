@@ -15,17 +15,17 @@
 using System;
 using System.ComponentModel;
 using System.Web.Compilation;
-using System.Web.Mvc;
-using Xcst.Web.Compilation;
 using Xcst.Web.Configuration;
-using Xcst.Web.Mvc;
 
-namespace Xcst.Web {
+namespace Xcst.Web.Compilation {
 
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public static class PreApplicationStartCode {
+#if ASPNETLIB
+   public
+#endif
+   static class PreApplicationStartCode {
 
       static bool startWasCalled;
 
@@ -35,10 +35,8 @@ namespace Xcst.Web {
 
             startWasCalled = true;
 
-#if !ASPNETLIB
-            System.Web.Mvc.PreApplicationStartCode.Start();
-            ViewEngines.Engines.Add(new XcstViewEngine());
-#endif
+            PageBuildProvider.CompilerFactory.RegisterExtensionsForAssembly(typeof(PreApplicationStartCode).Assembly);
+
             BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(ViewPageBuildProvider));
          }
       }

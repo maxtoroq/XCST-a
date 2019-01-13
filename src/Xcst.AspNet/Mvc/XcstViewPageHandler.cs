@@ -29,17 +29,6 @@ namespace Xcst.Web.Mvc {
          this.page = page;
       }
 
-      internal new static XcstViewPageHandler Create(object instance) {
-
-         XcstViewPage page = instance as XcstViewPage;
-
-         if (page != null) {
-            return new XcstViewPageHandler(page);
-         }
-
-         return null;
-      }
-
       protected override void InitializePage(XcstPage page, HttpContextBase context) {
 
          base.InitializePage(page, context);

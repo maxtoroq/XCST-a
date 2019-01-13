@@ -13,11 +13,8 @@
 // limitations under the License.
 
 using System;
-using System.Linq;
 using System.Web;
-using System.Web.Compilation;
 using System.Web.SessionState;
-using Xcst.Web.Configuration;
 
 namespace Xcst.Web {
 
@@ -26,40 +23,6 @@ namespace Xcst.Web {
       readonly XcstPage page;
 
       public bool IsReusable => false;
-
-      internal static XcstPageHandler Create(object instance) {
-
-         XcstPage page = instance as XcstPage;
-
-         if (page != null) {
-            return new XcstPageHandler(page);
-         }
-
-         return null;
-      }
-
-      public static IHttpHandler CreateFromVirtualPath(string virtualPath, string pathInfo = null) {
-
-         object instance = BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(object));
-
-         if (instance == null) {
-            return null;
-         }
-
-         XcstPage page = instance as XcstPage;
-
-         if (page != null) {
-            page.VirtualPath = virtualPath;
-            page.PathInfo = pathInfo;
-         }
-
-         return XcstWebConfiguration.Instance
-            .HttpHandlerFactories
-            .Select(f => f(instance))
-            .Where(p => p != null)
-            .FirstOrDefault()
-            ?? instance as IHttpHandler;
-      }
 
       public XcstPageHandler(XcstPage page) {
 

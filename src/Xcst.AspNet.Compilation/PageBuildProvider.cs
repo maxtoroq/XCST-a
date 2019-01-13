@@ -35,6 +35,10 @@ namespace Xcst.Web.Compilation {
       CompileResult result;
       bool? _IgnoreFile;
 
+      public static XcstCompilerFactory CompilerFactory { get; } = new XcstCompilerFactory {
+         EnableExtensions = true
+      };
+
       public override ICollection VirtualPathDependencies {
          get {
 
@@ -80,9 +84,7 @@ namespace Xcst.Web.Compilation {
 
          using (Stream source = OpenStream()) {
 
-            XcstCompiler compiler = XcstWebConfiguration.Instance
-               .CompilerFactory
-               .CreateCompiler();
+            XcstCompiler compiler = CompilerFactory.CreateCompiler();
 
             ConfigureCompiler(compiler);
 

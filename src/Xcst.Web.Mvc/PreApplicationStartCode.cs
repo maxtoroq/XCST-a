@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Max Toro Q.
+﻿// Copyright 2015 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,16 +13,29 @@
 // limitations under the License.
 
 using System;
-using System.Web;
+using System.ComponentModel;
+using System.Web.Mvc;
 
-namespace Xcst.Web {
+namespace Xcst.Web.Mvc {
 
-   public class XcstPageHandlerFactory : IHttpHandlerFactory {
+   /// <exclude/>
 
-      public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated) {
-         return XcstPageHandler.CreateFromVirtualPath(url);
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public static class PreApplicationStartCode {
+
+      static bool startWasCalled;
+
+      public static void Start() {
+
+         if (!startWasCalled) {
+
+            startWasCalled = true;
+
+            System.Web.Mvc.PreApplicationStartCode.Start();
+            Xcst.Web.Compilation.PreApplicationStartCode.Start();
+
+            ViewEngines.Engines.Add(new XcstViewEngine());
+         }
       }
-
-      public void ReleaseHandler(IHttpHandler handler) { }
    }
 }

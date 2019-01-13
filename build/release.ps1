@@ -48,10 +48,11 @@ function script:NuSpec {
          "<projectUrl>$($notice.website)</projectUrl>"
          "<copyright>$($notice.copyright)</copyright>"
          "<iconUrl>$($notice.website)nuget/icon.png</iconUrl>"
+         "<repository type='git' url='https://github.com/maxtoroq/XCST-a'/>"
 
    if ($projName -eq "Xcst.Web.Mvc") {
 
-      "<description>XCST view engine for ASP.NET MVC 5.2.x</description>"
+      "<description>XCST view engine for ASP.NET MVC 5</description>"
 
       "<dependencies>"
          "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
@@ -65,9 +66,23 @@ function script:NuSpec {
 	
    } elseif ($projName -eq "Xcst.AspNet") {
       
-      "<description>XCST web pages for ASP.NET 4.6+</description>"
+      "<description>XCST web pages core components for ASP.NET</description>"
 
       "<dependencies>"
+         "<dependency id='Xcst.Runtime' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Runtime'']').Attributes['allowedVersions'].Value)'/>"
+      "</dependencies>"
+
+      "<frameworkAssemblies>"
+         "<frameworkAssembly assemblyName='System'/>"
+         "<frameworkAssembly assemblyName='System.Web'/>"
+      "</frameworkAssemblies>"
+
+   } elseif ($projName -eq "Xcst.AspNet.Compilation") {
+      
+      "<description>Dynamic compilation and extension instructions for XCST web pages</description>"
+
+      "<dependencies>"
+         "<dependency id='Xcst.AspNet' version='$(DependencyVersionRange Xcst.AspNet)'/>"
          "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
       "</dependencies>"
 
@@ -82,11 +97,12 @@ function script:NuSpec {
    "<files>"
       "<file src='$tempPath\NOTICE.xml'/>"
       "<file src='$solutionPath\LICENSE.txt'/>"
+
+   if ($projName -eq "Xcst.AspNet.Compilation") {
+      "<file src='$(Resolve-Path Web.config.transform)' target='content'/>"
+   } else {
       "<file src='$solutionPath\schemas\*.rng' target='schemas'/>"
       "<file src='$solutionPath\schemas\*.xsd' target='schemas'/>"
-
-   if ($projName -eq "Xcst.AspNet") {
-      "<file src='$(Resolve-Path Web.config.transform)' target='content'/>"
    }
 
       "<file src='$projPath\bin\$configuration\$projName.*' target='lib\$targetFxMoniker'/>"
@@ -189,7 +205,7 @@ try {
    [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
    $notice = $noticeDoc.DocumentElement
 
-   $projects = "Xcst.AspNet", "Xcst.Web.Mvc"
+   $projects = "Xcst.AspNet", "Xcst.AspNet.Compilation", "Xcst.Web.Mvc"
 
    if ($ProjectName -eq '*') {
       

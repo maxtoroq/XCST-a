@@ -87,11 +87,14 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Compilation\BaseBuildProvider.cs">
+    <Compile Include="..\Xcst.AspNet.Compilation\BaseBuildProvider.cs">
       <Link>Compilation\BaseBuildProvider.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Compilation\PageBuildProvider.cs">
+    <Compile Include="..\Xcst.AspNet.Compilation\PageBuildProvider.cs">
       <Link>Compilation\PageBuildProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Xcst.AspNet.Compilation\PreApplicationStartCode.cs">
+      <Link>Compilation\PreApplicationStartCode.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Configuration\EditorInfo.cs">
       <Link>Configuration\EditorInfo.cs</Link>
@@ -99,7 +102,7 @@
     <Compile Include="..\Xcst.AspNet\Configuration\XcstWebConfiguration.cs">
       <Link>Configuration\XcstWebConfiguration.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\ExtensionLoader.cs">
+    <Compile Include="..\Xcst.AspNet.Compilation\ExtensionLoader.cs">
       <Link>ExtensionLoader.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\FrameworkExtensions.cs">
@@ -128,9 +131,6 @@
     </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\XcstViewPageOfTModel.cs">
       <Link>Mvc\XcstViewPageOfTModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\PreApplicationStartCode.cs">
-      <Link>PreApplicationStartCode.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\DefaultDisplayTemplates.cs">
       <Link>Runtime\DefaultDisplayTemplates.cs</Link>
@@ -182,10 +182,11 @@
     </Compile>
     <Compile Include="Mvc\XcstView.cs" />
     <Compile Include="Mvc\XcstViewEngine.cs" />
+    <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Xcst.AspNet\xcst-app.xsl">
+    <EmbeddedResource Include="..\Xcst.AspNet.Compilation\xcst-app.xsl">
       <Link>xcst-app.xsl</Link>
     </EmbeddedResource>
   </ItemGroup>
