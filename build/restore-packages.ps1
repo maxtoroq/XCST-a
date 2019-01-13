@@ -12,8 +12,7 @@ try {
 
    foreach ($web in ls ..\samples\* -Directory) {
       &$nuget restore $web\packages.config -SolutionDirectory ..
-      Copy-Item ..\packages\Microsoft.Net.Compilers.*\tools\*.dll $web\Bin\roslyn
-      Copy-Item ..\packages\Microsoft.Net.Compilers.*\tools\*.exe $web\Bin\roslyn
+      Copy-Item ..\packages\Microsoft.Net.Compilers.*\tools\*.* $web\Bin\roslyn
    }
 
 } finally {
