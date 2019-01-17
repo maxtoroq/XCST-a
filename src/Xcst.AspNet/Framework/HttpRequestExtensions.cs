@@ -49,9 +49,6 @@ namespace System.Web.Mvc {
 
          return incomingVerb;
       }
-   }
-
-   public static class AjaxRequestExtensions {
 
       public static bool IsAjaxRequest(this HttpRequestBase request) {
 
@@ -61,12 +58,6 @@ namespace System.Web.Mvc {
             || (request.Headers != null
                && request.Headers["X-Requested-With"] == "XMLHttpRequest");
       }
-   }
-}
-
-namespace System.Web.WebPages {
-
-   public static class RequestExtensions {
 
       [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "request", Justification = "The request parameter is no longer being used but we do not want to break legacy callers.")]
       [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "1#", Justification = "Response.Redirect() takes its URI as a string parameter.")]
@@ -78,4 +69,3 @@ namespace System.Web.WebPages {
       }
    }
 }
-

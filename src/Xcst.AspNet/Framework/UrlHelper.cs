@@ -66,7 +66,7 @@ namespace System.Web.Mvc {
          
          // TODO this should call the System.Web.dll API once it gets added to the framework and MVC takes a dependency on it.
 
-         return RequestExtensions.IsUrlLocalToHost(this.RequestContext.HttpContext.Request, url);
+         return HttpRequestExtensions.IsUrlLocalToHost(this.RequestContext.HttpContext.Request, url);
       }
    }
 }
