@@ -335,8 +335,10 @@
                </c:variable>
             </if>
             <variable name="expr">
+               <value-of select="src:global-identifier('System.Web.Helpers.AntiForgery')"/>
+               <text>.GetHtml(</text>
                <call-template name="a:html-helper"/>
-               <text>.AntiForgeryToken(</text>
+               <text>.ViewContext.HttpContext, </text>
                <value-of select="$doc-output"/>
                <text>)</text>
             </variable>

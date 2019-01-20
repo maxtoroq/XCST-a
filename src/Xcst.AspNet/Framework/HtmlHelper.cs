@@ -8,7 +8,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Web.Helpers;
 using System.Web.Routing;
 using System.Web.WebPages;
 using System.Web.WebPages.Resources;
@@ -223,10 +222,6 @@ namespace System.Web.Mvc {
          UnobtrusiveValidationAttributesGenerator.GetValidationAttributes(clientRules, results);
 
          return results;
-      }
-
-      public void AntiForgeryToken(XcstWriter output) {
-         AntiForgery.GetHtml(this.ViewContext.HttpContext, output);
       }
 
       public string DisplayNameForModel() {

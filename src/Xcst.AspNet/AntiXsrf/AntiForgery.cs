@@ -43,9 +43,8 @@ namespace System.Web.Helpers {
 
       public static void GetHtml(HttpContextBase httpContext, XcstWriter output) {
 
-         HttpContext context = HttpContext.Current;
-
-         if (context == null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
+         if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
+         if (output == null) throw new ArgumentNullException(nameof(output));
 
          _worker.GetFormInputElement(httpContext, output);
       }

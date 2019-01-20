@@ -82,19 +82,16 @@
          var contact = new Contact();
          bool sent = false;
 
-         if (IsPost) {
+         if (IsPost
+            && AntiForgery.TryValidate()
+            && TryBind(contact)
+            && SendMail(contact)) {
 
-            AntiForgery.Validate();
+            sent = true;
 
-            if (TryBind(contact)
-               && SendMail(contact)) {
-
-               sent = true;
-
-               // clear form
-               this.ModelState.Clear();
-               contact = new Contact();
-            }
+            // clear form
+            this.ModelState.Clear();
+            contact = new Contact();
          }
          ]]>
       </c:script>
