@@ -403,7 +403,7 @@ namespace Xcst.Web.Runtime {
 
          output.WriteStartElement("input");
 
-         var attribs = HtmlAttributesMerger.Create(htmlAttributes)
+         var attribs = new HtmlAttributeDictionary(htmlAttributes)
             .MergeAttribute("type", HtmlHelper.GetInputTypeString(inputType))
             .MergeAttribute("name", fullName, replaceExisting: true);
 

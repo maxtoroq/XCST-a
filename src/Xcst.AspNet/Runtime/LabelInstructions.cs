@@ -77,7 +77,7 @@ namespace Xcst.Web.Runtime {
 
          output.WriteStartElement("label");
 
-         HtmlAttributesMerger.Create(htmlAttributes)
+         new HtmlAttributeDictionary(htmlAttributes)
             .MergeAttribute("for", TagBuilder.CreateSanitizedId(html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName)))
             .WriteTo(output);
 

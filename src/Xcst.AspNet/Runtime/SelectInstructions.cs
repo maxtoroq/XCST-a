@@ -203,7 +203,7 @@ namespace Xcst.Web.Runtime {
 
          output.WriteStartElement("select");
 
-         var attribs = HtmlAttributesMerger.Create(htmlAttributes)
+         var attribs = new HtmlAttributeDictionary(htmlAttributes)
             .MergeAttribute("name", fullName, replaceExisting: true)
             .GenerateId(fullName);
 

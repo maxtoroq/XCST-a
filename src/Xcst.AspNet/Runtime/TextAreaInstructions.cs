@@ -139,7 +139,7 @@ namespace Xcst.Web.Runtime {
 
          output.WriteStartElement("textarea");
 
-         var attribs = HtmlAttributesMerger.Create(htmlAttributes)
+         var attribs = new HtmlAttributeDictionary(htmlAttributes)
             .GenerateId(fullName)
             .MergeAttribute("name", fullName, replaceExisting: true)
             .MergeAttributes(rowsAndColumns, replaceExisting: rowsAndColumns != implicitRowsAndColumns); // Only force explicit rows/cols

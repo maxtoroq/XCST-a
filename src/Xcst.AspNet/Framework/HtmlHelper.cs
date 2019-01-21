@@ -90,7 +90,7 @@ namespace System.Web.Mvc {
       /// <param name="htmlAttributes">Anonymous object describing HTML attributes.</param>
       /// <returns>A dictionary that represents HTML attributes.</returns>
 
-      public static RouteValueDictionary AnonymousObjectToHtmlAttributes(object htmlAttributes) {
+      public static RouteValueDictionary AnonymousObjectToHtmlAttributes(object/*?*/ htmlAttributes) {
 
          var result = new RouteValueDictionary();
 

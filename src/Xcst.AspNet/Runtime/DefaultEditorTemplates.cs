@@ -151,36 +151,19 @@ namespace Xcst.Web.Runtime {
       static IDictionary<string, object> CreateHtmlAttributes(HtmlHelper html, string className, string inputType = null) {
 
          object htmlAttributesObject = html.ViewData["htmlAttributes"];
+         var htmlAttributesDict = htmlAttributesObject as IDictionary<string, object>;
 
-         if (htmlAttributesObject != null) {
-            return MergeHtmlAttributes(htmlAttributesObject, className, inputType);
-         }
+         var htmlAttributes = (htmlAttributesDict != null) ? new HtmlAttributeDictionary(htmlAttributesDict)
+            : (htmlAttributesObject != null) ? new HtmlAttributeDictionary(htmlAttributesObject)
+            : new HtmlAttributeDictionary();
 
-         var htmlAttributes = new Dictionary<string, object>();
          htmlAttributes.AddCssClass(className);
 
          if (inputType != null) {
-            htmlAttributes.Add("type", inputType);
-         }
 
-         return htmlAttributes;
-      }
+            // The input type from the provided htmlAttributes overrides the inputType parameter.
 
-      static IDictionary<string, object> MergeHtmlAttributes(object htmlAttributesObject, string className, string inputType) {
-
-         IDictionary<string, object> htmlAttributesDict = htmlAttributesObject as IDictionary<string, object>;
-
-         RouteValueDictionary htmlAttributes = (htmlAttributesDict != null) ? new RouteValueDictionary(htmlAttributesDict)
-             : HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributesObject);
-
-         htmlAttributes.AddCssClass(className);
-
-         // The input type from the provided htmlAttributes overrides the inputType parameter.
-
-         if (inputType != null
-            && !htmlAttributes.ContainsKey("type")) {
-
-            htmlAttributes.Add("type", inputType);
+            htmlAttributes.MergeAttribute("type", inputType);
          }
 
          return htmlAttributes;

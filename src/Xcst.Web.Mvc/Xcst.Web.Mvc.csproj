@@ -144,8 +144,8 @@
     <Compile Include="..\Xcst.AspNet\Runtime\EditorInstructions.cs">
       <Link>Runtime\EditorInstructions.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Runtime\HtmlAttributesMerger.cs">
-      <Link>Runtime\HtmlAttributesMerger.cs</Link>
+    <Compile Include="..\Xcst.AspNet\Runtime\HtmlAttributeDictionary.cs">
+      <Link>Runtime\HtmlAttributeDictionary.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\HtmlHelperFactory.cs">
       <Link>Runtime\HtmlHelperFactory.cs</Link>

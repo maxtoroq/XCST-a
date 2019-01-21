@@ -95,7 +95,7 @@ namespace Xcst.Web.Runtime {
 
          output.WriteStartElement(tag);
 
-         var attribs = HtmlAttributesMerger.Create(htmlAttributes)
+         var attribs = new HtmlAttributeDictionary(htmlAttributes)
             .AddCssClass((modelError != null) ? HtmlHelper.ValidationMessageCssClassName : HtmlHelper.ValidationMessageValidCssClassName);
 
          if (formContext != null) {
@@ -165,7 +165,7 @@ namespace Xcst.Web.Runtime {
 
          output.WriteStartElement("div");
 
-         var divAttribs = HtmlAttributesMerger.Create(htmlAttributes)
+         var divAttribs = new HtmlAttributeDictionary(htmlAttributes)
             .AddCssClass((htmlHelper.ViewData.ModelState.IsValid) ? HtmlHelper.ValidationSummaryValidCssClassName : HtmlHelper.ValidationSummaryCssClassName);
 
          if (formContext != null) {

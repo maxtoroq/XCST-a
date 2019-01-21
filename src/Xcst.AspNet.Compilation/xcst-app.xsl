@@ -876,7 +876,7 @@
    <template match="c:type | c:member" mode="src:type-attribute-extra">
       <next-match/>
       <variable name="excluded" select="c:member[@a:skip-binding[xcst:boolean(.)]]/xcst:name(@name)"/>
-      <if test="not(empty($excluded))">
+      <if test="exists($excluded)">
          <c:metadata name="{src:global-identifier('System.Web.Mvc.Bind')}"
             value="Exclude = {src:string(string-join($excluded, ','))}"/>
       </if>
@@ -1290,12 +1290,13 @@
       <param name="bool-attributes" as="attribute()*"/>
       <param name="omit-param" select="false()"/>
 
-      <if test="not(empty(($attributes, $class, $merge-attributes, $bool-attributes)))">
+      <if test="exists(($attributes, $class, $merge-attributes, $bool-attributes))">
          <if test="not($omit-param)">
             <text>, htmlAttributes: </text>
          </if>
-         <value-of select="a:fully-qualified-helper('HtmlAttributesMerger')"/>
-         <text>.Create(</text>
+         <text>new </text>
+         <value-of select="a:fully-qualified-helper('HtmlAttributeDictionary')"/>
+         <text>(</text>
          <value-of select="$attributes/xcst:expression(.)"/>
          <text>)</text>
          <if test="$class">
@@ -1317,7 +1318,6 @@
             <value-of select="src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
             <text>)</text>
          </for-each>
-         <text>.Attributes</text>
       </if>
    </template>
 
