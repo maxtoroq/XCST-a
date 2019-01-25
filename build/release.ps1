@@ -48,7 +48,7 @@ function script:NuSpec {
          "<projectUrl>$($notice.website)</projectUrl>"
          "<copyright>$($notice.copyright)</copyright>"
          "<iconUrl>$($notice.website)nuget/icon.png</iconUrl>"
-         "<repository type='git' url='https://github.com/maxtoroq/XCST-a'/>"
+         "<repository type='git' url='https://github.com/maxtoroq/XCST-a' commit='$(git rev-parse HEAD)'/>"
 
    if ($projName -eq "Xcst.Web.Mvc") {
 
@@ -148,7 +148,8 @@ function script:Build([string]$projName) {
 
    $projFile = ProjectFile $projName
 
-   MSBuild $projFile /p:Configuration=$configuration
+   ""
+   MSBuild $projFile /p:Configuration=$configuration /verbosity:minimal
 }
 
 function script:Release([string]$projName, [switch]$skipBuild) {
@@ -159,6 +160,8 @@ function script:Release([string]$projName, [switch]$skipBuild) {
    if (-not $skipBuild) {
       Build $projName
    }
+
+   ""
 
    $lastTag = git describe --abbrev=0 --tags
    $lastRelease = New-Object Version $lastTag.Substring(1)
@@ -179,7 +182,7 @@ function script:Release([string]$projName, [switch]$skipBuild) {
    }
    
    if ((Prompt-Choices -Message "Push package to gallery?" -Default 1) -eq 0) {
-      &$nuget push $pkgPath -Source https://www.nuget.org/api/v2/package
+      &$nuget push $pkgPath -Source nuget.org
    }
 
    if ($createdTag) {
@@ -199,8 +202,8 @@ function Prompt-Choices($Choices=("&Yes", "&No"), [string]$Title="Confirm", [str
 
 try {
 
-   ./ensure-nuget.ps1
-   ./restore-packages.ps1
+   .\ensure-nuget.ps1
+   .\restore-packages.ps1
    
    [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
    $notice = $noticeDoc.DocumentElement
