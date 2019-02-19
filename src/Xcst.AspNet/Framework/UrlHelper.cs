@@ -1,13 +1,8 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Text;
-using System.Web.Mvc;
 using System.Web.Mvc.Properties;
 using System.Web.Routing;
-using System.Web.WebPages;
 
 namespace System.Web.Mvc {
 
@@ -69,9 +64,6 @@ namespace System.Web.Mvc {
          return HttpRequestExtensions.IsUrlLocalToHost(this.RequestContext.HttpContext.Request, url);
       }
    }
-}
-
-namespace System.Web.WebPages {
 
    static class UrlUtil {
 

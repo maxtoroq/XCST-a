@@ -188,7 +188,7 @@
     <EmbeddedResource Include="Framework\Common\WebPageResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>WebPageResources.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>System.Web.WebPages.Resources</CustomToolNamespace>
+      <CustomToolNamespace>System.Web.Mvc.Properties</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

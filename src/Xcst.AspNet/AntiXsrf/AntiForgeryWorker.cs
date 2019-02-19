@@ -3,7 +3,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Security.Principal;
-using System.Web.WebPages.Resources;
+using System.Web.Mvc.Properties;
 using Xcst;
 
 namespace System.Web.Helpers.AntiXsrf {

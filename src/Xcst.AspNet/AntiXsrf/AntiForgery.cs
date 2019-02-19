@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Web.Helpers.AntiXsrf;
 using System.Web.Helpers.Claims;
-using System.Web.WebPages.Resources;
+using System.Web.Mvc.Properties;
 using Xcst;
 
 namespace System.Web.Helpers {

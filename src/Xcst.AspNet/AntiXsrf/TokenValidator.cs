@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Security.Principal;
 using System.Web.Mvc;
-using System.Web.WebPages.Resources;
+using System.Web.Mvc.Properties;
 
 namespace System.Web.Helpers.AntiXsrf {
 

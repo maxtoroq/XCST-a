@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 
-namespace System.Web.WebPages {
+namespace System.Web.Mvc {
 
    class PropertyHelper {
 

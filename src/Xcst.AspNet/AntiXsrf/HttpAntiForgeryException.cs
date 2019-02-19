@@ -2,7 +2,7 @@
 
 using System.Globalization;
 using System.Runtime.Serialization;
-using System.Web.WebPages.Resources;
+using System.Web.Mvc.Properties;
 
 namespace System.Web.Mvc {
 

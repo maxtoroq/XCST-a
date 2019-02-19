@@ -2,7 +2,7 @@
 
 using System.Collections;
 
-namespace System.Web.WebPages {
+namespace System.Web.Mvc {
 
    class UrlRewriterHelper {
 

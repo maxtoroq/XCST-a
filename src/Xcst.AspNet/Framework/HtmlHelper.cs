@@ -9,8 +9,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Web.Routing;
-using System.Web.WebPages;
-using System.Web.WebPages.Resources;
+using System.Web.Mvc.Properties;
 using Xcst;
 using Xcst.Web.Runtime;
 
@@ -572,9 +571,6 @@ namespace System.Web.Mvc {
          }
       }
    }
-}
-
-namespace System.Web.WebPages {
 
    class HtmlAttributePropertyHelper : PropertyHelper {
 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System.Web.WebPages.Resources {
+namespace System.Web.Mvc.Properties {
     using System;
     
     
