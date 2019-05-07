@@ -187,7 +187,12 @@
     <None Include="Extension\CheckBox\check-box.autofocus.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.disabled.type.i.xcst" />
     <None Include="Extension\CheckBox\Checked.c.xcst" />
+    <None Include="Extension\Directives\InheritsImported.c.xcst" />
+    <None Include="Extension\Directives\ModelImported.c.xcst" />
+    <None Include="Extension\Directives\Model.c.xcst" />
+    <None Include="Extension\Directives\Inherits.c.xcst" />
     <None Include="Extension\Directives\sessionstate.dupl.i.xcst" />
+    <None Include="Extension\Directives\SessionState.c.xcst" />
     <None Include="Extension\Directives\sessionstate.type.i.xcst" />
     <None Include="Extension\Directives\model.dupl.i.xcst" />
     <None Include="Extension\Directives\inherits.dupl.i.xcst" />

@@ -1378,7 +1378,7 @@
 
       <choose>
          <when test="$a:directives/inherits">
-            <code:type-reference name="{a:directives/inherits}"/>
+            <code:type-reference name="{$a:directives/inherits}"/>
          </when>
          <!--
             First condition is always true for pages.
