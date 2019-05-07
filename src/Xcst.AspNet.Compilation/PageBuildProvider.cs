@@ -16,7 +16,6 @@ using System;
 using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -203,24 +202,16 @@ namespace Xcst.Web.Compilation {
 
          if (this.IsFileInCodeDir) {
 
-            Debug.Assert(compiler.TargetBaseTypes == null);
-
-            compiler.SetTargetBaseTypes(this.PageType);
-
-            string[] baseTypes = compiler.TargetBaseTypes;
-
-            compiler.TargetBaseTypes = null;
-
             compiler.SetParameter(
-               new QualifiedName("base-types", XmlNamespaces.XcstApplication),
-               baseTypes
+               new QualifiedName("page-type", XmlNamespaces.XcstApplication),
+               this.PageType
             );
 
          } else {
 
             compiler.SetParameter(
-               new QualifiedName("default-model", XmlNamespaces.XcstApplication),
-               "dynamic"
+               new QualifiedName("default-model-dynamic", XmlNamespaces.XcstApplication),
+               true
             );
          }
       }

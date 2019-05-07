@@ -79,7 +79,7 @@ function script:NuSpec {
 
    } elseif ($projName -eq "Xcst.AspNet.Compilation") {
       
-      "<description>Dynamic compilation and extension instructions for XCST web pages</description>"
+      "<description>Build providers and extension instructions for XCST web pages</description>"
 
       "<dependencies>"
          "<dependency id='Xcst.AspNet' version='$(DependencyVersionRange Xcst.AspNet)'/>"

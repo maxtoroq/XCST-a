@@ -19,13 +19,18 @@
    xmlns:xs="http://www.w3.org/2001/XMLSchema"
    xmlns:c="http://maxtoroq.github.io/XCST"
    xmlns:a="http://maxtoroq.github.io/XCST/application"
-   xmlns:src="http://maxtoroq.github.io/XCST/compiled"
-   xmlns:xcst="http://maxtoroq.github.io/XCST/syntax">
+   xmlns:xcst="http://maxtoroq.github.io/XCST/grammar"
+   xmlns:code="http://maxtoroq.github.io/XCST/code"
+   xmlns:src="http://maxtoroq.github.io/XCST/compiled">
+
+   <import href="../../../XCST/src/Xcst.Compiler/CodeGeneration/xcst-metadata.xsl" use-when="false()"/>
+   <import href="../../../XCST/src/Xcst.Compiler/CodeGeneration/xcst-core.xsl" use-when="false()"/>
 
    <param name="a:application-uri" as="xs:anyURI?"/>
    <param name="a:aspnetlib" select="true()" as="xs:boolean"/>
-   <param name="a:base-types" as="xs:string*"/>
-   <param name="a:default-model" as="xs:string?"/>
+   <param name="a:page-type" as="element(code:type-reference)?"/>
+   <param name="a:default-model" as="element(code:type-reference)?"/>
+   <param name="a:default-model-dynamic" select="false()" as="xs:boolean"/>
 
    <variable name="a:html-attributes" select="'class', 'attributes'"/>
    <variable name="a:input-attributes" select="'for', 'name', 'value', 'disabled', 'autofocus', $a:html-attributes"/>
@@ -56,71 +61,79 @@
       <variable name="doc-output" select="src:doc-output(., $output)"/>
 
       <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
       </if>
 
       <variable name="for-model" select="empty((@for, @name))"/>
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
-         <text>.Input</text>
-         <if test="@for">For</if>
-         <if test="$for-model">ForModel</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <choose>
-            <when test="@for">
-               <text>, </text>
-               <variable name="param" select="src:aux-variable(generate-id())"/>
-               <value-of select="$param"/>
-               <text> => </text>
-               <value-of select="$param, xcst:expression(@for)" separator="."/>
-            </when>
-            <otherwise>
-               <if test="@name">
-                  <text>, </text>
-                  <value-of select="src:expand-attribute(@name)"/>
-               </if>
-               <if test="@value">
-                  <text>, </text>
-                  <value-of select="xcst:expression(@value)"/>
-               </if>
-            </otherwise>
-         </choose>
-         <choose>
-            <when test="$hidden">
-               <text>, type: </text>
-               <value-of select="src:string('hidden')"/>
-               <call-template name="a:html-attributes-param">
-                  <with-param name="bool-attributes" select="@disabled"/>
-               </call-template>
-            </when>
-            <otherwise>
-               <if test="@type">
-                  <text>, type: </text>
-                  <value-of select="@type/a:src.input-type(a:input-type(., true()), src:expand-attribute(.))"/>
-               </if>
-               <if test="@format">
-                  <text>, format: </text>
-                  <value-of select="src:expand-attribute(@format)"/>
-               </if>
-               <call-template name="a:html-attributes-param">
-                  <with-param name="merge-attributes" select="@placeholder"/>
-                  <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
-               </call-template>
-            </otherwise>
-         </choose>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
+
+      <code:method-call name="Input{'For'[current()/@for], 'ForModel'[$for-model]}">
+         <sequence select="a:helper-type('InputInstructions')"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <sequence select="$doc-output/src:reference/code:*"/>
+            <choose>
+               <when test="@for">
+                  <variable name="param" select="src:aux-variable(generate-id())"/>
+                  <code:lambda>
+                     <code:parameters>
+                        <code:parameter name="{$param}"/>
+                     </code:parameters>
+                     <code:property-reference name="{xcst:expression(@for)}">
+                        <code:variable-reference name="{$param}"/>
+                     </code:property-reference>
+                  </code:lambda>
+               </when>
+               <otherwise>
+                  <if test="@name">
+                     <call-template name="src:expand-attribute">
+                        <with-param name="attr" select="@name"/>
+                     </call-template>
+                  </if>
+                  <if test="@value">
+                     <code:expression value="{xcst:expression(@value)}"/>
+                  </if>
+               </otherwise>
+            </choose>
+            <choose>
+               <when test="$hidden">
+                  <code:argument name="type">
+                     <code:string literal="true">hidden</code:string>
+                  </code:argument>
+                  <call-template name="a:html-attributes-param">
+                     <with-param name="bool-attributes" select="@disabled"/>
+                  </call-template>
+               </when>
+               <otherwise>
+                  <if test="@type">
+                     <code:argument name="type">
+                        <call-template name="a:src.input-type">
+                           <with-param name="type" select="a:input-type(@type, true())"/>
+                           <with-param name="avt" select="@type"/>
+                        </call-template>
+                     </code:argument>
+                  </if>
+                  <if test="@format">
+                     <code:argument name="format">
+                        <call-template name="src:expand-attribute">
+                           <with-param name="attr" select="@format"/>
+                        </call-template>
+                     </code:argument>
+                  </if>
+                  <call-template name="a:html-attributes-param">
+                     <with-param name="merge-attributes" select="@placeholder"/>
+                     <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
+                  </call-template>
+               </otherwise>
+            </choose>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <template match="a:textarea" mode="src:extension-instruction">
@@ -139,51 +152,90 @@
       <variable name="doc-output" select="src:doc-output(., $output)"/>
 
       <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
       </if>
 
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('TextAreaInstructions')"/>
-         <text>.TextArea</text>
-         <if test="@for">For</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <text>, </text>
-         <choose>
-            <when test="@for">
-               <variable name="param" select="src:aux-variable(generate-id())"/>
-               <value-of select="$param"/>
-               <text> => </text>
-               <value-of select="$param, xcst:expression(@for)" separator="."/>
-            </when>
-            <otherwise>
-               <value-of select="(@name/src:expand-attribute(.), src:string(''))[1]"/>
-               <text>, </text>
-               <value-of select="(@value/xcst:expression(.), 'default(object)')[1]"/>
-            </otherwise>
-         </choose>
-         <if test="@rows or @cols">
-            <text>, rows: </text>
-            <value-of select="(@rows/src:integer(xcst:integer(., true()), src:expand-attribute(.)), '2')[1]"/>
-            <text>, columns: </text>
-            <value-of select="(@cols/src:integer(xcst:integer(., true()), src:expand-attribute(.)), '20')[1]"/>
-         </if>
-         <call-template name="a:html-attributes-param">
-            <with-param name="merge-attributes" select="@placeholder"/>
-            <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
-         </call-template>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
+      <code:method-call name="TextArea{'For'[current()/@for]}">
+         <sequence select="a:helper-type('TextAreaInstructions')"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <sequence select="$doc-output/src:reference/code:*"/>
+            <choose>
+               <when test="@for">
+                  <variable name="param" select="src:aux-variable(generate-id())"/>
+                  <code:lambda>
+                     <code:parameters>
+                        <code:parameter name="{$param}"/>
+                     </code:parameters>
+                     <code:property-reference name="{xcst:expression(@for)}">
+                        <code:variable-reference name="{$param}"/>
+                     </code:property-reference>
+                  </code:lambda>
+               </when>
+               <otherwise>
+                  <choose>
+                     <when test="@name">
+                        <call-template name="src:expand-attribute">
+                           <with-param name="attr" select="@name"/>
+                        </call-template>
+                     </when>
+                     <otherwise>
+                        <code:string/>
+                     </otherwise>
+                  </choose>
+                  <choose>
+                     <when test="@value">
+                        <code:expression value="{xcst:expression(@value)}"/>
+                     </when>
+                     <otherwise>
+                        <code:default>
+                           <sequence select="$src:object-type"/>
+                        </code:default>
+                     </otherwise>
+                  </choose>
+               </otherwise>
+            </choose>
+            <if test="@rows or @cols">
+               <code:argument name="rows">
+                  <choose>
+                     <when test="@rows">
+                        <call-template name="src:integer">
+                           <with-param name="integer" select="xcst:integer(@rows, true())"/>
+                           <with-param name="avt" select="@rows"/>
+                        </call-template>
+                     </when>
+                     <otherwise>
+                        <code:int value="2"/>
+                     </otherwise>
+                  </choose>
+               </code:argument>
+               <code:argument name="columns">
+                  <choose>
+                     <when test="@cols">
+                        <call-template name="src:integer">
+                           <with-param name="integer" select="xcst:integer(@cols, true())"/>
+                           <with-param name="avt" select="@cols"/>
+                        </call-template>
+                     </when>
+                     <otherwise>
+                        <code:int value="20"/>
+                     </otherwise>
+                  </choose>
+               </code:argument>
+            </if>
+            <call-template name="a:html-attributes-param">
+               <with-param name="merge-attributes" select="@placeholder"/>
+               <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
+            </call-template>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <template match="a:check-box" mode="src:extension-instruction">
@@ -202,51 +254,56 @@
       <variable name="doc-output" select="src:doc-output(., $output)"/>
 
       <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
       </if>
 
       <variable name="for-model" select="empty((@for, @name))"/>
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
-         <text>.CheckBox</text>
-         <if test="@for">For</if>
-         <if test="$for-model">ForModel</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <choose>
-            <when test="@for">
-               <text>, </text>
-               <variable name="param" select="src:aux-variable(generate-id())"/>
-               <value-of select="$param"/>
-               <text> => </text>
-               <value-of select="$param, xcst:expression(@for)" separator="."/>
-            </when>
-            <otherwise>
-               <if test="@name">
-                  <text>, </text>
-                  <value-of select="src:expand-attribute(@name)"/>
-               </if>
-               <if test="@checked">
-                  <text>, isChecked: </text>
-                  <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
-               </if>
-            </otherwise>
-         </choose>
-         <call-template name="a:html-attributes-param">
-            <with-param name="bool-attributes" select="@disabled, @autofocus"/>
-         </call-template>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
+
+      <code:method-call name="CheckBox{'For'[current()/@for], 'ForModel'[$for-model]}">
+         <sequence select="a:helper-type('InputInstructions')"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <sequence select="$doc-output/src:reference/code:*"/>
+            <choose>
+               <when test="@for">
+                  <variable name="param" select="src:aux-variable(generate-id())"/>
+                  <code:lambda>
+                     <code:parameters>
+                        <code:parameter name="{$param}"/>
+                     </code:parameters>
+                     <code:property-reference name="{xcst:expression(@for)}">
+                        <code:variable-reference name="{$param}"/>
+                     </code:property-reference>
+                  </code:lambda>
+               </when>
+               <otherwise>
+                  <if test="@name">
+                     <call-template name="src:expand-attribute">
+                        <with-param name="attr" select="@name"/>
+                     </call-template>
+                  </if>
+                  <if test="@checked">
+                     <code:argument name="isChecked">
+                        <call-template name="src:boolean">
+                           <with-param name="bool" select="xcst:boolean(@checked, true())"/>
+                           <with-param name="avt" select="@checked"/>
+                        </call-template>
+                     </code:argument>
+                  </if>
+               </otherwise>
+            </choose>
+            <call-template name="a:html-attributes-param">
+               <with-param name="bool-attributes" select="@disabled, @autofocus"/>
+            </call-template>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <template match="a:radio-button" mode="src:extension-instruction">
@@ -266,51 +323,55 @@
       <variable name="doc-output" select="src:doc-output(., $output)"/>
 
       <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
       </if>
 
       <variable name="for-model" select="empty((@for, @name))"/>
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('InputInstructions')"/>
-         <text>.RadioButton</text>
-         <if test="@for">For</if>
-         <if test="$for-model">ForModel</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <choose>
-            <when test="@for">
-               <text>, </text>
-               <variable name="param" select="src:aux-variable(generate-id())"/>
-               <value-of select="$param"/>
-               <text> => </text>
-               <value-of select="$param, xcst:expression(@for)" separator="."/>
-            </when>
-            <when test="@name">
-               <text>, </text>
-               <value-of select="src:expand-attribute(@name)"/>
-            </when>
-         </choose>
-         <text>, </text>
-         <value-of select="xcst:expression(@value)"/>
-         <if test="not(@for) and @checked">
-            <text>, isChecked: </text>
-            <value-of select="@checked/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
-         </if>
-         <call-template name="a:html-attributes-param">
-            <with-param name="bool-attributes" select="@disabled, @autofocus"/>
-         </call-template>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
+
+      <code:method-call name="RadioButton{'For'[current()/@for], 'ForModel'[$for-model]}">
+         <sequence select="a:helper-type('InputInstructions')"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <sequence select="$doc-output/src:reference/code:*"/>
+            <choose>
+               <when test="@for">
+                  <variable name="param" select="src:aux-variable(generate-id())"/>
+                  <code:lambda>
+                     <code:parameters>
+                        <code:parameter name="{$param}"/>
+                     </code:parameters>
+                     <code:property-reference name="{xcst:expression(@for)}">
+                        <code:variable-reference name="{$param}"/>
+                     </code:property-reference>
+                  </code:lambda>
+               </when>
+               <when test="@name">
+                  <call-template name="src:expand-attribute">
+                     <with-param name="attr" select="@name"/>
+                  </call-template>
+               </when>
+            </choose>
+            <code:expression value="{xcst:expression(@value)}"/>
+            <if test="not(@for) and @checked">
+               <code:argument name="isChecked">
+                  <call-template name="src:boolean">
+                     <with-param name="bool" select="xcst:boolean(@checked, true())"/>
+                     <with-param name="avt" select="@checked"/>
+                  </call-template>
+               </code:argument>
+            </if>
+            <call-template name="a:html-attributes-param">
+               <with-param name="bool-attributes" select="@disabled, @autofocus"/>
+            </call-template>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <template match="a:anti-forgery-token" mode="src:extension-instruction">
@@ -325,40 +386,52 @@
             <variable name="output-is-doc" select="src:output-is-doc($output)"/>
             <variable name="doc-output" select="src:doc-output(., $output)"/>
             <if test="not($output-is-doc)">
-               <c:variable name="{$doc-output}">
-                  <attribute name="value">
-                     <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-                     <text>.CastElement(</text>
-                     <value-of select="$output"/>
-                     <text>)</text>
-                  </attribute>
-               </c:variable>
+               <code:variable name="{$doc-output/src:reference/code:*/@name}">
+                  <code:method-call name="CastElement">
+                     <sequence select="src:helper-type('DocumentWriter')"/>
+                     <code:arguments>
+                        <sequence select="$output/src:reference/code:*"/>
+                     </code:arguments>
+                  </code:method-call>
+               </code:variable>
             </if>
-            <variable name="expr">
-               <value-of select="src:global-identifier('System.Web.Helpers.AntiForgery')"/>
-               <text>.GetHtml(</text>
-               <call-template name="a:html-helper"/>
-               <text>.ViewContext.HttpContext, </text>
-               <value-of select="$doc-output"/>
-               <text>)</text>
-            </variable>
-            <c:void value="{$expr}"/>
+            <code:method-call name="GetHtml">
+               <code:type-reference name="AntiForgery" namespace="System.Web.Helpers"/>
+               <code:arguments>
+                  <code:chain>
+                     <call-template name="a:html-helper"/>
+                     <code:property-reference name="ViewContext">
+                        <code:chain-reference/>
+                     </code:property-reference>
+                     <code:property-reference name="HttpContext">
+                        <code:chain-reference/>
+                     </code:property-reference>
+                  </code:chain>
+                  <sequence select="$doc-output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
          </when>
          <otherwise>
-            <variable name="expr">
-               <value-of select="src:global-identifier('System.Web.Helpers.AntiForgery')"/>
-               <text>.GetHtml().ToString()</text>
-            </variable>
-            <c:value-of value="{$expr}" disable-output-escaping="yes"/>
+            <code:method-call name="WriteRaw">
+               <sequence select="$output/src:reference/code:*"/>
+               <code:arguments>
+                  <code:chain>
+                     <code:type-reference name="AntiForgery" namespace="System.Web.Helpers"/>
+                     <code:method-call name="GetHtml">
+                        <code:chain-reference/>
+                     </code:method-call>
+                     <code:method-call name="ToString">
+                        <code:chain-reference/>
+                     </code:method-call>
+                  </code:chain>
+               </code:arguments>
+            </code:method-call>
          </otherwise>
       </choose>
    </template>
 
    <template match="a:select" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
-      <param name="indent" tunnel="yes"/>
-
-      <variable name="for-model" select="empty((@for, @name))"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="optional" select="$a:input-attributes, 'options', 'multiple'"/>
@@ -373,56 +446,58 @@
       <variable name="doc-output" select="src:doc-output(., $output)"/>
 
       <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
       </if>
 
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('SelectInstructions')"/>
-         <text>.Select</text>
-         <if test="@for or $for-model">For</if>
-         <if test="$for-model">Model</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <if test="not($for-model)">
-            <text>, </text>
-            <choose>
-               <when test="@for">
-                  <variable name="param" select="src:aux-variable(generate-id())"/>
-                  <value-of select="$param"/>
-                  <text> => </text>
-                  <value-of select="$param, xcst:expression(@for)" separator="."/>
-               </when>
-               <when test="@name">
-                  <value-of select="src:expand-attribute(@name)"/>
-               </when>
-            </choose>
-         </if>
-         <variable name="multiple" select="(@multiple/xcst:boolean(.), false())[1]"/>
-         <text>, </text>
-         <call-template name="a:options">
-            <with-param name="value" select="@value"/>
-            <with-param name="multiple" select="$multiple"/>
-            <with-param name="indent" select="$indent + 1" tunnel="yes"/>
-         </call-template>
-         <if test="$multiple">
-            <text>, multiple: </text>
-            <value-of select="src:boolean($multiple)"/>
-         </if>
-         <call-template name="a:html-attributes-param">
-            <with-param name="bool-attributes" select="@disabled, @autofocus"/>
-         </call-template>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
+      <variable name="for-model" select="empty((@for, @name))"/>
+
+      <code:method-call name="Select{'For'[current()/@for], 'ForModel'[$for-model]}">
+         <sequence select="a:helper-type('SelectInstructions')"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <sequence select="$doc-output/src:reference/code:*"/>
+            <if test="not($for-model)">
+               <choose>
+                  <when test="@for">
+                     <variable name="param" select="src:aux-variable(generate-id())"/>
+                     <code:lambda>
+                        <code:parameters>
+                           <code:parameter name="{$param}"/>
+                        </code:parameters>
+                        <code:property-reference name="{xcst:expression(@for)}">
+                           <code:variable-reference name="{$param}"/>
+                        </code:property-reference>
+                     </code:lambda>
+                  </when>
+                  <when test="@name">
+                     <call-template name="src:expand-attribute">
+                        <with-param name="attr" select="@name"/>
+                     </call-template>
+                  </when>
+               </choose>
+            </if>
+            <variable name="multiple" select="(@multiple/xcst:boolean(.), false())[1]"/>
+            <call-template name="a:options">
+               <with-param name="value" select="@value"/>
+               <with-param name="multiple" select="$multiple"/>
+            </call-template>
+            <if test="$multiple">
+               <code:argument name="multiple">
+                  <code:bool value="{$multiple}"/>
+               </code:argument>
+            </if>
+            <call-template name="a:html-attributes-param">
+               <with-param name="bool-attributes" select="@disabled, @autofocus"/>
+            </call-template>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <template name="a:options">
@@ -435,64 +510,99 @@
                Casting of xcst:expression avoids turning into a dynamic object when one of the arguments is dynamic.
                A long method chain on a dynamic object hurts performance.
             -->
-            <value-of select="a:fully-qualified-helper('OptionList')"/>
-            <choose>
-               <when test="a:option">
-                  <text>.FromStaticList(</text>
-                  <value-of select="src:integer(count(a:option))"/>
-                  <text>)</text>
-               </when>
-               <otherwise>.Create()</otherwise>
-            </choose>
-            <if test="$value">
-               <call-template name="src:line-number"/>
-               <call-template name="src:new-line-indented"/>
-               <text>.WithSelectedValue((object)</text>
-               <text>(</text>
-               <value-of select="xcst:expression($value)"/>
-               <text>)</text>
-               <if test="$multiple">
-                  <text>, multiple: </text>
-                  <value-of select="src:boolean($multiple)"/>
+            <code:chain>
+               <sequence select="a:helper-type('OptionList')"/>
+               <choose>
+                  <when test="a:option">
+                     <code:method-call name="FromStaticList">
+                        <code:chain-reference/>
+                        <code:arguments>
+                           <code:int value="{count(a:option)}"/>
+                        </code:arguments>
+                     </code:method-call>
+                  </when>
+                  <otherwise>
+                     <code:method-call name="Create">
+                        <code:chain-reference/>
+                     </code:method-call>
+                  </otherwise>
+               </choose>
+               <if test="$value">
+                  <code:method-call name="WithSelectedValue">
+                     <call-template name="src:line-number"/>
+                     <code:chain-reference/>
+                     <code:arguments>
+                        <code:cast>
+                           <sequence select="$src:object-type"/>
+                           <code:expression value="{xcst:expression($value)}"/>
+                        </code:cast>
+                        <if test="$multiple">
+                           <code:argument name="multiple">
+                              <code:bool value="{$multiple}"/>
+                           </code:argument>
+                        </if>
+                     </code:arguments>
+                  </code:method-call>
                </if>
-               <text>)</text>
-            </if>
-            <for-each select="a:option">
-               <call-template name="xcst:validate-attribs">
-                  <with-param name="optional" select="'value', 'selected', 'disabled'"/>
-                  <with-param name="extension" select="true()"/>
-               </call-template>
-               <call-template name="src:line-number"/>
-               <call-template name="src:new-line-indented"/>
-               <text>.AddStaticOption(</text>
-               <if test="@value">
-                  <text>value: (object)(</text>
-                  <value-of select="xcst:expression(@value)"/>
-                  <text>), </text>
+               <for-each select="a:option">
+                  <call-template name="xcst:validate-attribs">
+                     <with-param name="optional" select="'value', 'selected', 'disabled'"/>
+                     <with-param name="extension" select="true()"/>
+                  </call-template>
+                  <code:method-call name="AddStaticOption">
+                     <call-template name="src:line-number"/>
+                     <code:chain-reference/>
+                     <code:arguments>
+                        <if test="@value">
+                           <code:argument name="value">
+                              <code:cast>
+                                 <sequence select="$src:object-type"/>
+                                 <code:expression value="{xcst:expression(@value)}"/>
+                              </code:cast>
+                           </code:argument>
+                        </if>
+                        <code:argument name="text">
+                           <call-template name="src:simple-content"/>
+                        </code:argument>
+                        <if test="@selected">
+                           <code:argument name="selected">
+                              <call-template name="src:boolean">
+                                 <with-param name="bool" select="xcst:boolean(@selected, true())"/>
+                                 <with-param name="avt" select="@selected"/>
+                              </call-template>
+                           </code:argument>
+                        </if>
+                        <if test="@disabled">
+                           <code:argument name="disabled">
+                              <call-template name="src:boolean">
+                                 <with-param name="bool" select="xcst:boolean(@disabled, true())"/>
+                                 <with-param name="avt" select="@disabled"/>
+                              </call-template>
+                           </code:argument>
+                        </if>
+                     </code:arguments>
+                  </code:method-call>
+               </for-each>
+               <if test="@options">
+                  <code:method-call name="ConcatDynamicList">
+                     <call-template name="src:line-number"/>
+                     <code:chain-reference/>
+                     <code:arguments>
+                        <!-- Don't cast expression, behavior depends on overload resolution -->
+                        <code:expression value="{xcst:expression(@options)}"/>
+                     </code:arguments>
+                  </code:method-call>
                </if>
-               <text>text: </text>
-               <call-template name="src:simple-content"/>
-               <if test="@selected">
-                  <text>, selected: </text>
-                  <value-of select="@selected/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
-               </if>
-               <if test="@disabled">
-                  <text>, disabled: </text>
-                  <value-of select="@disabled/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
-               </if>
-               <text>)</text>
-            </for-each>
-            <if test="@options">
-               <call-template name="src:line-number"/>
-               <call-template name="src:new-line-indented"/>
-               <!-- Don't cast expression, behavior depends on overload resolution -->
-               <text>.ConcatDynamicList(</text>
-               <value-of select="xcst:expression(@options)"/>
-               <text>)</text>
-            </if>
+            </code:chain>
          </when>
          <otherwise>
-            <value-of select="concat('default(', src:global-identifier('System.Collections.Generic.IEnumerable'), '&lt;', src:global-identifier('System.Web.Mvc.SelectListItem'), '>)')"/>
+            <code:default>
+               <code:type-reference name="IEnumerable" namespace="System.Collections.Generic">
+                  <code:type-arguments>
+                     <code:type-reference name="SelectListItem" namespace="System.Web.Mvc"/>
+                  </code:type-arguments>
+               </code:type-reference>
+            </code:default>
          </otherwise>
       </choose>
    </template>
@@ -511,50 +621,53 @@
       <variable name="doc-output" select="src:doc-output(., $output)"/>
 
       <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
       </if>
 
       <variable name="for-model" select="empty((@for, @name))"/>
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('LabelInstructions')"/>
-         <text>.Label</text>
-         <choose>
-            <when test="@for">For</when>
-            <when test="$for-model">ForModel</when>
-         </choose>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <if test="not($for-model)">
-            <text>, </text>
-            <choose>
-               <when test="@for">
-                  <variable name="param" select="src:aux-variable(generate-id())"/>
-                  <value-of select="$param"/>
-                  <text> => </text>
-                  <value-of select="$param, @for" separator="."/>
-               </when>
-               <when test="@name">
-                  <value-of select="src:expand-attribute(@name)"/>
-               </when>
-            </choose>
-         </if>
-         <if test="@text">
-            <text>, labelText: </text>
-            <value-of select="src:expand-attribute(@text)"/>
-         </if>
-         <call-template name="a:html-attributes-param"/>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
+
+      <code:method-call name="Label{'For'[current()/@for], 'ForModel'[$for-model]}">
+         <sequence select="a:helper-type('LabelInstructions')"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <sequence select="$doc-output/src:reference/code:*"/>
+            <if test="not($for-model)">
+               <choose>
+                  <when test="@for">
+                     <variable name="param" select="src:aux-variable(generate-id())"/>
+                     <code:lambda>
+                        <code:parameters>
+                           <code:parameter name="{$param}"/>
+                        </code:parameters>
+                        <code:property-reference name="{xcst:expression(@for)}">
+                           <code:variable-reference name="{$param}"/>
+                        </code:property-reference>
+                     </code:lambda>
+                  </when>
+                  <when test="@name">
+                     <call-template name="src:expand-attribute">
+                        <with-param name="attr" select="@name"/>
+                     </call-template>
+                  </when>
+               </choose>
+            </if>
+            <if test="@text">
+               <code:argument name="labelText">
+                  <call-template name="src:expand-attribute">
+                     <with-param name="attr" select="@text"/>
+                  </call-template>
+               </code:argument>
+            </if>
+            <call-template name="a:html-attributes-param"/>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <template match="a:validation-summary" mode="src:extension-instruction">
@@ -569,32 +682,46 @@
       <variable name="doc-output" select="src:doc-output(., $output)"/>
 
       <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
       </if>
 
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('ValidationInstructions')"/>
-         <text>.ValidationSummary(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <if test="@include-member-errors">
-            <text>, includePropertyErrors: </text>
-            <value-of select="@include-member-errors/src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
-         </if>
-         <text>, message: </text>
-         <value-of select="(@message/src:expand-attribute(.), 'default(string)')[1]"/>
-         <call-template name="a:html-attributes-param"/>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
+      <code:method-call name="ValidationSummary">
+         <sequence select="a:helper-type('ValidationInstructions')"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <sequence select="$doc-output/src:reference/code:*"/>
+            <if test="@include-member-errors">
+               <code:argument name="includePropertyErrors">
+                  <call-template name="src:boolean">
+                     <with-param name="bool" select="xcst:boolean(@include-member-errors, true())"/>
+                     <with-param name="avt" select="@include-member-errors"/>
+                  </call-template>
+               </code:argument>
+            </if>
+            <code:argument name="message">
+               <choose>
+                  <when test="@message">
+                     <call-template name="src:expand-attribute">
+                        <with-param name="attr" select="@message"/>
+                     </call-template>
+                  </when>
+                  <otherwise>
+                     <code:default>
+                        <code:type-reference name="String" namespace="System"/>
+                     </code:default>
+                  </otherwise>
+               </choose>
+            </code:argument>
+            <call-template name="a:html-attributes-param"/>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <template match="a:validation-message" mode="src:extension-instruction">
@@ -611,45 +738,57 @@
       <variable name="doc-output" select="src:doc-output(., $output)"/>
 
       <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
       </if>
 
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('ValidationInstructions')"/>
-         <text>.ValidationMessage</text>
-         <if test="@for">For</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <text>, </text>
-         <choose>
-            <when test="@for">
-               <variable name="param" select="src:aux-variable(generate-id())"/>
-               <value-of select="$param"/>
-               <text> => </text>
-               <value-of select="$param, xcst:expression(@for)" separator="."/>
-            </when>
-            <when test="@name">
-               <value-of select="src:expand-attribute(@name)"/>
-            </when>
-            <otherwise>
-               <value-of select="src:string('')"/>
-            </otherwise>
-         </choose>
-         <text>, </text>
-         <value-of select="(@message/src:expand-attribute(.), 'default(string)')[1]"/>
-         <call-template name="a:html-attributes-param"/>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
+      <code:method-call name="ValidationMessage{'For'[current()/@for]}">
+         <sequence select="a:helper-type('ValidationInstructions')"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <sequence select="$doc-output/src:reference/code:*"/>
+            <choose>
+               <when test="@for">
+                  <variable name="param" select="src:aux-variable(generate-id())"/>
+                  <code:lambda>
+                     <code:parameters>
+                        <code:parameter name="{$param}"/>
+                     </code:parameters>
+                     <code:property-reference name="{xcst:expression(@for)}">
+                        <code:variable-reference name="{$param}"/>
+                     </code:property-reference>
+                  </code:lambda>
+               </when>
+               <when test="@name">
+                  <call-template name="src:expand-attribute">
+                     <with-param name="attr" select="@name"/>
+                  </call-template>
+               </when>
+               <otherwise>
+                  <code:string/>
+               </otherwise>
+            </choose>
+            <choose>
+               <when test="@message">
+                  <call-template name="src:expand-attribute">
+                     <with-param name="attr" select="@message"/>
+                  </call-template>
+               </when>
+               <otherwise>
+                  <code:default>
+                     <code:type-reference name="String" namespace="System"/>
+                  </code:default>
+               </otherwise>
+            </choose>
+            <call-template name="a:html-attributes-param"/>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <!--
@@ -672,152 +811,193 @@
       <variable name="doc-output" select="src:doc-output(., $output)"/>
 
       <if test="not($output-is-doc)">
-         <c:variable name="{$doc-output}">
-            <attribute name="value">
-               <value-of select="src:fully-qualified-helper('DocumentWriter')"/>
-               <text>.CastElement(</text>
-               <value-of select="$output"/>
-               <text>)</text>
-            </attribute>
-         </c:variable>
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
       </if>
 
       <variable name="for-model" select="empty((@for, @name))"/>
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper(concat((if ($editor) then 'Editor' else 'Display'), 'Instructions'))"/>
-         <text>.</text>
-         <value-of select="if ($editor) then 'Editor' else 'Display'"/>
-         <if test="@for or $for-model">For</if>
-         <if test="$for-model">Model</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <text>, </text>
-         <value-of select="$doc-output"/>
-         <if test="not($for-model)">
-            <text>, </text>
-            <choose>
-               <when test="@for">
-                  <variable name="param" select="src:aux-variable(generate-id())"/>
-                  <value-of select="$param"/>
-                  <text> => </text>
-                  <value-of select="$param, xcst:expression(@for)" separator="."/>
-               </when>
-               <when test="@name">
-                  <value-of select="src:expand-attribute(@name)"/>
-               </when>
-            </choose>
-         </if>
-         <text>, templateName: </text>
-         <choose>
-            <when test="@template">
-               <value-of select="src:expand-attribute(@template)"/>
-            </when>
-            <otherwise>null</otherwise>
-         </choose>
-         <if test="@field-name">
-            <text>, htmlFieldName: </text>
-            <value-of select="src:expand-attribute(@field-name)"/>
-         </if>
-         <call-template name="a:editor-additional-view-data"/>
-         <text>)</text>
-      </variable>
-      <c:void value="{$expr}"/>
+
+      <code:method-call name="{if ($editor) then 'Editor' else 'Display'}{'For'[current()/@for], 'ForModel'[$for-model]}">
+         <sequence select="a:helper-type(concat((if ($editor) then 'Editor' else 'Display'), 'Instructions'))"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <sequence select="$doc-output/src:reference/code:*"/>
+            <if test="not($for-model)">
+               <choose>
+                  <when test="@for">
+                     <variable name="param" select="src:aux-variable(generate-id())"/>
+                     <code:lambda>
+                        <code:parameters>
+                           <code:parameter name="{$param}"/>
+                        </code:parameters>
+                        <code:property-reference name="{xcst:expression(@for)}">
+                           <code:variable-reference name="{$param}"/>
+                        </code:property-reference>
+                     </code:lambda>
+                  </when>
+                  <when test="@name">
+                     <call-template name="src:expand-attribute">
+                        <with-param name="attr" select="@name"/>
+                     </call-template>
+                  </when>
+               </choose>
+            </if>
+            <code:argument name="templateName">
+               <choose>
+                  <when test="@template">
+                     <call-template name="src:expand-attribute">
+                        <with-param name="attr" select="@template"/>
+                     </call-template>
+                  </when>
+                  <otherwise>
+                     <code:null/>
+                  </otherwise>
+               </choose>
+            </code:argument>
+            <if test="@field-name">
+               <code:argument name="htmlFieldName">
+                  <call-template name="src:expand-attribute">
+                     <with-param name="attr" select="@field-name"/>
+                  </call-template>
+               </code:argument>
+            </if>
+            <call-template name="a:editor-additional-view-data"/>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <template name="a:editor-additional-view-data">
       <variable name="editor" select="self::a:editor"/>
       <variable name="boolean-attribs" select="(@autofocus, @disabled, @readonly)[$editor]"/>
-      <variable name="setters" as="text()*">
+      <variable name="inits" as="element()*">
          <if test="$boolean-attribs">
-            <value-of>
-               <text>[</text>
-               <value-of select="src:string('htmlAttributes')"/>
-               <text>] = </text>
+            <code:collection-initializer>
+               <code:string literal="true">htmlAttributes</code:string>
                <call-template name="a:html-attributes-param">
                   <with-param name="bool-attributes" select="$boolean-attribs"/>
                   <with-param name="class" select="()"/>
                   <with-param name="omit-param" select="true()"/>
                </call-template>
-            </value-of>
+            </code:collection-initializer>
          </if>
          <for-each select="@attributes[not($boolean-attribs)], a:with-options, .[@options], a:member-template">
-            <variable name="setter">
-               <apply-templates select="." mode="a:editor-additional-view-data"/>
-            </variable>
-            <if test="string($setter)">
-               <value-of select="$setter"/>
-            </if>
+            <apply-templates select="." mode="a:editor-additional-view-data"/>
          </for-each>
       </variable>
-      <if test="@with-params or $setters">
-         <text>, additionalViewData: new </text>
-         <value-of select="src:global-identifier('System.Web.Routing.RouteValueDictionary')"/>
-         <if test="@with-params">
-            <text>(</text>
-            <value-of select="xcst:expression(@with-params)"/>
-            <text>)</text>
-         </if>
-         <text> { </text>
-         <value-of select="string-join($setters, ', ')"/>
-         <text> }</text>
+      <if test="@with-params or $inits">
+         <code:argument name="additionalViewData">
+            <code:new-object>
+               <code:type-reference name="RouteValueDictionary" namespace="System.Web.Routing"/>
+               <if test="@with-params">
+                  <code:arguments>
+                     <sequence select="xcst:expression(@with-params)"/>
+                  </code:arguments>
+               </if>
+               <if test="$inits">
+                  <code:collection-initializer>
+                     <sequence select="$inits"/>
+                  </code:collection-initializer>
+               </if>
+            </code:new-object>
+         </code:argument>
       </if>
    </template>
 
    <template match="@attributes" mode="a:editor-additional-view-data">
-      <text>[</text>
-      <value-of select="src:string('htmlAttributes')"/>
-      <text>] = </text>
-      <value-of select="xcst:expression(.)"/>
+      <code:collection-initializer>
+         <code:string literal="true">htmlAttributes</code:string>
+         <code:expression value="{xcst:expression(.)}"/>
+      </code:collection-initializer>
    </template>
 
    <template match="a:with-options | a:*[@options]" mode="a:editor-additional-view-data">
-      <param name="indent" tunnel="yes"/>
 
       <if test="self::a:with-options">
          <call-template name="xcst:validate-attribs">
             <with-param name="optional" select="'for', 'name', 'options'"/>
             <with-param name="extension" select="true()"/>
          </call-template>
-         <call-template name="a:validate-for">
-            <with-param name="indent" select="$indent + 1" tunnel="yes"/>
-         </call-template>
+         <call-template name="a:validate-for"/>
       </if>
 
       <variable name="for" select="@for or self::a:with-options/../@for"/>
       <variable name="name" select="@name or self::a:with-options/../@name"/>
       <variable name="for-model" select="not($for or $name)"/>
 
-      <text>[</text>
-      <value-of select="src:string(concat(src:aux-variable('options'), ':'))"/>
-      <text> + </text>
-      <value-of select="a:fully-qualified-helper('InputInstructions')"/>
-      <text>.Name</text>
-      <if test="$for or $for-model">For</if>
-      <if test="$for-model">Model</if>
-      <text>(</text>
-      <call-template name="a:html-helper"/>
-      <if test="not($for-model)">
-         <text>, </text>
-         <choose>
-            <when test="$for">
-               <variable name="param" select="src:aux-variable(generate-id())"/>
-               <value-of select="$param"/>
-               <text> => </text>
-               <value-of select="$param, self::a:with-options/../@for/xcst:expression(.), @for/xcst:expression(.)" separator="."/>
-            </when>
-            <when test="$name">
-               <value-of select="self::a:with-options/../@name/src:expand-attribute(.), @name/src:expand-attribute(.)" separator="."/>
-            </when>
-         </choose>
-      </if>
-      <text>)] = </text>
-      <call-template name="a:options">
-         <with-param name="indent" select="$indent + 1" tunnel="yes"/>
-      </call-template>
+      <code:collection-initializer>
+         <code:add>
+            <code:string literal="true">
+               <value-of select="concat(src:aux-variable('options'), ':')"/>
+            </code:string>
+            <code:method-call name="Name{'For'[$for], 'ForModel'[$for-model]}">
+               <sequence select="a:helper-type('InputInstructions')"/>
+               <code:arguments>
+                  <call-template name="a:html-helper"/>
+                  <choose>
+                     <when test="$for">
+                        <variable name="param" select="src:aux-variable(generate-id())"/>
+                        <code:lambda>
+                           <code:parameters>
+                              <code:parameter name="{$param}"/>
+                           </code:parameters>
+                           <code:chain>
+                              <code:variable-reference name="{$param}"/>
+                              <if test="self::a:with-options/../@for">
+                                 <code:property-reference name="{../xcst:expression(@for)}">
+                                    <code:chain-reference/>
+                                 </code:property-reference>
+                              </if>
+                              <if test="@for">
+                                 <code:property-reference name="{xcst:expression(@for)}">
+                                    <code:chain-reference/>
+                                 </code:property-reference>
+                              </if>
+                           </code:chain>
+                        </code:lambda>
+                     </when>
+                     <when test="$name">
+                        <variable name="parts" as="element()+">
+                           <if test="self::a:with-options/../@name">
+                              <call-template name="src:expand-attribute">
+                                 <with-param name="attr" select="../@name"/>
+                              </call-template>
+                           </if>
+                           <if test="@name">
+                              <call-template name="src:expand-attribute">
+                                 <with-param name="attr" select="@name"/>
+                              </call-template>
+                           </if>
+                        </variable>
+                        <choose>
+                           <when test="count($parts) eq 1">
+                              <sequence select="$parts"/>
+                           </when>
+                           <otherwise>
+                              <code:method-call name="Join">
+                                 <code:type-reference name="String" namespace="System"/>
+                                 <code:arguments>
+                                    <code:string literal="true">.</code:string>
+                                    <sequence select="$parts"/>
+                                 </code:arguments>
+                              </code:method-call>
+                           </otherwise>
+                        </choose>
+                     </when>
+                  </choose>
+               </code:arguments>
+            </code:method-call>
+         </code:add>
+         <call-template name="a:options"/>
+      </code:collection-initializer>
    </template>
 
    <template match="a:member-template" mode="a:editor-additional-view-data">
-      <param name="indent" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="optional" select="'helper-name'"/>
@@ -827,86 +1007,127 @@
       <variable name="meta" as="element()">
          <xcst:delegate/>
       </variable>
-      <variable name="new-output" select="src:template-output($meta, .)"/>
-      <variable name="new-helper" select="(@helper-name/xcst:name(.), concat(src:aux-variable('model_helper'), '_', generate-id()))[1]"/>
 
-      <text>[</text>
-      <value-of select="src:string(src:aux-variable('member_template'))"/>
-      <text>]</text>
-      <text> = new </text>
-      <value-of select="src:global-identifier(concat('System.Action&lt;', src:global-identifier('System.Web.Mvc.HtmlHelper'), ', ', $new-output/@type, '>'))"/>
-      <text>((</text>
-      <value-of select="$new-helper, $new-output" separator=", "/>
-      <text>) => </text>
-      <call-template name="src:sequence-constructor">
-         <with-param name="indent" select="$indent + 1" tunnel="yes"/>
-         <with-param name="output" select="$new-output" tunnel="yes"/>
-         <with-param name="a:html-helper" select="$new-helper" tunnel="yes"/>
-      </call-template>
-      <text>)</text>
+      <variable name="new-output" select="src:template-output($meta, .)"/>
+
+      <variable name="new-helper" as="element()">
+         <code:variable-reference name="{(@helper-name/xcst:name(.), concat(src:aux-variable('model_helper'), '_', generate-id()))[1]}"/>
+      </variable>
+
+      <code:collection-initializer>
+         <code:string literal="true">
+            <value-of select="src:aux-variable('member_template')"/>
+         </code:string>
+         <code:new-object>
+            <code:type-reference name="Action" namespace="System">
+               <code:type-arguments>
+                  <code:type-reference name="HtmlHelper" namespace="System.Web.Mvc"/>
+                  <sequence select="$new-output/code:type-reference"/>
+               </code:type-arguments>
+            </code:type-reference>
+            <code:arguments>
+               <code:lambda void="true">
+                  <code:parameters>
+                     <code:parameter name="{$new-helper/@name}"/>
+                     <code:parameter name="{$new-output/src:reference/code:*/@name}"/>
+                  </code:parameters>
+                  <code:block>
+                     <call-template name="src:sequence-constructor">
+                        <with-param name="output" select="$new-output" tunnel="yes"/>
+                        <with-param name="a:html-helper" select="$new-helper" tunnel="yes"/>
+                     </call-template>
+                  </code:block>
+               </code:lambda>
+            </code:arguments>
+         </code:new-object>
+      </code:collection-initializer>
    </template>
 
    <!--
       ## Metadata
    -->
 
-   <template match="@display" mode="src:scaffold-column-attribute">
-      <next-match/>
-      <variable name="display" select="xcst:non-string(.)"/>
-      <variable name="scaffold" select="if ($display = ('view-only', 'edit-only', 'hidden')) then true() else xcst:boolean(.)"/>
-      <if test="$scaffold">
-         <call-template name="src:line-hidden"/>
-         <call-template name="src:new-line-indented"/>
-         <text>[</text>
-         <value-of select="src:global-identifier('Xcst.Web.Mvc.ShowFor')"/>
-         <text>(Display = </text>
-         <value-of select="src:boolean($display ne 'edit-only')"/>
-         <text>, Edit = </text>
-         <value-of select="src:boolean($display ne 'view-only')"/>
-         <text>)]</text>
-         <if test="$display eq 'hidden'">
-            <call-template name="src:new-line-indented"/>
-            <text>[</text>
-            <value-of select="src:global-identifier('System.Web.Mvc.HiddenInput')"/>
-            <text>(DisplayValue = false)]</text>
-         </if>
-      </if>
-   </template>
-
    <template match="c:type | c:member" mode="src:type-attribute-extra">
       <next-match/>
       <variable name="excluded" select="c:member[@a:skip-binding[xcst:boolean(.)]]/xcst:name(@name)"/>
       <if test="exists($excluded)">
-         <c:metadata name="{src:global-identifier('System.Web.Mvc.Bind')}"
-            value="Exclude = {src:string(string-join($excluded, ','))}"/>
+         <code:attribute>
+            <code:type-reference name="Bind" namespace="System.Web.Mvc"/>
+            <code:initializer>
+               <code:member-initializer name="Exclude">
+                  <code:string literal="true">
+                     <value-of select="string-join($excluded, ',')"/>
+                  </code:string>
+               </code:member-initializer>
+            </code:initializer>
+         </code:attribute>
       </if>
    </template>
 
    <template match="c:member" mode="src:member-attribute-extra">
       <next-match/>
-      <apply-templates select="@a:*" mode="a:src.member-attribute-extra"/>
+      <apply-templates select="@display, @a:*" mode="a:src.member-attribute-extra"/>
+   </template>
+
+   <template match="@display" mode="a:src.member-attribute-extra">
+      <next-match/>
+      <variable name="display" select="xcst:non-string(.)"/>
+      <variable name="scaffold" select="
+         if ($display = ('view-only', 'edit-only', 'hidden')) then true()
+         else xcst:boolean(.)"/>
+      <if test="$scaffold">
+         <code:attribute line-hidden="true">
+            <code:type-reference name="ShowFor" namespace="Xcst.Web.Mvc"/>
+            <code:initializer>
+               <code:member-initializer name="Display">
+                  <code:bool value="{$display ne 'edit-only'}"/>
+               </code:member-initializer>
+               <code:member-initializer name="Edit">
+                  <code:bool value="{$display ne 'view-only'}"/>
+               </code:member-initializer>
+            </code:initializer>
+         </code:attribute>
+         <if test="$display eq 'hidden'">
+            <code:attribute>
+               <code:type-reference name="HiddenInput" namespace="System.Web.Mvc"/>
+               <code:initializer>
+                  <code:member-initializer name="DisplayValue">
+                     <code:bool value="false"/>
+                  </code:member-initializer>
+               </code:initializer>
+            </code:attribute>
+         </if>
+      </if>
    </template>
 
    <template match="@a:file-extensions" mode="a:src.member-attribute-extra">
-      <variable name="setters" as="text()*">
-         <value-of select="src:verbatim-string(xcst:non-string(.))"/>
-         <call-template name="src:validation-setters">
-            <with-param name="name" select="node-name(.)"/>
-         </call-template>
-      </variable>
-      <c:metadata name="{src:global-identifier('Xcst.Web.Mvc.FileExtensionsAttribute')}"
-         value="{string-join($setters, ', ')}"/>
+      <code:attribute>
+         <code:type-reference name="FileExtensions" namespace="Xcst.Web.Mvc"/>
+         <code:arguments>
+            <code:string verbatim="true">
+               <value-of select="xcst:non-string(.)"/>
+            </code:string>
+         </code:arguments>
+         <code:initializer>
+            <call-template name="src:validation-arguments">
+               <with-param name="name" select="node-name(.)"/>
+            </call-template>
+         </code:initializer>
+      </code:attribute>
    </template>
 
    <template match="@a:file-max-length" mode="a:src.member-attribute-extra">
-      <variable name="setters" as="text()*">
-         <value-of select="src:integer(xcst:integer(.))"/>
-         <call-template name="src:validation-setters">
-            <with-param name="name" select="node-name(.)"/>
-         </call-template>
-      </variable>
-      <c:metadata name="{src:global-identifier('Xcst.Web.Mvc.FileMaxLengthAttribute')}"
-         value="{string-join($setters, ', ')}"/>
+      <code:attribute>
+         <code:type-reference name="FileMaxLength" namespace="Xcst.Web.Mvc"/>
+         <code:arguments>
+            <code:int value="{xcst:integer(.)}"/>
+         </code:arguments>
+         <code:initializer>
+            <call-template name="src:validation-arguments">
+               <with-param name="name" select="node-name(.)"/>
+            </call-template>
+         </code:initializer>
+      </code:attribute>
    </template>
 
    <template match="@a:file-extensions-message | @a:file-max-length-message | @a:skip-binding" mode="a:src.member-attribute-extra"/>
@@ -916,6 +1137,7 @@
    </template>
 
    <template match="a:display-name" mode="src:extension-instruction">
+      <param name="output" tunnel="yes"/>
       <param name="src:current-mode" as="xs:QName" required="yes" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
@@ -926,43 +1148,56 @@
       <call-template name="a:validate-for"/>
 
       <variable name="statement" select="$src:current-mode eq xs:QName('src:statement')"/>
-
       <variable name="for-model" select="empty((@for, @name))"/>
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('MetadataInstructions')"/>
-         <text>.DisplayName</text>
-         <if test="@for or $for-model">For</if>
-         <if test="$for-model">Model</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <if test="not($for-model)">
-            <text>, </text>
-            <choose>
-               <when test="@for">
-                  <variable name="param" select="src:aux-variable(generate-id())"/>
-                  <value-of select="$param"/>
-                  <text> => </text>
-                  <value-of select="$param, xcst:expression(@for)" separator="."/>
-               </when>
-               <when test="@name">
-                  <value-of select="src:expand-attribute(@name)"/>
-               </when>
-            </choose>
-         </if>
-         <text>)</text>
+
+      <variable name="expr" as="element()">
+         <code:method-call name="DisplayName{'For'[current()/@for], 'ForModel'[$for-model]}">
+            <sequence select="a:helper-type('MetadataInstructions')"/>
+            <code:arguments>
+               <call-template name="a:html-helper"/>
+               <if test="not($for-model)">
+                  <choose>
+                     <when test="@for">
+                        <variable name="param" select="src:aux-variable(generate-id())"/>
+                        <code:lambda>
+                           <code:parameters>
+                              <code:parameter name="{$param}"/>
+                           </code:parameters>
+                           <code:property-reference name="{xcst:expression(@for)}">
+                              <code:variable-reference name="{$param}"/>
+                           </code:property-reference>
+                        </code:lambda>
+                     </when>
+                     <when test="@name">
+                        <call-template name="src:expand-attribute">
+                           <with-param name="attr" select="@name"/>
+                        </call-template>
+                     </when>
+                  </choose>
+               </if>
+            </code:arguments>
+         </code:method-call>
       </variable>
+
       <choose>
          <when test="$statement">
-            <c:object value="{$expr}"/>
+            <code:method-call name="WriteString">
+               <sequence select="$output/src:reference/code:*"/>
+               <code:arguments>
+                  <sequence select="$expr"/>
+               </code:arguments>
+            </code:method-call>
          </when>
          <otherwise>
-            <value-of select="$expr"/>
+            <sequence select="$expr"/>
          </otherwise>
       </choose>
    </template>
 
    <template match="a:display-name" mode="xcst:extension-instruction">
-      <xcst:instruction as="System.String" expression="true"/>
+      <xcst:instruction expression="true">
+         <code:type-reference name="String" namespace="System"/>
+      </xcst:instruction>
    </template>
 
    <template match="a:display-text" mode="src:extension-instruction">
@@ -978,43 +1213,42 @@
 
       <variable name="statement" select="$src:current-mode eq xs:QName('src:statement')"/>
 
-      <variable name="expr">
-         <value-of select="a:fully-qualified-helper('MetadataInstructions')"/>
-         <text>.Display</text>
-         <value-of select="if ($statement) then 'Text' else 'String'"/>
-         <if test="@for">For</if>
-         <text>(</text>
-         <call-template name="a:html-helper"/>
-         <if test="$statement">
-            <text>, </text>
-            <value-of select="$output"/>
-         </if>
-         <text>, </text>
-         <choose>
-            <when test="@for">
-               <variable name="param" select="src:aux-variable(generate-id())"/>
-               <value-of select="$param"/>
-               <text> => </text>
-               <value-of select="$param, xcst:expression(@for)" separator="."/>
-            </when>
-            <otherwise>
-               <value-of select="(@name/src:expand-attribute(.), src:string(''))[1]"/>
-            </otherwise>
-         </choose>
-         <text>)</text>
-      </variable>
-      <choose>
-         <when test="$statement">
-            <c:void value="{$expr}"/>
-         </when>
-         <otherwise>
-            <value-of select="$expr"/>
-         </otherwise>
-      </choose>
+      <code:method-call name="Display{if ($statement) then 'Text' else 'String'}{'For'[current()/@for]}">
+         <sequence select="a:helper-type('MetadataInstructions')"/>
+         <code:arguments>
+            <call-template name="a:html-helper"/>
+            <if test="$statement">
+               <sequence select="$output/src:reference/code:*"/>
+            </if>
+            <choose>
+               <when test="@for">
+                  <variable name="param" select="src:aux-variable(generate-id())"/>
+                  <code:lambda>
+                     <code:parameters>
+                        <code:parameter name="{$param}"/>
+                     </code:parameters>
+                     <code:property-reference name="{xcst:expression(@for)}">
+                        <code:variable-reference name="{$param}"/>
+                     </code:property-reference>
+                  </code:lambda>
+               </when>
+               <when test="@name">
+                  <call-template name="src:expand-attribute">
+                     <with-param name="attr" select="@name"/>
+                  </call-template>
+               </when>
+               <otherwise>
+                  <code:string/>
+               </otherwise>
+            </choose>
+         </code:arguments>
+      </code:method-call>
    </template>
 
    <template match="a:display-text" mode="xcst:extension-instruction">
-      <xcst:instruction as="System.String" expression="true"/>
+      <xcst:instruction expression="true">
+         <code:type-reference name="String" namespace="System"/>
+      </xcst:instruction>
    </template>
 
    <!--
@@ -1032,35 +1266,56 @@
          <sequence select="error((), 'Element must have either @value or @as attributes.', src:error-object(.))"/>
       </if>
 
-      <variable name="new-helper" select="(@helper-name/xcst:name(.), concat(src:aux-variable('model_helper'), '_', generate-id()))[1]"/>
-      <variable name="type" select="@as/xcst:type(.)"/>
-      <call-template name="src:new-line-indented"/>
-      <text>var </text>
-      <value-of select="$new-helper"/>
-      <text> = </text>
-      <value-of select="a:fully-qualified-helper('HtmlHelperFactory')"/>
-      <text>.ForModel</text>
-      <if test="$type">
-         <value-of select="concat('&lt;', $type, '>')"/>
-      </if>
-      <text>(</text>
-      <call-template name="a:html-helper"/>
-      <text>, </text>
-      <value-of select="(@value/xcst:expression(.), concat('default(', ($type, 'object')[1], ')'))[1]"/>
-      <if test="@field-prefix">
-         <text>, htmlFieldPrefix: </text>
-         <value-of select="src:expand-attribute(@field-prefix)"/>
-      </if>
-      <if test="@with-params">
-         <text>, additionalViewData: </text>
-         <value-of select="xcst:expression(@with-params)"/>
-      </if>
-      <text>)</text>
-      <value-of select="$src:statement-delimiter"/>
-      <call-template name="src:sequence-constructor">
-         <with-param name="ensure-block" select="true()"/>
-         <with-param name="a:html-helper" select="$new-helper" tunnel="yes"/>
-      </call-template>
+      <variable name="new-helper" as="element()">
+         <code:variable-reference name="{(@helper-name/xcst:name(.), concat(src:aux-variable('model_helper'), '_', generate-id()))[1]}"/>
+      </variable>
+
+      <variable name="type" as="element()?">
+         <if test="@as">
+            <code:type-reference name="{xcst:type(@as)}"/>
+         </if>
+      </variable>
+
+      <code:block>
+         <code:variable name="{$new-helper/@name}">
+            <code:method-call name="ForModel">
+               <sequence select="a:helper-type('HtmlHelperFactory')"/>
+               <if test="$type">
+                  <code:type-arguments>
+                     <sequence select="$type"/>
+                  </code:type-arguments>
+               </if>
+               <code:arguments>
+                  <call-template name="a:html-helper"/>
+                  <choose>
+                     <when test="@value">
+                        <code:expression value="{xcst:expression(@value)}"/>
+                     </when>
+                     <otherwise>
+                        <code:default>
+                           <sequence select="($type, $src:object-type)[1]"/>
+                        </code:default>
+                     </otherwise>
+                  </choose>
+                  <if test="@field-prefix">
+                     <code:argument name="htmlFieldPrefix">
+                        <call-template name="src:expand-attribute">
+                           <with-param name="attr" select="@field-prefix"/>
+                        </call-template>
+                     </code:argument>
+                  </if>
+                  <if test="@with-params">
+                     <code:argument name="additionalViewData">
+                        <code:expression value="{xcst:expression(@with-params)}"/>
+                     </code:argument>
+                  </if>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
+         <call-template name="src:sequence-constructor">
+            <with-param name="a:html-helper" select="$new-helper" tunnel="yes"/>
+         </call-template>
+      </code:block>
    </template>
 
    <!--
@@ -1102,39 +1357,55 @@
    </template>
 
    <template match="c:module | c:package" mode="src:import-namespace-extra">
-      <param name="class" tunnel="yes"/>
+      <param name="package-manifest" required="yes" tunnel="yes"/>
 
       <next-match/>
       <if test="$a:href-fn">
-         <call-template name="src:new-line-indented"/>
-         <text>using static </text>
-         <value-of select="$class, a:functions-type-name(.)" separator="."/>
-         <value-of select="$src:statement-delimiter"/>
+         <code:import static="true">
+            <code:type-reference name="{a:functions-type-name(.)}">
+               <sequence select="$package-manifest/code:type-reference"/>
+            </code:type-reference>
+         </code:import>
       </if>
    </template>
 
-   <template match="c:module | c:package" mode="src:base-types" as="xs:string*">
+   <template match="c:module | c:package" mode="src:base-types" as="element(code:type-reference)*">
       <param name="a:directives" as="node()?" tunnel="yes"/>
 
       <variable name="base-types" select="
          if (exists($src:base-types)) then $src:base-types
-         else $a:base-types"/>
+         else $a:page-type"/>
 
       <choose>
          <when test="$a:directives/inherits">
-            <sequence select="string($a:directives/inherits)"/>
+            <code:type-reference name="{a:directives/inherits}"/>
          </when>
          <!--
             First condition is always true for pages.
             Second condition can be true for packages in App_Code.
          -->
-         <when test="exists($src:base-types) or (exists($a:base-types) and $a:directives/model)">
+         <when test="exists($src:base-types) or (exists($a:page-type) and $a:directives/model)">
             <choose>
                <!--
                   Second condition is always false for packages in App_Code.
                -->
-               <when test="$a:directives/model or $a:default-model">
-                  <sequence select="concat($base-types[1], '&lt;', ($a:directives/model, $a:default-model)[1], '>')"/>
+               <when test="$a:directives/model or $a:default-model or $a:default-model-dynamic">
+                  <code:type-reference>
+                     <sequence select="$base-types[1]/@*"/>
+                     <code:type-arguments>
+                        <choose>
+                           <when test="$a:directives/model">
+                              <code:type-reference name="{$a:directives/model}"/>
+                           </when>
+                           <when test="$a:default-model">
+                              <code:type-reference name="{$a:default-model}"/>
+                           </when>
+                           <when test="$a:default-model-dynamic">
+                              <code:type-reference name="Object" namespace="System" dynamic="true"/>
+                           </when>
+                        </choose>
+                     </code:type-arguments>
+                  </code:type-reference>
                </when>
                <otherwise>
                   <sequence select="$base-types[1]"/>
@@ -1144,12 +1415,11 @@
       </choose>
       <sequence select="$base-types[position() gt 1]"/>
       <if test="$a:directives/sessionstate">
-         <sequence select="src:global-identifier('Xcst.Web.ISessionStateAware')"/>
+         <code:type-reference name="ISessionStateAware" namespace="Xcst.Web"/>
       </if>
    </template>
 
    <template match="c:module | c:package" mode="src:infrastructure-extra">
-      <param name="indent" tunnel="yes"/>
       <param name="modules" tunnel="yes"/>
       <param name="a:directives" as="node()?" tunnel="yes"/>
 
@@ -1164,62 +1434,79 @@
          and $a:directives/sessionstate
          and $principal-module">
 
-         <value-of select="$src:new-line"/>
-         <call-template name="src:new-line-indented"/>
-         <value-of select="src:global-identifier('System.Web.SessionState.SessionStateBehavior')"/>
-         <text> </text>
-         <value-of select="src:global-identifier('Xcst.Web.ISessionStateAware'), 'SessionStateBehavior'" separator="."/>
-         <call-template name="src:open-brace"/>
-         <call-template name="src:new-line-indented">
-            <with-param name="increase" select="1"/>
-         </call-template>
-         <text>get { return </text>
-         <value-of select="src:global-identifier('System.Web.SessionState.SessionStateBehavior'), $a:directives/sessionstate" separator="."/>
-         <value-of select="$src:statement-delimiter"/>
-         <text> }</text>
-         <call-template name="src:close-brace"/>
+         <code:property name="SessionStateBehavior">
+            <code:type-reference name="SessionStateBehavior" namespace="System.Web.SessionState"/>
+            <code:implements-interface>
+               <code:type-reference name="ISessionStateAware" namespace="Xcst.Web"/>
+            </code:implements-interface>
+            <code:getter>
+               <code:block>
+                  <code:return>
+                     <code:field-reference name="{$a:directives/sessionstate}">
+                        <code:type-reference name="SessionStateBehavior" namespace="System.Web.SessionState"/>
+                     </code:field-reference>
+                  </code:return>
+               </code:block>
+            </code:getter>
+         </code:property>
       </if>
 
       <if test="$a:href-fn">
          <variable name="module-uri" select="document-uri(root(.))"/>
          <variable name="relative-uri" select="src:make-relative-uri($a:application-uri, $module-uri)"/>
          <variable name="functions-type" select="a:functions-type-name(.)"/>
-         <value-of select="$src:new-line"/>
-         <call-template name="src:new-line-indented"/>
-         <text>internal static class </text>
-         <value-of select="$functions-type"/>
-         <call-template name="src:open-brace"/>
-         <if test="not(starts-with($relative-uri, '..'))">
-            <value-of select="$src:new-line"/>
-            <call-template name="src:new-line-indented">
-               <with-param name="increase" select="1"/>
-            </call-template>
-            <text>static readonly string BasePath = </text>
-            <value-of select="src:global-identifier('System.Web.VirtualPathUtility')"/>
-            <text>.ToAbsolute(</text>
-            <value-of select="src:verbatim-string(concat('~/', $relative-uri))"/>
-            <text>)</text>
-            <value-of select="$src:statement-delimiter"/>
-            <value-of select="$src:new-line"/>
-            <call-template name="src:new-line-indented">
-               <with-param name="increase" select="1"/>
-            </call-template>
-            <text>public static string Href(string path, params object[] pathParts)</text>
-            <call-template name="src:open-brace"/>
-            <call-template name="src:new-line-indented">
-               <with-param name="increase" select="2"/>
-            </call-template>
-            <text>return </text>
-            <value-of select="a:fully-qualified-helper('UrlUtil')"/>
-            <text>.GenerateClientUrl(</text>
-            <value-of select="$functions-type, 'BasePath'" separator="."/>
-            <text>, path, pathParts)</text>
-            <value-of select="$src:statement-delimiter"/>
-            <call-template name="src:close-brace">
-               <with-param name="indent" select="$indent + 1" tunnel="yes"/>
-            </call-template>
-         </if>
-         <call-template name="src:close-brace"/>
+
+         <code:type name="{$functions-type}" extensibility="static" visibility="internal">
+            <code:members>
+               <if test="not(starts-with($relative-uri, '..'))">
+                  <code:field name="BasePath" readonly="true" extensibility="static">
+                     <code:type-reference name="String" namespace="System"/>
+                     <code:expression>
+                        <code:method-call name="ToAbsolute">
+                           <code:type-reference name="VirtualPathUtility" namespace="System.Web"/>
+                           <code:arguments>
+                              <code:string verbatim="true">
+                                 <value-of select="concat('~/', $relative-uri)"/>
+                              </code:string>
+                           </code:arguments>
+                        </code:method-call>
+                     </code:expression>
+                  </code:field>
+                  <code:method name="Href" extensibility="static" visibility="public">
+                     <code:type-reference name="String" namespace="System"/>
+                     <variable name="path-ref" as="element()">
+                        <code:variable-reference name="path"/>
+                     </variable>
+                     <variable name="pathParts-ref" as="element()">
+                        <code:variable-reference name="pathParts"/>
+                     </variable>
+                     <code:parameters>
+                        <code:parameter name="{$path-ref/@name}">
+                           <code:type-reference name="String" namespace="System"/>
+                        </code:parameter>
+                        <code:parameter name="{$pathParts-ref/@name}" params="true">
+                           <code:type-reference array-dimensions="1">
+                              <sequence select="$src:object-type"/>
+                           </code:type-reference>
+                        </code:parameter>
+                     </code:parameters>
+                     <code:block>
+                        <code:return>
+                           <code:method-call name="GenerateClientUrl">
+                              <sequence select="a:helper-type('UrlUtil')"/>
+                              <code:arguments>
+                                 <code:field-reference name="BasePath">
+                                    <code:type-reference name="{$functions-type}"/>
+                                 </code:field-reference>
+                                 <sequence select="$path-ref, $pathParts-ref"/>
+                              </code:arguments>
+                           </code:method-call>
+                        </code:return>
+                     </code:block>
+                  </code:method>
+               </if>
+            </code:members>
+         </code:type>
       </if>
    </template>
 
@@ -1233,6 +1520,14 @@
       ## Helpers
    -->
 
+   <template name="a:validate-for">
+      <param name="attribs" select="@name" as="attribute()*"/>
+
+      <if test="@for and $attribs">
+         <sequence select="error((), concat('@for and @', $attribs[1]/local-name(), ' attributes are mutually exclusive.'), src:error-object(.))"/>
+      </if>
+   </template>
+
    <function name="a:input-type" as="xs:string?">
       <param name="node" as="node()"/>
       <param name="avt" as="xs:boolean"/>
@@ -1244,41 +1539,40 @@
       "/>
    </function>
 
-   <function name="a:src.input-type" as="xs:string">
+   <template name="a:src.input-type">
       <param name="type" as="xs:string?"/>
-      <param name="string" as="xs:string"/>
+      <param name="avt" as="attribute()?"/>
 
       <choose>
          <when test="$type instance of xs:string">
-            <sequence select="src:verbatim-string($type)"/>
+            <code:string verbatim="true">
+               <value-of select="$type"/>
+            </code:string>
          </when>
          <otherwise>
-            <sequence select="$string"/>
+            <call-template name="src:expand-attribute">
+               <with-param name="attr" select="$avt"/>
+            </call-template>
          </otherwise>
       </choose>
-   </function>
-
-   <template name="a:validate-for">
-      <param name="attribs" select="@name" as="attribute()*"/>
-
-      <if test="@for and $attribs">
-         <sequence select="error((), concat('@for and @', $attribs[1]/local-name(), ' attributes are mutually exclusive.'), src:error-object(.))"/>
-      </if>
    </template>
 
    <template name="a:html-helper">
-      <param name="a:html-helper" as="xs:string?" tunnel="yes"/>
+      <param name="a:html-helper" as="element()?" tunnel="yes"/>
 
       <choose>
          <when test="$a:html-helper">
-            <value-of select="$a:html-helper"/>
+            <sequence select="$a:html-helper"/>
          </when>
          <otherwise>
-            <text>((</text>
-            <value-of select="src:global-identifier('Xcst.Web.Mvc.XcstViewPage')"/>
-            <text>)</text>
-            <value-of select="$src:context-field"/>
-            <text>.TopLevelPackage).Html</text>
+            <code:property-reference name="Html">
+               <code:cast>
+                  <code:type-reference name="XcstViewPage" namespace="Xcst.Web.Mvc"/>
+                  <code:property-reference name="TopLevelPackage">
+                     <sequence select="$src:context-field/src:reference/code:*"/>
+                  </code:property-reference>
+               </code:cast>
+            </code:property-reference>
          </otherwise>
       </choose>
    </template>
@@ -1291,40 +1585,73 @@
       <param name="omit-param" select="false()"/>
 
       <if test="exists(($attributes, $class, $merge-attributes, $bool-attributes))">
-         <if test="not($omit-param)">
-            <text>, htmlAttributes: </text>
-         </if>
-         <text>new </text>
-         <value-of select="a:fully-qualified-helper('HtmlAttributeDictionary')"/>
-         <text>(</text>
-         <value-of select="$attributes/xcst:expression(.)"/>
-         <text>)</text>
-         <if test="$class">
-            <text>.AddCssClass(</text>
-            <value-of select="src:expand-attribute($class)"/>
-            <text>)</text>
-         </if>
-         <for-each select="$merge-attributes">
-            <text>.MergeAttribute(</text>
-            <value-of select="src:string(local-name())"/>
-            <text>, </text>
-            <value-of select="src:expand-attribute(.)"/>
-            <text>)</text>
-         </for-each>
-         <for-each select="$bool-attributes">
-            <text>.MergeBoolean(</text>
-            <value-of select="src:string(local-name())"/>
-            <text>, </text>
-            <value-of select="src:boolean(xcst:boolean(., true()), src:expand-attribute(.))"/>
-            <text>)</text>
-         </for-each>
+         <variable name="expr" as="element()">
+            <code:chain>
+               <code:new-object>
+                  <sequence select="a:helper-type('HtmlAttributeDictionary')"/>
+                  <if test="$attributes">
+                     <code:arguments>
+                        <code:expression value="{xcst:expression($attributes)}"/>
+                     </code:arguments>
+                  </if>
+               </code:new-object>
+               <if test="$class">
+                  <code:method-call name="AddCssClass">
+                     <code:chain-reference/>
+                     <code:arguments>
+                        <call-template name="src:expand-attribute">
+                           <with-param name="attr" select="$class"/>
+                        </call-template>
+                     </code:arguments>
+                  </code:method-call>
+               </if>
+               <for-each select="$merge-attributes">
+                  <code:method-call name="MergeAttribute">
+                     <code:chain-reference/>
+                     <code:arguments>
+                        <code:string literal="true">
+                           <value-of select="local-name()"/>
+                        </code:string>
+                        <call-template name="src:expand-attribute">
+                           <with-param name="attr" select="."/>
+                        </call-template>
+                     </code:arguments>
+                  </code:method-call>
+               </for-each>
+               <for-each select="$bool-attributes">
+                  <code:method-call name="MergeBoolean">
+                     <code:chain-reference/>
+                     <code:arguments>
+                        <code:string literal="true">
+                           <value-of select="local-name()"/>
+                        </code:string>
+                        <call-template name="src:boolean">
+                           <with-param name="bool" select="xcst:boolean(., true())"/>
+                           <with-param name="avt" select="."/>
+                        </call-template>
+                     </code:arguments>
+                  </code:method-call>
+               </for-each>
+            </code:chain>
+         </variable>
+
+         <choose>
+            <when test="not($omit-param)">
+               <code:argument name="htmlAttributes">
+                  <sequence select="$expr"/>
+               </code:argument>
+            </when>
+            <otherwise>
+               <sequence select="$expr"/>
+            </otherwise>
+         </choose>
       </if>
    </template>
 
-   <function name="a:fully-qualified-helper" as="xs:string">
+   <function name="a:helper-type" as="element(code:type-reference)">
       <param name="helper" as="xs:string"/>
 
-      <sequence select="concat(src:global-identifier('Xcst.Web.Runtime'), '.', $helper)"/>
+      <code:type-reference name="{$helper}" namespace="Xcst.Web.Runtime"/>
    </function>
 
 </stylesheet>

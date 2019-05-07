@@ -142,10 +142,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.48.0\lib\net46\Xcst.Compiler.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Compiler.0.100.0\lib\net46\Xcst.Compiler.dll</HintPath>
     </Reference>
     <Reference Include="Xcst.Runtime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Runtime.0.48.0\lib\net46\Xcst.Runtime.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Runtime.0.100.0\lib\net46\Xcst.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>
@@ -194,6 +194,7 @@
     <None Include="Extension\Directives\inherits.type.i.xcst" />
     <None Include="Extension\Directives\inherits_model.mutex.i.xcst" />
     <None Include="Extension\Directives\model.type.i.xcst" />
+    <None Include="Extension\DisplayName\MemberName.c.xcst" />
     <None Include="Extension\DisplayName\TypeInference.c.xcst" />
     <None Include="Extension\DisplayText\TypeInference.c.xcst" />
     <None Include="Extension\Display\Templates\Enum\FormatStringEditAndDisplayName.c.xcst" />
@@ -237,6 +238,7 @@
     <None Include="Extension\Input\FileOmitValue.c.xcst" />
     <None Include="Extension\Input\NoCheckBox.c.xcst" />
     <None Include="Extension\Input\Value.c.xcst" />
+    <None Include="Extension\Model\HelperVariableScope.i.xcst" />
     <None Include="Extension\Model\model.field-prefix.type.c.xcst" />
     <None Include="Extension\RadioButton\Checked.c.xcst" />
     <None Include="Extension\Select\DynamicListEmpty.c.xcst" />
