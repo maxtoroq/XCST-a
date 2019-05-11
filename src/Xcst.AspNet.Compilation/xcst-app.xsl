@@ -1360,7 +1360,7 @@
       <param name="package-manifest" required="yes" tunnel="yes"/>
 
       <next-match/>
-      <if test="$a:href-fn">
+      <if test="$a:href-fn and a:href-function-base(.)">
          <code:import static="true">
             <code:type-reference name="{a:functions-type-name(.)}">
                <sequence select="$package-manifest/code:type-reference"/>
@@ -1452,13 +1452,13 @@
       </if>
 
       <if test="$a:href-fn">
-         <variable name="module-uri" select="document-uri(root(.))"/>
-         <variable name="relative-uri" select="src:make-relative-uri($a:application-uri, $module-uri)"/>
-         <variable name="functions-type" select="a:functions-type-name(.)"/>
+         <variable name="relative-uri" select="a:href-function-base(.)"/>
 
-         <code:type name="{$functions-type}" extensibility="static" visibility="internal">
-            <code:members>
-               <if test="not(starts-with($relative-uri, '..'))">
+         <if test="$relative-uri">
+            <variable name="functions-type" select="a:functions-type-name(.)"/>
+
+            <code:type name="{$functions-type}" extensibility="static" visibility="internal">
+               <code:members>
                   <code:field name="BasePath" readonly="true" extensibility="static">
                      <code:type-reference name="String" namespace="System"/>
                      <code:expression>
@@ -1504,9 +1504,9 @@
                         </code:return>
                      </code:block>
                   </code:method>
-               </if>
-            </code:members>
-         </code:type>
+               </code:members>
+            </code:type>
+         </if>
       </if>
    </template>
 
@@ -1514,6 +1514,14 @@
       <param name="module" as="element()"/>
 
       <sequence select="concat('__xcst_functions_', generate-id($module))"/>
+   </function>
+
+   <function name="a:href-function-base" as="xs:anyURI?">
+      <param name="module" as="element()"/>
+
+      <variable name="module-uri" select="document-uri(root($module))"/>
+      <variable name="relative-uri" select="src:make-relative-uri($a:application-uri, $module-uri)"/>
+      <sequence select="$relative-uri[not(starts-with(., '..'))]"/>
    </function>
 
    <!--
