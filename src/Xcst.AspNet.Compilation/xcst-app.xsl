@@ -890,21 +890,39 @@
             <apply-templates select="." mode="a:editor-additional-view-data"/>
          </for-each>
       </variable>
-      <if test="@with-params or $inits">
+      <variable name="with-params" select="@with-params/xcst:expression(.)"/>
+      <if test="$with-params or $inits">
          <code:argument name="additionalViewData">
-            <code:new-object>
-               <code:type-reference name="RouteValueDictionary" namespace="System.Web.Routing"/>
-               <if test="@with-params">
-                  <code:arguments>
-                     <sequence select="xcst:expression(@with-params)"/>
-                  </code:arguments>
-               </if>
-               <if test="$inits">
-                  <code:collection-initializer>
-                     <sequence select="$inits"/>
-                  </code:collection-initializer>
-               </if>
-            </code:new-object>
+            <choose>
+               <when test="$with-params and empty($inits)">
+                  <code:expression value="{$with-params}"/>
+               </when>
+               <otherwise>
+                  <code:new-object>
+                     <code:type-reference name="Dictionary" namespace="System.Collections.Generic">
+                        <code:type-arguments>
+                           <code:type-reference name="String" namespace="System"/>
+                           <code:type-reference name="Object" namespace="System"/>
+                        </code:type-arguments>
+                     </code:type-reference>
+                     <if test="$with-params">
+                        <code:arguments>
+                           <code:method-call name="ObjectToDictionary">
+                              <code:type-reference name="HtmlHelper" namespace="System.Web.Mvc"/>
+                              <code:arguments>
+                                 <code:expression value="{$with-params}"/>
+                              </code:arguments>
+                           </code:method-call>
+                        </code:arguments>
+                     </if>
+                     <if test="$inits">
+                        <code:collection-initializer>
+                           <sequence select="$inits"/>
+                        </code:collection-initializer>
+                     </if>
+                  </code:new-object>
+               </otherwise>
+            </choose>
          </code:argument>
       </if>
    </template>
