@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Xcst.Runtime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Runtime.0.101.0\lib\net46\Xcst.Runtime.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Runtime.0.102.0\lib\net46\Xcst.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
