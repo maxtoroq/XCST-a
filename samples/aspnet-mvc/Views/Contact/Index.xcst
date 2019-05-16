@@ -7,7 +7,7 @@
 
    <c:import href='../Shared/_Layout.xcst'/>
 
-   <c:param name='sent' value='false' as='bool'/>
+   <c:param name='sent' as='bool'/>
 
    <c:variable name='title'>Contact Us</c:variable>
 
@@ -19,12 +19,12 @@
             <c:text>Thanks for contacting us. We'll get back to you shortly.</c:text>
          </div>
       </c:if>
-      <form method='post' class='form-horizontal'>
+      <form method='post'>
          <a:anti-forgery-token/>
          <a:validation-summary/>
          <a:editor with-params='new { labelColumnClass = "col-md-3", fieldColumnClass = "col-md-9" }'/>
-         <div class='form-group'>
-            <div class='col-md-offset-3 col-md-9'>
+         <div class='form-group row'>
+            <div class='offset-md-3 col-md-9'>
                <button type='submit' class='btn btn-primary'>Send</button>
             </div>
          </div>

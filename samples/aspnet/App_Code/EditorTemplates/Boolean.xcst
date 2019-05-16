@@ -8,7 +8,7 @@
    <c:import-namespace ns='System'/>
    <c:import-namespace ns='System.Globalization'/>
 
-   <c:param name='htmlAttributes' as='object'/>
+   <c:param name='htmlAttributes'/>
 
    <c:variable name='modelValue' value='(ViewData.ModelMetadata.Model != null) ?
       Convert.ToBoolean(ViewData.ModelMetadata.Model, CultureInfo.InvariantCulture)
@@ -24,9 +24,9 @@
             </a:select>
          </c:when>
          <c:otherwise>
-            <div class='checkbox'>
-               <label>
-                  <a:check-box checked='{modelValue.GetValueOrDefault()}' attributes='htmlAttributes'/>
+            <div class='form-check'>
+               <label class='form-check-label'>
+                  <a:check-box checked='{modelValue.GetValueOrDefault()}' class='form-check-input' attributes='htmlAttributes'/>
                </label>
             </div>
          </c:otherwise>

@@ -32,10 +32,10 @@
                            <c:evaluate-delegate delegate='memberTemplate'/>
                         </c:when>
                         <c:otherwise>
-                           <div class='form-group'>
-                              <a:label name='{propertyName}' class='control-label {labelColumnClass}'/>
+                           <div class='form-group row'>
+                              <a:label name='{propertyName}' class='col-form-label {labelColumnClass}'/>
                               <div class='{fieldColumnClass}'>
-                                 <p class='form-control-static'>
+                                 <p class='form-control-plaintext'>
                                     <a:display name='{propertyName}' template='{displayTemplate}'/>
                                  </p>
                               </div>

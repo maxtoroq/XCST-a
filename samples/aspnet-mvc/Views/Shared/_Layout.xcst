@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<c:module version='1.0' language='C#'
-   xmlns:c='http://maxtoroq.github.io/XCST'>
+<c:module version='1.0' language='C#' xmlns:c='http://maxtoroq.github.io/XCST'>
 
    <c:import-namespace ns='System'/>
 
-   <c:variable name='title' value='null' as='string'/>
+   <c:variable name='title' as='string'/>
    <c:variable name='siteTitle'>XCST View Engine</c:variable>
 
    <c:output method='html' version='5'/>
@@ -15,29 +14,25 @@
             <title>
                <c:value-of value='new[] { title, siteTitle }' separator=' — '/>
             </title>
-            <link href='/Content/bootstrap.min.css' rel='stylesheet'/>
+            <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css' rel='stylesheet'/>
             <link href='/Content/site.css' rel='stylesheet'/>
             <c:call-template name='head'/>
          </head>
          <body>
-            <header>
-               <nav class='navbar navbar-inverse navbar-static-top'>
+            <header class='mb-4'>
+               <nav class='navbar navbar-expand-md navbar-dark bg-dark'>
                   <div class='container'>
-                     <div class='navbar-header'>
-                        <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='body > header .navbar-collapse'>
-                           <span class='icon-bar'></span>
-                           <span class='icon-bar'></span>
-                           <span class='icon-bar'></span>
-                        </button>
-                        <a href='/' class='navbar-brand'>{siteTitle}</a>
-                     </div>
+                     <a href='/' class='navbar-brand'>{siteTitle}</a>
+                     <button type='button' class='navbar-toggler' data-toggle='collapse' data-target='body > header .navbar-collapse'>
+                        <span class='navbar-toggler-icon'></span>
+                     </button>
                      <div class='navbar-collapse collapse'>
-                        <ul class='nav navbar-nav'>
-                           <li>
-                              <a href='/'>Home</a>
+                        <ul class='navbar-nav'>
+                           <li class='nav-item'>
+                              <a href='/' class='nav-link'>Home</a>
                            </li>
-                           <li>
-                              <a href='{Url.Action("", "Contact")}'>Contact</a>
+                           <li class='nav-item'>
+                              <a href='{Url.Action("", "Contact")}' class='nav-link'>Contact</a>
                            </li>
                         </ul>
                      </div>
@@ -54,7 +49,6 @@
             <script src='/Scripts/jquery-1.12.4.min.js'></script>
             <script src='/Scripts/jquery.validate.min.js'></script>
             <script src='/Scripts/jquery.validate.unobtrusive.min.js'></script>
-            <script src='/Scripts/bootstrap.min.js'></script>
             <c:call-template name='scripts'/>
          </body>
       </html>
