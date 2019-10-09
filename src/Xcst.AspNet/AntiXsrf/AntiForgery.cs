@@ -41,6 +41,7 @@ namespace System.Web.Helpers {
       /// This method has a side effect: it may set a response cookie.
       /// </remarks>
 
+      [EditorBrowsable(EditorBrowsableState.Never)]
       public static void GetHtml(HttpContextBase httpContext, XcstWriter output) {
 
          if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
