@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using static Xcst.AssemblyInfo;
+using static Xcst.Web.AssemblyInfo;
 
 [assembly: AssemblyProduct("XCST")]
 [assembly: AssemblyCompany("http://maxtoroq.github.io/XCST/")]
@@ -9,11 +9,11 @@ using static Xcst.AssemblyInfo;
 [assembly: AssemblyFileVersion(XcstAssemblyFileVersion)]
 [assembly: AssemblyInformationalVersion(XcstAssemblyInformationalVersion)]
 
-namespace Xcst {
+namespace Xcst.Web {
 
    partial class AssemblyInfo {
 
-      public const string XcstMajorMinor = "0.64";
+      public const string XcstMajorMinor = "0.65";
       public const string XcstAssemblyVersion = "1.0.0";
       public const string XcstAssemblyFileVersion = XcstMajorMinor + "." + XcstPatch;
       public const string XcstAssemblyInformationalVersion = XcstAssemblyFileVersion;

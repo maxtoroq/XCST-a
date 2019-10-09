@@ -10,7 +10,7 @@ using PreApplicationStartCode = Xcst.Web.Mvc.PreApplicationStartCode;
 [assembly: CLSCompliant(true)]
 [assembly: PreApplicationStartMethod(typeof(PreApplicationStartCode), nameof(PreApplicationStartCode.Start))]
 
-namespace Xcst {
+namespace Xcst.Web {
 
    partial class AssemblyInfo {
 

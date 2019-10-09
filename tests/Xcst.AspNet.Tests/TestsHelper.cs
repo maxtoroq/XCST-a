@@ -24,7 +24,7 @@ namespace Xcst.Web.Tests {
 
       static readonly XcstCompilerFactory CompilerFactory = new XcstCompilerFactory();
 
-      static readonly QualifiedName InitialName = new QualifiedName("initial-template", "http://maxtoroq.github.io/XCST");
+      static readonly QualifiedName InitialName = new QualifiedName("initial-template", XmlNamespaces.Xcst);
       static readonly QualifiedName ExpectedName = new QualifiedName("expected");
 
       static TestsHelper() {

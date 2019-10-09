@@ -14,8 +14,8 @@
 
 using System;
 using System.IO;
-using Xcst;
 using Xcst.Compiler;
+using Xcst.Web;
 
 [assembly: XcstExtension(XmlNamespaces.XcstApplication, typeof(Xcst.Web.ExtensionLoader))]
 

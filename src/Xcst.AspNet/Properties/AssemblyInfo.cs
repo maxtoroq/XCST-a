@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
 
-namespace Xcst {
+namespace Xcst.Web {
 
    partial class AssemblyInfo {
 
