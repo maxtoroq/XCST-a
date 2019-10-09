@@ -2,9 +2,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 
-namespace System.ComponentModel {
+namespace System.Web.Mvc {
 
    /// <summary>
    /// Wrapper for AttributeCollection to provide generic collection implementation.
