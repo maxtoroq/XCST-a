@@ -29,15 +29,11 @@ namespace Xcst.Web {
 
       static IHttpHandler CreateBuiltInHandler(object instance) {
 
-         XcstViewPage viewPage = instance as XcstViewPage;
-
-         if (instance != null) {
+         if (instance is XcstViewPage viewPage) {
             return new XcstViewPageHandler(viewPage);
          }
 
-         XcstPage page = instance as XcstPage;
-
-         if (instance != null) {
+         if (instance is XcstPage page) {
             return new XcstPageHandler(page);
          }
 
