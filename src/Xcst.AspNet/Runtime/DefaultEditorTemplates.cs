@@ -151,9 +151,9 @@ namespace Xcst.Web.Runtime {
       static IDictionary<string, object> CreateHtmlAttributes(HtmlHelper html, string className, string inputType = null) {
 
          object htmlAttributesObject = html.ViewData["htmlAttributes"];
-         var htmlAttributesDict = htmlAttributesObject as IDictionary<string, object>;
 
-         var htmlAttributes = (htmlAttributesDict != null) ? new HtmlAttributeDictionary(htmlAttributesDict)
+         HtmlAttributeDictionary htmlAttributes =
+            (htmlAttributesObject is IDictionary<string, object> htmlAttributesDict) ? new HtmlAttributeDictionary(htmlAttributesDict)
             : (htmlAttributesObject != null) ? new HtmlAttributeDictionary(htmlAttributesObject)
             : new HtmlAttributeDictionary();
 
@@ -314,13 +314,13 @@ namespace Xcst.Web.Runtime {
 #if !ASPNETLIB
       public static void ColorInputTemplate(HtmlHelper html, XcstWriter output) {
 
-         if (html.ViewData.Model is Color) {
+         ViewDataDictionary viewData = html.ViewData;
 
-            Color color = (Color)html.ViewData.Model;
+         if (viewData.Model is Color color) {
 
-            if (html.ViewData.TemplateInfo.FormattedModelValue == html.ViewData.ModelMetadata.Model) {
+            if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelMetadata.Model) {
 
-               html.ViewData.TemplateInfo.FormattedModelValue =
+               viewData.TemplateInfo.FormattedModelValue =
                   String.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
             }
          }

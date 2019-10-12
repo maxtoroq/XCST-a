@@ -73,9 +73,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as BinaryExpressionFingerprint;
-
-         return (other != null)
+         return (obj is BinaryExpressionFingerprint other)
             && Equals(this.Method, other.Method)
             && this.Equals(other);
       }
@@ -103,9 +101,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as ConditionalExpressionFingerprint;
-
-         return (other != null)
+         return (obj is ConditionalExpressionFingerprint other)
             && this.Equals(other);
       }
    }
@@ -129,9 +125,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as ConstantExpressionFingerprint;
-
-         return (other != null)
+         return (obj is ConstantExpressionFingerprint other)
             && this.Equals(other);
       }
    }
@@ -151,9 +145,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as DefaultExpressionFingerprint;
-
-         return (other != null)
+         return (obj is DefaultExpressionFingerprint other)
             && this.Equals(other);
       }
    }
@@ -179,9 +171,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as IndexExpressionFingerprint;
-
-         return (other != null)
+         return (obj is IndexExpressionFingerprint other)
             && Equals(this.Indexer, other.Indexer)
             && this.Equals(other);
       }
@@ -207,9 +197,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as LambdaExpressionFingerprint;
-
-         return (other != null)
+         return (obj is LambdaExpressionFingerprint other)
             && this.Equals(other);
       }
    }
@@ -232,9 +220,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as MemberExpressionFingerprint;
-
-         return (other != null)
+         return (obj is MemberExpressionFingerprint other)
             && Equals(this.Member, other.Member)
             && this.Equals(other);
       }
@@ -266,9 +252,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as MethodCallExpressionFingerprint;
-
-         return (other != null)
+         return (obj is MethodCallExpressionFingerprint other)
             && Equals(this.Method, other.Method)
             && this.Equals(other);
       }
@@ -297,9 +281,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as ParameterExpressionFingerprint;
-
-         return (other != null)
+         return (obj is ParameterExpressionFingerprint other)
             && (this.ParameterIndex == other.ParameterIndex)
             && this.Equals(other);
       }
@@ -328,9 +310,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as TypeBinaryExpressionFingerprint;
-
-         return (other != null)
+         return (obj is TypeBinaryExpressionFingerprint other)
             && Equals(this.TypeOperand, other.TypeOperand)
             && this.Equals(other);
       }
@@ -362,9 +342,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override bool Equals(object obj) {
 
-         var other = obj as UnaryExpressionFingerprint;
-
-         return (other != null)
+         return (obj is UnaryExpressionFingerprint other)
             && Equals(this.Method, other.Method)
             && this.Equals(other);
       }

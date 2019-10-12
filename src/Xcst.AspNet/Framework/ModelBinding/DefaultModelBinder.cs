@@ -747,9 +747,7 @@ namespace System.Web.Mvc {
 
          if (modelList.Count == 0) {
 
-            IEnumerableValueProvider enumerableValueProvider = bindingContext.ValueProvider as IEnumerableValueProvider;
-
-            if (enumerableValueProvider != null) {
+            if (bindingContext.ValueProvider is IEnumerableValueProvider enumerableValueProvider) {
 
                IDictionary<string, string> keys = enumerableValueProvider.GetKeysFromPrefix(bindingContext.ModelName);
 
@@ -809,7 +807,7 @@ namespace System.Web.Mvc {
                   // if the item was not a T, some conversion failed. the error message will be propagated,
                   // but in the meanwhile we need to make a placeholder element in the array.
 
-                  T castItem = (item is T) ? (T)item : default(T);
+                  T castItem = (item is T itemT) ? itemT : default(T);
                   collection.Add(castItem);
                }
             }
@@ -827,13 +825,12 @@ namespace System.Web.Mvc {
 
             foreach (KeyValuePair<object, object> item in newContents) {
 
-               if (item.Key is TKey) {
+               if (item.Key is TKey castKey) {
 
                   // if the item was not a T, some conversion failed. the error message will be propagated,
                   // but in the meanwhile we need to make a placeholder element in the dictionary.
 
-                  TKey castKey = (TKey)item.Key; // this cast shouldn't fail
-                  TValue castValue = (item.Value is TValue) ? (TValue)item.Value : default(TValue);
+                  TValue castValue = (item.Value is TValue valueT) ? valueT : default(TValue);
                   dictionary[castKey] = castValue;
                }
             }

@@ -56,9 +56,7 @@ namespace Xcst.Web {
             return null;
          }
 
-         XcstPage page = instance as XcstPage;
-
-         if (page != null) {
+         if (instance is XcstPage page) {
             page.VirtualPath = virtualPath;
             page.PathInfo = pathInfo;
          }

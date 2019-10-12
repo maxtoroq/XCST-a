@@ -76,16 +76,13 @@ namespace Xcst.Web.Mvc {
 
       static void AddFileDependencies(object instance, HttpResponseBase response) {
 
-         IFileDependent fileDependent = instance as IFileDependent;
+         if (instance is IFileDependent fileDependent) {
 
-         if (fileDependent == null) {
-            return;
-         }
+            string[] files = fileDependent.FileDependencies;
 
-         string[] files = fileDependent.FileDependencies;
-
-         if (files != null) {
-            response.AddFileDependencies(files);
+            if (files != null) {
+               response.AddFileDependencies(files);
+            }
          }
       }
    }

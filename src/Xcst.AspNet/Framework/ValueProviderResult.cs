@@ -68,9 +68,7 @@ namespace System.Web.Mvc {
 
             // If the source type implements IConvertible, try that first
 
-            IConvertible convertible = value as IConvertible;
-
-            if (convertible != null) {
+            if (value is IConvertible convertible) {
                try {
                   return convertible.ToType(destinationType, culture);
                } catch {

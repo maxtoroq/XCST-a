@@ -31,9 +31,7 @@ namespace Xcst.Web {
                    return null;
                 }
 
-                XElement e = n as XElement;
-
-                if (e != null) {
+                if (n is XElement e) {
                    return NormalizeElement(e);
                 }
 
@@ -50,9 +48,7 @@ namespace Xcst.Web {
             return null;
          }
 
-         XElement e = node as XElement;
-
-         if (e != null) {
+         if (node is XElement e) {
             return NormalizeElement(e);
          }
          // Only thing left is XCData and XText, so clone them

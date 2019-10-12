@@ -26,9 +26,7 @@ namespace System.Web.Helpers.Claims {
 
       static ClaimsIdentity TryConvert<TClaimsIdentity, TClaim>(IIdentity identity) where TClaimsIdentity : class, IIdentity {
 
-         TClaimsIdentity castClaimsIdentity = identity as TClaimsIdentity;
-
-         return (castClaimsIdentity != null) ?
+         return (identity is TClaimsIdentity castClaimsIdentity) ?
             new ClaimsIdentityImpl<TClaimsIdentity, TClaim>(castClaimsIdentity)
             : null;
       }

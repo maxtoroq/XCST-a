@@ -47,9 +47,7 @@ namespace Xcst.Web.Mvc {
             return true;
          }
 
-         var valueAsFile = value as HttpPostedFileBase;
-
-         if (valueAsFile != null) {
+         if (value is HttpPostedFileBase valueAsFile) {
             return ValidateLength(valueAsFile.ContentLength);
          }
 

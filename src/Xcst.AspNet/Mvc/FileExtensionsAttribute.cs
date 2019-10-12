@@ -67,21 +67,15 @@ namespace Xcst.Web.Mvc {
             return true;
          }
 
-         var valueAsString = value as string;
-
-         if (valueAsString != null) {
+         if (value is string valueAsString) {
             return ValidateExtension(valueAsString);
          }
 
-         var valueAsUri = value as Uri;
-
-         if (valueAsUri != null) {
+         if (value is Uri valueAsUri) {
             return ValidateExtension(valueAsUri.OriginalString);
          }
 
-         var valueAsFile = value as HttpPostedFileBase;
-
-         if (valueAsFile != null) {
+         if (value is HttpPostedFileBase valueAsFile) {
             return ValidateExtension(valueAsFile.FileName);
          }
 

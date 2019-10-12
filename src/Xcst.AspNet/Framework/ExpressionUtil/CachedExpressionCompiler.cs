@@ -45,9 +45,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
          static Func<TIn, TOut> CompileFromConstLookup(Expression<Func<TIn, TOut>> expr) {
 
-            var constExpr = expr.Body as ConstantExpression;
-
-            if (constExpr != null) {
+            if (expr.Body is ConstantExpression constExpr) {
 
                // model => {const}
 
@@ -100,30 +98,26 @@ namespace System.Web.Mvc.ExpressionUtil {
          }
 
          static Func<TIn, TOut> CompileFromMemberAccess(Expression<Func<TIn, TOut>> expr) {
-            
+
             // Performance tests show that on the x64 platform, special-casing static member and
             // captured local variable accesses is faster than letting the fingerprinting system
             // handle them. On the x86 platform, the fingerprinting system is faster, but only
             // by around one microsecond, so it's not worth it to complicate the logic here with
             // an architecture check.
 
-            var memberExpr = expr.Body as MemberExpression;
-
-            if (memberExpr != null) {
+            if (expr.Body is MemberExpression memberExpr) {
 
                if (memberExpr.Expression == expr.Parameters[0] || memberExpr.Expression == null) {
                   // model => model.Member or model => StaticMember
                   return _simpleMemberAccessDict.GetOrAdd(memberExpr.Member, _ => expr.Compile());
                }
 
-               var constExpr = memberExpr.Expression as ConstantExpression;
-
-               if (constExpr != null) {
+               if (memberExpr.Expression is ConstantExpression constExpr) {
 
                   // model => {const}.Member (captured local variable)
 
                   var del = _constMemberAccessDict.GetOrAdd(memberExpr.Member, _ => {
-                     
+
                      // rewrite as capturedLocal => ((TDeclaringType)capturedLocal).Member
                      var constParamExpr = Expression.Parameter(typeof(object), "capturedLocal");
                      var constCastExpr = Expression.Convert(constParamExpr, memberExpr.Member.DeclaringType);

@@ -249,11 +249,10 @@ namespace System.Web.Mvc {
 
          static ViewDataInfo GetIndexedPropertyValue(object indexableObject, string key) {
 
-            IDictionary<string, object> dict = indexableObject as IDictionary<string, object>;
             object value = null;
             bool success = false;
 
-            if (dict != null) {
+            if (indexableObject is IDictionary<string, object> dict) {
                success = dict.TryGetValue(key, out value);
             } else {
 
@@ -290,9 +289,7 @@ namespace System.Web.Mvc {
             // If the container is a ViewDataDictionary then treat its Model property
             // as the container instead of the ViewDataDictionary itself.
 
-            var vdd = container as ViewDataDictionary;
-
-            if (vdd != null) {
+            if (container is ViewDataDictionary vdd) {
                container = vdd.Model;
             }
 

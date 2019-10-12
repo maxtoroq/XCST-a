@@ -44,9 +44,7 @@ namespace System.Web.Mvc {
 
          public override IEnumerable<ModelValidationResult> Validate(object container) {
 
-            var castModel = this.Metadata.Model as IDataErrorInfo;
-
-            if (castModel != null) {
+            if (this.Metadata.Model is IDataErrorInfo castModel) {
 
                string errorMessage = castModel.Error;
 
@@ -66,9 +64,7 @@ namespace System.Web.Mvc {
 
          public override IEnumerable<ModelValidationResult> Validate(object container) {
 
-            var castContainer = container as IDataErrorInfo;
-
-            if (castContainer != null
+            if (container is IDataErrorInfo castContainer
                && !String.Equals(this.Metadata.PropertyName, "error", StringComparison.OrdinalIgnoreCase)) {
 
                string errorMessage = castContainer[this.Metadata.PropertyName];

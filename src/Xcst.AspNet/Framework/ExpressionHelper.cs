@@ -61,7 +61,7 @@ namespace System.Web.Mvc {
                part = memberExpressionPart.Expression;
 
             } else if (part.NodeType == ExpressionType.Parameter) {
-               
+
                // Dev10 Bug #907611
                // When the expression is parameter based (m => m.Something...), we'll push an empty
                // string onto the stack and stop evaluating. The extra empty string makes sure that
@@ -116,19 +116,17 @@ namespace System.Web.Mvc {
 
       internal static bool IsSingleArgumentIndexer(Expression expression) {
 
-         MethodCallExpression methodExpression = expression as MethodCallExpression;
+         if (expression is MethodCallExpression methodExpression
+            && methodExpression.Arguments.Count == 1) {
 
-         if (methodExpression == null
-            || methodExpression.Arguments.Count != 1) {
-
-            return false;
+            return methodExpression.Method
+               .DeclaringType
+               .GetDefaultMembers()
+               .OfType<PropertyInfo>()
+               .Any(p => p.GetGetMethod() == methodExpression.Method);
          }
 
-         return methodExpression.Method
-             .DeclaringType
-             .GetDefaultMembers()
-             .OfType<PropertyInfo>()
-             .Any(p => p.GetGetMethod() == methodExpression.Method);
+         return false;
       }
    }
 }

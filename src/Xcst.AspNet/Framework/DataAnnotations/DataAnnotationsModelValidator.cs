@@ -35,9 +35,7 @@ namespace System.Web.Mvc {
 
          IEnumerable<ModelClientValidationRule> results = base.GetClientValidationRules();
 
-         IClientValidatable clientValidatable = this.Attribute as IClientValidatable;
-
-         if (clientValidatable != null) {
+         if (this.Attribute is IClientValidatable clientValidatable) {
             results = results.Concat(clientValidatable.GetClientValidationRules(this.Metadata, ControllerContext));
          }
 

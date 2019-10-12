@@ -209,9 +209,7 @@ namespace System.Web.Mvc {
 
          if (session != null) {
 
-            Dictionary<string, object> tempDataDictionary = session[TempDataSessionStateKey] as Dictionary<string, object>;
-
-            if (tempDataDictionary != null) {
+            if (session[TempDataSessionStateKey] is Dictionary<string, object> tempDataDictionary) {
 
                // If we got it from Session, remove it so that no other request gets it
 

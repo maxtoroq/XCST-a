@@ -22,9 +22,7 @@ namespace System.Web.Mvc {
 
       static void AddToBackingStore(EntryLimitedDictionary backingStore, string prefix, object value) {
 
-         var d = value as IDictionary<string, object>;
-
-         if (d != null) {
+         if (value is IDictionary<string, object> d) {
 
             foreach (KeyValuePair<string, object> entry in d) {
                AddToBackingStore(backingStore, MakePropertyKey(prefix, entry.Key), entry.Value);
@@ -33,9 +31,7 @@ namespace System.Web.Mvc {
             return;
          }
 
-         var l = value as IList;
-
-         if (l != null) {
+         if (value is IList l) {
 
             for (int i = 0; i < l.Count; i++) {
                AddToBackingStore(backingStore, MakeArrayKey(prefix, i), l[i]);

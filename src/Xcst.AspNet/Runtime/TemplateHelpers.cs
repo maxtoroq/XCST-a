@@ -390,9 +390,8 @@ namespace Xcst.Web.Runtime {
       static void RenderView(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, ViewEngineResult viewEngineResult) {
 
          IView view = viewEngineResult.View;
-         XcstView xcstView = view as XcstView;
 
-         if (xcstView != null) {
+         if (view is XcstView xcstView) {
 
             ViewContext context = html.ViewContext.Clone(view: view, viewData: viewData);
             xcstView.RenderXcstView(context, output);

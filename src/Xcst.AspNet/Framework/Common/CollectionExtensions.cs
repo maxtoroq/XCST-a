@@ -20,13 +20,11 @@ namespace System.Collections.Generic {
 
          Contract.Assert(values != null);
 
-         T[] array = values as T[];
-
-         if (array == null) {
-            array = values.ToArray();
+         if (values is T[] array) {
+            return array;
          }
 
-         return array;
+         return values.ToArray();
       }
 
       /// <summary>
@@ -136,9 +134,7 @@ namespace System.Collections.Generic {
          Contract.Assert(list != null);
          Contract.Assert(keySelector != null);
 
-         var array = list as TValue[];
-
-         if (array != null) {
+         if (list is TValue[] array) {
             return ToDictionaryFast(array, keySelector, comparer);
          }
 
@@ -154,15 +150,11 @@ namespace System.Collections.Generic {
          Contract.Assert(enumerable != null);
          Contract.Assert(keySelector != null);
 
-         var array = enumerable as TValue[];
-
-         if (array != null) {
+         if (enumerable is TValue[] array) {
             return ToDictionaryFast(array, keySelector, comparer);
          }
 
-         var list = enumerable as IList<TValue>;
-
-         if (list != null) {
+         if (enumerable is IList<TValue> list) {
             return ToDictionaryFastNoCheck(list, keySelector, comparer);
          }
 

@@ -330,16 +330,12 @@ namespace Xcst.Web.Runtime {
          if (inputType == InputType.Hidden) {
 
 #if !ASPNETLIB
-            Binary binaryValue = value as Binary;
-
-            if (binaryValue != null) {
+            if (value is Binary binaryValue) {
                value = binaryValue.ToArray();
             }
 #endif
 
-            byte[] byteArrayValue = value as byte[];
-
-            if (byteArrayValue != null) {
+            if (value is byte[] byteArrayValue) {
                value = Convert.ToBase64String(byteArrayValue);
             }
          }

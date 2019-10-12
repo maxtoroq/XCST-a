@@ -52,24 +52,19 @@ namespace Xcst.Web {
 
       static void AddFileDependencies(object instance, HttpResponseBase response) {
 
-         IFileDependent fileDependent = instance as IFileDependent;
+         if (instance is IFileDependent fileDependent) {
 
-         if (fileDependent == null) {
-            return;
-         }
+            string[] files = fileDependent.FileDependencies;
 
-         string[] files = fileDependent.FileDependencies;
-
-         if (files != null) {
-            response.AddFileDependencies(files);
+            if (files != null) {
+               response.AddFileDependencies(files);
+            }
          }
       }
 
       public virtual void SetUpSessionState(HttpContextBase context) {
 
-         ISessionStateAware sessionState = this.page as ISessionStateAware;
-
-         if (sessionState != null) {
+         if (this.page is ISessionStateAware sessionState) {
             context.SetSessionStateBehavior(sessionState.SessionStateBehavior);
          }
       }

@@ -179,9 +179,7 @@ namespace Xcst.Web.Mvc {
 
          base.CopyState(page);
 
-         XcstViewPage viewPage = page as XcstViewPage;
-
-         if (viewPage != null) {
+         if (page is XcstViewPage viewPage) {
 
             viewPage.ViewContext = this.ViewContext.Clone(
 #if !ASPNETLIB
