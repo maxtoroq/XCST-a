@@ -488,7 +488,9 @@ namespace Xcst.Web.Runtime {
             attribs.AddCssClass(HtmlHelper.ValidationInputCssClassName);
          }
 
-         attribs.MergeAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), replaceExisting: false)
+         HtmlAttribs validationAttribs = htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata);
+
+         attribs.MergeAttributes(validationAttribs, replaceExisting: false)
             .WriteTo(output);
 
          output.WriteEndElement();

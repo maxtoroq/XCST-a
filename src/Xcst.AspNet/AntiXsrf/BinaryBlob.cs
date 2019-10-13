@@ -12,12 +12,25 @@ namespace System.Web.Helpers.AntiXsrf {
    // Represents a binary blob (token) that contains random data.
    // Useful for binary data inside a serialized stream.
 
-   [DebuggerDisplay("{DebuggerString}")]
+   [DebuggerDisplay("{" + nameof(DebuggerString) + "}")]
    sealed class BinaryBlob : IEquatable<BinaryBlob> {
 
       static readonly RNGCryptoServiceProvider _prng = new RNGCryptoServiceProvider();
 
       readonly byte[] _data;
+
+      public int BitLength => checked(_data.Length * 8);
+
+      [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called by debugger.")]
+      private string DebuggerString {
+         get {
+            var sb = new StringBuilder("0x", 2 + (_data.Length * 2));
+            for (int i = 0; i < _data.Length; i++) {
+               sb.AppendFormat(CultureInfo.InvariantCulture, "{0:x2}", _data[i]);
+            }
+            return sb.ToString();
+         }
+      }
 
       // Generates a new token using a specified bit length.
 
@@ -32,19 +45,6 @@ namespace System.Web.Helpers.AntiXsrf {
          if (data == null || data.Length != bitLength / 8) throw new ArgumentOutOfRangeException(nameof(data));
 
          _data = data;
-      }
-
-      public int BitLength => checked(_data.Length * 8);
-
-      [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called by debugger.")]
-      private string DebuggerString {
-         get {
-            var sb = new StringBuilder("0x", 2 + (_data.Length * 2));
-            for (int i = 0; i < _data.Length; i++) {
-               sb.AppendFormat(CultureInfo.InvariantCulture, "{0:x2}", _data[i]);
-            }
-            return sb.ToString();
-         }
       }
 
       public override bool Equals(object obj) {

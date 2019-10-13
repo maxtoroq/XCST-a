@@ -10,17 +10,6 @@ namespace System.Web.Mvc {
       PrefixContainer _prefixContainer;
       readonly Dictionary<string, ValueProviderResult> _values = new Dictionary<string, ValueProviderResult>(StringComparer.OrdinalIgnoreCase);
 
-      public DictionaryValueProvider(IDictionary<string, TValue> dictionary, CultureInfo culture) {
-
-         if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
-
-         foreach (KeyValuePair<string, TValue> entry in dictionary) {
-            object rawValue = entry.Value;
-            string attemptedValue = Convert.ToString(rawValue, culture);
-            _values[entry.Key] = new ValueProviderResult(rawValue, attemptedValue, culture);
-         }
-      }
-
       private PrefixContainer PrefixContainer {
          get {
             if (_prefixContainer == null) {
@@ -28,6 +17,18 @@ namespace System.Web.Mvc {
                _prefixContainer = new PrefixContainer(_values.Keys);
             }
             return _prefixContainer;
+         }
+      }
+
+      public DictionaryValueProvider(IDictionary<string, TValue> dictionary, CultureInfo culture) {
+
+         if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
+
+         foreach (KeyValuePair<string, TValue> entry in dictionary) {
+
+            object rawValue = entry.Value;
+            string attemptedValue = Convert.ToString(rawValue, culture);
+            _values[entry.Key] = new ValueProviderResult(rawValue, attemptedValue, culture);
          }
       }
 

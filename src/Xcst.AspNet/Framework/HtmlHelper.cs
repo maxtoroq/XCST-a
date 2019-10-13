@@ -246,7 +246,10 @@ namespace System.Web.Mvc {
       }
 
       public string ValueForModel() {
-         return ValueHelper(String.Empty, value: null, format: this.ViewData.ModelMetadata.EditFormatString, useViewData: true);
+
+         string format = this.ViewData.ModelMetadata.EditFormatString;
+
+         return ValueHelper(String.Empty, value: null, format: format, useViewData: true);
       }
 
       public string Value(string name) {

@@ -36,24 +36,27 @@ namespace Xcst.Web.Runtime {
 
       public static void BooleanTemplate(HtmlHelper html, XcstWriter output) {
 
+         ViewDataDictionary viewData = html.ViewData;
+
          bool? value = null;
 
-         if (html.ViewData.Model != null) {
-            value = Convert.ToBoolean(html.ViewData.Model, CultureInfo.InvariantCulture);
+         if (viewData.Model != null) {
+            value = Convert.ToBoolean(viewData.Model, CultureInfo.InvariantCulture);
          }
 
-         if (html.ViewData.ModelMetadata.IsNullableValueType) {
+         if (viewData.ModelMetadata.IsNullableValueType) {
 
             string className = GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
-            IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
+            var htmlAttributes = CreateHtmlAttributes(html, className);
 
             SelectInstructions.Select(html, output, String.Empty, TriStateValues(value), htmlAttributes: htmlAttributes);
 
          } else {
 
             string className = GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
+            var htmlAttributes = CreateHtmlAttributes(html, className);
 
-            InputInstructions.CheckBox(html, output, String.Empty, value.GetValueOrDefault(), CreateHtmlAttributes(html, className));
+            InputInstructions.CheckBox(html, output, String.Empty, value.GetValueOrDefault(), htmlAttributes: htmlAttributes);
          }
       }
 
@@ -95,13 +98,16 @@ namespace Xcst.Web.Runtime {
 
                Type itemType = typeInCollection;
 
-               if (item != null && !typeInCollectionIsNullableValueType) {
+               if (item != null
+                  && !typeInCollectionIsNullableValueType) {
+
                   itemType = item.GetType();
                }
 
                ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => item, itemType);
                string fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
-               templateHelper(html, output, metadata, fieldName, null /* templateName */, DataBoundControlMode.Edit, null /* additionalViewData */);
+
+               templateHelper(html, output, metadata, fieldName, null, DataBoundControlMode.Edit, additionalViewData: null);
             }
 
          } finally {
@@ -111,8 +117,12 @@ namespace Xcst.Web.Runtime {
 
       public static void DecimalTemplate(HtmlHelper html, XcstWriter output) {
 
-         if (html.ViewData.TemplateInfo.FormattedModelValue == html.ViewData.ModelMetadata.Model) {
-            html.ViewData.TemplateInfo.FormattedModelValue = String.Format(CultureInfo.CurrentCulture, "{0:0.00}", html.ViewData.ModelMetadata.Model);
+         ViewDataDictionary viewData = html.ViewData;
+
+         if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelMetadata.Model) {
+
+            viewData.TemplateInfo.FormattedModelValue =
+               String.Format(CultureInfo.CurrentCulture, "{0:0.00}", viewData.ModelMetadata.Model);
          }
 
          HtmlInputTemplateHelper(html, output, "Decimal");
@@ -129,7 +139,7 @@ namespace Xcst.Web.Runtime {
          object model = viewData.Model;
 
          string className = GetEditorCssClass(new EditorInfo("HiddenInput", "input", InputType.Hidden), null);
-         IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
+         var htmlAttributes = CreateHtmlAttributes(html, className);
 
          InputInstructions.Input(html, output, String.Empty, model, type: "hidden", htmlAttributes: htmlAttributes);
       }
@@ -138,7 +148,7 @@ namespace Xcst.Web.Runtime {
 
          object value = html.ViewData.TemplateInfo.FormattedModelValue;
          string className = GetEditorCssClass(new EditorInfo("MultilineText", "textarea"), "text-box multi-line");
-         IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
+         var htmlAttributes = CreateHtmlAttributes(html, className);
 
          AddInputAttributes(html, htmlAttributes);
 
@@ -217,7 +227,7 @@ namespace Xcst.Web.Runtime {
                   output.WriteAttributeString("class", "editor-field");
                }
 
-               templateHelper(html, output, propertyMeta, propertyMeta.PropertyName, null /* templateName */, DataBoundControlMode.Edit, null /* additionalViewData */);
+               templateHelper(html, output, propertyMeta, propertyMeta.PropertyName, null, DataBoundControlMode.Edit, additionalViewData: null);
 
                if (!propertyMeta.HideSurroundingHtml) {
                   output.WriteString(" ");
@@ -235,7 +245,7 @@ namespace Xcst.Web.Runtime {
       public static void PasswordTemplate(HtmlHelper html, XcstWriter output) {
 
          string className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
-         IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
+         var htmlAttributes = CreateHtmlAttributes(html, className);
 
          InputInstructions.Input(html, output, String.Empty, value: null, type: "password", htmlAttributes: htmlAttributes);
       }
@@ -337,7 +347,7 @@ namespace Xcst.Web.Runtime {
       public static void DropDownListTemplate(HtmlHelper html, XcstWriter output) {
 
          string className = GetEditorCssClass(new EditorInfo("DropDownList", "select"), null);
-         IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
+         var htmlAttributes = CreateHtmlAttributes(html, className);
          ViewDataDictionary viewData = html.ViewData;
 
          string optionLabel = null;
@@ -355,7 +365,7 @@ namespace Xcst.Web.Runtime {
       public static void ListBoxTemplate(HtmlHelper html, XcstWriter output) {
 
          string className = GetEditorCssClass(new EditorInfo("ListBox", "select"), null);
-         IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
+         var htmlAttributes = CreateHtmlAttributes(html, className);
          ViewDataDictionary viewData = html.ViewData;
 
          IEnumerable<SelectListItem> options = Options(viewData);
@@ -366,7 +376,7 @@ namespace Xcst.Web.Runtime {
       public static void EnumTemplate(HtmlHelper html, XcstWriter output) {
 
          string className = GetEditorCssClass(new EditorInfo("Enum", "select"), null);
-         IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className);
+         var htmlAttributes = CreateHtmlAttributes(html, className);
          ViewDataDictionary viewData = html.ViewData;
 
          Type modelType = viewData.ModelMetadata.ModelType;
@@ -393,10 +403,12 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         ModelMetadata metadata = html.ViewData.ModelMetadata;
+         ViewDataDictionary viewData = html.ViewData;
+         ModelMetadata metadata = viewData.ModelMetadata;
+
          object value = metadata.Model;
 
-         if (html.ViewData.TemplateInfo.FormattedModelValue != value
+         if (viewData.TemplateInfo.FormattedModelValue != value
             && metadata.HasNonDefaultEditFormat()) {
 
             return;
@@ -405,7 +417,7 @@ namespace Xcst.Web.Runtime {
          if (value is DateTime
             || value is DateTimeOffset) {
 
-            html.ViewData.TemplateInfo.FormattedModelValue = String.Format(CultureInfo.InvariantCulture, format, value);
+            viewData.TemplateInfo.FormattedModelValue = String.Format(CultureInfo.InvariantCulture, format, value);
          }
       }
 
@@ -414,7 +426,7 @@ namespace Xcst.Web.Runtime {
          object value = html.ViewData.TemplateInfo.FormattedModelValue;
 
          string className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
-         IDictionary<string, object> htmlAttributes = CreateHtmlAttributes(html, className, inputType: inputType);
+         var htmlAttributes = CreateHtmlAttributes(html, className, inputType: inputType);
 
          AddInputAttributes(html, htmlAttributes);
 
@@ -442,7 +454,8 @@ namespace Xcst.Web.Runtime {
 
       internal static string GetEditorCssClass(EditorInfo editorInfo, string defaultCssClass) {
 
-         Func<EditorInfo, string, string> customFn = XcstWebConfiguration.Instance.EditorTemplates.EditorCssClass;
+         Func<EditorInfo, string, string> customFn =
+            XcstWebConfiguration.Instance.EditorTemplates.EditorCssClass;
 
          if (customFn != null) {
             return customFn(editorInfo, defaultCssClass);
@@ -452,6 +465,7 @@ namespace Xcst.Web.Runtime {
       }
 
       internal static List<SelectListItem> TriStateValues(bool? value) {
+
          return new List<SelectListItem> {
             new SelectListItem { Text = "Not Set", Value = String.Empty, Selected = !value.HasValue },
             new SelectListItem { Text = "True", Value = "true", Selected = value.HasValue && value.Value },

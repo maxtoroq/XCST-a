@@ -1,41 +1,35 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-namespace System.Web.Mvc
-{
-    public class HttpPostedFileBaseModelBinder : IModelBinder
-    {
-        public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-        {
-            if (controllerContext == null)
-            {
-                throw new ArgumentNullException("controllerContext");
-            }
-            if (bindingContext == null)
-            {
-                throw new ArgumentNullException("bindingContext");
-            }
+namespace System.Web.Mvc {
 
-            HttpPostedFileBase theFile = controllerContext.HttpContext.Request.Files[bindingContext.ModelName];
-            return ChooseFileOrNull(theFile);
-        }
+   public class HttpPostedFileBaseModelBinder : IModelBinder {
 
-        // helper that returns the original file if there was content uploaded, null if empty
-        internal static HttpPostedFileBase ChooseFileOrNull(HttpPostedFileBase rawFile)
-        {
-            // case 1: there was no <input type="file" ... /> element in the post
-            if (rawFile == null)
-            {
-                return null;
-            }
+      public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
-            // case 2: there was an <input type="file" ... /> element in the post, but it was left blank
-            if (rawFile.ContentLength == 0 && String.IsNullOrEmpty(rawFile.FileName))
-            {
-                return null;
-            }
+         if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
+         if (bindingContext == null) throw new ArgumentNullException(nameof(bindingContext));
 
-            // case 3: the file was posted
-            return rawFile;
-        }
-    }
+         HttpPostedFileBase theFile = controllerContext.HttpContext.Request.Files[bindingContext.ModelName];
+         return ChooseFileOrNull(theFile);
+      }
+
+      // helper that returns the original file if there was content uploaded, null if empty
+      internal static HttpPostedFileBase ChooseFileOrNull(HttpPostedFileBase rawFile) {
+
+         // case 1: there was no <input type="file" ... /> element in the post
+         if (rawFile == null) {
+            return null;
+         }
+
+         // case 2: there was an <input type="file" ... /> element in the post, but it was left blank
+         if (rawFile.ContentLength == 0
+            && String.IsNullOrEmpty(rawFile.FileName)) {
+
+            return null;
+         }
+
+         // case 3: the file was posted
+         return rawFile;
+      }
+   }
 }

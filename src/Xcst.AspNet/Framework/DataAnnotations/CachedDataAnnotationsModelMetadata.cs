@@ -58,17 +58,8 @@ namespace System.Web.Mvc {
 
       protected override string ComputeDisplayName() {
 
-         string result = null;
-
-         if (this.PrototypeCache.Display != null) {
-            result = this.PrototypeCache.Display.GetName();
-         }
-
-         if (result == null
-            && this.PrototypeCache.DisplayName != null) {
-
-            result = this.PrototypeCache.DisplayName.DisplayName;
-         }
+         string result = this.PrototypeCache.Display?.GetName()
+            ?? this.PrototypeCache.DisplayName?.DisplayName;
 
          return result ?? base.ComputeDisplayName();
       }
@@ -157,11 +148,7 @@ namespace System.Web.Mvc {
 
       protected override int ComputeOrder() {
 
-         int? result = null;
-
-         if (this.PrototypeCache.Display != null) {
-            result = this.PrototypeCache.Display.GetOrder();
-         }
+         int? result = this.PrototypeCache.Display?.GetOrder();
 
          return result ?? base.ComputeOrder();
       }
@@ -238,6 +225,7 @@ namespace System.Web.Mvc {
       static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo displayColumnProperty, Type modelType) {
 
          if (displayColumnProperty == null) {
+
             throw new InvalidOperationException(
                String.Format(
                   CultureInfo.CurrentCulture,
@@ -246,6 +234,7 @@ namespace System.Web.Mvc {
          }
 
          if (displayColumnProperty.GetGetMethod() == null) {
+
             throw new InvalidOperationException(
                String.Format(
                   CultureInfo.CurrentCulture,

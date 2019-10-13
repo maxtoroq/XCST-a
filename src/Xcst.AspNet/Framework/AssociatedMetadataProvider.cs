@@ -33,7 +33,7 @@ namespace System.Web.Mvc {
          for (int i = 0; i < properties.Count; i++) {
 
             PropertyDescriptor property = properties[i];
-            Func<object> modelAccessor = container == null ? null : GetPropertyValueAccessor(container, property);
+            Func<object> modelAccessor = (container == null) ? null : GetPropertyValueAccessor(container, property);
             ModelMetadata propertyMetadata = GetMetadataForProperty(modelAccessor, containerType, property);
 
             if (propertyMetadata != null) {

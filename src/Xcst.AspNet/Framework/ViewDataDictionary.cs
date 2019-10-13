@@ -299,7 +299,8 @@ namespace System.Web.Mvc {
             }
 
             // Second, we try to use PropertyDescriptors and treat the expression as a property name
-            PropertyDescriptor descriptor = TypeDescriptor.GetProperties(container).Find(propertyName, true);
+            PropertyDescriptor descriptor = TypeDescriptor.GetProperties(container)
+               .Find(propertyName, ignoreCase: true);
 
             if (descriptor == null) {
                return null;

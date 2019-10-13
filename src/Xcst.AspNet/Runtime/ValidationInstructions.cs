@@ -70,18 +70,22 @@ namespace Xcst.Web.Runtime {
                                                    IDictionary<string, object> htmlAttributes,
                                                    string tag) {
 
-         string modelName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(expression);
+         ViewDataDictionary viewData = htmlHelper.ViewData;
+
+         string modelName = viewData.TemplateInfo.GetFullHtmlFieldName(expression);
          FormContext formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
 
-         if (!htmlHelper.ViewData.ModelState.ContainsKey(modelName)
+         if (!viewData.ModelState.ContainsKey(modelName)
             && formContext == null) {
 
             return;
          }
 
-         ModelState modelState = htmlHelper.ViewData.ModelState[modelName];
+         ModelState modelState = viewData.ModelState[modelName];
          ModelErrorCollection modelErrors = modelState?.Errors;
-         ModelError modelError = (((modelErrors == null) || (modelErrors.Count == 0)) ? null : modelErrors.FirstOrDefault(m => !String.IsNullOrEmpty(m.ErrorMessage)) ?? modelErrors[0]);
+
+         ModelError modelError = (modelErrors == null || modelErrors.Count == 0) ? null
+            : (modelErrors.FirstOrDefault(m => !String.IsNullOrEmpty(m.ErrorMessage)) ?? modelErrors[0]);
 
          if (modelError == null
             && formContext == null) {
@@ -93,10 +97,14 @@ namespace Xcst.Web.Runtime {
             tag = htmlHelper.ViewContext.ValidationMessageElement;
          }
 
+         string validationClass = (modelError != null) ?
+            HtmlHelper.ValidationMessageCssClassName
+            : HtmlHelper.ValidationMessageValidCssClassName;
+
          output.WriteStartElement(tag);
 
          var attribs = new HtmlAttributeDictionary(htmlAttributes)
-            .AddCssClass((modelError != null) ? HtmlHelper.ValidationMessageCssClassName : HtmlHelper.ValidationMessageValidCssClassName);
+            .AddCssClass(validationClass);
 
          if (formContext != null) {
 
@@ -110,8 +118,9 @@ namespace Xcst.Web.Runtime {
                FieldValidationMetadata fieldMetadata = ApplyFieldValidationMetadata(htmlHelper, modelMetadata, modelName);
 
                // rules will already have been written to the metadata object
+               // only replace contents if no explicit message was specified
 
-               fieldMetadata.ReplaceValidationMessageContents = replaceValidationMessageContents; // only replace contents if no explicit message was specified
+               fieldMetadata.ReplaceValidationMessageContents = replaceValidationMessageContents;
 
                // client validation always requires an ID
 
@@ -163,10 +172,14 @@ namespace Xcst.Web.Runtime {
             }
          }
 
+         string validationClass = (htmlHelper.ViewData.ModelState.IsValid) ?
+            HtmlHelper.ValidationSummaryValidCssClassName
+            : HtmlHelper.ValidationSummaryCssClassName;
+
          output.WriteStartElement("div");
 
          var divAttribs = new HtmlAttributeDictionary(htmlAttributes)
-            .AddCssClass((htmlHelper.ViewData.ModelState.IsValid) ? HtmlHelper.ValidationSummaryValidCssClassName : HtmlHelper.ValidationSummaryCssClassName);
+            .AddCssClass(validationClass);
 
          if (formContext != null) {
 
@@ -210,7 +223,7 @@ namespace Xcst.Web.Runtime {
 
             foreach (ModelError modelError in modelState.Errors) {
 
-               string errorText = GetUserErrorMessageOrDefault(htmlHelper.ViewContext.HttpContext, modelError, null /* modelState */);
+               string errorText = GetUserErrorMessageOrDefault(htmlHelper.ViewContext.HttpContext, modelError, modelState: null);
 
                if (!String.IsNullOrEmpty(errorText)) {
 
@@ -274,7 +287,7 @@ namespace Xcst.Web.Runtime {
       static FieldValidationMetadata ApplyFieldValidationMetadata(HtmlHelper htmlHelper, ModelMetadata modelMetadata, string modelName) {
 
          FormContext formContext = htmlHelper.ViewContext.FormContext;
-         FieldValidationMetadata fieldMetadata = formContext.GetValidationMetadataForField(modelName, true /* createIfNotFound */);
+         FieldValidationMetadata fieldMetadata = formContext.GetValidationMetadataForField(modelName, createIfNotFound: true);
 
          // write rules to context object
 

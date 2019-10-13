@@ -47,14 +47,16 @@ namespace System.Web.Mvc {
 
       static object GetDeserializedObject(ControllerContext controllerContext) {
 
-         if (!controllerContext.HttpContext.Request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)) {
+         HttpRequestBase request = controllerContext.HttpContext.Request;
+
+         if (!request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)) {
 
             // not JSON request
 
             return null;
          }
 
-         var textReader = new StreamReader(controllerContext.HttpContext.Request.InputStream);
+         var textReader = new StreamReader(request.InputStream);
          var jsonReader = new JsonTextReader(textReader);
 
          if (!jsonReader.Read()) {

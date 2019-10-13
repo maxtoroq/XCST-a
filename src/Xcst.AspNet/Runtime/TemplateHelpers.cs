@@ -197,7 +197,7 @@ namespace Xcst.Web.Runtime {
 
          if (additionalViewData != null) {
 
-            IDictionary<string, object> additionalParams = additionalViewData as IDictionary<string, object>
+            var additionalParams = additionalViewData as IDictionary<string, object>
                ?? TypeHelpers.ObjectToDictionary(additionalViewData);
 
             foreach (var kvp in additionalParams) {
@@ -212,8 +212,8 @@ namespace Xcst.Web.Runtime {
 
       static void ExecuteTemplate(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, string templateName, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
 
-         Dictionary<string, ActionCacheItem> actionCache = GetActionCache(html);
-         Dictionary<string, Action<HtmlHelper, XcstWriter>> defaultActions = getDefaultActions(mode);
+         var actionCache = GetActionCache(html);
+         var defaultActions = getDefaultActions(mode);
          string modeViewPath = _modeViewPaths[mode];
 
          ModelMetadata metadata = viewData.ModelMetadata;
@@ -302,7 +302,9 @@ namespace Xcst.Web.Runtime {
       }
 
       static Dictionary<string, Action<HtmlHelper, XcstWriter>> GetDefaultActions(DataBoundControlMode mode) {
-         return mode == DataBoundControlMode.ReadOnly ? _defaultDisplayActions : _defaultEditorActions;
+
+         return (mode == DataBoundControlMode.ReadOnly) ?
+            _defaultDisplayActions : _defaultEditorActions;
       }
 
       static IEnumerable<string> GetViewNames(ModelMetadata metadata, params string[] templateHints) {

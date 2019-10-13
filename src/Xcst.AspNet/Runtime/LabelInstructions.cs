@@ -69,16 +69,22 @@ namespace Xcst.Web.Runtime {
                                      IDictionary<string, object> htmlAttributes = null) {
 
          string htmlFieldName = expression;
-         string resolvedLabelText = labelText ?? metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
+
+         string resolvedLabelText = labelText
+            ?? metadata.DisplayName
+            ?? metadata.PropertyName
+            ?? htmlFieldName.Split('.').Last();
 
          if (String.IsNullOrEmpty(resolvedLabelText)) {
             return;
          }
 
+         string fullFieldName = html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName);
+
          output.WriteStartElement("label");
 
          new HtmlAttributeDictionary(htmlAttributes)
-            .MergeAttribute("for", TagBuilder.CreateSanitizedId(html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName)))
+            .MergeAttribute("for", TagBuilder.CreateSanitizedId(fullFieldName))
             .WriteTo(output);
 
          output.WriteString(resolvedLabelText);

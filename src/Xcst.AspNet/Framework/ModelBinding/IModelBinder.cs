@@ -73,7 +73,8 @@ namespace System.Web.Mvc {
       public IDictionary<string, ModelMetadata> PropertyMetadata {
          get {
             if (_propertyMetadata == null) {
-               _propertyMetadata = ModelMetadata.PropertiesAsArray.ToDictionaryFast(m => m.PropertyName, StringComparer.OrdinalIgnoreCase);
+               _propertyMetadata = ModelMetadata.PropertiesAsArray
+                  .ToDictionaryFast(m => m.PropertyName, StringComparer.OrdinalIgnoreCase);
             }
 
             return _propertyMetadata;
@@ -113,7 +114,7 @@ namespace System.Web.Mvc {
 
       internal static IModelBinder GetBinderFromAttributes(ICustomAttributeProvider element, Action<ICustomAttributeProvider> errorAction) {
 
-         CustomModelBinderAttribute[] attrs = (CustomModelBinderAttribute[])element.GetCustomAttributes(typeof(CustomModelBinderAttribute), true /* inherit */);
+         CustomModelBinderAttribute[] attrs = (CustomModelBinderAttribute[])element.GetCustomAttributes(typeof(CustomModelBinderAttribute), inherit: true);
 
          // For compatibility, return null if no attributes.
 

@@ -76,13 +76,15 @@ namespace System.Web.Helpers.AntiXsrf {
             return null;
          }
 
-         AntiForgeryToken deserializedToken = new AntiForgeryToken();
+         var deserializedToken = new AntiForgeryToken();
          byte[] securityTokenBytes = reader.ReadBytes(AntiForgeryToken.SecurityTokenBitLength / 8);
          deserializedToken.SecurityToken = new BinaryBlob(AntiForgeryToken.SecurityTokenBitLength, securityTokenBytes);
          deserializedToken.IsSessionToken = reader.ReadBoolean();
 
          if (!deserializedToken.IsSessionToken) {
+
             bool isClaimsBased = reader.ReadBoolean();
+
             if (isClaimsBased) {
                byte[] claimUidBytes = reader.ReadBytes(AntiForgeryToken.ClaimUidBitLength / 8);
                deserializedToken.ClaimUid = new BinaryBlob(AntiForgeryToken.ClaimUidBitLength, claimUidBytes);
@@ -111,6 +113,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
          using (MemoryStream stream = new MemoryStream()) {
             using (BinaryWriter writer = new BinaryWriter(stream)) {
+
                writer.Write(TokenVersion);
                writer.Write(token.SecurityToken.GetData());
                writer.Write(token.IsSessionToken);

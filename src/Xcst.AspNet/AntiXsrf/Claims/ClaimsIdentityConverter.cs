@@ -16,16 +16,16 @@ namespace System.Web.Helpers.Claims {
 
       readonly Func<IIdentity, ClaimsIdentity>[] _converters;
 
+      // By default, we understand the ClaimsIdentity / Claim types included
+      // with the WIF SDK and FX 4.5.
+
+      public static ClaimsIdentityConverter Default => _default;
+
       // Internal for unit testing; nobody should ever be calling this in production.
 
       internal ClaimsIdentityConverter(Func<IIdentity, ClaimsIdentity>[] converters) {
          _converters = converters;
       }
-
-      // By default, we understand the ClaimsIdentity / Claim types included
-      // with the WIF SDK and FX 4.5.
-
-      public static ClaimsIdentityConverter Default => _default;
 
       static bool IsGrandfatheredIdentityType(IIdentity claimsIdentity) {
 
@@ -73,7 +73,7 @@ namespace System.Web.Helpers.Claims {
 
       static Func<IIdentity, ClaimsIdentity>[] GetDefaultConverters() {
 
-         List<Func<IIdentity, ClaimsIdentity>> converters = new List<Func<IIdentity, ClaimsIdentity>>();
+         var converters = new List<Func<IIdentity, ClaimsIdentity>>();
 
          // WIF SDK is only available in full trust scenarios
 

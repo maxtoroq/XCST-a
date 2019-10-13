@@ -29,15 +29,6 @@ namespace Xcst.Web {
 
       readonly List<string> _urlData;
 
-      public UrlDataList(string pathInfo) {
-
-         if (String.IsNullOrEmpty(pathInfo)) {
-            _urlData = new List<string>();
-         } else {
-            _urlData = pathInfo.Split(new char[] { '/' }).ToList();
-         }
-      }
-
       public int Count => _urlData.Count;
 
       public bool IsReadOnly => true;
@@ -51,6 +42,15 @@ namespace Xcst.Web {
             return _urlData[index];
          }
          set { throw new NotSupportedException(); }
+      }
+
+      public UrlDataList(string pathInfo) {
+
+         if (String.IsNullOrEmpty(pathInfo)) {
+            _urlData = new List<string>();
+         } else {
+            _urlData = pathInfo.Split(new char[] { '/' }).ToList();
+         }
       }
 
       public int IndexOf(string item) {

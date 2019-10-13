@@ -87,8 +87,10 @@ namespace System.Web.Helpers.AntiXsrf {
 
             const string FrameHeaderName = "X-Frame-Options";
 
-            if (httpContext.Response.Headers[FrameHeaderName] == null) {
-               httpContext.Response.AddHeader(FrameHeaderName, "SAMEORIGIN");
+            HttpResponseBase response = httpContext.Response;
+
+            if (response.Headers[FrameHeaderName] == null) {
+               response.AddHeader(FrameHeaderName, "SAMEORIGIN");
             }
          }
 

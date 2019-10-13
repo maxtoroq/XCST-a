@@ -46,6 +46,7 @@ namespace System.Web.Mvc {
       static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo displayColumnProperty, Type modelType) {
 
          if (displayColumnProperty == null) {
+
             throw new InvalidOperationException(
                String.Format(
                   CultureInfo.CurrentCulture,
@@ -54,6 +55,7 @@ namespace System.Web.Mvc {
          }
 
          if (displayColumnProperty.GetGetMethod() == null) {
+
             throw new InvalidOperationException(
                String.Format(
                   CultureInfo.CurrentCulture,
@@ -69,7 +71,7 @@ namespace System.Web.Mvc {
 
          var attributeList = new List<Attribute>(attributes);
          DisplayColumnAttribute displayColumnAttribute = attributeList.OfType<DisplayColumnAttribute>().FirstOrDefault();
-         DataAnnotationsModelMetadata result = new DataAnnotationsModelMetadata(this, containerType, modelAccessor, modelType, propertyName, displayColumnAttribute);
+         var result = new DataAnnotationsModelMetadata(this, containerType, modelAccessor, modelType, propertyName, displayColumnAttribute);
 
          // Do [HiddenInput] before [UIHint], so you can override the template hint
 

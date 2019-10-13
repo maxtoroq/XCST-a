@@ -75,7 +75,7 @@ namespace System.Web.Mvc {
 
          // Performance sensitive.
 
-         IModelBinderProvider[] providers = CombinedItems;
+         IModelBinderProvider[] providers = this.CombinedItems;
 
          for (int i = 0; i < providers.Length; i++) {
 

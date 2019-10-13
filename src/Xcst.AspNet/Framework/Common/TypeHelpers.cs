@@ -30,7 +30,7 @@ namespace System.Web.Mvc {
 
          // ensure target type exists
 
-         Type targetType = assembly.GetType(typeName, false /* throwOnError */);
+         Type targetType = assembly.GetType(typeName, throwOnError: false);
 
          if (targetType == null) {
             return null;
@@ -51,7 +51,7 @@ namespace System.Web.Mvc {
             return null;
          }
 
-         TDelegate d = Delegate.CreateDelegate(typeof(TDelegate), thisParameter, targetMethod, false /* throwOnBindFailure */) as TDelegate;
+         TDelegate d = Delegate.CreateDelegate(typeof(TDelegate), thisParameter, targetMethod, throwOnBindFailure: false) as TDelegate;
 
          return d;
       }
@@ -137,6 +137,7 @@ namespace System.Web.Mvc {
          MissingMethodException replacementException = null;
 
          if (!originalException.Message.Contains(fullTypeName)) {
+
             string message = String.Format(
                CultureInfo.CurrentCulture,
                "{0} Object type '{1}'.",

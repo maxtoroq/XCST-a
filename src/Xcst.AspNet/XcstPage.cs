@@ -126,7 +126,9 @@ namespace Xcst.Web {
 
          bool isAuthorized = IsAuthorized(context.User, dataArr?[0] as string[], dataArr?[1] as string[]);
 
-         validationStatus = (isAuthorized) ? HttpValidationStatus.Valid : HttpValidationStatus.IgnoreThisRequest;
+         validationStatus = (isAuthorized) ?
+            HttpValidationStatus.Valid
+            : HttpValidationStatus.IgnoreThisRequest;
       }
 
       static bool IsAuthorized(IPrincipal user, string[] users, string[] roles) {

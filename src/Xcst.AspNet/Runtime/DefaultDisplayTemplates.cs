@@ -32,13 +32,15 @@ namespace Xcst.Web.Runtime {
 
       public static void BooleanTemplate(HtmlHelper html, XcstWriter output) {
 
+         ViewDataDictionary viewData = html.ViewData;
+
          bool? value = null;
 
-         if (html.ViewData.Model != null) {
-            value = Convert.ToBoolean(html.ViewData.Model, CultureInfo.InvariantCulture);
+         if (viewData.Model != null) {
+            value = Convert.ToBoolean(viewData.Model, CultureInfo.InvariantCulture);
          }
 
-         if (html.ViewData.ModelMetadata.IsNullableValueType) {
+         if (viewData.ModelMetadata.IsNullableValueType) {
 
             output.WriteStartElement("select");
 
@@ -78,7 +80,9 @@ namespace Xcst.Web.Runtime {
 
       internal static void CollectionTemplate(HtmlHelper html, XcstWriter output, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
-         object model = html.ViewData.ModelMetadata.Model;
+         ViewDataDictionary viewData = html.ViewData;
+
+         object model = viewData.ModelMetadata.Model;
 
          if (model == null) {
             return;
@@ -96,11 +100,11 @@ namespace Xcst.Web.Runtime {
 
          bool typeInCollectionIsNullableValueType = TypeHelpers.IsNullableValueType(typeInCollection);
 
-         string oldPrefix = html.ViewData.TemplateInfo.HtmlFieldPrefix;
+         string oldPrefix = viewData.TemplateInfo.HtmlFieldPrefix;
 
          try {
 
-            html.ViewData.TemplateInfo.HtmlFieldPrefix = String.Empty;
+            viewData.TemplateInfo.HtmlFieldPrefix = String.Empty;
 
             string fieldNameBase = oldPrefix;
             int index = 0;
@@ -109,24 +113,31 @@ namespace Xcst.Web.Runtime {
 
                Type itemType = typeInCollection;
 
-               if (item != null && !typeInCollectionIsNullableValueType) {
+               if (item != null
+                  && !typeInCollectionIsNullableValueType) {
+
                   itemType = item.GetType();
                }
 
                ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => item, itemType);
                string fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
-               templateHelper(html, output, metadata, fieldName, null /* templateName */, DataBoundControlMode.ReadOnly, null /* additionalViewData */);
+
+               templateHelper(html, output, metadata, fieldName, null, DataBoundControlMode.ReadOnly, additionalViewData: null);
             }
 
          } finally {
-            html.ViewData.TemplateInfo.HtmlFieldPrefix = oldPrefix;
+            viewData.TemplateInfo.HtmlFieldPrefix = oldPrefix;
          }
       }
 
       public static void DecimalTemplate(HtmlHelper html, XcstWriter output) {
 
-         if (html.ViewData.TemplateInfo.FormattedModelValue == html.ViewData.ModelMetadata.Model) {
-            html.ViewData.TemplateInfo.FormattedModelValue = output.SimpleContent.Format("{0:0.00}", html.ViewData.ModelMetadata.Model);
+         ViewDataDictionary viewData = html.ViewData;
+
+         if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelMetadata.Model) {
+
+            viewData.TemplateInfo.FormattedModelValue =
+               output.SimpleContent.Format("{0:0.00}", viewData.ModelMetadata.Model);
          }
 
          StringTemplate(html, output);
@@ -134,19 +145,19 @@ namespace Xcst.Web.Runtime {
 
       public static void EmailAddressTemplate(HtmlHelper html, XcstWriter output) {
 
+         ViewDataDictionary viewData = html.ViewData;
+
          output.WriteStartElement("a");
-         output.WriteAttributeString("href", "mailto:" + Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
-         output.WriteString(output.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
+         output.WriteAttributeString("href", "mailto:" + Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
+         output.WriteString(output.SimpleContent.Convert(viewData.TemplateInfo.FormattedModelValue));
          output.WriteEndElement();
       }
 
       public static void HiddenInputTemplate(HtmlHelper html, XcstWriter output) {
 
-         if (html.ViewData.ModelMetadata.HideSurroundingHtml) {
-            return;
+         if (!html.ViewData.ModelMetadata.HideSurroundingHtml) {
+            StringTemplate(html, output);
          }
-
-         StringTemplate(html, output);
       }
 
       public static void HtmlTemplate(HtmlHelper html, XcstWriter output) {
@@ -206,7 +217,7 @@ namespace Xcst.Web.Runtime {
                   output.WriteAttributeString("class", "display-field");
                }
 
-               templateHelper(html, output, propertyMeta, propertyMeta.PropertyName, null /* templateName */, DataBoundControlMode.ReadOnly, null /* additionalViewData */);
+               templateHelper(html, output, propertyMeta, propertyMeta.PropertyName, null, DataBoundControlMode.ReadOnly, additionalViewData: null);
 
                if (!propertyMeta.HideSurroundingHtml) {
                   output.WriteEndElement(); // </div>
@@ -225,17 +236,21 @@ namespace Xcst.Web.Runtime {
 
       public static void UrlTemplate(HtmlHelper html, XcstWriter output) {
 
+         ViewDataDictionary viewData = html.ViewData;
+
          output.WriteStartElement("a");
-         output.WriteAttributeString("href", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
-         output.WriteString(output.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
+         output.WriteAttributeString("href", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
+         output.WriteString(output.SimpleContent.Convert(viewData.TemplateInfo.FormattedModelValue));
          output.WriteEndElement();
       }
 
       public static void ImageUrlTemplate(HtmlHelper html, XcstWriter output) {
 
-         if (html.ViewData.Model != null) {
+         ViewDataDictionary viewData = html.ViewData;
+
+         if (viewData.Model != null) {
             output.WriteStartElement("img");
-            output.WriteAttributeString("src", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
+            output.WriteAttributeString("src", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
             output.WriteEndElement();
          }
       }
@@ -243,22 +258,23 @@ namespace Xcst.Web.Runtime {
       public static void EnumTemplate(HtmlHelper html, XcstWriter output) {
 
          ViewDataDictionary viewData = html.ViewData;
+         ModelMetadata modelMetadata = viewData.ModelMetadata;
 
-         if (viewData.ModelMetadata.Model != null) {
+         if (modelMetadata.Model != null) {
 
-            if (viewData.ModelMetadata.EditFormatString != null) {
+            if (modelMetadata.EditFormatString != null) {
                // undo formatting if applicable to edit mode, for consistency with editor template 
-               viewData.TemplateInfo.FormattedModelValue = viewData.ModelMetadata.Model;
+               viewData.TemplateInfo.FormattedModelValue = modelMetadata.Model;
             }
 
-            if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelMetadata.Model) {
+            if (viewData.TemplateInfo.FormattedModelValue == modelMetadata.Model) {
 
-               Type modelType = viewData.ModelMetadata.ModelType;
+               Type modelType = modelMetadata.ModelType;
                Type enumType = Nullable.GetUnderlyingType(modelType) ?? modelType;
 
                if (enumType.IsEnum) {
 
-                  FieldInfo enumField = enumType.GetField(viewData.ModelMetadata.Model.ToString());
+                  FieldInfo enumField = enumType.GetField(modelMetadata.Model.ToString());
 
                   if (enumField != null) {
 

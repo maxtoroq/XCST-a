@@ -172,8 +172,7 @@ namespace System.Web.Mvc {
             // Indexed properties are not useful (or valid) for grabbing properties off an anonymous object.
 
             IEnumerable<PropertyInfo> properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                                       .Where(prop => prop.GetIndexParameters().Length == 0 &&
-                                                                      prop.GetMethod != null);
+               .Where(p => p.GetIndexParameters().Length == 0 && p.GetMethod != null);
 
             var newHelpers = new List<PropertyHelper>();
 

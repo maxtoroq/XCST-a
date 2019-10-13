@@ -171,7 +171,7 @@ namespace System.Web.Mvc {
       public string ErrorMessage { get; private set; }
 
       public ModelError(Exception exception)
-         : this(exception, null /* errorMessage */) { }
+         : this(exception, errorMessage: null) { }
 
       public ModelError(Exception exception, string errorMessage)
          : this(errorMessage) {

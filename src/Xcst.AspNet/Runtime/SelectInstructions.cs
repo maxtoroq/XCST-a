@@ -138,7 +138,11 @@ namespace Xcst.Web.Runtime {
          var newSelectList = new List<SelectListItem>();
 
          foreach (SelectListItem item in selectList) {
-            item.Selected = (item.Value != null) ? selectedValues.Contains(item.Value) : selectedValues.Contains(item.Text);
+
+            item.Selected = (item.Value != null) ?
+               selectedValues.Contains(item.Value)
+               : selectedValues.Contains(item.Text);
+
             newSelectList.Add(item);
          }
 
@@ -211,7 +215,9 @@ namespace Xcst.Web.Runtime {
             attribs.AddCssClass(HtmlHelper.ValidationInputCssClassName);
          }
 
-         attribs.MergeAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), replaceExisting: false)
+         var validationAttribs = htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata);
+
+         attribs.MergeAttributes(validationAttribs, replaceExisting: false)
             .WriteTo(output);
 
          // Convert each ListItem to an <option> tag and wrap them with <optgroup> if requested.
@@ -237,10 +243,10 @@ namespace Xcst.Web.Runtime {
          // Treat each item with Group == null as a member of a unique group
          // so they are added according to the original order.
 
-         IEnumerable<IGrouping<int, SelectListItem>> groupedSelectList = selectList.GroupBy<SelectListItem, int>(
+         var groupedSelectList = selectList.GroupBy<SelectListItem, int>(
              i => (i.Group == null) ? i.GetHashCode() : i.Group.GetHashCode());
 
-         foreach (IGrouping<int, SelectListItem> group in groupedSelectList) {
+         foreach (var group in groupedSelectList) {
 
             SelectListGroup optGroup = group.First().Group;
 

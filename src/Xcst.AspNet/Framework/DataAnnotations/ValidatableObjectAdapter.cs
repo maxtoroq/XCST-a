@@ -14,7 +14,7 @@ namespace System.Web.Mvc {
          : base(metadata, context) { }
 
       public override IEnumerable<ModelValidationResult> Validate(object container) {
-         
+
          // NOTE: Container is never used here, because IValidatableObject doesn't give you
          // any way to get access to your container.
 

@@ -302,7 +302,7 @@ namespace System.Web.Mvc {
       static void ValidateValidatableModelType(Type modelType) {
 
          if (modelType == null) throw new ArgumentNullException(nameof(modelType));
-         
+
          if (!typeof(IValidatableObject).IsAssignableFrom(modelType)) {
             throw new ArgumentException(
                String.Format(

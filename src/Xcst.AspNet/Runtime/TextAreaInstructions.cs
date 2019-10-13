@@ -46,7 +46,7 @@ namespace Xcst.Web.Runtime {
          if (rows < 0) throw new ArgumentOutOfRangeException(nameof(rows), "The value must be greater than or equal to zero.");
          if (columns < 0) throw new ArgumentOutOfRangeException(nameof(columns), "The value must be greater than or equal to zero.");
 
-         Dictionary<string, object> result = new Dictionary<string, object>();
+         var result = new Dictionary<string, object>();
 
          if (rows > 0) {
             result.Add("rows", rows.ToString(CultureInfo.InvariantCulture));
@@ -87,7 +87,7 @@ namespace Xcst.Web.Runtime {
             metadata.Model = value;
          }
 
-         IDictionary<string, object> rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
+         var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
 
          TextAreaHelper(htmlHelper, output, metadata, name, rowsAndColumns, htmlAttributes);
       }
@@ -117,7 +117,7 @@ namespace Xcst.Web.Runtime {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
-         IDictionary<string, object> rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
+         var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
 
          TextAreaHelper(htmlHelper, output, metadata, expressionString, rowsAndColumns, htmlAttributes);
       }
@@ -152,7 +152,9 @@ namespace Xcst.Web.Runtime {
             attribs.AddCssClass(HtmlHelper.ValidationInputCssClassName);
          }
 
-         attribs.MergeAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelMetadata), replaceExisting: false)
+         var validationAttribs = htmlHelper.GetUnobtrusiveValidationAttributes(name, modelMetadata);
+
+         attribs.MergeAttributes(validationAttribs, replaceExisting: false)
             .WriteTo(output);
 
          string value;

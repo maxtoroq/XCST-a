@@ -518,7 +518,7 @@ namespace System.Web.Mvc {
       protected static bool IsModelValid(ModelBindingContext bindingContext) {
 
          if (bindingContext == null) throw new ArgumentNullException(nameof(bindingContext));
-         
+
          if (String.IsNullOrEmpty(bindingContext.ModelName)) {
             return bindingContext.ModelState.IsValid;
          }
@@ -643,7 +643,7 @@ namespace System.Web.Mvc {
 
          // build up a list of items from the request
 
-         List<object> modelList = new List<object>();
+         var modelList = new List<object>();
 
          foreach (string currentIndex in indexes) {
 
@@ -699,7 +699,7 @@ namespace System.Web.Mvc {
 
          // build up a list of items from the request
 
-         List<KeyValuePair<object, object>> modelList = new List<KeyValuePair<object, object>>();
+         var modelList = new List<KeyValuePair<object, object>>();
 
          foreach (string currentIndex in indexes) {
 
@@ -793,6 +793,7 @@ namespace System.Web.Mvc {
 
          [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
          public static void ReplaceCollection(Type collectionType, object collection, object newContents) {
+
             MethodInfo targetMethod = _replaceCollectionMethod.MakeGenericMethod(collectionType);
             targetMethod.Invoke(null, new object[] { collection, newContents });
          }
@@ -802,6 +803,7 @@ namespace System.Web.Mvc {
             collection.Clear();
 
             if (newContents != null) {
+
                foreach (object item in newContents) {
 
                   // if the item was not a T, some conversion failed. the error message will be propagated,
@@ -815,6 +817,7 @@ namespace System.Web.Mvc {
 
          [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
          public static void ReplaceDictionary(Type keyType, Type valueType, object dictionary, object newContents) {
+
             MethodInfo targetMethod = _replaceDictionaryMethod.MakeGenericMethod(keyType, valueType);
             targetMethod.Invoke(null, new object[] { dictionary, newContents });
          }

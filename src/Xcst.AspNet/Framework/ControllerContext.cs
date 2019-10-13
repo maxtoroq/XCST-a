@@ -22,7 +22,9 @@ namespace System.Web.Mvc {
       public virtual HttpContextBase HttpContext {
          get {
             if (_httpContext == null) {
-               _httpContext = (_requestContext != null) ? _requestContext.HttpContext : new EmptyHttpContext();
+               _httpContext = (_requestContext != null) ?
+                  _requestContext.HttpContext
+                  : new EmptyHttpContext();
             }
             return _httpContext;
          }
@@ -52,7 +54,9 @@ namespace System.Web.Mvc {
       public virtual RouteData RouteData {
          get {
             if (_routeData == null) {
-               _routeData = (_requestContext != null) ? _requestContext.RouteData : new RouteData();
+               _routeData = (_requestContext != null) ?
+                  _requestContext.RouteData
+                  : new RouteData();
             }
             return _routeData;
          }
