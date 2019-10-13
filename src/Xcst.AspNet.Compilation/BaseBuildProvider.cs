@@ -143,9 +143,7 @@ namespace Xcst.Web.Compilation {
 
             if (moduleUri != null) {
 
-               Uri uri;
-
-               if (Uri.TryCreate(moduleUri, UriKind.Absolute, out uri)
+               if (Uri.TryCreate(moduleUri, UriKind.Absolute, out Uri uri)
                   && uri.IsFile) {
 
                   moduleUri = uri.LocalPath;

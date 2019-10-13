@@ -36,9 +36,7 @@ namespace Xcst.Web.Runtime {
 
          if (!String.IsNullOrEmpty(cssClass)) {
 
-            string existingClass;
-
-            if (DictionaryExtensions.TryGetValue(this, "class", out existingClass)) {
+            if (DictionaryExtensions.TryGetValue(this, "class", out string existingClass)) {
                this["class"] = existingClass + " " + cssClass;
             } else {
                this["class"] = cssClass;

@@ -146,9 +146,7 @@ namespace Xcst.Web.Runtime {
 
          // If there are any errors for a named field, we add the CSS attribute.
 
-         ModelState modelState;
-
-         if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out modelState)
+         if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
             && modelState.Errors.Count > 0) {
 
             attribs.AddCssClass(HtmlHelper.ValidationInputCssClassName);

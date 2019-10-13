@@ -73,9 +73,7 @@ namespace Xcst.Web.Runtime {
             return false;
          }
 
-         bool show;
-
-         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(propertyMetadata.ShowForDisplay), out show)) {
+         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(propertyMetadata.ShowForDisplay), out bool show)) {
             return show;
          }
 

@@ -95,9 +95,7 @@ namespace Xcst.Web.Runtime {
          if (isChecked == null
             && model != null) {
 
-            bool modelChecked;
-
-            if (Boolean.TryParse(model.ToString(), out modelChecked)) {
+            if (Boolean.TryParse(model.ToString(), out bool modelChecked)) {
                isChecked = modelChecked;
             }
          }
@@ -484,12 +482,10 @@ namespace Xcst.Web.Runtime {
 
          // If there are any errors for a named field, we add the css attribute.
 
-         ModelState modelState;
+         if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
+            && modelState.Errors.Count > 0) {
 
-         if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out modelState)) {
-            if (modelState.Errors.Count > 0) {
-               attribs.AddCssClass(HtmlHelper.ValidationInputCssClassName);
-            }
+            attribs.AddCssClass(HtmlHelper.ValidationInputCssClassName);
          }
 
          attribs.MergeAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), replaceExisting: false)

@@ -461,9 +461,9 @@ namespace Xcst.Web.Runtime {
 
       internal static IEnumerable<SelectListItem> Options(ViewDataDictionary viewData) {
 
-         IEnumerable<SelectListItem> options;
+         string key = "__xcst_options:" + viewData.TemplateInfo.HtmlFieldPrefix;
 
-         if (viewData.TryGetValue("__xcst_options:" + viewData.TemplateInfo.HtmlFieldPrefix, out options)) {
+         if (viewData.TryGetValue(key, out IEnumerable<SelectListItem> options)) {
             return options;
          }
 

@@ -245,9 +245,8 @@ namespace Xcst.Web.Runtime {
 #endif
 
             string fullViewName = modeViewPath + "/" + viewName;
-            ActionCacheItem cacheItem;
 
-            if (actionCache.TryGetValue(fullViewName, out cacheItem)) {
+            if (actionCache.TryGetValue(fullViewName, out ActionCacheItem cacheItem)) {
 
                if (cacheItem != null) {
                   cacheItem.Execute(html, output, viewData);
@@ -268,9 +267,7 @@ namespace Xcst.Web.Runtime {
                }
 #endif
 
-               Action<HtmlHelper, XcstWriter> defaultAction;
-
-               if (defaultActions.TryGetValue(viewName, out defaultAction)) {
+               if (defaultActions.TryGetValue(viewName, out var defaultAction)) {
 
                   var item = new ActionCacheCodeItem {
                      Action = defaultAction

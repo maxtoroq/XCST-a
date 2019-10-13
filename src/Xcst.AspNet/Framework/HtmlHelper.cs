@@ -173,12 +173,10 @@ namespace System.Web.Mvc {
 
       internal object GetModelStateValue(string key, Type destinationType) {
 
-         ModelState modelState;
+         if (this.ViewData.ModelState.TryGetValue(key, out ModelState modelState)
+            && modelState.Value != null) {
 
-         if (this.ViewData.ModelState.TryGetValue(key, out modelState)) {
-            if (modelState.Value != null) {
-               return modelState.Value.ConvertTo(destinationType, null /* culture */);
-            }
+            return modelState.Value.ConvertTo(destinationType, culture: null);
          }
 
          return null;

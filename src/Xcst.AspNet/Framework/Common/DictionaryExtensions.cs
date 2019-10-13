@@ -64,11 +64,9 @@ namespace System.Collections.Generic {
 
          Contract.Assert(collection != null);
 
-         object valueObj;
-
-         if (collection.TryGetValue(key, out valueObj)) {
-            if (valueObj is T) {
-               value = (T)valueObj;
+         if (collection.TryGetValue(key, out object valueObj)) {
+            if (valueObj is T valueT) {
+               value = valueT;
                return true;
             }
          }
@@ -82,9 +80,7 @@ namespace System.Collections.Generic {
          Contract.Assert(dictionary != null);
          Contract.Assert(prefix != null);
 
-         TValue exactMatchValue;
-
-         if (dictionary.TryGetValue(prefix, out exactMatchValue)) {
+         if (dictionary.TryGetValue(prefix, out TValue exactMatchValue)) {
             yield return new KeyValuePair<string, TValue>(prefix, exactMatchValue);
          }
 
@@ -118,9 +114,7 @@ namespace System.Collections.Generic {
 
       public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue @default) {
 
-         TValue value;
-
-         if (dict.TryGetValue(key, out value)) {
+         if (dict.TryGetValue(key, out TValue value)) {
             return value;
          }
 

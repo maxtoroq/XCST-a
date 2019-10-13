@@ -237,12 +237,13 @@ namespace Xcst.Web.Runtime {
 
       static IEnumerable<ModelState> GetModelStateList(HtmlHelper htmlHelper, bool includePropertyErrors) {
 
+         ViewDataDictionary viewData = htmlHelper.ViewData;
+
          if (!includePropertyErrors) {
 
-            ModelState ms;
-            htmlHelper.ViewData.ModelState.TryGetValue(htmlHelper.ViewData.TemplateInfo.HtmlFieldPrefix, out ms);
+            if (viewData.ModelState.TryGetValue(viewData.TemplateInfo.HtmlFieldPrefix, out ModelState ms)
+               && ms != null) {
 
-            if (ms != null) {
                return new ModelState[] { ms };
             }
 
@@ -255,7 +256,7 @@ namespace Xcst.Web.Runtime {
 
             var ordering = new Dictionary<string, int>();
 
-            var metadata = htmlHelper.ViewData.ModelMetadata;
+            ModelMetadata metadata = viewData.ModelMetadata;
 
             if (metadata != null) {
                foreach (ModelMetadata m in metadata.Properties) {
@@ -263,7 +264,7 @@ namespace Xcst.Web.Runtime {
                }
             }
 
-            return from kv in htmlHelper.ViewData.ModelState
+            return from kv in viewData.ModelState
                    let name = kv.Key
                    orderby ordering.GetOrDefault(name, ModelMetadata.DefaultOrder)
                    select kv.Value;
