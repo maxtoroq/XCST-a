@@ -84,11 +84,8 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         IEnumerable collection = model as IEnumerable;
-
-         if (collection == null) {
-            throw new InvalidOperationException($"The Collection template was used with an object of type '{model.GetType().FullName}', which does not implement System.IEnumerable.");
-         }
+         IEnumerable collection = model as IEnumerable
+            ?? throw new InvalidOperationException($"The Collection template was used with an object of type '{model.GetType().FullName}', which does not implement System.IEnumerable.");
 
          Type typeInCollection = typeof(string);
          Type genericEnumerableType = TypeHelpers.ExtractGenericInterface(collection.GetType(), typeof(IEnumerable<>));

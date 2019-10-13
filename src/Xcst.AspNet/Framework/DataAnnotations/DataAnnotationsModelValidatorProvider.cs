@@ -160,19 +160,9 @@ namespace System.Web.Mvc {
 
       static ConstructorInfo GetAttributeAdapterConstructor(Type attributeType, Type adapterType) {
 
-         ConstructorInfo constructor = adapterType.GetConstructor(new[] { typeof(ModelMetadata), typeof(ControllerContext), attributeType });
-
-         if (constructor == null) {
-            throw new ArgumentException(
-               String.Format(
-                  CultureInfo.CurrentCulture,
-                  MvcResources.DataAnnotationsModelValidatorProvider_ConstructorRequirements,
-                  adapterType.FullName,
-                  typeof(ModelMetadata).FullName,
-                  typeof(ControllerContext).FullName,
-                  attributeType.FullName),
-               nameof(adapterType));
-         }
+         ConstructorInfo constructor = adapterType.GetConstructor(new[] { typeof(ModelMetadata), typeof(ControllerContext), attributeType })
+            ?? throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, MvcResources.DataAnnotationsModelValidatorProvider_ConstructorRequirements,
+                  adapterType.FullName, typeof(ModelMetadata).FullName, typeof(ControllerContext).FullName, attributeType.FullName), nameof(adapterType));
 
          return constructor;
       }
@@ -287,18 +277,9 @@ namespace System.Web.Mvc {
 
       static ConstructorInfo GetValidatableAdapterConstructor(Type adapterType) {
 
-         ConstructorInfo constructor = adapterType.GetConstructor(new[] { typeof(ModelMetadata), typeof(ControllerContext) });
-
-         if (constructor == null) {
-            throw new ArgumentException(
-               String.Format(
-                  CultureInfo.CurrentCulture,
-                  MvcResources.DataAnnotationsModelValidatorProvider_ValidatableConstructorRequirements,
-                  adapterType.FullName,
-                  typeof(ModelMetadata).FullName,
-                  typeof(ControllerContext).FullName),
-               nameof(adapterType));
-         }
+         ConstructorInfo constructor = adapterType.GetConstructor(new[] { typeof(ModelMetadata), typeof(ControllerContext) })
+            ?? throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, MvcResources.DataAnnotationsModelValidatorProvider_ValidatableConstructorRequirements,
+                  adapterType.FullName, typeof(ModelMetadata).FullName, typeof(ControllerContext).FullName), nameof(adapterType));
 
          return constructor;
       }

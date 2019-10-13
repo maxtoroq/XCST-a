@@ -100,17 +100,11 @@ namespace Xcst.Web.Runtime {
 
       static IEnumerable<SelectListItem> GetSelectData(HtmlHelper htmlHelper, string name) {
 
-         object o = htmlHelper.ViewData?.Eval(name);
+         object o = htmlHelper.ViewData?.Eval(name)
+            ?? throw new InvalidOperationException($"There is no ViewData item of type 'IEnumerable<SelectListItem>' that has the key '{name}'.");
 
-         if (o == null) {
-            throw new InvalidOperationException($"There is no ViewData item of type 'IEnumerable<SelectListItem>' that has the key '{name}'.");
-         }
-
-         IEnumerable<SelectListItem> selectList = o as IEnumerable<SelectListItem>;
-
-         if (selectList == null) {
-            throw new InvalidOperationException($"The ViewData item that has the key '{name}' is of type '{o.GetType().FullName}' but must be of type 'IEnumerable<SelectListItem>'.");
-         }
+         var selectList = o as IEnumerable<SelectListItem>
+            ?? throw new InvalidOperationException($"The ViewData item that has the key '{name}' is of type '{o.GetType().FullName}' but must be of type 'IEnumerable<SelectListItem>'.");
 
          return selectList;
       }

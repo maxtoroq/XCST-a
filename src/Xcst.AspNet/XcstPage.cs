@@ -160,19 +160,12 @@ namespace Xcst.Web {
          if (path == null) throw new ArgumentNullException(nameof(path));
 
          string absolutePath = VirtualPathUtility.Combine(this.VirtualPath, path);
-         Type pageType = BuildManager.GetCompiledType(absolutePath);
 
-         if (pageType == null) {
-            throw new ArgumentException($"A page at '{absolutePath}' was not found.", nameof(path));
-         }
+         Type pageType = BuildManager.GetCompiledType(absolutePath)
+            ?? throw new ArgumentException($"A page at '{absolutePath}' was not found.", nameof(path));
 
-         object pageInstance = Activator.CreateInstance(pageType);
-
-         XcstPage page = pageInstance as XcstPage;
-
-         if (page == null) {
-            throw new ArgumentException($"The page at '{absolutePath}' must derive from {nameof(XcstPage)}.", nameof(path));
-         }
+         XcstPage page = Activator.CreateInstance(pageType) as XcstPage
+            ?? throw new ArgumentException($"The page at '{absolutePath}' must derive from {nameof(XcstPage)}.", nameof(path));
 
          page.VirtualPath = absolutePath;
 

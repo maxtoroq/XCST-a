@@ -24,16 +24,9 @@ namespace System.Web.Mvc {
             return Enumerable.Empty<ModelValidationResult>();
          }
 
-         var validatable = model as IValidatableObject;
-
-         if (validatable == null) {
-            throw new InvalidOperationException(
-               String.Format(
-                  CultureInfo.CurrentCulture,
-                  MvcResources.ValidatableObjectAdapter_IncompatibleType,
-                  typeof(IValidatableObject).FullName,
-                  model.GetType().FullName));
-         }
+         var validatable = model as IValidatableObject
+            ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, MvcResources.ValidatableObjectAdapter_IncompatibleType,
+                  typeof(IValidatableObject).FullName, model.GetType().FullName));
 
          var validationContext = new ValidationContext(validatable, null, null);
 

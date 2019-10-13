@@ -52,15 +52,10 @@ namespace System.Web.Mvc {
          if (String.IsNullOrEmpty(propertyName)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(propertyName));
 
          ICustomTypeDescriptor typeDescriptor = GetTypeDescriptor(containerType);
-         PropertyDescriptor property = typeDescriptor.GetProperties().Find(propertyName, true);
 
-         if (property == null) {
-            throw new ArgumentException(
-                String.Format(
-                    CultureInfo.CurrentCulture,
-                    MvcResources.Common_PropertyNotFound,
-                    containerType.FullName, propertyName));
-         }
+         PropertyDescriptor property = typeDescriptor.GetProperties().Find(propertyName, ignoreCase: true)
+            ?? throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, MvcResources.Common_PropertyNotFound,
+                  containerType.FullName, propertyName));
 
          return GetMetadataForProperty(modelAccessor, containerType, property);
       }

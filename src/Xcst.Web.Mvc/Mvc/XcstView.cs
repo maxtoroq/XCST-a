@@ -54,11 +54,8 @@ namespace Xcst.Web.Mvc {
          if (viewContext == null) throw new ArgumentNullException(nameof(viewContext));
          if (instance == null) throw new ArgumentNullException(nameof(instance));
 
-         XcstViewPage viewPage = instance as XcstViewPage;
-
-         if (viewPage == null) {
-            throw new InvalidOperationException($"The view at '{ViewPath}' must derive from {nameof(XcstViewPage)}, or {nameof(XcstViewPage)}<TModel>.");
-         }
+         XcstViewPage viewPage = instance as XcstViewPage
+            ?? throw new InvalidOperationException($"The view at '{ViewPath}' must derive from {nameof(XcstViewPage)}, or {nameof(XcstViewPage)}<TModel>.");
 
          viewPage.ViewContext = viewContext;
 
