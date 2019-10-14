@@ -55,12 +55,12 @@ namespace Xcst.Web.Mvc {
 
          if (this.displaySet) {
             metadata.ShowForDisplay = this.display;
-            metadata.AdditionalValues[nameof(metadata.ShowForDisplay)] = this.display;
+            metadata.AdditionalValues[nameof(ModelMetadata.ShowForDisplay)] = this.display;
          }
 
          if (this.editSet) {
             metadata.ShowForEdit = this.edit;
-            metadata.AdditionalValues[nameof(metadata.ShowForEdit)] = this.edit;
+            metadata.AdditionalValues[nameof(ModelMetadata.ShowForEdit)] = this.edit;
          }
       }
    }
