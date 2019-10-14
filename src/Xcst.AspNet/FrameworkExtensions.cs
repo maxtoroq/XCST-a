@@ -79,12 +79,10 @@ namespace Xcst.Web {
 #if !ASPNETLIB
       public static object GetModelStateValue(this HtmlHelper htmlHelper, string key, Type destinationType) {
 
-         ModelState modelState;
+         if (htmlHelper.ViewData.ModelState.TryGetValue(key, out ModelState modelState)
+            && modelState.Value != null) {
 
-         if (htmlHelper.ViewData.ModelState.TryGetValue(key, out modelState)) {
-            if (modelState.Value != null) {
-               return modelState.Value.ConvertTo(destinationType, null /* culture */);
-            }
+            return modelState.Value.ConvertTo(destinationType, culture: null);
          }
 
          return null;

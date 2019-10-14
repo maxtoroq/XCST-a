@@ -83,7 +83,7 @@ namespace Xcst.Web.Runtime {
 #if !ASPNETLIB
          if (propertyMetadata.ModelType == typeof(EntityState)) {
             return false;
-         } 
+         }
 #endif
 
          if (propertyMetadata.ModelType == typeof(HttpPostedFileBase)) {
@@ -98,15 +98,14 @@ namespace Xcst.Web.Runtime {
          if (html == null) throw new ArgumentNullException(nameof(html));
          if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));
 
-         Action<HtmlHelper, ISequenceWriter<object>> memberTemplate;
+         if (html.ViewData.TryGetValue("__xcst_member_template", out Action<HtmlHelper, ISequenceWriter<object>> memberTemplate)) {
 
-         if (!html.ViewData.TryGetValue("__xcst_member_template", out memberTemplate)) {
-            return null;
+            HtmlHelper helper = HtmlHelperFactory.ForMemberTemplate(html, propertyMetadata);
+
+            return (c, o) => memberTemplate(helper, o);
          }
 
-         HtmlHelper helper = HtmlHelperFactory.ForMemberTemplate(html, propertyMetadata);
-
-         return (c, o) => memberTemplate(helper, o);
+         return null;
       }
    }
 }
