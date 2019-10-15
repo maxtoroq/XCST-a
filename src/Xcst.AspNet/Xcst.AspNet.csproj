@@ -77,7 +77,7 @@
     <Compile Include="AntiXsrf\TokenValidator.cs" />
     <Compile Include="Framework\Common\AttributeList.cs" />
     <Compile Include="Framework\Common\CollectionExtensions.cs" />
-    <Compile Include="Framework\Common\DictionaryExtensions.cs" />
+    <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Framework\Common\PrefixContainer.cs" />
     <Compile Include="Framework\Common\PropertyHelper.cs" />
     <Compile Include="Framework\Common\TypeDescriptorHelper.cs" />

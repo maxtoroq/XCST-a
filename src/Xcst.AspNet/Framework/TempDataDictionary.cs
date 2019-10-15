@@ -74,13 +74,33 @@ namespace System.Web.Mvc {
 
          // Frequently called so ensure delegate is stateless
 
-         _data.RemoveFromDictionary((KeyValuePair<string, object> entry, TempDataDictionary tempData) => {
+         RemoveFromDictionary(_data, (KeyValuePair<string, object> entry, TempDataDictionary tempData) => {
             string key = entry.Key;
             return !tempData._initialKeys.Contains(key)
                 && !tempData._retainedKeys.Contains(key);
          }, this);
 
          tempDataProvider.SaveTempData(controllerContext, _data);
+      }
+
+      static void RemoveFromDictionary<TKey, TValue, TState>(IDictionary<TKey, TValue> dictionary, Func<KeyValuePair<TKey, TValue>, TState, bool> removeCondition, TState state) {
+
+         // Because it is not possible to delete while enumerating, a copy of the keys must be taken. Use the size of the dictionary as an upper bound
+         // to avoid creating more than one copy of the keys.
+
+         int removeCount = 0;
+         TKey[] keys = new TKey[dictionary.Count];
+
+         foreach (var entry in dictionary) {
+            if (removeCondition(entry, state)) {
+               keys[removeCount] = entry.Key;
+               removeCount++;
+            }
+         }
+
+         for (int i = 0; i < removeCount; i++) {
+            dictionary.Remove(keys[i]);
+         }
       }
 
       public void Add(string key, object value) {

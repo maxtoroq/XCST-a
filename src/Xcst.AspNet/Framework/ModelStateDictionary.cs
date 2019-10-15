@@ -101,8 +101,42 @@ namespace System.Web.Mvc {
 
          // if the key is not found in the dictionary, we just say that it's valid (since there are no errors)
 
-         return this.FindKeysWithPrefix(key)
+         return FindKeysWithPrefix(this, key)
             .All(entry => entry.Value.Errors.Count == 0);
+      }
+
+      static IEnumerable<KeyValuePair<string, TValue>> FindKeysWithPrefix<TValue>(IDictionary<string, TValue> dictionary, string prefix) {
+
+         if (dictionary.TryGetValue(prefix, out TValue exactMatchValue)) {
+            yield return new KeyValuePair<string, TValue>(prefix, exactMatchValue);
+         }
+
+         foreach (var entry in dictionary) {
+
+            string key = entry.Key;
+
+            if (key.Length <= prefix.Length) {
+               continue;
+            }
+
+            if (!key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) {
+               continue;
+            }
+
+            // Everything is prefixed by the empty string
+
+            if (prefix.Length == 0) {
+               yield return entry;
+            } else {
+               char charAfterPrefix = key[prefix.Length];
+               switch (charAfterPrefix) {
+                  case '[':
+                  case '.':
+                     yield return entry;
+                     break;
+               }
+            }
+         }
       }
 
       public void Merge(ModelStateDictionary dictionary) {

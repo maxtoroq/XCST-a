@@ -106,11 +106,11 @@
     <Compile Include="..\Xcst.AspNet.Compilation\ExtensionLoader.cs">
       <Link>ExtensionLoader.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\DictionaryExtensions.cs">
+      <Link>DictionaryExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\FrameworkExtensions.cs">
       <Link>FrameworkExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Xcst.AspNet\Framework\Common\DictionaryExtensions.cs">
-      <Link>Framework\Common\DictionaryExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\Framework\Common\PropertyHelper.cs">
       <Link>Framework\Common\PropertyHelper.cs</Link>
