@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A359B933-E00C-4356-B908-7ED4CCA83B65}"
+	ProjectSection(SolutionItems) = preProject
+		samples\README.md = samples\README.md
+	EndProjectSection
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet", "samples\aspnet\", "{69E11991-F3B6-41D9-B8B6-D5AADEA54EAD}"
 	ProjectSection(WebsiteProperties) = preProject
@@ -32,9 +35,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{28636474-5F87-46F6-BBED-0B6ECFC0F2D9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3D9FCA40-C58E-428A-AE3C-480DF5724451}"
+	ProjectSection(SolutionItems) = preProject
+		src\README.md = src\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{A0812B4C-159C-4387-94AE-BEEC87FFFF86}"
 	ProjectSection(SolutionItems) = preProject
+		schemas\README.md = schemas\README.md
 		schemas\xcst-app.rng = schemas\xcst-app.rng
 		schemas\xcst-app.xsd = schemas\xcst-app.xsd
 		packages\Xcst.Compiler.0.104.0\schemas\xcst.rng = packages\Xcst.Compiler.0.104.0\schemas\xcst.rng

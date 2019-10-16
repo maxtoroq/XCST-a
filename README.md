@@ -13,6 +13,14 @@ See the [project home][1] for more information.
 
 - [XCST][2]
 
+System Requirements
+-------------------
+This project is written in C# 7 and requires .NET 4.6 or higher.
+
+The [release script](build/release.ps1) (which creates the NuGet packages) and other utility scripts are written in PowerShell 3.
+
+The [application extension schema](schemas/xcst-app.rng) is written in Relax NG and converted to XSD using [Trang][3], which requires Java.
+
 Building
 --------
 Run the following commands in PowerShell to build everything (source, samples and tests).
@@ -31,3 +39,4 @@ MSBuild
 
 [1]: http://maxtoroq.github.io/XCST/
 [2]: https://github.com/maxtoroq/XCST
+[3]: https://github.com/relaxng/jing-trang
