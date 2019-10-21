@@ -11,7 +11,7 @@ EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet", "samples\aspnet\", "{69E11991-F3B6-41D9-B8B6-D5AADEA54EAD}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
-		ProjectReferences = "{30e0cb99-1953-476b-a994-7bc15d903b25}|Xcst.AspNet.Compilation.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;"
+		ProjectReferences = "{30e0cb99-1953-476b-a994-7bc15d903b25}|Xcst.AspNet.Compilation.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;{5039E116-8B5F-406D-A7FD-550F309A7178}|Xcst.AspNet.Extension.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_49439"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_49439\"
@@ -77,7 +77,7 @@ EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-todo", "samples\aspnet-todo\", "{5C9BDC47-2C36-4CFF-AC98-D6F6198E43FA}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
-		ProjectReferences = "{30e0cb99-1953-476b-a994-7bc15d903b25}|Xcst.AspNet.Compilation.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;"
+		ProjectReferences = "{30e0cb99-1953-476b-a994-7bc15d903b25}|Xcst.AspNet.Compilation.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;{5039E116-8B5F-406D-A7FD-550F309A7178}|Xcst.AspNet.Extension.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51437"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet-todo\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51437\"
@@ -98,6 +98,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-todo", "samples\aspn
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet.Compilation", "src\Xcst.AspNet.Compilation\Xcst.AspNet.Compilation.csproj", "{30E0CB99-1953-476B-A994-7BC15D903B25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet.Extension", "src\Xcst.AspNet.Extension\Xcst.AspNet.Extension.csproj", "{5039E116-8B5F-406D-A7FD-550F309A7178}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,6 +150,12 @@ Global
 		{30E0CB99-1953-476B-A994-7BC15D903B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30E0CB99-1953-476B-A994-7BC15D903B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30E0CB99-1953-476B-A994-7BC15D903B25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5039E116-8B5F-406D-A7FD-550F309A7178}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
+		{5039E116-8B5F-406D-A7FD-550F309A7178}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
+		{5039E116-8B5F-406D-A7FD-550F309A7178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5039E116-8B5F-406D-A7FD-550F309A7178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5039E116-8B5F-406D-A7FD-550F309A7178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5039E116-8B5F-406D-A7FD-550F309A7178}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,6 +168,7 @@ Global
 		{48FFDBDC-4AE8-4739-9AD1-C361927CAE3D} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{5C9BDC47-2C36-4CFF-AC98-D6F6198E43FA} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{30E0CB99-1953-476B-A994-7BC15D903B25} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
+		{5039E116-8B5F-406D-A7FD-550F309A7178} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9D68F6E0-43F6-4AF7-8617-714A04B12736}

@@ -103,8 +103,8 @@
     <Compile Include="..\Xcst.AspNet\Configuration\XcstWebConfiguration.cs">
       <Link>Configuration\XcstWebConfiguration.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet.Compilation\ExtensionLoader.cs">
-      <Link>ExtensionLoader.cs</Link>
+    <Compile Include="..\Xcst.AspNet.Extension\ExtensionLoader.cs">
+      <Link>Extension\ExtensionLoader.cs</Link>
     </Compile>
     <Compile Include="..\Xcst.AspNet\DictionaryExtensions.cs">
       <Link>DictionaryExtensions.cs</Link>
@@ -187,8 +187,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Xcst.AspNet.Compilation\xcst-app.xsl">
-      <Link>xcst-app.xsl</Link>
+    <EmbeddedResource Include="..\Xcst.AspNet.Extension\xcst-app.xsl">
+      <Link>Extension\xcst-app.xsl</Link>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

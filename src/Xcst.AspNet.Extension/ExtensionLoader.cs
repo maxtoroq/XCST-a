@@ -17,17 +17,21 @@ using System.IO;
 using Xcst.Compiler;
 using Xcst.Web;
 
-[assembly: XcstExtension(XmlNamespaces.XcstApplication, typeof(Xcst.Web.ExtensionLoader))]
+[assembly: XcstExtension(XmlNamespaces.XcstApplication, typeof(Xcst.Web.Extension.ExtensionLoader))]
 
-namespace Xcst.Web {
+namespace Xcst.Web.Extension {
 
+#if ASPNETLIB
+   public
+#endif
    class ExtensionLoader : XcstExtensionLoader {
 
       public override Stream LoadSource() {
 
-         return typeof(ExtensionLoader)
-            .Assembly
-            .GetManifestResourceStream($"{typeof(ExtensionLoader).Namespace}.xcst-app.xsl");
+         Type thisType = GetType();
+
+         return thisType.Assembly
+            .GetManifestResourceStream($"{thisType.Namespace}.xcst-app.xsl");
       }
    }
 }

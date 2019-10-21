@@ -79,10 +79,11 @@ function script:NuSpec {
 
    } elseif ($projName -eq "Xcst.AspNet.Compilation") {
       
-      "<description>Build providers and extension instructions for XCST web pages</description>"
+      "<description>ASP.NET build providers for run-time compilation</description>"
 
       "<dependencies>"
          "<dependency id='Xcst.AspNet' version='$(DependencyVersionRange Xcst.AspNet)'/>"
+         "<dependency id='Xcst.AspNet.Extension' version='$(DependencyVersionRange Xcst.AspNet.Extension)'/>"
          "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
       "</dependencies>"
 
@@ -90,6 +91,14 @@ function script:NuSpec {
          "<frameworkAssembly assemblyName='System'/>"
          "<frameworkAssembly assemblyName='System.Web'/>"
       "</frameworkAssemblies>"
+
+   } elseif ($projName -eq "Xcst.AspNet.Extension") {
+
+      "<description>Extension instructions for XCST web pages</description>"
+
+      "<dependencies>"
+         "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
+      "</dependencies>"
    }
 
    "</metadata>"
@@ -100,7 +109,8 @@ function script:NuSpec {
 
    if ($projName -eq "Xcst.AspNet.Compilation") {
       "<file src='$(Resolve-Path Web.config.transform)' target='content'/>"
-   } else {
+
+   } elseif (@("Xcst.AspNet", "Xcst.Web.Mvc") -contains $_ ) {
       "<file src='$solutionPath\schemas\*.rng' target='schemas'/>"
       "<file src='$solutionPath\schemas\*.xsd' target='schemas'/>"
    }
@@ -208,7 +218,7 @@ try {
    [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
    $notice = $noticeDoc.DocumentElement
 
-   $projects = "Xcst.AspNet", "Xcst.AspNet.Compilation", "Xcst.Web.Mvc"
+   $projects = "Xcst.AspNet", "Xcst.AspNet.Compilation", "Xcst.AspNet.Extension", "Xcst.Web.Mvc"
 
    if ($ProjectName -eq '*') {
       
