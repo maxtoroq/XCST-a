@@ -61,12 +61,5 @@ namespace Xcst.Web {
             }
          }
       }
-
-      public virtual void SetUpSessionState(HttpContextBase context) {
-
-         if (this.page is ISessionStateAware sessionState) {
-            context.SetSessionStateBehavior(sessionState.SessionStateBehavior);
-         }
-      }
    }
 }

@@ -20,8 +20,6 @@ namespace Xcst.Web.Configuration {
 
    public sealed class XcstWebConfiguration {
 
-      public const string FileExtension = "xcst";
-
       public static XcstWebConfiguration Instance { get; } = new XcstWebConfiguration();
 
       public EditorTemplatesConfiguration EditorTemplates { get; } = new EditorTemplatesConfiguration();

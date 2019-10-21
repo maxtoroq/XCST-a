@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region ExtensionlessUrlModule/PageRouter is based on code from ASP.NET Web Stack
+#region ExtensionlessUrlModule is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
@@ -20,72 +20,78 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Web;
+using System.Web.Compilation;
 using System.Web.Hosting;
-using Xcst.Web.Configuration;
+using Xcst.Web.Compilation;
 
 namespace Xcst.Web {
 
    public class ExtensionlessUrlModule : IHttpModule {
 
       static readonly object _hasBeenRegisteredKey = new object();
+      static readonly string _supportedExtension = PageBuildProvider.FileExtension;
 
       public void Dispose() { }
 
       public void Init(HttpApplication application) {
 
-         if (application.Context.Items[_hasBeenRegisteredKey] != null) {
-            // registration for this module has already run for this HttpApplication instance
-            return;
+         if (application.Context.Items[_hasBeenRegisteredKey] == null) {
+            application.Context.Items[_hasBeenRegisteredKey] = true;
+            application.PostResolveRequestCache += OnApplicationPostResolveRequestCache;
          }
-
-         application.Context.Items[_hasBeenRegisteredKey] = true;
-
-         InitApplication(application);
-      }
-
-      static void InitApplication(HttpApplication application) {
-         application.PostResolveRequestCache += OnApplicationPostResolveRequestCache;
       }
 
       static void OnApplicationPostResolveRequestCache(object sender, EventArgs e) {
 
-         HttpContextBase context = new HttpContextWrapper(((HttpApplication)sender).Context);
-         HttpRequestBase request = context.Request;
+         HttpContext context = ((HttpApplication)sender).Context;
+         HttpRequest request = context.Request;
 
          // Parse incoming URL (we trim off the first two chars since they're always "~/")
 
          string requestPath = request.AppRelativeCurrentExecutionFilePath.Substring(2) + request.PathInfo;
 
-         string[] pageMatch = PageRouter.MatchRequest(requestPath, HostingEnvironment.VirtualPathProvider.FileExists);
+         if (MatchRequest(requestPath, out string pagePath, out string pathInfo)) {
 
-         if (pageMatch == null) {
+            if (Path.GetFileName(pagePath).StartsWith("_", StringComparison.OrdinalIgnoreCase)) {
+               throw new HttpException(404, "Files with leading underscores (\"_\") cannot be served.");
+            }
+
+            string virtualPath = "~/" + pagePath;
+            XcstPage page = CreateFromVirtualPath(virtualPath, pathInfo);
+
+            if (page != null) {
+
+               if (page is ISessionStateAware sess) {
+                  context.SetSessionStateBehavior(sess.SessionStateBehavior);
+               }
+
+               context.RemapHandler(page.CreateHttpHandler());
+            }
+
+         } else {
 
             // If its not a match, but to a supported extension, we want to return a 404 instead of a 403
 
             string extension = PathExtension(requestPath);
 
-            if (String.Equals("." + PageRouter.supportedExtension, extension, StringComparison.OrdinalIgnoreCase)) {
+            if (String.Equals("." + _supportedExtension, extension, StringComparison.OrdinalIgnoreCase)) {
                throw new HttpException(404, null);
             }
+         }
+      }
 
-            return;
+      static XcstPage CreateFromVirtualPath(string virtualPath, string pathInfo) {
+
+         if (virtualPath == null) throw new ArgumentNullException(nameof(virtualPath));
+
+         var page = (XcstPage)BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(XcstPage));
+
+         if (page != null) {
+            page.VirtualPath = virtualPath;
+            page.PathInfo = pathInfo;
          }
 
-         string virtualPath = "~/" + pageMatch[0];
-         string pathInfo = pageMatch[1];
-
-         if (Path.GetFileName(virtualPath).StartsWith("_", StringComparison.OrdinalIgnoreCase)) {
-            throw new HttpException(404, "Files with leading underscores (\"_\") cannot be served.");
-         }
-
-         IHttpHandler handler = XcstPageHandlerFactory.CreateFromVirtualPath(virtualPath, pathInfo);
-
-         if (handler != null) {
-
-            (handler as XcstPageHandler)?.SetUpSessionState(context);
-
-            context.RemapHandler(handler);
-         }
+         return page;
       }
 
       /// <summary>
@@ -123,48 +129,44 @@ namespace Xcst.Web {
 
          return String.Empty;
       }
-   }
 
-   static class PageRouter {
+      static bool MatchRequest(string requestPath, out string pagePath, out string pathInfo) {
 
-      internal static readonly string supportedExtension = XcstWebConfiguration.FileExtension;
-      static readonly string defaultDocument = "index";
-
-      public static string[] MatchRequest(string pathValue, Func<string, bool> virtualPathExists) {
-
-         Debug.Assert(pathValue != null);
-         Debug.Assert(!pathValue.StartsWith("~/"));
-
-         string currentLevel = String.Empty;
-         string currentPathInfo = pathValue;
+         Debug.Assert(requestPath != null);
+         Debug.Assert(!requestPath.StartsWith("~/"));
 
          // We can skip the file exists check and normal lookup for empty paths, but we still need to look for default pages
 
-         if (!String.IsNullOrEmpty(pathValue)) {
+         if (!String.IsNullOrEmpty(requestPath)) {
 
             // If the file exists and its not a supported extension, let the request go through
             // TODO: Look into switching to RawURL to eliminate the need for this issue
 
-            if (FileExists(pathValue, virtualPathExists)
-               && !PathEndsWithExtension(pathValue, supportedExtension)) {
+            if (FileExists(requestPath)
+               && !PathEndsWithExtension(requestPath, _supportedExtension)) {
 
-               return null;
+               pagePath = null;
+               pathInfo = null;
+               return false;
             }
 
             // For each trimmed part of the path try to add a known extension and
             // check if it matches a file in the application.
 
-            currentLevel = pathValue;
-            currentPathInfo = String.Empty;
+            string currentLevel = requestPath;
+            string currentPathInfo = String.Empty;
 
             while (true) {
 
                // Does the current route level patch any supported extension?
 
-               string routeLevelMatch = GetRouteLevelMatch(currentLevel, virtualPathExists);
+               string routeLevelMatch = GetRouteLevelMatch(currentLevel);
 
                if (routeLevelMatch != null) {
-                  return new string[2] { routeLevelMatch, currentPathInfo };
+
+                  pagePath = routeLevelMatch;
+                  pathInfo = currentPathInfo;
+                  return true;
                }
 
                // Try to remove the last path segment (e.g. go from /foo/bar to /foo)
@@ -185,35 +187,45 @@ namespace Xcst.Web {
 
                   // And save the path info in case there is a match
 
-                  currentPathInfo = pathValue.Substring(indexOfLastSlash + 1);
+                  currentPathInfo = requestPath.Substring(indexOfLastSlash + 1);
                }
             }
          }
 
-         return MatchDefaultFiles(pathValue, virtualPathExists, currentLevel);
+         // If we haven't found anything yet, now try looking for index.* at the current url
+
+         if (MatchDefaultFile(requestPath, out pagePath)) {
+
+            pathInfo = String.Empty;
+            return true;
+         }
+
+         pagePath = null;
+         pathInfo = null;
+         return false;
       }
 
-      static string GetRouteLevelMatch(string pathValue, Func<string, bool> virtualPathExists) {
+      static string GetRouteLevelMatch(string pathValue) {
 
          // For performance, avoid multiple calls to String.Concat
          // Only add the extension if it's not already there
 
-         if (!PathEndsWithExtension(pathValue, supportedExtension)) {
-            pathValue = pathValue + "." + supportedExtension;
+         if (!PathEndsWithExtension(pathValue, _supportedExtension)) {
+            pathValue = pathValue + "." + _supportedExtension;
          }
 
-         if (!FileExists(pathValue, virtualPathExists)) {
-            return null;
+         if (FileExists(pathValue)) {
+            return pathValue;
          }
 
-         return pathValue;
+         return null;
       }
 
-      static string[] MatchDefaultFiles(string pathValue, Func<string, bool> virtualPathExists, string currentLevel) {
+      static bool MatchDefaultFile(string requestPath, out string pagePath) {
 
-         // If we haven't found anything yet, now try looking for index.* at the current url
+         const string defaultDocument = "index";
 
-         currentLevel = pathValue;
+         string currentLevel = requestPath;
          string currentLevelIndex;
 
          if (String.IsNullOrEmpty(currentLevel)) {
@@ -229,20 +241,23 @@ namespace Xcst.Web {
 
          // Does the current route level match any supported extension?
 
-         string indexMatch = GetRouteLevelMatch(currentLevelIndex, virtualPathExists);
+         string indexMatch = GetRouteLevelMatch(currentLevelIndex);
 
          if (indexMatch != null) {
-            return new string[2] { indexMatch, String.Empty };
+
+            pagePath = indexMatch;
+            return true;
          }
 
-         return null;
+         pagePath = null;
+         return false;
       }
 
-      static bool FileExists(string path, Func<string, bool> virtualPathExists) {
+      static bool FileExists(string path) {
 
          string virtualPath = "~/" + path;
 
-         return virtualPathExists(virtualPath);
+         return HostingEnvironment.VirtualPathProvider.FileExists(virtualPath);
       }
 
       static bool PathEndsWithExtension(string path, string extension) {

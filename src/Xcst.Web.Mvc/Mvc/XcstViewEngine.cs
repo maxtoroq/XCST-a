@@ -14,7 +14,7 @@
 
 using System;
 using System.Web.Mvc;
-using Xcst.Web.Configuration;
+using Xcst.Web.Compilation;
 
 namespace Xcst.Web.Mvc {
 
@@ -22,11 +22,11 @@ namespace Xcst.Web.Mvc {
 
       public XcstViewEngine() {
 
-         const string fileExtension = XcstWebConfiguration.FileExtension;
+         const string extension = PageBuildProvider.FileExtension;
 
          this.ViewLocationFormats = new[] {
-            "~/Views/{1}/{0}." + fileExtension,
-            "~/Views/Shared/{0}." + fileExtension
+            "~/Views/{1}/{0}." + extension,
+            "~/Views/Shared/{0}." + extension
          };
 
          this.PartialViewLocationFormats = this.ViewLocationFormats;

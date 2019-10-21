@@ -15,7 +15,6 @@
 using System;
 using System.ComponentModel;
 using System.Web.Compilation;
-using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Compilation {
 
@@ -35,9 +34,12 @@ namespace Xcst.Web.Compilation {
 
             startWasCalled = true;
 
-            PageBuildProvider.CompilerFactory.RegisterExtensionsForAssembly(typeof(PreApplicationStartCode).Assembly);
+            PageBuildProvider.CompilerFactory
+               .RegisterExtensionsForAssembly(typeof(PreApplicationStartCode).Assembly);
 
-            BuildProvider.RegisterBuildProvider("." + XcstWebConfiguration.FileExtension, typeof(ViewPageBuildProvider));
+            const string extension = "." + PageBuildProvider.FileExtension;
+
+            BuildProvider.RegisterBuildProvider(extension, typeof(ViewPageBuildProvider));
          }
       }
    }

@@ -14,6 +14,7 @@
 
 using System;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Xcst.Web.Mvc {
@@ -98,6 +99,10 @@ namespace Xcst.Web.Mvc {
       }
 
 #if ASPNETLIB
+      public override IHttpHandler CreateHttpHandler() {
+         return new XcstViewPageHandler(this);
+      }
+
       public void Redirect(string url) {
 
          this.TempData?.Keep();

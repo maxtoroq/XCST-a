@@ -22,7 +22,6 @@ using System.Web;
 using System.Web.Compilation;
 using System.Web.Hosting;
 using Xcst.Compiler;
-using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Compilation {
@@ -37,6 +36,8 @@ namespace Xcst.Web.Compilation {
       public static XcstCompilerFactory CompilerFactory { get; } = new XcstCompilerFactory {
          EnableExtensions = true
       };
+
+      public const string FileExtension = "xcst";
 
       public override ICollection VirtualPathDependencies {
          get {
@@ -97,7 +98,7 @@ namespace Xcst.Web.Compilation {
 
          compiler.PackageTypeResolver = typeName => BuildManager.GetType(typeName, throwOnError: false);
          compiler.PackagesLocation = HostingEnvironment.MapPath("~/App_Code");
-         compiler.PackageFileExtension = XcstWebConfiguration.FileExtension;
+         compiler.PackageFileExtension = FileExtension;
          compiler.UseLineDirective = true;
 
          if (this.IsFileInCodeDir) {

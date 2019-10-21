@@ -13,59 +13,25 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Compilation;
-using Xcst.Web.Mvc;
 
 namespace Xcst.Web {
 
    public class XcstPageHandlerFactory : IHttpHandlerFactory {
 
-      static IList<Func<object, IHttpHandler>> HttpHandlerFactories { get; } = new List<Func<object, IHttpHandler>> {
-         CreateBuiltInHandler
-      };
-
-      static IHttpHandler CreateBuiltInHandler(object instance) {
-
-         if (instance is XcstViewPage viewPage) {
-            return new XcstViewPageHandler(viewPage);
-         }
-
-         if (instance is XcstPage page) {
-            return new XcstPageHandler(page);
-         }
-
-         return null;
-      }
-
-      public static void RegisterHandlerFactory(Func<object, IHttpHandler> handlerFactory) {
-         HttpHandlerFactories.Insert(0, handlerFactory);
-      }
-
-      public static IHttpHandler CreateFromVirtualPath(string virtualPath, string pathInfo = null) {
-
-         object instance = BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(object));
-
-         if (instance == null) {
-            return null;
-         }
-
-         if (instance is XcstPage page) {
-            page.VirtualPath = virtualPath;
-            page.PathInfo = pathInfo;
-         }
-
-         return HttpHandlerFactories
-            .Select(f => f(instance))
-            .Where(p => p != null)
-            .FirstOrDefault()
-            ?? instance as IHttpHandler;
-      }
-
       public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated) {
-         return CreateFromVirtualPath(url);
+
+         if (url == null) throw new ArgumentNullException(nameof(url));
+
+         string virtualPath = url;
+         var page = (XcstPage)BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(XcstPage));
+
+         if (page != null) {
+            page.VirtualPath = virtualPath;
+         }
+
+         return page.CreateHttpHandler();
       }
 
       public void ReleaseHandler(IHttpHandler handler) { }
