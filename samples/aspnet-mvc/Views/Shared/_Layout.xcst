@@ -46,9 +46,9 @@
                   <p>© {DateTime.Now.Year} - {siteTitle}</p>
                </footer>
             </div>
-            <script src='/Scripts/jquery-1.12.4.min.js'></script>
-            <script src='/Scripts/jquery.validate.min.js'></script>
-            <script src='/Scripts/jquery.validate.unobtrusive.min.js'></script>
+            <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'/>
+            <script src='https://cdn.jsdelivr.net/npm/jquery-validation@1.15.1/dist/jquery.validate.min.js'/>
+            <script src='https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.11/dist/jquery.validate.unobtrusive.min.js'/>
             <c:call-template name='scripts'/>
          </body>
       </html>
