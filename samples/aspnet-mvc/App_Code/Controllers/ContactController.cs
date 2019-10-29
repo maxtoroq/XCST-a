@@ -2,7 +2,7 @@
 using System.Net.Mail;
 using System.Web.Mvc;
 
-namespace Samples {
+namespace AspNetMvc {
 
    public class ContactController : Controller {
 

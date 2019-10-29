@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?model dynamic?>
-<c:package name='Samples.Templates.Display.ObjectPackage' version='1.0' language='C#'
+<c:package name='AspNet.DisplayTemplates.ObjectPackage' version='1.0' language='C#'
    xmlns:c='http://maxtoroq.github.io/XCST'
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
 
-namespace Samples {
+namespace AspNetMvc {
 
    public class HomeController : Controller {
 

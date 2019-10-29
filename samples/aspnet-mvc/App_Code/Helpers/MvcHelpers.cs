@@ -2,7 +2,7 @@
 using System.IO;
 using System.Web.Mvc;
 
-namespace Samples {
+namespace AspNetMvc {
 
    public static class MvcHelpers {
 

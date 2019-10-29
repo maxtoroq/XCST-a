@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Samples {
+namespace AspNetMvc {
 
    public class Contact {
 

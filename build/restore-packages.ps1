@@ -12,7 +12,21 @@ try {
 
    foreach ($web in ls ..\samples\* -Directory) {
 
-      &$nuget restore $web\packages.config -SolutionDirectory ..
+      $packagesPath = "$web\packages.config"
+
+      if (-not (Test-Path $packagesPath)) {
+         continue
+      }
+
+      &$nuget restore $packagesPath -SolutionDirectory ..
+
+      [xml]$packagesDoc = Get-Content $packagesPath
+      [Xml.XmlElement]$compilerPlatform = $packagesDoc.packages.package |
+         where { $_.id -eq "Microsoft.CodeDom.Providers.DotNetCompilerPlatform" }
+
+      if ($compilerPlatform -eq $null) {
+         continue
+      }
 
       $roslyn = "$web\Bin\roslyn\"
 
@@ -21,6 +35,7 @@ try {
       }
 
       Copy-Item ..\packages\Microsoft.Net.Compilers.*\tools\*.* $roslyn
+      Write-Host Restored $roslyn
    }
 
 } finally {

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<?model dynamic?>
-<c:package name='AspNet.EditorTemplates.ObjectPackage' version='1.0' language='C#'
+<?inherits Xcst.Web.Mvc.XcstViewPage<dynamic>?>
+<c:package name='AspNetPrecompiled.DisplayTemplates.ObjectPackage' version='1.0' language='C#'
    xmlns:c='http://maxtoroq.github.io/XCST'
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
@@ -14,11 +14,11 @@
 
    <c:template name='c:initial-template' visibility='public' expand-text='yes'>
       <c:choose>
-         <c:when test='ViewData.TemplateInfo.TemplateDepth > 1'>
+         <c:when test='Model == null || ViewData.TemplateInfo.TemplateDepth > 1'>
             <a:display-text/>
          </c:when>
          <c:otherwise>
-            <c:variable name='filteredProperties' value='ViewData.ModelMetadata.Properties.Where(x => Html.ShowForEdit(x))'/>
+            <c:variable name='filteredProperties' value='ViewData.ModelMetadata.Properties.Where(x => Html.ShowForDisplay(x))'/>
             <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => p.GroupName)'/>
             <c:variable name='createFieldset' value='groupedProperties.Any(g => g.Key != null)'/>
             <c:choose>
@@ -50,10 +50,10 @@
       <c:param name='propertyMeta' as='ModelMetadata' required='yes'/>
 
       <c:variable name='propertyName' value='propertyMeta.PropertyName'/>
-      <c:variable name='editorTemplate' value='propertyMeta.TemplateHint ?? propertyMeta.DataTypeName'/>
+      <c:variable name='displayTemplate' value='propertyMeta.TemplateHint ?? propertyMeta.DataTypeName'/>
       <c:choose>
          <c:when test='propertyMeta.HideSurroundingHtml'>
-            <a:editor name='{propertyName}' template='{editorTemplate}'/>
+            <a:display name='{propertyName}' template='{displayTemplate}'/>
          </c:when>
          <c:otherwise>
             <c:variable name='memberTemplate' value='Html.MemberTemplate(propertyMeta)'/>
@@ -65,9 +65,9 @@
                   <div class='form-group row'>
                      <a:label name='{propertyName}' class='col-form-label {labelColumnClass}'/>
                      <div class='{fieldColumnClass}'>
-                        <a:editor name='{propertyName}' template='{editorTemplate}'/>
-                        <c:text> </c:text>
-                        <a:validation-message name='{propertyName}'/>
+                        <p class='form-control-plaintext'>
+                           <a:display name='{propertyName}' template='{displayTemplate}'/>
+                        </p>
                      </div>
                   </div>
                </c:otherwise>

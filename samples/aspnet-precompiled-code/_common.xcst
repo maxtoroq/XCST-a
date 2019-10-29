@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<c:module version='1.0' language='C#' xmlns:c='http://maxtoroq.github.io/XCST'>
+
+   <c:validation required-message='Required field cannot be left blank.'/>
+
+   <c:output method='html' version='5'/>
+
+   <c:variable name='title' as='string'/>
+
+   <c:use-package name='AspNetPrecompiled.LayoutPackage'>
+      <c:override>
+         <c:variable name='pageTitle' value='this.title' as='string'/>
+         <c:template name='layout-head'>
+            <c:call-template name='head'/>
+         </c:template>
+         <c:template name='layout-content'>
+            <c:call-template name='content'/>
+         </c:template>
+         <c:template name='layout-scripts'>
+            <c:call-template name='scripts'/>
+         </c:template>
+      </c:override>
+   </c:use-package>
+
+   <c:template name='c:initial-template'>
+      <c:call-template name='layout'/>
+   </c:template>
+
+   <c:template name='head'/>
+
+   <c:template name='content'/>
+
+   <c:template name='scripts'/>
+
+</c:module>
