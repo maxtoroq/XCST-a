@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+   <metadata>
+      <description>XCST view engine for ASP.NET MVC 5</description>
+      <dependencies>
+         <dependency id="Xcst.Compiler"/>
+         <dependency id="Microsoft.AspNet.Mvc"/>
+      </dependencies>
+      <frameworkAssemblies>
+         <frameworkAssembly assemblyName="System"/>
+         <frameworkAssembly assemblyName="System.Web"/>
+      </frameworkAssemblies>
+   </metadata>
+</package>

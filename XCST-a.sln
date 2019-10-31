@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A359B933-E00C-4356-B908-7ED4CCA83B65}"
 	ProjectSection(SolutionItems) = preProject
@@ -35,9 +35,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{28636474-5F87-46F6-BBED-0B6ECFC0F2D9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3D9FCA40-C58E-428A-AE3C-480DF5724451}"
-	ProjectSection(SolutionItems) = preProject
-		src\README.md = src\README.md
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{A0812B4C-159C-4387-94AE-BEEC87FFFF86}"
 	ProjectSection(SolutionItems) = preProject

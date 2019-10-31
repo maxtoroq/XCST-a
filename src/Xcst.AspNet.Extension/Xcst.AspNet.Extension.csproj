@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Xcst.AspNet.Extension.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="xcst-app.xsl" />

@@ -9,40 +9,34 @@ $nuget = "..\.nuget\nuget.exe"
 $solutionPath = Resolve-Path ..
 $configuration = "Release"
 
-function script:ProjectPath([string]$projName) {
-   Resolve-Path $solutionPath\src\$projName
-}
-
-function script:ProjectFile([string]$projName) {
-   $projPath = ProjectPath $projName
-   return "$projPath\$projName.csproj"
-}
-
-function script:PackageVersion([string]$projName) {
+function PackageVersion($project) {
    
-   $assemblyPath = Resolve-Path $solutionPath\src\$projName\bin\$configuration\$projName.dll
+   $assemblyPath = Resolve-Path "$($project.path)\bin\$configuration\$($project.assemblyName).dll"
    $fvi = [Diagnostics.FileVersionInfo]::GetVersionInfo($assemblyPath.Path)
    return New-Object Version $fvi.FileVersion
 }
 
-function script:DependencyVersionRange([string]$projName) {
+function DependencyVersionRange($project) {
 
-   $dependencyVersion = PackageVersion $projName
+   $dependencyVersion = PackageVersion $project
    $minVersion = $dependencyVersion
    $maxVersion = New-Object Version $minVersion.Major, ($minVersion.Minor + 1), 0
 
    return "[$minVersion,$maxVersion)"
 }
 
-function script:NuSpec {
+function NuSpec {
 
-   $packagesPath = "$projPath\packages.config"
+   $packagesPath = "$($project.path)\packages.config"
    [xml]$packagesDoc = if (Test-Path $packagesPath) { Get-Content $packagesPath } else { $null }
+
+   $targetFxMoniker = "net" + $project.targetFx.Substring(1).Replace(".", "")
 
    "<package xmlns='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd'>"
       "<metadata>"
-         "<id>$projName</id>"
+         "<id>$($project.name)</id>"
          "<version>$pkgVersion</version>"
+         "<description>$($project.metadata.description)</description>"
          "<authors>$($notice.authors)</authors>"
          "<license type='expression'>$($notice.license.name)</license>"
          "<projectUrl>$($notice.website)</projectUrl>"
@@ -50,154 +44,193 @@ function script:NuSpec {
          "<iconUrl>$($notice.website)nuget/icon.png</iconUrl>"
          "<repository type='git' url='https://github.com/maxtoroq/XCST-a' commit='$(git rev-parse HEAD)'/>"
 
-   if ($projName -eq "Xcst.Web.Mvc") {
+         "<dependencies>"
 
-      "<description>XCST view engine for ASP.NET MVC 5</description>"
-
-      "<dependencies>"
-         "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
-         "<dependency id='Microsoft.AspNet.Mvc' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Microsoft.AspNet.Mvc'']').Attributes['allowedVersions'].Value)'/>"
-      "</dependencies>"
-
-      "<frameworkAssemblies>"
-         "<frameworkAssembly assemblyName='System'/>"
-         "<frameworkAssembly assemblyName='System.Web'/>"
-      "</frameworkAssemblies>"
-	
-   } elseif ($projName -eq "Xcst.AspNet") {
+   foreach ($dep in $project.metadata.dependencies.dependency) {
       
-      "<description>XCST web pages core components for ASP.NET</description>"
+      $local = $dep.GetAttribute("local-dependency", "http://maxtoroq.github.io/XCST/nuspec")
+      $version = $null
 
-      "<dependencies>"
-         "<dependency id='Xcst.Runtime' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Runtime'']').Attributes['allowedVersions'].Value)'/>"
-      "</dependencies>"
+      if ($local -eq 'yes') {
+         $version = DependencyVersionRange $solution[$dep.id]
+      } else {
+         $pkgRef = $packagesDoc.packages.package | where { $_.id -eq $dep.id }
+         $version = $pkgRef.allowedVersions
 
-      "<frameworkAssemblies>"
-         "<frameworkAssembly assemblyName='System'/>"
-         "<frameworkAssembly assemblyName='System.Web'/>"
-      "</frameworkAssemblies>"
+         if ($version -eq $null) {
+            $version = $pkgRef.version
+         }
+      }
 
-   } elseif ($projName -eq "Xcst.AspNet.Compilation") {
-      
-      "<description>ASP.NET build providers for run-time compilation</description>"
-
-      "<dependencies>"
-         "<dependency id='Xcst.AspNet' version='$(DependencyVersionRange Xcst.AspNet)'/>"
-         "<dependency id='Xcst.AspNet.Extension' version='$(DependencyVersionRange Xcst.AspNet.Extension)'/>"
-         "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
-      "</dependencies>"
-
-      "<frameworkAssemblies>"
-         "<frameworkAssembly assemblyName='System'/>"
-         "<frameworkAssembly assemblyName='System.Web'/>"
-      "</frameworkAssemblies>"
-
-   } elseif ($projName -eq "Xcst.AspNet.Extension") {
-
-      "<description>Extension instructions for XCST web pages</description>"
-
-      "<dependencies>"
-         "<dependency id='Xcst.Compiler' version='$($packagesDoc.DocumentElement.SelectSingleNode('package[@id=''Xcst.Compiler'']').Attributes['allowedVersions'].Value)'/>"
-      "</dependencies>"
+            "<dependency id='$($dep.id)' version='$version'/>"
    }
 
-   "</metadata>"
+         "</dependencies>"
+
+   $project.metadata.frameworkAssemblies.OuterXml
+
+      "</metadata>"
 
    "<files>"
-      "<file src='$tempPath\NOTICE.xml'/>"
+      "<file src='$($project.temp)\NOTICE.xml'/>"
       "<file src='$solutionPath\LICENSE.txt'/>"
 
-   if ($projName -eq "Xcst.AspNet.Compilation") {
-      "<file src='$(Resolve-Path Web.config.transform)' target='content'/>"
+   if ($project.name -eq "Xcst.AspNet.Compilation") {
+      "<file src='$($project.path)\Web.config.transform' target='content'/>"
 
-   } elseif (@("Xcst.AspNet", "Xcst.Web.Mvc") -contains $_ ) {
+   } elseif (@("Xcst.AspNet", "Xcst.Web.Mvc") -contains $project.name) {
       "<file src='$solutionPath\schemas\*.rng' target='schemas'/>"
       "<file src='$solutionPath\schemas\*.xsd' target='schemas'/>"
    }
 
-      "<file src='$projPath\bin\$configuration\$projName.*' target='lib\$targetFxMoniker'/>"
+      "<file src='$($project.path)\bin\$configuration\$($project.assemblyName).*' target='lib\$targetFxMoniker'/>"
    "</files>"
 
    "</package>"
 }
 
-function script:NuPack([string]$projName) {
-
-   if (-not (Test-Path temp -PathType Container)) {
-      md temp | Out-Null
-   }
-
-   if (-not (Test-Path temp\$projName -PathType Container)) {
-      md temp\$projName | Out-Null
-   }
+function NuPack {
 
    if (-not (Test-Path nupkg -PathType Container)) {
       md nupkg | Out-Null
    }
 
-   $tempPath = Resolve-Path temp\$projName
-   $nuspecPath = "$tempPath\$projName.nuspec"
+   $noticePath = "$($project.temp)\NOTICE.xml"
+   $nuspecPath = "$($project.temp)\$($project.name).nuspec"
    $outputPath = Resolve-Path nupkg
+   $saxonPath = (Resolve-Path $solutionPath\packages\Saxon-HE.*)[0]
 
-   [xml]$projDoc = Get-Content $projFile
+   &"$saxonPath\tools\Transform" -s:$solutionPath\NOTICE.xml -xsl:pkg-notice.xsl -o:$noticePath projectName=$($project.name)
 
-   [string]$targetFx = $projDoc.Project.PropertyGroup.TargetFrameworkVersion
-   $targetFxMoniker = "net" + $targetFx.Substring(1).Replace(".", "")
+   [xml]$noticeDoc = Get-Content $noticePath
+   $notice = $noticeDoc.notice
 
    NuSpec | Out-File $nuspecPath -Encoding utf8
 
-   $saxonPath = (Resolve-Path $solutionPath\packages\Saxon-HE.*)[0]
-   &"$saxonPath\tools\Transform" -s:$solutionPath\NOTICE.xml -xsl:pkg-notice.xsl -o:$tempPath\NOTICE.xml projectName=$projName
-
    &$nuget pack $nuspecPath -OutputDirectory $outputPath | Out-Host
 
-   return Join-Path $outputPath "$projName.$($pkgVersion.ToString(3)).nupkg"
+   return Join-Path $outputPath "$($project.name).$($pkgVersion.ToString(3)).nupkg"
 }
 
-function script:Build([string]$projName) {
+function ProjectData([string]$projName) {
 
-   $projFile = ProjectFile $projName
+   $project = @{ }
+   $project.name = $projName
+   $project.path = Resolve-Path $solutionPath\src\$($project.name)
+   $project.file = "$($project.path)\$($project.name).csproj"
+   $project.doc = [xml](Get-Content $project.file)
+   $project.assemblyName = $project.doc.Project.PropertyGroup[0].AssemblyName
+   $project.targetFx = $project.doc.Project.PropertyGroup[0].TargetFrameworkVersion
 
-   ""
-   MSBuild $projFile /p:Configuration=$configuration /verbosity:minimal
+   $project.temp = Join-Path (Get-Item .) temp\$($project.name)
+
+   if (-not (Test-Path $project.temp -PathType Container)) {
+      md $project.temp | Out-Null
+   }
+
+   [xml]$baseSpecDoc = Get-Content "$($project.path)\$($project.name).nuspec"
+   $project.metadata = $baseSpecDoc.package.metadata
+
+   return $project
 }
 
-function script:Release([string]$projName, [switch]$skipBuild) {
+function Release {
 
-   $projPath = ProjectPath $projName
-   $projFile = ProjectFile $projName
-
-   if (-not $skipBuild) {
-      Build $projName
+   if (-not (Test-Path temp -PathType Container)) {
+      md temp | Out-Null
    }
 
-   ""
+   [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
+   $notice = $noticeDoc.notice
 
-   $lastTag = git describe --abbrev=0 --tags
-   $lastRelease = New-Object Version $lastTag.Substring(1)
-   $pkgVersion = PackageVersion $projName
+   $projects = "Xcst.AspNet", "Xcst.AspNet.Extension", "Xcst.AspNet.Compilation", "Xcst.Web.Mvc"
+   $solution = @{ }
 
-   if ($pkgVersion -lt $lastRelease) {
-      throw "The package version ($pkgVersion) cannot be less than the last tag ($lastTag). Don't forget to update the project's AssemblyInfo file."
+   foreach ($projName in $projects) {
+
+      $project = ProjectData $projName
+      $solution[$projName] = $project
+
+      $signaturePath = "$($project.temp)\AssemblySignature.cs"
+      $signature = @"
+using System;
+using System.Reflection;
+
+[assembly: AssemblyTitle("$($project.assemblyName)")]
+[assembly: AssemblyDescription("$($project.metadata.description)")]
+[assembly: AssemblyProduct("$($notice.work)")]
+[assembly: AssemblyCompany("$($notice.website)")]
+[assembly: AssemblyCopyright("$($notice.copyright)")]
+"@
+
+      $signature | Out-File $signaturePath -Encoding utf8
+
+      $signatureXml = "<ItemGroup xmlns='$($project.doc.DocumentElement.NamespaceURI)'>
+         <Compile Include='$signaturePath'>
+            <Link>AssemblySignature.cs</Link>
+         </Compile>
+      </ItemGroup>"
+
+      $signatureReader = [Xml.XmlReader]::Create((New-Object IO.StringReader $signatureXml))
+      $signatureReader.MoveToContent() | Out-Null
+
+      $signatureNode = $project.doc.ReadNode($signatureReader)
+
+      $project.doc.DocumentElement.AppendChild($signatureNode) | Out-Null
+      $signatureNode.RemoveAttribute("xmlns")
+
+      $project.doc.Save($project.file)
    }
 
-   $pkgPath = NuPack $projName
-   $createdTag = $false
+   try {
+      ""
+      MSBuild $solutionPath\XCST-a.sln /p:Configuration=$configuration /verbosity:minimal
 
-   if ($pkgVersion -gt $lastRelease) {
-      $newTag = "v$pkgVersion"
-      git tag -a $newTag -m $newTag
-      Write-Warning "Created tag: $newTag"
-      $createdTag = $true
+   } finally {
+
+      foreach ($projName in $projects) {
+         $project = $solution[$projName]
+         $project.doc.DocumentElement.RemoveChild($project.doc.DocumentElement.LastChild) | Out-Null
+         $project.doc.Save($project.file)
+      }
    }
    
-   if ((Prompt-Choices -Message "Push package to gallery?" -Default 1) -eq 0) {
-      &$nuget push $pkgPath -Source nuget.org
-   }
+   $projectsToRelease = if ($ProjectName -eq '*') { $projects } else { @($ProjectName) }
 
-   if ($createdTag) {
-      if ((Prompt-Choices -Message "Push new tag $newTag to origin?" -Default 1) -eq 0) {
-         git push origin $newTag
+   foreach ($projName in $projectsToRelease) {
+
+      $project = $solution[$projName]
+
+      ""
+
+      $lastTag = git describe --abbrev=0 --tags
+      $lastRelease = New-Object Version $lastTag.Substring(1)
+      $pkgVersion = PackageVersion $project
+
+      if ($pkgVersion -lt $lastRelease) {
+         throw "The package version ($pkgVersion) cannot be less than the last tag ($lastTag). Don't forget to update the project's AssemblyInfo file."
+      }
+
+      $pkgPath = NuPack
+
+      $createdTag = $false
+
+      if ($pkgVersion -gt $lastRelease) {
+
+         $newTag = "v$pkgVersion"
+         git tag -a $newTag -m $newTag
+         Write-Warning "Created tag: $newTag"
+         $createdTag = $true
+      }
+
+      if ((Prompt-Choices -Message "Push package to gallery?" -Default 1) -eq 0) {
+         &$nuget push $pkgPath -Source nuget.org
+      }
+
+      if ($createdTag) {
+         if ((Prompt-Choices -Message "Push new tag $newTag to origin?" -Default 1) -eq 0) {
+            git push origin $newTag
+         }
       }
    }
 }
@@ -214,31 +247,8 @@ try {
 
    .\ensure-nuget.ps1
    .\restore-packages.ps1
+   Release
    
-   [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
-   $notice = $noticeDoc.DocumentElement
-
-   $projects = "Xcst.AspNet", "Xcst.AspNet.Compilation", "Xcst.AspNet.Extension", "Xcst.Web.Mvc"
-
-   if ($ProjectName -eq '*') {
-      
-      foreach ($p in $projects) {
-
-         Build $p
-
-         if ((PackageVersion $p).Build -ne 0) {
-            throw "Patch number should be reset to 0 (Project: $p)."
-         }
-      }
-
-      foreach ($p in $projects) {
-         Release $p -skipBuild
-      }
-
-   } else {
-      Release $ProjectName
-   }
-
 } finally {
    Pop-Location
 }

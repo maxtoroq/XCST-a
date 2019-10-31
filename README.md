@@ -1,18 +1,23 @@
-[XCST][1] web pages for ASP.NET
-===============================
+[XCST] web pages for ASP.NET
+============================
 This repository provides integration of XCST with ASP.NET for web application development. It includes a set of extension instructions known as the "application extension" based on a [trimmed down fork](src/Xcst.AspNet/Framework) of ASP.NET MVC 5.
 
-See the [project home][1] for more information.
+See the [project home][XCST] for more information.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/4chhbklsb4b6h09c?svg=true)](https://ci.appveyor.com/project/maxtoroq/xcst-a)
-[![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.svg?label=Xcst.AspNet)](https://www.nuget.org/packages/Xcst.AspNet)
-[![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.Compilation.svg?label=Xcst.AspNet.Compilation)](https://www.nuget.org/packages/Xcst.AspNet.Compilation)
-[![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.Extension.svg?label=Xcst.AspNet.Extension)](https://www.nuget.org/packages/Xcst.AspNet.Extension)
-[![NuGet](https://img.shields.io/nuget/v/Xcst.Web.Mvc.svg?label=Xcst.Web.Mvc)](https://www.nuget.org/packages/Xcst.Web.Mvc)
+
+### Packages Built From This Repository
+
+Package                                            | Description
+-------------------------------------------------- | -----------
+[![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.svg?label=Xcst.AspNet)][Xcst.AspNet] | XCST web pages core components for ASP.NET.
+[![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.Extension.svg?label=Xcst.AspNet.Extension)][Xcst.AspNet.Extension] | Extension instructions for XCST web pages.
+[![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.Compilation.svg?label=Xcst.AspNet.Compilation)][Xcst.AspNet.Compilation] | ASP.NET build providers for run-time compilation.
+[![NuGet](https://img.shields.io/nuget/v/Xcst.Web.Mvc.svg?label=Xcst.Web.Mvc)][Xcst.Web.Mvc] | View engine for ASP.NET MVC 5.
 
 ### Related Repositories
 
-- [XCST][2]
+- [XCST](https://github.com/maxtoroq/XCST)
 
 System Requirements
 -------------------
@@ -20,7 +25,7 @@ The codebase is written in C# 7 and requires .NET 4.6 or higher.
 
 The [release script](build/release.ps1) (which creates the NuGet packages) and other utility scripts are written in PowerShell 3.
 
-The [application extension schema](schemas/xcst-app.rng) is written in Relax NG and converted to XSD using [Trang][3], which requires Java.
+The [application extension schema](schemas/xcst-app.rng) is written in Relax NG and converted to XSD using [Trang], which requires Java.
 
 Building
 --------
@@ -38,6 +43,9 @@ cd XCST-a
 MSBuild
 ```
 
-[1]: http://maxtoroq.github.io/XCST/
-[2]: https://github.com/maxtoroq/XCST
-[3]: https://github.com/relaxng/jing-trang
+[XCST]: http://maxtoroq.github.io/XCST/
+[Xcst.AspNet]: https://www.nuget.org/packages/Xcst.AspNet
+[Xcst.AspNet.Extension]: https://www.nuget.org/packages/Xcst.AspNet.Extension
+[Xcst.AspNet.Compilation]: https://www.nuget.org/packages/Xcst.AspNet.Compilation
+[Xcst.Web.Mvc]: https://www.nuget.org/packages/Xcst.Web.Mvc
+[Trang]: https://github.com/relaxng/jing-trang

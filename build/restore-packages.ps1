@@ -32,10 +32,9 @@ try {
 
       if (-not (Test-Path $roslyn)) {
          md $roslyn | Out-Null
+         Copy-Item ..\packages\Microsoft.Net.Compilers.*\tools\*.* $roslyn
+         Write-Host Restored $roslyn
       }
-
-      Copy-Item ..\packages\Microsoft.Net.Compilers.*\tools\*.* $roslyn
-      Write-Host Restored $roslyn
    }
 
 } finally {

@@ -2,9 +2,6 @@
 using System.Reflection;
 using static Xcst.Web.AssemblyInfo;
 
-[assembly: AssemblyProduct("XCST")]
-[assembly: AssemblyCompany("http://maxtoroq.github.io/XCST/")]
-[assembly: AssemblyCopyright("2015-2019 Max Toro Q.")]
 [assembly: AssemblyVersion(XcstAssemblyVersion)]
 [assembly: AssemblyFileVersion(XcstAssemblyFileVersion)]
 [assembly: AssemblyInformationalVersion(XcstAssemblyInformationalVersion)]
