@@ -12,4 +12,8 @@
          <frameworkAssembly assemblyName="System.Web"/>
       </frameworkAssemblies>
    </metadata>
+   <files>
+      <file src="..\..\schemas\*.rng" target="schemas"/>
+      <file src="..\..\schemas\*.xsd" target="schemas"/>
+   </files>
 </package>

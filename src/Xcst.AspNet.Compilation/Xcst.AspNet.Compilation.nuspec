@@ -13,4 +13,7 @@
          <frameworkAssembly assemblyName="System.Web"/>
       </frameworkAssemblies>
    </metadata>
+   <files>
+      <file src="Web.config.transform" target="content"/>
+   </files>
 </package>
