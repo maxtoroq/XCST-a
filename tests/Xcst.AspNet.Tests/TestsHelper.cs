@@ -24,8 +24,8 @@ namespace Xcst.Web.Tests {
 
       static readonly XcstCompilerFactory CompilerFactory = new XcstCompilerFactory();
 
-      static readonly QualifiedName InitialName = new QualifiedName("initial-template", XmlNamespaces.Xcst);
-      static readonly QualifiedName ExpectedName = new QualifiedName("expected");
+      static readonly string InitialName = $"Q{{{XmlNamespaces.Xcst}}}initial-template";
+      static readonly string ExpectedName = "expected";
 
       static TestsHelper() {
          CompilerFactory.EnableExtensions = true;
@@ -125,10 +125,7 @@ namespace Xcst.Web.Tests {
          compiler.UsePackageBase = testMethod.DeclaringType.Namespace;
          compiler.SetTargetBaseTypes(typeof(TestBase));
 
-         compiler.SetParameter(
-            new QualifiedName("default-model-dynamic", XmlNamespaces.XcstApplication),
-            true
-         );
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "default-model-dynamic", true);
 
          CompileResult result = compiler.Compile(packageUri);
 
@@ -232,7 +229,7 @@ namespace Xcst.Web.Tests {
 
          using (XmlWriter expectedWriter = expectedDoc.CreateWriter()) {
 
-            evaluator.CallTemplate("expected")
+            evaluator.CallTemplate(ExpectedName)
                .OutputTo(expectedWriter)
                .Run();
          }

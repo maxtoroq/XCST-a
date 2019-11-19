@@ -4,6 +4,7 @@
       <description>XCST view engine for ASP.NET MVC 5</description>
       <dependencies>
          <dependency id="Xcst.Compiler"/>
+         <dependency id="Xcst.Runtime"/>
          <dependency id="Microsoft.AspNet.Mvc"/>
       </dependencies>
       <frameworkAssemblies>

@@ -6,6 +6,7 @@
          <dependency id="Xcst.AspNet" nux:local-dependency="yes"/>
          <dependency id="Xcst.AspNet.Extension" nux:local-dependency="yes"/>
          <dependency id="Xcst.Compiler"/>
+         <dependency id="Xcst.Runtime"/>
       </dependencies>
       <frameworkAssemblies>
          <frameworkAssembly assemblyName="System"/>

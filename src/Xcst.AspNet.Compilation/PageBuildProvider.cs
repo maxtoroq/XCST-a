@@ -109,16 +109,10 @@ namespace Xcst.Web.Compilation {
             compiler.TargetClass = this.GeneratedTypeName;
          }
 
-         compiler.SetParameter(
-            new QualifiedName("application-uri", XmlNamespaces.XcstApplication),
-            this.applicationUri
-         );
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "application-uri", this.applicationUri);
 
 #if !ASPNETLIB
-         compiler.SetParameter(
-            new QualifiedName("aspnetlib", XmlNamespaces.XcstApplication),
-            false
-         );
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "aspnetlib", false);
 #endif
       }
 
@@ -202,18 +196,9 @@ namespace Xcst.Web.Compilation {
          base.ConfigureCompiler(compiler);
 
          if (this.IsFileInCodeDir) {
-
-            compiler.SetParameter(
-               new QualifiedName("page-type", XmlNamespaces.XcstApplication),
-               this.PageType
-            );
-
+            compiler.SetParameter(XmlNamespaces.XcstApplication, "page-type", this.PageType);
          } else {
-
-            compiler.SetParameter(
-               new QualifiedName("default-model-dynamic", XmlNamespaces.XcstApplication),
-               true
-            );
+            compiler.SetParameter(XmlNamespaces.XcstApplication, "default-model-dynamic", true);
          }
       }
    }
