@@ -7,15 +7,16 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$fileExt = "xcst"
-
 # Use the project's path as base to resolve relative paths
 Push-Location (Split-Path $ProjectPath)
+
+$fileExt = "xcst"
+$nugetPackages = Resolve-Path ..\..\packages
 
 # Loading project dependencies enables referencing packages from other projects
 function LoadProjectDependencies {
 
-   foreach ($ref in $projDoc.DocumentElement.SelectNodes("msbuild:ItemGroup/msbuild:ProjectReference", $xmlns)) {
+   foreach ($ref in $projDoc.Project.ItemGroup.ProjectReference | where { $_ -ne $null }) {
 
       $refDir = Split-Path $ref.Include
       $refDll = Resolve-Path (Join-Path $refDir bin\$Configuration\$($ref.Name).dll)
@@ -57,10 +58,15 @@ function VisualStudioErrorLog([Xcst.Compiler.CompileException]$ex) {
    $uri = New-Object Uri $uriString
    $path = if ($uri.IsFile) { $uri.LocalPath } else { $uriString }
    $lineNum = $ex.LineNumber
-   $code = if ($ex.ErrorCode -ne $null) { $ex.ErrorCode.Name } else { "" }
+   $code = $ex.ErrorCode
    $message = $ex.Message
 
    Write-Host "$path($lineNum): XCST error $($code): $message"
+}
+
+# Transforms invalid identifier (class, namespace, variable) characters
+function CleanIdentifier($identifier) {
+   $identifier -ireplace "[^a-z0-9_.]", "_"
 }
 
 # Main function
@@ -69,42 +75,39 @@ function GeneratePackages([IO.TextWriter]$output) {
    try {
 
       [xml]$projDoc = Get-Content $ProjectPath
-      $xmlns = New-Object Xml.XmlNamespaceManager $projDoc.NameTable
-      $xmlns.AddNamespace("msbuild", $projDoc.DocumentElement.NamespaceURI)
 
-      $namespace = $projDoc.DocumentElement.SelectSingleNode("msbuild:PropertyGroup/msbuild:RootNamespace", $xmlns).InnerText
+      $namespace = $projDoc.Project.PropertyGroup[0].RootNamespace
 
-      # AssemblyResolve is used to enable loading **newer versions** of Xcst.Compiler's dependencies
+      # AssemblyResolve is used to enable loading (newer versions of) Xcst.Compiler's dependencies
       $onAssemblyResolve = [ResolveEventHandler] {
          param($sender, $e)
 
-         #Write-Host "XCST/Loading: $($e.Name)"
-
-         if ([string]::IsNullOrEmpty($e.RequestingAssembly.Location)) {
-            return $null
-         }
-
          $assemblyName = $e.Name.Split(',')[0]
-         $assemblyPath = Join-Path (Split-Path $e.RequestingAssembly.Location) "$assemblyName.dll"
+         $assemblyPath = "$nugetPackages\$assemblyName.*\lib\net46\$assemblyName.dll"
+
+         if ($assemblyName.StartsWith("saxon9he") -or $assemblyName.StartsWith("IKVM.")) {
+            $assemblyPath = "$nugetPackages\Saxon-HE.*\lib\net40\$assemblyName.dll"
+         }
 
          if (-not (Test-Path $assemblyPath)) {
             return $null
          }
 
-         return [Reflection.Assembly]::LoadFrom($assemblyPath)
+         return [Reflection.Assembly]::LoadFrom((Resolve-Path $assemblyPath))
       }
 
       [AppDomain]::CurrentDomain.add_AssemblyResolve($onAssemblyResolve)
 
-      # Loading the extension assembly also loads the compiler
-      #Add-Type -Path ..\..\src\Xcst.AspNet.Extension\bin\$Configuration\Xcst.Compiler.dll
-      Add-Type -Path ..\..\src\Xcst.AspNet.Extension\bin\$Configuration\Xcst.AspNet.Extension.dll
+      # Load compiler
+      Add-Type -Path $nugetPackages\Xcst.Compiler.*\lib\net46\Xcst.Compiler.dll
 
       $compilerFact = New-Object Xcst.Compiler.XcstCompilerFactory
       $compilerFact.EnableExtensions = $true
 
       # Enable "application" extension
-      $compilerFact.RegisterExtensionsForAssembly([Xcst.Web.Extension.ExtensionLoader].Assembly)
+      #$appExtension = [Reflection.Assembly]::LoadFrom((Resolve-Path $nugetPackages\Xcst.AspNet.Extension.*\lib\net46\Xcst.AspNet.Extension.dll))
+      $appExtension = [Reflection.Assembly]::LoadFrom((Resolve-Path ..\..\src\Xcst.AspNet.Extension\bin\$Configuration\Xcst.AspNet.Extension.dll))
+      $compilerFact.RegisterExtensionsForAssembly($appExtension)
 
       LoadProjectDependencies
 
@@ -154,19 +157,16 @@ function GeneratePackages([IO.TextWriter]$output) {
 
             if ($relativePath.Contains("/")) {
                $relativeDir = $startUri.MakeRelativeUri((New-Object Uri $file.DirectoryName)).OriginalString
-               $ns = $ns + "." + $relativeDir.Replace("/", ".")
+               $ns = $ns + "." + (CleanIdentifier $relativeDir.Replace("/", "."))
             }
 
-            $compiler.TargetClass = "_Page_$($file.BaseName)"
+            $compiler.TargetClass = "_Page_$(CleanIdentifier $file.BaseName)"
             $compiler.TargetNamespace = $ns
-            $compiler.TargetBaseTypes = "Xcst.Web.Mvc.XcstViewPage<dynamic>"
+            $compiler.TargetBaseTypes = "global::Xcst.Web.Mvc.XcstViewPage<dynamic>"
             $compiler.TargetVisibility = "internal"
 
             # Sets a:application-uri, used to generate Href() functions for each module
-            $compiler.SetParameter(
-               (New-Object Xcst.QualifiedName application-uri, http://maxtoroq.github.io/XCST/application),
-               $startUri
-            )
+            $compiler.SetParameter("http://maxtoroq.github.io/XCST/application", "application-uri", $startUri)
 
          } else {
             $compiler.NamedPackage = $true
@@ -179,7 +179,7 @@ function GeneratePackages([IO.TextWriter]$output) {
             throw
          }
 
-         $xcstResult.CompilationUnits | foreach { $output.Write($_) }
+         $xcstResult.CompilationUnits | %{ $output.Write($_) }
 
          if ($isPage) {
 
