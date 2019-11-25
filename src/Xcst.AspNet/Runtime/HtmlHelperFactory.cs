@@ -89,10 +89,6 @@ namespace Xcst.Web.Runtime {
             }
          };
 
-         // setting new TemplateInfo clears VisitedObjects cache, need to restore it
-
-         currentViewData.TemplateInfo.VisitedObjects(new HashSet<object>(currentViewData.TemplateInfo.VisitedObjects()));
-
          return new HtmlHelper(currentHtml.ViewContext, container, currentHtml.RouteCollection) {
             Html5DateRenderingMode = currentHtml.Html5DateRenderingMode
          };
