@@ -218,6 +218,7 @@
     <None Include="Extension\Editor\editor.readonly.type.c.xcst" />
     <None Include="Extension\Editor\editor.readonly.type.i.xcst" />
     <None Include="Extension\Editor\editor.autofocus.type.i.xcst" />
+    <None Include="Extension\Editor\MemberTemplate\CopyViewData.c.xcst" />
     <None Include="Extension\Editor\Templates\Object\HttpPostedFileBase.c.xcst" />
     <None Include="Extension\Editor\Templates\Object\ObjectGrouped.c.xcst" />
     <None Include="Extension\Editor\Templates\Object\Object.c.xcst" />
@@ -243,6 +244,7 @@
     <None Include="Extension\Input\FileOmitValue.c.xcst" />
     <None Include="Extension\Input\NoCheckBox.c.xcst" />
     <None Include="Extension\Input\Value.c.xcst" />
+    <None Include="Extension\Model\CopyViewData.c.xcst" />
     <None Include="Extension\Model\HelperVariableScope.i.xcst" />
     <None Include="Extension\Model\model.field-prefix.type.c.xcst" />
     <None Include="Extension\RadioButton\Checked.c.xcst" />

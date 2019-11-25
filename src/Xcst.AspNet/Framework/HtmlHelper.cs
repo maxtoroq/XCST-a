@@ -367,7 +367,8 @@ namespace System.Web.Mvc {
       public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, RouteCollection routeCollection)
          : base(viewContext, viewDataContainer, routeCollection) {
 
-         _viewData = new ViewDataDictionary<TModel>(viewDataContainer.ViewData);
+         _viewData = viewDataContainer.ViewData as ViewDataDictionary<TModel>
+            ?? new ViewDataDictionary<TModel>(viewDataContainer.ViewData);
       }
 
       public string DisplayNameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {

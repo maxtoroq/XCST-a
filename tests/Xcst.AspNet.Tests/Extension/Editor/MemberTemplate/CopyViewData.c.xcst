@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='a' as='string'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <a:model as='Foo' helper-name='htm1'>
+         <c:set ref='htm1.ViewData["foo"]' value='"foo"'/>
+         <a:editor>
+            <a:member-template helper-name='htm2'>
+               <c:set ref='htm2.ViewData["foo"]' value='"foox"'/>
+               <c:set ref='htm2.ViewData["bar"]' value='"bar"'/>
+               <c:void value='Assert.IsTrue(htm1.ViewData.Count != htm2.ViewData.Count)'/>
+               <c:void value='Assert.IsTrue(htm1.ViewData["foo"] != htm2.ViewData["foo"])'/>
+            </a:member-template>
+         </a:editor>
+      </a:model>
+   </c:template>
+
+</c:module>

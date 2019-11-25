@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='this.ViewData["foo"]' value='"foo"'/>
+      <a:model value='new object()' helper-name='htm'>
+         <c:set ref='htm.ViewData["foo"]' value='"foox"'/>
+         <c:set ref='htm.ViewData["bar"]' value='"bar"'/>
+         <c:void value='Assert.IsTrue(this.ViewData.Count != htm.ViewData.Count)'/>
+         <c:void value='Assert.IsTrue(this.ViewData["foo"] != htm.ViewData["foo"])'/>
+      </a:model>
+   </c:template>
+
+</c:module>
