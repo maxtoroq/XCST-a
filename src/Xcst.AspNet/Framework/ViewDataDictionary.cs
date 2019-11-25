@@ -94,7 +94,7 @@ namespace System.Web.Mvc {
          _modelState = new ModelStateDictionary(dictionary.ModelState);
 
          this.Model = dictionary.Model;
-         TemplateInfo = dictionary.TemplateInfo;
+         this.TemplateInfo = dictionary.TemplateInfo;
 
          // PERF: Don't unnecessarily instantiate the model metadata
          _modelMetadata = dictionary._modelMetadata;
