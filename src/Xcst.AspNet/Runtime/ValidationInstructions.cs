@@ -195,8 +195,6 @@ namespace Xcst.Web.Runtime {
             } else {
                // client val summaries need an ID
                divAttribs.GenerateId("validationSummary");
-               formContext.ValidationSummaryId = divAttribs["id"].ToString();
-               formContext.ReplaceValidationSummary = includePropertyErrors;
             }
          }
 

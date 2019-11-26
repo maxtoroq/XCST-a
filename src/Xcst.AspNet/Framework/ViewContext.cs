@@ -89,12 +89,6 @@ namespace System.Web.Mvc {
 
       public IDictionary<string, FieldValidationMetadata> FieldValidators => _fieldValidators;
 
-      public string FormId { get; set; }
-
-      public bool ReplaceValidationSummary { get; set; }
-
-      public string ValidationSummaryId { get; set; }
-
       public FieldValidationMetadata GetValidationMetadataForField(string fieldName) {
          return GetValidationMetadataForField(fieldName, createIfNotFound: false);
       }
