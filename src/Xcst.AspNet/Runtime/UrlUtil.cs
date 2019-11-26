@@ -31,7 +31,6 @@ using HttpContextBase = System.Web.HttpContext;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
-
    public static class UrlUtil {
 
       static UrlRewriterHelper _urlRewriterHelper = new UrlRewriterHelper();
@@ -245,7 +244,6 @@ namespace Xcst.Web.Runtime {
       /// Primarily we do this check to allow anonymous types to represent key-value pairs (anonymous types don't 
       /// implement any interfaces). 
       /// </remarks>
-
       static bool IsDisplayableType(Type t) {
          return t.GetInterfaces().Length > 0;
       }

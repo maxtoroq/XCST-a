@@ -159,7 +159,6 @@ namespace System.Web.Mvc {
    /// <summary>
    /// A validation adapter that is used to map <see cref="DataTypeAttribute"/>'s to a single client side validation rule.
    /// </summary>
-
    class DataTypeAttributeAdapter : DataAnnotationsModelValidator {
 
       public string RuleName { get; set; }

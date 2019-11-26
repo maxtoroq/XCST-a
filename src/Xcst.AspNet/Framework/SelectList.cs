@@ -30,7 +30,6 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>
-
       public SelectList(IEnumerable items, object selectedValue, IEnumerable disabledValues)
          : this(items,
                 dataValueField: null,
@@ -60,7 +59,6 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="selectedValue">The selected value. Used to match the Selected property of the corresponding
       /// <see cref="SelectListItem"/>.</param>
-
       public SelectList(IEnumerable items,
                         string dataValueField,
                         string dataTextField,
@@ -84,7 +82,6 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>
-
       public SelectList(IEnumerable items,
                         string dataValueField,
                         string dataTextField,
@@ -111,7 +108,6 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>
-
       public SelectList(IEnumerable items,
                         string dataValueField,
                         string dataTextField,
@@ -141,7 +137,6 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="disabledGroups">The disabled groups. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListGroup"/>.</param>
-
       public SelectList(IEnumerable items,
                         string dataValueField,
                         string dataTextField,
@@ -174,7 +169,6 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Gets the data group field.
       /// </summary>
-
       public string DataGroupField { get; private set; }
 
       public string DataTextField { get; private set; }
@@ -184,13 +178,11 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Gets the disabled groups.
       /// </summary>
-
       public IEnumerable DisabledGroups { get; private set; }
 
       /// <summary>
       /// Gets the disabled values.
       /// </summary>
-
       public IEnumerable DisabledValues { get; private set; }
 
       public IEnumerable Items { get; private set; }
@@ -212,7 +204,6 @@ namespace System.Web.Mvc {
       /// corresponding <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>>
-
       public MultiSelectList(IEnumerable items, IEnumerable selectedValues, IEnumerable disabledValues)
          : this(items,
                 dataValueField: null,
@@ -237,7 +228,6 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="dataGroupField">The data group field. Used to match the Group property of the corresponding 
       /// <see cref="SelectListItem"/>.</param>
-
       public MultiSelectList(IEnumerable items, string dataValueField, string dataTextField, string dataGroupField)
          : this(items, dataValueField, dataTextField, dataGroupField: dataGroupField, selectedValues: null) { }
 
@@ -254,7 +244,6 @@ namespace System.Web.Mvc {
       /// corresponding <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>>
-
       public MultiSelectList(IEnumerable items,
                              string dataValueField,
                              string dataTextField,
@@ -280,7 +269,6 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="selectedValues">The selected values field. Used to match the Selected property of the 
       /// corresponding <see cref="SelectListItem"/>.</param>
-
       public MultiSelectList(IEnumerable items,
                              string dataValueField,
                              string dataTextField,
@@ -304,7 +292,6 @@ namespace System.Web.Mvc {
       /// corresponding <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>
-
       public MultiSelectList(IEnumerable items,
                              string dataValueField,
                              string dataTextField,
@@ -337,7 +324,6 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="disabledGroups">The disabled groups. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListGroup"/>.</param>
-
       public MultiSelectList(IEnumerable items,
                              string dataValueField,
                              string dataTextField,
@@ -488,7 +474,6 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Gets or sets a value that indicates whether this <see cref="SelectListItem"/> is disabled.
       /// </summary>
-
       public bool Disabled { get; set; }
 
       /// <summary>
@@ -496,7 +481,6 @@ namespace System.Web.Mvc {
       /// In a select list, multiple groups with the same name are supported.
       /// They are compared with reference equality.
       /// </summary>
-
       public SelectListGroup Group { get; set; }
 
       public bool Selected { get; set; }
@@ -511,19 +495,16 @@ namespace System.Web.Mvc {
    /// In a select list, multiple groups with the same name are supported.
    /// They are compared with reference equality.
    /// </summary>
-
    public class SelectListGroup {
 
       /// <summary>
       /// Gets or sets a value that indicates whether this <see cref="SelectListGroup"/> is disabled. 
       /// </summary>
-
       public bool Disabled { get; set; }
 
       /// <summary>
       /// Represents the value of the optgroup's label.
       /// </summary>
-
       public string Name { get; set; }
    }
 }

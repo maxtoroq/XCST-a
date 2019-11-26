@@ -30,7 +30,6 @@ using System.Reflection;
 namespace Xcst.Web.Mvc {
 
    /// <exclude/>
-
    [EditorBrowsable(EditorBrowsableState.Never)]
    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
    public class FileExtensionsAttribute : ValidationAttribute, IClientValidatable {

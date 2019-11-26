@@ -19,7 +19,6 @@ using System.Web.Mvc;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
-
    public class HtmlAttributeDictionary : Dictionary<string, object> {
 
       static readonly IDictionary<string, object> EmptyDictionary = new Dictionary<string, object>();

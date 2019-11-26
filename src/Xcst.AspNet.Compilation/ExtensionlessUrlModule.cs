@@ -98,7 +98,6 @@ namespace Xcst.Web {
       /// Path.GetExtension performs a CheckInvalidPathChars(path) which blows up for paths that do not translate to valid physical paths but are valid paths in ASP.NET
       /// This method is a near clone of Path.GetExtension without a call to CheckInvalidPathChars(path);
       /// </summary>
-
       static string PathExtension(string path) {
 
          if (String.IsNullOrEmpty(path)) {

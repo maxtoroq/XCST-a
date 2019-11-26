@@ -8,7 +8,6 @@ namespace System.Web.Helpers {
    /// <summary>
    /// Provides programmatic configuration for the anti-forgery token system.
    /// </summary>
-
    public static class AntiForgeryConfig {
 
       internal const string AntiForgeryTokenFieldName = "__RequestVerificationToken";
@@ -21,7 +20,6 @@ namespace System.Web.Helpers {
       /// generated tokens and that can validate additional data in incoming
       /// tokens.
       /// </summary>
-
       public static IAntiForgeryAdditionalDataProvider AdditionalDataProvider { get; set; }
 
       /// <summary>
@@ -32,7 +30,6 @@ namespace System.Web.Helpers {
       /// If an explicit name is not provided, the system will automatically
       /// generate a name.
       /// </remarks>
-
       public static string CookieName {
          get {
             if (_cookieName == null) {
@@ -50,7 +47,6 @@ namespace System.Web.Helpers {
       /// to operate. If this setting is 'true' and a non-SSL request
       /// comes into the system, all anti-forgery APIs will fail.
       /// </summary>
-
       public static bool RequireSsl { get; set; }
 
       /// <summary>
@@ -59,7 +55,6 @@ namespace System.Web.Helpers {
       /// header is generated with the value SAMEORIGIN. If this setting is 'true', 
       /// the X-Frame-Options header will not be generated for the response.
       /// </summary>
-
       public static bool SuppressXFrameOptionsHeader { get; set; }
 
       /// <summary>
@@ -73,7 +68,6 @@ namespace System.Web.Helpers {
       /// - Identity.IsAuthenticated = true without Identity.Name being set
       /// - special-casing claims-based identities
       /// </remarks>
-
       [EditorBrowsable(EditorBrowsableState.Never)]
       public static bool SuppressIdentityHeuristicChecks { get; set; }
 
@@ -89,7 +83,6 @@ namespace System.Web.Helpers {
       /// for claim types "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
       /// and "http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider".
       /// </remarks>
-
       public static string UniqueClaimTypeIdentifier {
          get {
             return _uniqueClaimTypeIdentifier ?? String.Empty;

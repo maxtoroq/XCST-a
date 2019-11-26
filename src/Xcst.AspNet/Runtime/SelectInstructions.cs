@@ -28,7 +28,6 @@ using System.Web.Mvc;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
-
    public static class SelectInstructions {
 
       // Select

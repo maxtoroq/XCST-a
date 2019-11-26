@@ -208,14 +208,12 @@ namespace System.Web.Mvc {
    /// <summary>
    /// Used to create an <see cref="ITempDataProvider"/> instance for the controller.
    /// </summary>
-
    public interface ITempDataProviderFactory {
 
       /// <summary>
       /// Creates an instance of <see cref="ITempDataProvider"/> for the controller.
       /// </summary>
       /// <returns>The created <see cref="ITempDataProvider"/>.</returns>
-
       ITempDataProvider CreateInstance();
    }
 

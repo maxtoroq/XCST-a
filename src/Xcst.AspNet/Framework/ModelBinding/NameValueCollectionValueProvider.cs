@@ -51,7 +51,6 @@ namespace System.Web.Mvc {
       /// <param name="jQueryToMvcRequestNormalizationRequired">jQuery POST when sending complex Javascript 
       /// objects to server does not encode in the way understandable by MVC. This flag should be set
       /// if the request should be normalized to MVC form - https://aspnetwebstack.codeplex.com/workitem/1564. </param>
-
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "j", Justification = "jQuery is not accepted as a valid variable name in this class")]
       public NameValueCollectionValueProvider(
             NameValueCollection collection,

@@ -9,7 +9,6 @@ namespace System.Web.Mvc {
    /// them in a sorted array. All queries for prefixes are also normalized to dotted-form, and searches
    /// for ContainsPrefix are done with a binary search.
    /// </summary>
-
    class PrefixContainer {
 
       readonly ICollection<string> _originalValues;

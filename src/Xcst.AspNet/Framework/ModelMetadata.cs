@@ -22,11 +22,6 @@ namespace System.Web.Mvc {
       readonly Type _modelType;
       readonly string _propertyName;
 
-      /// <summary>
-      /// Explicit backing store for the things we want initialized by default, so don't have to call
-      /// the protected virtual setters of an auto-generated property
-      /// </summary>
-
       Dictionary<string, object> _additionalValues = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
       bool _convertEmptyStringToNull = true;
       bool _htmlEncode = true;
@@ -46,7 +41,6 @@ namespace System.Web.Mvc {
       /// <summary>
       /// A reference to the model's container object. Will be non-null if the model represents a property.
       /// </summary>
-
       public object Container { get; set; }
 
       public Type ContainerType => _containerType;

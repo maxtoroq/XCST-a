@@ -67,7 +67,6 @@ namespace System.Web.Mvc {
       /// Represents a replaceable dependency resolver providing services.
       /// By default, it uses the <see cref="DependencyResolver.CurrentCache"/>. 
       /// </summary>
-
       internal IDependencyResolver Resolver {
          get { return _resolver ?? DependencyResolver.CurrentCache; }
          set { _resolver = value; }
@@ -84,7 +83,6 @@ namespace System.Web.Mvc {
       }
 
       // parameterless constructor used for mocking
-
       public ControllerContext() { }
 
       // copy constructor - allows for subclassed types to take an existing ControllerContext as a parameter

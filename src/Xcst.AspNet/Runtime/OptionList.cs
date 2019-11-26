@@ -23,7 +23,6 @@ using System.Web.Mvc;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
-
    public class OptionList : IEnumerable<SelectListItem> {
 
       readonly List<SelectListItem> staticList;

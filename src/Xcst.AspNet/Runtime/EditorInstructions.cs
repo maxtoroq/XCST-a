@@ -31,7 +31,6 @@ using Xcst.PackageModel;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
-
    public static class EditorInstructions {
 
 

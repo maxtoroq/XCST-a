@@ -20,7 +20,6 @@ using Xcst.Web.Extension;
 namespace Xcst.Web.Compilation {
 
    /// <exclude/>
-
    [EditorBrowsable(EditorBrowsableState.Never)]
 #if ASPNETLIB
    public

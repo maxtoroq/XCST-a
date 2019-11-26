@@ -26,7 +26,6 @@ using System.Web.Mvc;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
-
    public static class TextAreaInstructions {
 
       // These values are similar to the defaults used by WebForms

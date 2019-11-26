@@ -26,7 +26,6 @@ using System.Web.Mvc;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
-
    public static class LabelInstructions {
 
       public static void Label(HtmlHelper html,

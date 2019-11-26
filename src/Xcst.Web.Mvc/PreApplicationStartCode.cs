@@ -19,7 +19,6 @@ using System.Web.Mvc;
 namespace Xcst.Web.Mvc {
 
    /// <exclude/>
-
    [EditorBrowsable(EditorBrowsableState.Never)]
    public static class PreApplicationStartCode {
 

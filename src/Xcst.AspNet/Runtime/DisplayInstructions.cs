@@ -29,7 +29,6 @@ using System.Web.UI.WebControls;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
-
    public static class DisplayInstructions {
 
       public static void Display(HtmlHelper html,

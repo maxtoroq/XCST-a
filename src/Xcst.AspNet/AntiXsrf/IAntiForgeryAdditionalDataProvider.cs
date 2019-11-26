@@ -14,7 +14,6 @@ namespace System.Web.Helpers {
    /// additional data provider is configured, the supplemental data will not be
    /// validated.
    /// </remarks>
-
    public interface IAntiForgeryAdditionalDataProvider {
 
       /// <summary>
@@ -23,7 +22,6 @@ namespace System.Web.Helpers {
       /// </summary>
       /// <param name="context">Information about the current request.</param>
       /// <returns>Supplemental data to embed within the anti-forgery token.</returns>
-
       string GetAdditionalData(HttpContextBase context);
 
       /// <summary>
@@ -33,7 +31,6 @@ namespace System.Web.Helpers {
       /// <param name="context">Information about the current request.</param>
       /// <param name="additionalData">Supplemental data that was embedded within the token.</param>
       /// <returns>True if the data is valid; false if the data is invalid.</returns>
-
       bool ValidateAdditionalData(HttpContextBase context, string additionalData);
    }
 }

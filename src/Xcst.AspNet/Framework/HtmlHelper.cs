@@ -88,7 +88,6 @@ namespace System.Web.Mvc {
       /// </example>
       /// <param name="htmlAttributes">Anonymous object describing HTML attributes.</param>
       /// <returns>A dictionary that represents HTML attributes.</returns>
-
       public static RouteValueDictionary AnonymousObjectToHtmlAttributes(object/*?*/ htmlAttributes) {
 
          var result = new RouteValueDictionary();
@@ -149,7 +148,6 @@ namespace System.Web.Mvc {
       /// </example>
       /// <param name="value">The object to be converted.</param>
       /// <returns>The created dictionary of property names and property values.</returns>
-
       public static IDictionary<string, object> ObjectToDictionary(object value) {
          return TypeHelpers.ObjectToDictionary(value);
       }
@@ -314,7 +312,6 @@ namespace System.Web.Mvc {
       /// This method uses the same logic used by the built-in <code>Object</code> display template;
       /// e.g. by default, it returns false for complex types.
       /// </remarks>
-
       public bool ShowForDisplay(ModelMetadata propertyMetadata) {
          return DisplayInstructions.ShowForDisplay(this, propertyMetadata);
       }
@@ -328,7 +325,6 @@ namespace System.Web.Mvc {
       /// This method uses the same logic used by the built-in <code>Object</code> editor template;
       /// e.g. by default, it returns false for complex types.
       /// </remarks>
-
       public bool ShowForEdit(ModelMetadata propertyMetadata) {
          return EditorInstructions.ShowForEdit(this, propertyMetadata);
       }
@@ -338,7 +334,6 @@ namespace System.Web.Mvc {
       /// </summary>
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
-
       public XcstDelegate<object> MemberTemplate(ModelMetadata propertyMetadata) {
          return EditorInstructions.MemberTemplate(this, propertyMetadata);
       }
@@ -405,19 +400,16 @@ namespace System.Web.Mvc {
    /// <summary>
    /// Controls the value-rendering method For HTML5 input elements of types such as date, time, datetime and datetime-local.
    /// </summary>
-
    public enum Html5DateRenderingMode {
 
       /// <summary>
       /// Render date and time values as Rfc3339 compliant strings to support HTML5 date and time types of input elements.
       /// </summary>
-
       Rfc3339 = 0,
 
       /// <summary>
       /// Render date and time values according to the current culture's ToString behavior.
       /// </summary>
-
       CurrentCulture
    }
 

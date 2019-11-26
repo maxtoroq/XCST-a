@@ -11,7 +11,6 @@ namespace System.Web.Mvc {
    /// A <see cref="IDictionary{TKey, TValue}"/> that defers creating a shallow copy of the source dictionary until
    /// a mutative operation has been performed on it.
    /// </summary>
-
    class CopyOnWriteDictionary<TKey, TValue> : IDictionary<TKey, TValue> {
 
       readonly IDictionary<TKey, TValue> _sourceDictionary;

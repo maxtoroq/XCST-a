@@ -31,7 +31,6 @@ namespace Xcst.Web.Runtime {
    using HtmlAttribs = IDictionary<string, object>;
 
    /// <exclude/>
-
    public static class InputInstructions {
 
       // NOTES:

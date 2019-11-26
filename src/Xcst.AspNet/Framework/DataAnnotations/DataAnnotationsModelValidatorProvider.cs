@@ -30,7 +30,6 @@ namespace System.Web.Mvc {
    /// <see cref="IClientValidatable"/>. The logic to support IClientValidatable
    /// is implemented in <see cref="DataAnnotationsModelValidator"/>.
    /// </summary>
-
    class DataAnnotationsModelValidatorProvider : AssociatedValidatorProvider {
 
       static bool _addImplicitRequiredAttributeForValueTypes = true;
@@ -213,7 +212,6 @@ namespace System.Web.Mvc {
       /// which takes two parameters of types <see cref="ModelMetadata"/> and
       /// <see cref="ControllerContext"/>.
       /// </summary>
-
       public static void RegisterValidatableObjectAdapter(Type modelType, Type adapterType) {
 
          ValidateValidatableModelType(modelType);

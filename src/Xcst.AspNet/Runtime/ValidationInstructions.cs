@@ -29,7 +29,6 @@ using Xcst.Web.Configuration;
 namespace Xcst.Web.Runtime {
 
    /// <exclude/>
-
    public static class ValidationInstructions {
 
       [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]

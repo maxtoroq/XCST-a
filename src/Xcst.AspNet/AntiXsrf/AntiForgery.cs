@@ -13,7 +13,6 @@ namespace System.Web.Helpers {
    /// Provides access to the anti-forgery system, which provides protection against
    /// Cross-site Request Forgery (XSRF, also called CSRF) attacks.
    /// </summary>
-
    public static class AntiForgery {
 
       static readonly AntiForgeryWorker _worker = CreateSingletonAntiForgeryWorker();
@@ -40,7 +39,6 @@ namespace System.Web.Helpers {
       /// <remarks>
       /// This method has a side effect: it may set a response cookie.
       /// </remarks>
-
       [EditorBrowsable(EditorBrowsableState.Never)]
       public static void GetHtml(HttpContextBase httpContext, XcstWriter output) {
 
@@ -71,7 +69,6 @@ namespace System.Web.Helpers {
       /// is responsible for setting the response cookie and injecting the returned
       /// form token as appropriate.
       /// </remarks>
-
       [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "1#", Justification = "Method is intended for advanced audiences.")]
       [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "2#", Justification = "Method is intended for advanced audiences.")]
       [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -91,7 +88,6 @@ namespace System.Web.Helpers {
       /// <remarks>
       /// Throws an HttpAntiForgeryException if validation fails.
       /// </remarks>
-
       public static void Validate() {
 
          HttpContext context = HttpContext.Current;
@@ -109,7 +105,6 @@ namespace System.Web.Helpers {
       /// <remarks>
       /// Throws an HttpAntiForgeryException if validation fails.
       /// </remarks>
-
       [EditorBrowsable(EditorBrowsableState.Advanced)]
       public static void Validate(string cookieToken, string formToken) {
 

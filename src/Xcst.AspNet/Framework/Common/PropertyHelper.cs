@@ -20,7 +20,6 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Initializes a fast property helper. This constructor does not cache the helper.
       /// </summary>
-
       [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "This is intended the Name is auto set differently per type and the type is internal")]
       public PropertyHelper(PropertyInfo property) {
 
@@ -37,7 +36,6 @@ namespace System.Web.Mvc {
       /// <param name="propertyInfo">propertyInfo to extract the getter for.</param>
       /// <returns>a fast setter.</returns>
       /// <remarks>This method is more memory efficient than a dynamically compiled lambda, and about the same speed.</remarks>
-
       public static Action<TDeclaringType, object> MakeFastPropertySetter<TDeclaringType>(PropertyInfo propertyInfo) where TDeclaringType : class {
 
          Contract.Assert(propertyInfo != null);
@@ -79,7 +77,6 @@ namespace System.Web.Mvc {
       /// </summary>
       /// <param name="instance">the instance to extract property accessors for.</param>
       /// <returns>a cached array of all public property getters from the underlying type of this instance.</returns>
-
       public static PropertyHelper[] GetProperties(object instance) {
          return GetProperties(instance, CreateInstance, _reflectionCache);
       }
@@ -90,7 +87,6 @@ namespace System.Web.Mvc {
       /// <param name="propertyInfo">propertyInfo to extract the getter for.</param>
       /// <returns>a fast getter.</returns>
       /// <remarks>This method is more memory efficient than a dynamically compiled lambda, and about the same speed.</remarks>
-
       public static Func<object, object> MakeFastPropertyGetter(PropertyInfo propertyInfo) {
 
          Contract.Assert(propertyInfo != null);

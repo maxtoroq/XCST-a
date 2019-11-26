@@ -22,7 +22,6 @@ using System.Web;
 namespace Xcst.Web.Mvc {
 
    /// <exclude/>
-
    [EditorBrowsable(EditorBrowsableState.Never)]
    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
    public class FileMaxLengthAttribute : ValidationAttribute {

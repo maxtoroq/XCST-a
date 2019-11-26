@@ -36,7 +36,6 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Cache should always be a new CacheDependencyResolver(_current).
       /// </summary>
-
       CacheDependencyResolver _currentCache;
 
       public static IDependencyResolver Current => _instance.InnerCurrent;
@@ -48,7 +47,6 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Provides caching over results returned by Current.
       /// </summary>
-
       internal IDependencyResolver InnerCurrentCache => _currentCache;
 
       public DependencyResolver() {
@@ -119,7 +117,6 @@ namespace System.Web.Mvc {
       /// Note it's possible for multiple threads to race and call the _resolver service multiple times.
       /// We'll pick one winner and ignore the others and still guarantee a unique instance.
       /// </remarks>
-
       sealed class CacheDependencyResolver : IDependencyResolver {
 
          readonly ConcurrentDictionary<Type, object> _cache = new ConcurrentDictionary<Type, object>();

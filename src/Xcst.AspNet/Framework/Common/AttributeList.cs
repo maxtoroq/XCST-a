@@ -10,7 +10,6 @@ namespace System.Web.Mvc {
    /// <summary>
    /// Wrapper for AttributeCollection to provide generic collection implementation.
    /// </summary>
-
    sealed class AttributeList : IList<Attribute> {
 
       readonly AttributeCollection _attributes;

@@ -12,11 +12,7 @@ namespace System.Web.Mvc {
 
       public RouteCollection RouteCollection { get; private set; }
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="UrlHelper"/> class.
-      /// </summary>
-      /// <remarks>The default constructor is intended for use by unit testing only.</remarks>
-
+      // The default constructor is intended for use by unit testing only.
       public UrlHelper() { }
 
       public UrlHelper(RequestContext requestContext)
