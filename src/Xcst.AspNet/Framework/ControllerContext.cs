@@ -14,17 +14,13 @@ namespace System.Web.Mvc {
    public class ControllerContext {
 
       HttpContextBase _httpContext;
-      RequestContext _requestContext;
-      RouteData _routeData;
       IDependencyResolver _resolver;
       ITempDataProvider _tempDataProvider;
 
       public virtual HttpContextBase HttpContext {
          get {
             if (_httpContext == null) {
-               _httpContext = (_requestContext != null) ?
-                  _requestContext.HttpContext
-                  : new EmptyHttpContext();
+               _httpContext = RequestContext?.HttpContext;
             }
             return _httpContext;
          }
@@ -35,33 +31,7 @@ namespace System.Web.Mvc {
 
       internal ViewContext ParentActionViewContext => null;
 
-      public RequestContext RequestContext {
-         get {
-            if (_requestContext == null) {
-
-               // still need explicit calls to constructors since the property getters are virtual and might return null
-
-               HttpContextBase httpContext = HttpContext ?? new EmptyHttpContext();
-               RouteData routeData = RouteData ?? new RouteData();
-
-               _requestContext = new RequestContext(httpContext, routeData);
-            }
-            return _requestContext;
-         }
-         set { _requestContext = value; }
-      }
-
-      public virtual RouteData RouteData {
-         get {
-            if (_routeData == null) {
-               _routeData = (_requestContext != null) ?
-                  _requestContext.RouteData
-                  : new RouteData();
-            }
-            return _routeData;
-         }
-         set { _routeData = value; }
-      }
+      public RequestContext RequestContext { get; set; }
 
       /// <summary>
       /// Represents a replaceable dependency resolver providing services.
@@ -82,8 +52,8 @@ namespace System.Web.Mvc {
          set { _tempDataProvider = value; }
       }
 
-      // parameterless constructor used for mocking
-      public ControllerContext() { }
+      public ControllerContext()
+         : this(new RequestContext(new EmptyHttpContext(), new RouteData())) { }
 
       // copy constructor - allows for subclassed types to take an existing ControllerContext as a parameter
       // and we'll automatically set the appropriate properties

@@ -60,7 +60,7 @@ namespace Xcst.Web.Mvc {
 #if !ASPNETLIB
                   (ViewContext?.Controller as Controller)?.Url ??
 #endif
-                  new UrlHelper(ViewContext?.RequestContext ?? Request.RequestContext);
+                  new UrlHelper(ViewContext?.RequestContext);
             }
             return _Url;
          }

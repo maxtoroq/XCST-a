@@ -10,7 +10,7 @@ namespace System.Web.Mvc {
       // interpreted in a uniform fashion regardless of the origin of a particular request.
 
       public RouteDataValueProvider(ControllerContext controllerContext)
-         : base(controllerContext.RouteData.Values, CultureInfo.InvariantCulture) { }
+         : base(controllerContext.RequestContext.RouteData.Values, CultureInfo.InvariantCulture) { }
    }
 
    public sealed class RouteDataValueProviderFactory : ValueProviderFactory {
