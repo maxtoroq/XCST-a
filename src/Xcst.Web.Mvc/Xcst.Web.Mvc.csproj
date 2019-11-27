@@ -130,9 +130,6 @@
     <Compile Include="..\Xcst.AspNet\Mvc\XcstViewPage.cs">
       <Link>Mvc\XcstViewPage.cs</Link>
     </Compile>
-    <Compile Include="..\Xcst.AspNet\Mvc\XcstViewPageOfTModel.cs">
-      <Link>Mvc\XcstViewPageOfTModel.cs</Link>
-    </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\DefaultDisplayTemplates.cs">
       <Link>Runtime\DefaultDisplayTemplates.cs</Link>
     </Compile>

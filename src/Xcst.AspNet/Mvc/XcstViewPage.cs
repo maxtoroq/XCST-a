@@ -24,7 +24,7 @@ namespace Xcst.Web.Mvc {
       ViewContext _ViewContext;
       ViewDataDictionary _ViewData;
       UrlHelper _Url;
-      HtmlHelper<object> _Html;
+      HtmlHelper _Html;
       TempDataDictionary _TempData;
 
       public virtual ViewContext ViewContext {
@@ -55,29 +55,28 @@ namespace Xcst.Web.Mvc {
 
       public virtual UrlHelper Url {
          get {
-            if (_Url == null) {
+            if (_Url == null
+               && ViewContext != null) {
                _Url =
 #if !ASPNETLIB
-                  (ViewContext?.Controller as Controller)?.Url ??
+                  (ViewContext.Controller as Controller)?.Url ??
 #endif
-                  new UrlHelper(ViewContext?.RequestContext);
+                  new UrlHelper(ViewContext.RequestContext);
             }
             return _Url;
          }
          set { _Url = value; }
       }
 
-      public HtmlHelper<object> Html {
+      public HtmlHelper Html {
          get {
             if (_Html == null
                && ViewContext != null) {
-               _Html = new HtmlHelper<object>(ViewContext, this);
+               _Html = new HtmlHelper(ViewContext, this);
             }
             return _Html;
          }
-         set {
-            _Html = value;
-         }
+         set { _Html = value; }
       }
 
       public ModelStateDictionary ModelState => ViewData.ModelState;
@@ -91,11 +90,7 @@ namespace Xcst.Web.Mvc {
       }
 
       internal virtual void SetViewData(ViewDataDictionary viewData) {
-
          _ViewData = viewData;
-
-         // HtmlHelper<TModel> creates a copy of ViewData
-         this.Html = null;
       }
 
 #if ASPNETLIB
@@ -194,6 +189,43 @@ namespace Xcst.Web.Mvc {
                tempData: this.TempData
             );
          }
+      }
+   }
+
+   public abstract class XcstViewPage<TModel> : XcstViewPage {
+
+      ViewDataDictionary<TModel> _ViewData;
+      HtmlHelper<TModel> _Html;
+
+      public new ViewDataDictionary<TModel> ViewData {
+         get {
+            if (_ViewData == null) {
+               SetViewData(new ViewDataDictionary<TModel>());
+            }
+            return _ViewData;
+         }
+         set { SetViewData(value); }
+      }
+
+      public new TModel Model => ViewData.Model;
+
+      public new HtmlHelper<TModel> Html {
+         get {
+            if (_Html == null
+               && ViewContext != null) {
+               _Html = new HtmlHelper<TModel>(ViewContext, this);
+            }
+            return _Html;
+         }
+         set { _Html = value; }
+      }
+
+      internal override void SetViewData(ViewDataDictionary viewData) {
+
+         _ViewData = viewData as ViewDataDictionary<TModel>
+            ?? new ViewDataDictionary<TModel>(viewData);
+
+         base.SetViewData(_ViewData);
       }
    }
 }

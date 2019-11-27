@@ -341,20 +341,7 @@ namespace System.Web.Mvc {
 
    public class HtmlHelper<TModel> : HtmlHelper {
 
-      ViewDataDictionary<TModel> _viewData;
-      DynamicViewDataDictionary _dynamicViewDataDictionary;
-
-      public new ViewDataDictionary<TModel> ViewData => _viewData;
-
-      public new dynamic ViewBag {
-         get {
-            if (_dynamicViewDataDictionary == null) {
-               _dynamicViewDataDictionary = new DynamicViewDataDictionary(() => ViewData);
-            }
-
-            return _dynamicViewDataDictionary;
-         }
-      }
+      public new ViewDataDictionary<TModel> ViewData => (ViewDataDictionary<TModel>)ViewDataContainer.ViewData;
 
       public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
          : this(viewContext, viewDataContainer, RouteTable.Routes) { }
@@ -362,8 +349,12 @@ namespace System.Web.Mvc {
       public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, RouteCollection routeCollection)
          : base(viewContext, viewDataContainer, routeCollection) {
 
-         _viewData = viewDataContainer.ViewData as ViewDataDictionary<TModel>
-            ?? new ViewDataDictionary<TModel>(viewDataContainer.ViewData);
+         if (!(viewDataContainer.ViewData is ViewDataDictionary<TModel>)) {
+            throw new ArgumentException(
+               $"{nameof(viewDataContainer)}.ViewData should be an instance of 'ViewDataDictionary<TModel>'.",
+               nameof(viewDataContainer)
+            );
+         }
       }
 
       public string DisplayNameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {

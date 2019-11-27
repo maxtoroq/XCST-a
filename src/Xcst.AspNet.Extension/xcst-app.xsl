@@ -1285,7 +1285,7 @@
       </if>
 
       <variable name="new-helper" as="element()">
-         <code:variable-reference name="{(@helper-name/xcst:name(.), concat(src:aux-variable('model_helper'), '_', generate-id()))[1]}"/>
+         <code:variable-reference name="{(@helper-name/xcst:name(.), concat(src:aux-variable('html_helper'), '_', generate-id()))[1]}"/>
       </variable>
 
       <variable name="type" as="element()?">

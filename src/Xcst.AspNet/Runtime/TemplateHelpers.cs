@@ -179,12 +179,12 @@ namespace Xcst.Web.Runtime {
          object visitedObjectsKey = metadata.Model
             ?? metadata.RealModelType();
 
-         if (html.ViewDataContainer.ViewData.TemplateInfo.VisitedObjects().Contains(visitedObjectsKey)) {
+         if (html.ViewData.TemplateInfo.VisitedObjects().Contains(visitedObjectsKey)) {
             // DDB #224750
             return;
          }
 
-         var viewData = new ViewDataDictionary(html.ViewDataContainer.ViewData) {
+         var viewData = new ViewDataDictionary(html.ViewData) {
             Model = metadata.Model,
             ModelMetadata = metadata,
             TemplateInfo = new TemplateInfo {
