@@ -200,13 +200,7 @@ namespace Xcst.Web.Tests {
          var httpContextMock = new Mock<HttpContextBase>();
          httpContextMock.Setup(c => c.Items).Returns(() => new System.Collections.Hashtable());
 
-         package.ViewContext = new ViewContext(
-            new ControllerContext(
-               new RequestContext(httpContextMock.Object, new RouteData())
-            ),
-            new ViewDataDictionary(),
-            new TempDataDictionary()
-         );
+         package.ViewContext = new ViewContext(httpContextMock.Object);
 
          return package;
       }

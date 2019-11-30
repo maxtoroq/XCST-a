@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Web.Mvc.Properties;
+using System.Web.Routing;
 
 namespace System.Web.Mvc {
 
@@ -44,9 +45,6 @@ namespace System.Web.Mvc {
          set { HttpContext.Items[_formContextKey] = value; }
       }
 
-      [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The property setter is only here to support mocking this type and should not be called at runtime.")]
-      public virtual TempDataDictionary TempData { get; set; }
-
       public dynamic ViewBag {
          get {
             if (_dynamicViewDataDictionary == null) {
@@ -57,18 +55,27 @@ namespace System.Web.Mvc {
       }
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The property setter is only here to support mocking this type and should not be called at runtime.")]
-      public virtual ViewDataDictionary ViewData { get; set; }
+      public virtual ViewDataDictionary/*?*/ ViewData { get; set; }
+
+      [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The property setter is only here to support mocking this type and should not be called at runtime.")]
+      public virtual TempDataDictionary/*?*/ TempData { get; set; }
 
       // parameterless constructor used for mocking
       public ViewContext() { }
 
+      public ViewContext(HttpContextBase httpContext)
+         : base((httpContext != null) ?
+            httpContext.Request?.RequestContext ?? new RequestContext(httpContext, new RouteData())
+            : throw new ArgumentNullException(nameof(httpContext))) { }
+
       [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "The virtual property setters are only to support mocking frameworks, in which case this constructor shouldn't be called anyway.")]
-      public ViewContext(ControllerContext controllerContext, ViewDataDictionary viewData, TempDataDictionary tempData)
+      public ViewContext(ControllerContext controllerContext, ViewDataDictionary/*?*/ viewData, TempDataDictionary/*?*/ tempData)
          : base(controllerContext) {
 
          if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
-         if (viewData == null) throw new ArgumentNullException(nameof(viewData));
-         if (tempData == null) throw new ArgumentNullException(nameof(tempData));
+         // When cloning, ViewData/TempData can be null if ViewContext was initialized with HttpContextBase only
+         //if (viewData == null) throw new ArgumentNullException(nameof(viewData));
+         //if (tempData == null) throw new ArgumentNullException(nameof(tempData));
 
          this.ViewData = viewData;
          this.TempData = tempData;

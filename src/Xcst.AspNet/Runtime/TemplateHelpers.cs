@@ -410,13 +410,11 @@ namespace Xcst.Web.Runtime {
 
       static void RenderViewPage(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, XcstViewPage viewPage) {
 
-         ViewContext context = html.ViewContext.Clone(viewData: viewData);
-
-         viewPage.ViewContext = context;
+         viewPage.ViewContext = html.ViewContext.Clone(viewData: viewData);
 
          XcstEvaluator evaluator = XcstEvaluator.Using(viewPage);
 
-         foreach (var item in context.ViewData) {
+         foreach (var item in viewData) {
             evaluator.WithParam(item.Key, item.Value);
          }
 

@@ -15,7 +15,6 @@
 using System;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 
 namespace Xcst.Web.Mvc {
 
@@ -33,13 +32,7 @@ namespace Xcst.Web.Mvc {
 
          base.InitializePage(page, context);
 
-         RequestContext requestContext = context.Request.RequestContext
-            ?? new RequestContext(context, new RouteData());
-
-         var controllerContext = new ControllerContext(requestContext);
-         var tempData = new TempDataDictionary(); ;
-
-         this.page.ViewContext = new ViewContext(controllerContext, this.page.ViewData, tempData);
+         this.page.ViewContext = new ViewContext(context);
       }
 
       protected override void RenderPage(XcstPage page, HttpContextBase context) {

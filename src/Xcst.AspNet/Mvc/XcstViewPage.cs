@@ -33,7 +33,11 @@ namespace Xcst.Web.Mvc {
             _ViewContext = value;
 
             Context = value?.HttpContext;
-            ViewData = value?.ViewData;
+
+            if (value?.ViewData is ViewDataDictionary vd) {
+               ViewData = vd;
+            }
+
             Url = null;
             Html = null;
          }
@@ -84,7 +88,8 @@ namespace Xcst.Web.Mvc {
       public virtual TempDataDictionary TempData {
          get {
             return _TempData
-               ?? (_TempData = ViewContext?.TempData);
+               ?? (_TempData = ViewContext?.TempData)
+               ?? (_TempData = new TempDataDictionary());
          }
          set { _TempData = value; }
       }
@@ -185,8 +190,11 @@ namespace Xcst.Web.Mvc {
 #if !ASPNETLIB
                view: new XcstView(this.ViewContext, viewPage.VirtualPath),
 #endif
-               viewData: new ViewDataDictionary(this.ViewData),
-               tempData: this.TempData
+               viewData: (_ViewData != null) ? new ViewDataDictionary(_ViewData)
+                  // Never use this.ViewContext.ViewData
+                  : (this.ViewContext.ViewData != null) ? new ViewDataDictionary()
+                  : null,
+               tempData: _TempData
             );
          }
       }

@@ -64,6 +64,9 @@ namespace System.Web.Mvc {
          if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
 
          this.RequestContext = controllerContext.RequestContext;
+
+         _resolver = controllerContext._resolver;
+         _tempDataProvider = controllerContext._tempDataProvider;
       }
 
       public ControllerContext(HttpContextBase httpContext, RouteData routeData)
