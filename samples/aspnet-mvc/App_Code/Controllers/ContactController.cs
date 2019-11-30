@@ -17,13 +17,13 @@ namespace AspNetMvc {
       [ValidateAntiForgeryToken]
       public ActionResult Index(Contact contact) {
 
-         if (this.ModelState.IsValid
+         if (ModelState.IsValid
             && SendMail(contact)) {
 
-            this.ViewBag.sent = true;
+            ViewBag.sent = true;
 
             // clear form
-            this.ModelState.Clear();
+            ModelState.Clear();
             contact = new Contact();
          }
 
@@ -33,7 +33,7 @@ namespace AspNetMvc {
       bool SendMail(Contact contact) {
 
          var message = new MailMessage {
-            From = new MailAddress("noreply@example.com", this.Request.Url.Host),
+            From = new MailAddress("noreply@example.com", Request.Url.Host),
             To = { contactTo },
             Subject = contactSubject,
             ReplyToList = { new MailAddress(contact.Email, contact.Name) },
@@ -49,7 +49,7 @@ namespace AspNetMvc {
 
          } catch (SmtpException) {
 
-            this.ModelState.AddModelError("", "An unexpected error ocurred.");
+            ModelState.AddModelError("", "An unexpected error ocurred.");
             return false;
          }
       }

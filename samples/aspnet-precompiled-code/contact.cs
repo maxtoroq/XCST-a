@@ -8,7 +8,7 @@ namespace AspNetPrecompiled {
       bool SendMail(Contact contact) {
 
          var message = new MailMessage {
-            From = new MailAddress("noreply@example.com", this.Request.Url.Host),
+            From = new MailAddress("noreply@example.com", Request.Url.Host),
             To = { contactTo },
             Subject = contactSubject,
             ReplyToList = { new MailAddress(contact.Email, contact.Name) },
@@ -24,7 +24,7 @@ namespace AspNetPrecompiled {
 
          } catch (SmtpException) {
 
-            this.ModelState.AddModelError("", "An unexpected error ocurred.");
+            ModelState.AddModelError("", "An unexpected error ocurred.");
             return false;
          }
       }

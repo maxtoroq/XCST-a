@@ -11,20 +11,20 @@
             <c:variable name='todo' value='new Todo()'/>
             <c:if test='TryBind(todo)'>
                <c:void value='this.db.Add(todo)'/>
-               <c:set ref='this.Response.RedirectLocation' value='TodoUrl(todo)'/>
+               <c:set ref='Response.RedirectLocation' value='TodoUrl(todo)'/>
             </c:if>
-            <c:set ref='this.Response.StatusCode' value='201'/>
-            <c:set ref='this.Response.ContentType'>application/json</c:set>
+            <c:set ref='Response.StatusCode' value='201'/>
+            <c:set ref='Response.ContentType'>application/json</c:set>
             <c:call-template name='todo-to-json'>
                <c:with-param name='todo' value='todo'/>
             </c:call-template>
          </c:when>
-         <c:when test='this.Request.HttpMethod == "DELETE"'>
+         <c:when test='Request.HttpMethod == "DELETE"'>
             <c:void value='this.db.RemoveAll()'/>
-            <c:set ref='this.Response.StatusCode' value='204'/>
+            <c:set ref='Response.StatusCode' value='204'/>
          </c:when>
          <c:otherwise>
-            <c:set ref='this.Response.ContentType'>application/json</c:set>
+            <c:set ref='Response.ContentType'>application/json</c:set>
             <c:array>
                <c:for-each name='todo' in='this.db.GetAll()'>
                   <c:call-template name='todo-to-json'>

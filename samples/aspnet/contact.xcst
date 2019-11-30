@@ -28,7 +28,7 @@
          <![CDATA[
 
          var message = new MailMessage {
-            From = new MailAddress("noreply@example.com", this.Request.Url.Host),
+            From = new MailAddress("noreply@example.com", Request.Url.Host),
             To = { contactTo },
             Subject = contactSubject,
             ReplyToList = { new MailAddress(contact.Email, contact.Name) },
@@ -44,7 +44,7 @@
 
          } catch (SmtpException) {
 
-            this.ModelState.AddModelError("", "An unexpected error ocurred.");
+            ModelState.AddModelError("", "An unexpected error ocurred.");
             return false;
          }
          ]]>
@@ -90,7 +90,7 @@
             sent = true;
 
             // clear form
-            this.ModelState.Clear();
+            ModelState.Clear();
             contact = new Contact();
          }
          ]]>

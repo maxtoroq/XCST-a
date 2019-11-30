@@ -11,7 +11,7 @@
    <c:function name='TodoUrl' as='string'>
       <c:param name='todo' as='Todo'/>
 
-      <c:return value='new Uri(this.Request.Url, Href("edit", todo.id)).AbsoluteUri'/>
+      <c:return value='new Uri(Request.Url, Href("edit", todo.id)).AbsoluteUri'/>
    </c:function>
 
    <c:template name='todo-to-json'>

@@ -58,7 +58,7 @@
             sent = true;
 
             // clear form
-            this.ModelState.Clear();
+            ModelState.Clear();
             contact = new Contact();
          }
          ]]>
