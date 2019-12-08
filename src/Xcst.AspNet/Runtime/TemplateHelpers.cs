@@ -412,7 +412,7 @@ namespace Xcst.Web.Runtime {
 
          viewPage.ViewContext = html.ViewContext.Clone(viewData: viewData);
 
-         XcstEvaluator evaluator = XcstEvaluator.Using(viewPage);
+         XcstEvaluator evaluator = XcstEvaluator.Using((object)viewPage);
 
          foreach (var item in viewData) {
             evaluator.WithParam(item.Key, item.Value);

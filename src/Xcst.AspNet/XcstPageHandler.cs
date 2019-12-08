@@ -44,7 +44,7 @@ namespace Xcst.Web {
 
       protected virtual void RenderPage(XcstPage page, HttpContextBase context) {
 
-         XcstEvaluator.Using(page)
+         XcstEvaluator.Using((object)page)
             .CallInitialTemplate()
             .OutputTo(context.Response.Output)
             .Run();

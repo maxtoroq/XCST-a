@@ -61,7 +61,7 @@ namespace Xcst.Web.Mvc {
 
          AddFileDependencies(instance, viewContext.HttpContext.Response);
 
-         XcstEvaluator evaluator = XcstEvaluator.Using(viewPage);
+         XcstEvaluator evaluator = XcstEvaluator.Using((object)viewPage);
 
          foreach (var item in viewContext.ViewData) {
             evaluator.WithParam(item.Key, item.Value);
