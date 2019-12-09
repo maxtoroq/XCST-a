@@ -58,6 +58,8 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "The usage of the property is as an instance property of the helper.")]
       public Html5DateRenderingMode Html5DateRenderingMode { get; set; }
 
+      public ModelMetadata ModelMetadata => ViewData.ModelMetadata;
+
       internal Func<string, ModelMetadata, IEnumerable<ModelClientValidationRule>> ClientValidationRuleFactory { get; set; }
 
       public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
