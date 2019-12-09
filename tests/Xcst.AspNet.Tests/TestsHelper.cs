@@ -212,7 +212,7 @@ namespace Xcst.Web.Tests {
          var expectedDoc = new XDocument();
          var actualDoc = new XDocument();
 
-         XcstEvaluator evaluator = XcstEvaluator.Using(package);
+         XcstEvaluator evaluator = XcstEvaluator.Using((object)package);
 
          using (XmlWriter actualWriter = actualDoc.CreateWriter()) {
 
@@ -247,7 +247,7 @@ namespace Xcst.Web.Tests {
 
          XcstViewPage package = CreatePackage(packageType);
 
-         XcstEvaluator.Using(package)
+         XcstEvaluator.Using((object)package)
             .CallInitialTemplate()
             .OutputTo(TextWriter.Null)
             .WithBaseUri(packageUri)
