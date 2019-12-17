@@ -173,7 +173,6 @@
     <Compile Include="Mvc\XcstViewPage.cs" />
     <Compile Include="Mvc\XcstViewPageHandler.cs" />
     <Compile Include="UrlDataList.cs" />
-    <Compile Include="Framework\UrlRewriterHelper.cs" />
     <Compile Include="XcstPage.cs" />
     <Compile Include="XcstPageHandler.cs" />
     <Compile Include="Configuration\XcstWebConfiguration.cs" />
