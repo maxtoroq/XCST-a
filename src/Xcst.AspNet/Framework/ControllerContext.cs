@@ -27,10 +27,6 @@ namespace System.Web.Mvc {
          set { _httpContext = value; }
       }
 
-      internal virtual bool IsChildAction => false;
-
-      internal ViewContext ParentActionViewContext => null;
-
       public RequestContext RequestContext { get; set; }
 
       /// <summary>

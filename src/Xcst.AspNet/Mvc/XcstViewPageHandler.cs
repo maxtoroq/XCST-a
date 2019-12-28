@@ -22,6 +22,8 @@ namespace Xcst.Web.Mvc {
 
       readonly XcstViewPage page;
 
+      private ViewContext ViewContext => page.ViewContext;
+
       public XcstViewPageHandler(XcstViewPage page)
          : base(page) {
 
@@ -37,29 +39,17 @@ namespace Xcst.Web.Mvc {
 
       protected override void RenderPage(XcstPage page, HttpContextBase context) {
 
-         ITempDataProvider tempDataProvider = this.page.ViewContext.TempDataProvider;
-
-         PossiblyLoadTempData(tempDataProvider);
+         this.page.TempData.Load(this.ViewContext, this.ViewContext.TempDataProvider);
 
          try {
-            base.RenderPage(page, context);
+            RenderViewPage((XcstViewPage)page, context);
          } finally {
-            PossiblySaveTempData(tempDataProvider);
+            this.page.TempData.Save(this.ViewContext, this.ViewContext.TempDataProvider);
          }
       }
 
-      void PossiblyLoadTempData(ITempDataProvider tempDataProvider) {
-
-         if (!this.page.ViewContext.IsChildAction) {
-            this.page.TempData.Load(this.page.ViewContext, tempDataProvider);
-         }
-      }
-
-      void PossiblySaveTempData(ITempDataProvider tempDataProvider) {
-
-         if (!this.page.ViewContext.IsChildAction) {
-            this.page.TempData.Save(this.page.ViewContext, tempDataProvider);
-         }
+      protected virtual void RenderViewPage(XcstViewPage page, HttpContextBase context) {
+         base.RenderPage(page, context);
       }
    }
 }
