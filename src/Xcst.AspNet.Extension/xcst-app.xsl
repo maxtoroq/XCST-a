@@ -1276,7 +1276,7 @@
    <template match="a:model" mode="src:extension-instruction">
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="'value', 'as', 'field-prefix', 'helper-name', 'with-params'"/>
+         <with-param name="optional" select="'value', 'as', 'field-prefix', 'helper-name'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -1320,11 +1320,6 @@
                         <call-template name="src:expand-attribute">
                            <with-param name="attr" select="@field-prefix"/>
                         </call-template>
-                     </code:argument>
-                  </if>
-                  <if test="@with-params">
-                     <code:argument name="additionalViewData">
-                        <code:expression value="{xcst:expression(@with-params)}"/>
                      </code:argument>
                   </if>
                </code:arguments>

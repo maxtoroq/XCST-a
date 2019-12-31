@@ -567,9 +567,6 @@
                   <attribute name="field-prefix">
                      <ref name="avt"/>
                   </attribute>
-                  <attribute name="with-params">
-                     <ref name="expr-obj-dict"/>
-                  </attribute>
                   <attribute name="helper-name">
                      <ref name="identifier"/>
                   </attribute>

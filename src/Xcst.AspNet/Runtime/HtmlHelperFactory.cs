@@ -13,18 +13,17 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace Xcst.Web.Runtime {
 
+   /// <exclude/>
    public static class HtmlHelperFactory {
 
       public static HtmlHelper<TModel> ForModel<TModel>(
             HtmlHelper currentHtml,
             TModel model,
-            string htmlFieldPrefix = null,
-            object additionalViewData = null) {
+            string htmlFieldPrefix = null) {
 
          if (currentHtml == null) throw new ArgumentNullException(nameof(currentHtml));
 
@@ -51,16 +50,6 @@ namespace Xcst.Web.Runtime {
 
             TemplateInfo templateInfo = container.ViewData.TemplateInfo;
             templateInfo.HtmlFieldPrefix = templateInfo.GetFullHtmlFieldName(htmlFieldPrefix);
-         }
-
-         if (additionalViewData != null) {
-
-            IDictionary<string, object> additionalParams = additionalViewData as IDictionary<string, object>
-               ?? TypeHelpers.ObjectToDictionary(additionalViewData);
-
-            foreach (var kvp in additionalParams) {
-               container.ViewData[kvp.Key] = kvp.Value;
-            }
          }
 
          // new ViewContext resets FormContext

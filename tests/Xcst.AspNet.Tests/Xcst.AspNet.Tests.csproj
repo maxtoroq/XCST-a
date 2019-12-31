@@ -344,7 +344,6 @@
     <None Include="Extension\DisplayText\display-text.foo.i.xcst" />
     <None Include="Extension\DisplayText\display-text.for.type.i.xcst" />
     <None Include="Extension\DisplayText\display-text.for_name.mutex.i.xcst" />
-    <None Include="Extension\Model\model.with-params.type.i.xcst" />
     <None Include="Extension\Model\model.value_or_as.req.i.xcst" />
     <None Include="Extension\Model\model.value.type.i.xcst" />
     <None Include="Extension\Model\model.as.type.i.xcst" />
