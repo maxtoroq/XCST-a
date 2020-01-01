@@ -33,6 +33,7 @@
             <ref name="display-name"/>
             <ref name="display-text"/>
             <ref name="editor"/>
+            <ref name="form"/>
             <ref name="hidden"/>
             <ref name="input"/>
             <ref name="label"/>
@@ -550,6 +551,39 @@
    <div>
       <ann:documentation>Models</ann:documentation>
 
+      <define name="form">
+         <element name="form">
+            <attribute name="method">
+               <ref name="form-method"/>
+            </attribute>
+            <oneOrMore>
+               <choice>
+                  <attribute name="model-value">
+                     <ref name="expression"/>
+                  </attribute>
+                  <attribute name="model-type">
+                     <ref name="type_name"/>
+                  </attribute>
+               </choice>
+            </oneOrMore>
+            <zeroOrMore>
+               <choice>
+                  <attribute name="action">
+                     <ref name="avt"/>
+                  </attribute>
+                  <attribute name="autocomplete">
+                     <ref name="avt"/>
+                  </attribute>
+                  <attribute name="enctype">
+                     <ref name="avt"/>
+                  </attribute>
+               </choice>
+            </zeroOrMore>
+            <ref name="html-attribs"/>
+            <ref name="form-model-common"/>
+         </element>
+      </define>
+
       <define name="model">
          <element name="model">
             <oneOrMore>
@@ -562,18 +596,22 @@
                   </attribute>
                </choice>
             </oneOrMore>
-            <zeroOrMore>
-               <choice>
-                  <attribute name="field-prefix">
-                     <ref name="avt"/>
-                  </attribute>
-                  <attribute name="helper-name">
-                     <ref name="identifier"/>
-                  </attribute>
-               </choice>
-            </zeroOrMore>
-            <ref name="sequence-constructor"/>
+            <ref name="form-model-common"/>
          </element>
+      </define>
+
+      <define name="form-model-common">
+         <zeroOrMore>
+            <choice>
+               <attribute name="field-prefix">
+                  <ref name="avt"/>
+               </attribute>
+               <attribute name="helper-name">
+                  <ref name="identifier"/>
+               </attribute>
+            </choice>
+         </zeroOrMore>
+         <ref name="sequence-constructor"/>
       </define>
    </div>
 
@@ -604,6 +642,13 @@
          <data type="token">
             <param name="minLength">1</param>
          </data>
+      </define>
+
+      <define name="form-method">
+         <choice>
+            <value>post</value>
+            <value>get</value>
+         </choice>
       </define>
 
       <define name="file-extensions">

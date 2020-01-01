@@ -90,7 +90,7 @@ namespace Xcst.Web.Runtime {
          return this;
       }
 
-      internal void WriteTo(XcstWriter output) {
+      public void WriteTo(XcstWriter output) {
 
          foreach (var item in this) {
             output.WriteAttributeString(item.Key, output.SimpleContent.Convert(item.Value));

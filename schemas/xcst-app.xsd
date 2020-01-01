@@ -280,15 +280,36 @@
          </xs:annotation>
       </xs:attribute>
    </xs:attributeGroup>
-   <xs:element name="model" substitutionGroup="a:extension-instruction">
-      <xs:complexType mixed="true">
-         <xs:group ref="a:sequence-constructor"/>
-         <xs:attribute name="value" type="a:expression"/>
-         <xs:attribute name="as" type="a:type_name"/>
-         <xs:attribute name="field-prefix" type="a:avt"/>
-         <xs:attribute name="helper-name" type="a:identifier"/>
+   <xs:element name="form" substitutionGroup="a:extension-instruction">
+      <xs:complexType>
+         <xs:complexContent>
+            <xs:extension base="a:form-model-common">
+               <xs:attribute name="method" use="required" type="a:form-method"/>
+               <xs:attribute name="model-value" type="a:expression"/>
+               <xs:attribute name="model-type" type="a:type_name"/>
+               <xs:attribute name="action" type="a:avt"/>
+               <xs:attribute name="autocomplete" type="a:avt"/>
+               <xs:attribute name="enctype" type="a:avt"/>
+               <xs:attributeGroup ref="a:html-attribs"/>
+            </xs:extension>
+         </xs:complexContent>
       </xs:complexType>
    </xs:element>
+   <xs:element name="model" substitutionGroup="a:extension-instruction">
+      <xs:complexType>
+         <xs:complexContent>
+            <xs:extension base="a:form-model-common">
+               <xs:attribute name="value" type="a:expression"/>
+               <xs:attribute name="as" type="a:type_name"/>
+            </xs:extension>
+         </xs:complexContent>
+      </xs:complexType>
+   </xs:element>
+   <xs:complexType name="form-model-common" mixed="true">
+      <xs:group ref="a:sequence-constructor"/>
+      <xs:attribute name="field-prefix" type="a:avt"/>
+      <xs:attribute name="helper-name" type="a:identifier"/>
+   </xs:complexType>
    <xs:simpleType name="string">
       <xs:restriction base="xs:string"/>
    </xs:simpleType>
@@ -311,6 +332,12 @@
    <xs:simpleType name="input-type">
       <xs:restriction base="xs:token">
          <xs:minLength value="1"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="form-method">
+      <xs:restriction base="xs:token">
+         <xs:enumeration value="post"/>
+         <xs:enumeration value="get"/>
       </xs:restriction>
    </xs:simpleType>
    <xs:simpleType name="file-extensions">

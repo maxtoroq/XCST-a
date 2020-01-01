@@ -239,6 +239,12 @@
     <None Include="Extension\Editor\Templates\Time.c.xcst" />
     <None Include="Extension\Editor\Templates\DateTime.c.xcst" />
     <None Include="Extension\Editor\Templates\Date.c.xcst" />
+    <None Include="Extension\Form\Attributes.c.xcst" />
+    <None Include="Extension\Form\form.model-type.type.i.xcst" />
+    <None Include="Extension\Form\form.model-value.type.i.xcst" />
+    <None Include="Extension\Form\form.model-value_or_model-type.req.i.xcst" />
+    <None Include="Extension\Form\form.attributes.type.i.xcst" />
+    <None Include="Extension\Form\form.method.req.i.xcst" />
     <None Include="Extension\Hidden\Value.c.xcst" />
     <None Include="Extension\Input\Attributes.c.xcst" />
     <None Include="Extension\Input\FileOmitValue.c.xcst" />

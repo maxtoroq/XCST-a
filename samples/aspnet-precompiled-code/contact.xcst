@@ -74,24 +74,22 @@
       <c:param name='sent' as='bool' required='yes' tunnel='yes'/>
 
       <h1>{title}</h1>
-      <a:model value='contact'>
-         <c:if test='sent'>
-            <div class='alert alert-success alert-dismissable'>
-               <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&#215;</button>
-               <c:text>Thanks for contacting us. We'll get back to you shortly.</c:text>
+      <c:if test='sent'>
+         <div class='alert alert-success alert-dismissable'>
+            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&#215;</button>
+            <c:text>Thanks for contacting us. We'll get back to you shortly.</c:text>
+         </div>
+      </c:if>
+      <a:form method='post' model-value='contact'>
+         <a:anti-forgery-token/>
+         <a:validation-summary/>
+         <a:editor with-params='new { labelColumnClass = "col-md-3", fieldColumnClass = "col-md-9" }'/>
+         <div class='form-group row'>
+            <div class='offset-md-3 col-md-9'>
+               <button type='submit' class='btn btn-primary'>Send</button>
             </div>
-         </c:if>
-         <form method='post'>
-            <a:anti-forgery-token/>
-            <a:validation-summary/>
-            <a:editor with-params='new { labelColumnClass = "col-md-3", fieldColumnClass = "col-md-9" }'/>
-            <div class='form-group row'>
-               <div class='offset-md-3 col-md-9'>
-                  <button type='submit' class='btn btn-primary'>Send</button>
-               </div>
-            </div>
-         </form>
-      </a:model>
+         </div>
+      </a:form>
    </c:template>
 
 </c:module>

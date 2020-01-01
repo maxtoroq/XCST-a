@@ -1273,6 +1273,100 @@
       ## Models
    -->
 
+   <template match="a:form" mode="src:extension-instruction">
+      <param name="output" tunnel="yes"/>
+
+      <call-template name="xcst:validate-attribs">
+         <with-param name="required" select="'method'"/>
+         <with-param name="optional" select="'model-value', 'model-type', 'action', 'autocomplete', 'enctype', 'class', 'attributes', 'field-prefix', 'helper-name'"/>
+         <with-param name="extension" select="true()"/>
+      </call-template>
+
+      <variable name="value-attr" select="@model-value"/>
+      <variable name="as-attr" select="@model-type"/>
+
+      <if test="not($value-attr or $as-attr)">
+         <sequence select="error((), 'Element must have either ''model-value'' or ''model-type'' attributes.', src:error-object(.))"/>
+      </if>
+
+      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
+      <variable name="doc-output" select="src:doc-output(., $output)"/>
+
+      <if test="not($output-is-doc)">
+         <code:variable name="{$doc-output/src:reference/code:*/@name}">
+            <code:method-call name="CastElement">
+               <sequence select="src:helper-type('DocumentWriter')"/>
+               <code:arguments>
+                  <sequence select="$output/src:reference/code:*"/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
+      </if>
+
+      <code:method-call name="WriteStartElement">
+         <call-template name="src:line-number"/>
+         <sequence select="$doc-output/src:reference/code:*"/>
+         <code:arguments>
+            <code:string literal="true">form</code:string>
+         </code:arguments>
+      </code:method-call>
+
+      <code:try line-hidden="true">
+         <code:block>
+            <variable name="attribs" as="element()?">
+               <call-template name="a:html-attributes-param">
+                  <with-param name="merge-attributes" select="@action | @autocomplete | @enctype"/>
+                  <with-param name="omit-param" select="true()"/>
+               </call-template>
+            </variable>
+            <variable name="method" as="element()">
+               <code:string verbatim="true">
+                  <sequence select="xcst:non-string(@method)"/>
+               </code:string>
+            </variable>
+            <choose>
+               <when test="$attribs">
+                  <code:chain>
+                     <sequence select="$attribs"/>
+                     <code:method-call name="MergeAttribute">
+                        <code:chain-reference/>
+                        <code:arguments>
+                           <code:string literal="true">method</code:string>
+                           <sequence select="$method"/>
+                        </code:arguments>
+                     </code:method-call>
+                     <code:method-call name="WriteTo">
+                        <code:chain-reference/>
+                        <code:arguments>
+                           <sequence select="$doc-output/src:reference/code:*"/>
+                        </code:arguments>
+                     </code:method-call>
+                  </code:chain>
+               </when>
+               <otherwise>
+                  <code:method-call name="WriteAttributeString">
+                     <sequence select="$doc-output/src:reference/code:*"/>
+                     <code:arguments>
+                        <code:string literal="true">method</code:string>
+                        <sequence select="$method"/>
+                     </code:arguments>
+                  </code:method-call>
+               </otherwise>
+            </choose>
+            <call-template name="a:model-seq-ctor">
+               <with-param name="value-attr" select="$value-attr"/>
+               <with-param name="as-attr" select="$as-attr"/>
+               <with-param name="output" select="$doc-output" tunnel="yes"/>
+            </call-template>
+         </code:block>
+         <code:finally line-hidden="true">
+            <code:method-call name="WriteEndElement">
+               <sequence select="$doc-output/src:reference/code:*"/>
+            </code:method-call>
+         </code:finally>
+      </code:try>
+   </template>
+
    <template match="a:model" mode="src:extension-instruction">
 
       <call-template name="xcst:validate-attribs">
@@ -1280,55 +1374,68 @@
          <with-param name="extension" select="true()"/>
       </call-template>
 
-      <if test="not(@value or @as)">
-         <sequence select="error((), 'Element must have either @value or @as attributes.', src:error-object(.))"/>
+      <variable name="value-attr" select="@value"/>
+      <variable name="as-attr" select="@as"/>
+
+      <if test="not($value-attr or $as-attr)">
+         <sequence select="error((), 'Element must have either ''value'' or ''as'' attributes.', src:error-object(.))"/>
       </if>
+
+      <code:block>
+         <call-template name="a:model-seq-ctor">
+            <with-param name="value-attr" select="$value-attr"/>
+            <with-param name="as-attr" select="$as-attr"/>
+         </call-template>
+      </code:block>
+   </template>
+
+   <template name="a:model-seq-ctor">
+      <param name="value-attr" select="@value"/>
+      <param name="as-attr" select="@as"/>
 
       <variable name="new-helper" as="element()">
          <code:variable-reference name="{(@helper-name/xcst:name(.), concat(src:aux-variable('html_helper'), '_', generate-id()))[1]}"/>
       </variable>
 
       <variable name="type" as="element()?">
-         <if test="@as">
-            <code:type-reference name="{xcst:type(@as)}"/>
+         <if test="$as-attr">
+            <code:type-reference name="{xcst:type($as-attr)}"/>
          </if>
       </variable>
 
-      <code:block>
-         <code:variable name="{$new-helper/@name}">
-            <code:method-call name="ForModel">
-               <sequence select="a:helper-type('HtmlHelperFactory')"/>
-               <if test="$type">
-                  <code:type-arguments>
-                     <sequence select="$type"/>
-                  </code:type-arguments>
+      <code:variable name="{$new-helper/@name}">
+         <code:method-call name="ForModel">
+            <sequence select="a:helper-type('HtmlHelperFactory')"/>
+            <if test="$type">
+               <code:type-arguments>
+                  <sequence select="$type"/>
+               </code:type-arguments>
+            </if>
+            <code:arguments>
+               <call-template name="a:html-helper"/>
+               <choose>
+                  <when test="$value-attr">
+                     <code:expression value="{xcst:expression($value-attr)}"/>
+                  </when>
+                  <otherwise>
+                     <code:default>
+                        <sequence select="($type, $src:object-type)[1]"/>
+                     </code:default>
+                  </otherwise>
+               </choose>
+               <if test="@field-prefix">
+                  <code:argument name="htmlFieldPrefix">
+                     <call-template name="src:expand-attribute">
+                        <with-param name="attr" select="@field-prefix"/>
+                     </call-template>
+                  </code:argument>
                </if>
-               <code:arguments>
-                  <call-template name="a:html-helper"/>
-                  <choose>
-                     <when test="@value">
-                        <code:expression value="{xcst:expression(@value)}"/>
-                     </when>
-                     <otherwise>
-                        <code:default>
-                           <sequence select="($type, $src:object-type)[1]"/>
-                        </code:default>
-                     </otherwise>
-                  </choose>
-                  <if test="@field-prefix">
-                     <code:argument name="htmlFieldPrefix">
-                        <call-template name="src:expand-attribute">
-                           <with-param name="attr" select="@field-prefix"/>
-                        </call-template>
-                     </code:argument>
-                  </if>
-               </code:arguments>
-            </code:method-call>
-         </code:variable>
-         <call-template name="src:sequence-constructor">
-            <with-param name="a:html-helper" select="$new-helper" tunnel="yes"/>
-         </call-template>
-      </code:block>
+            </code:arguments>
+         </code:method-call>
+      </code:variable>
+      <call-template name="src:sequence-constructor">
+         <with-param name="a:html-helper" select="$new-helper" tunnel="yes"/>
+      </call-template>
    </template>
 
    <!--
@@ -1545,7 +1652,7 @@
       <param name="attribs" select="@name" as="attribute()*"/>
 
       <if test="@for and $attribs">
-         <sequence select="error((), concat('@for and @', $attribs[1]/local-name(), ' attributes are mutually exclusive.'), src:error-object(.))"/>
+         <sequence select="error((), concat('''for'' and ''', $attribs[1]/local-name(), ''' attributes are mutually exclusive.'), src:error-object(.))"/>
       </if>
    </template>
 
