@@ -389,6 +389,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Xcst.AspNet.Compilation\Xcst.AspNet.Compilation.csproj">
+      <Project>{30e0cb99-1953-476b-a994-7bc15d903b25}</Project>
+      <Name>Xcst.AspNet.Compilation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Xcst.AspNet.Extension\Xcst.AspNet.Extension.csproj">
       <Project>{5039e116-8b5f-406d-a7fd-550f309a7178}</Project>
       <Name>Xcst.AspNet.Extension</Name>
