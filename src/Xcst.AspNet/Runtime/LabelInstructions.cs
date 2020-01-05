@@ -81,11 +81,8 @@ namespace Xcst.Web.Runtime {
          string fullFieldName = html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName);
 
          output.WriteStartElement("label");
-
-         new HtmlAttributeDictionary(htmlAttributes)
-            .MergeAttribute("for", TagBuilder.CreateSanitizedId(fullFieldName))
-            .WriteTo(output);
-
+         output.WriteAttributeString("for", TagBuilder.CreateSanitizedId(fullFieldName));
+         HtmlAttributeHelper.WriteAttributes(htmlAttributes, output);
          output.WriteString(resolvedLabelText);
          output.WriteEndElement();
       }

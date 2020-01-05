@@ -124,7 +124,7 @@ namespace Xcst.Web.Runtime {
       [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "If this fails, it is because the string-based version had an empty 'name' parameter")]
       internal static void TextAreaHelper(HtmlHelper htmlHelper,
                                           XcstWriter output,
-                                          ModelMetadata modelMetadata,
+                                          ModelMetadata metadata,
                                           string name,
                                           IDictionary<string, object> rowsAndColumns,
                                           IDictionary<string, object> htmlAttributes,
@@ -137,32 +137,35 @@ namespace Xcst.Web.Runtime {
          }
 
          output.WriteStartElement("textarea");
+         HtmlAttributeHelper.WriteId(fullName, output);
+         output.WriteAttributeString("name", fullName);
+         HtmlAttributeHelper.WriteAttributes(rowsAndColumns, output);
 
-         var attribs = new HtmlAttributeDictionary(htmlAttributes)
-            .GenerateId(fullName)
-            .MergeAttribute("name", fullName, replaceExisting: true)
-            .MergeAttributes(rowsAndColumns, replaceExisting: rowsAndColumns != implicitRowsAndColumns); // Only force explicit rows/cols
+         bool explicitRowsAndCols = rowsAndColumns != implicitRowsAndColumns;
 
-         // If there are any errors for a named field, we add the CSS attribute.
+         // If there are any errors for a named field, we add the css attribute.
 
-         if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
-            && modelState.Errors.Count > 0) {
+         string cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
+            && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
-            attribs.AddCssClass(HtmlHelper.ValidationInputCssClassName);
-         }
+         HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
+         HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), output);
 
-         var validationAttribs = htmlHelper.GetUnobtrusiveValidationAttributes(name, modelMetadata);
+         // name cannnot be overridden, and class was already written
+         // explicit rows and cols cannot be overridden
 
-         attribs.MergeAttributes(validationAttribs, replaceExisting: false)
-            .WriteTo(output);
+         HtmlAttributeHelper.WriteAttributes(
+            htmlAttributes,
+            output,
+            excludeFn: n => n == "name" || n == "class" || (explicitRowsAndCols && (n == "rows" || n == "cols")));
 
          string value;
 
          if (modelState?.Value != null) {
             value = modelState.Value.AttemptedValue;
 
-         } else if (modelMetadata.Model != null) {
-            value = Convert.ToString(modelMetadata.Model, CultureInfo.CurrentCulture);
+         } else if (metadata.Model != null) {
+            value = Convert.ToString(metadata.Model, CultureInfo.CurrentCulture);
 
          } else {
             value = String.Empty;

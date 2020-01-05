@@ -21,69 +21,73 @@ namespace Xcst.Web.Runtime {
    /// <exclude/>
    public class HtmlAttributeDictionary : Dictionary<string, object> {
 
-      static readonly IDictionary<string, object> EmptyDictionary = new Dictionary<string, object>();
-
-      public HtmlAttributeDictionary() { }
-
-      public HtmlAttributeDictionary(object/*?*/ htmlAttributes)
-         : base(HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)) { }
-
-      public HtmlAttributeDictionary(IDictionary<string, object>/*?*/ htmlAttributes)
-         : base(htmlAttributes ?? EmptyDictionary) { }
-
-      public HtmlAttributeDictionary AddCssClass(string/*?*/ cssClass) {
+      public HtmlAttributeDictionary SetClass(string/*?*/ cssClass) {
 
          if (!String.IsNullOrEmpty(cssClass)) {
-
-            if (DictionaryExtensions.TryGetValue(this, "class", out string existingClass)) {
-               this["class"] = existingClass + " " + cssClass;
-            } else {
-               this["class"] = cssClass;
-            }
+            this["class"] = cssClass;
          }
 
          return this;
       }
 
-      public HtmlAttributeDictionary MergeAttribute(string key, object/*?*/ value, bool replaceExisting = false) {
+      public HtmlAttributeDictionary SetAttribute(string key, object/*?*/ value) {
 
          if (String.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
 
-         if (replaceExisting || !ContainsKey(key)) {
-            this[key] = value;
-         }
+         this[key] = value;
 
          return this;
       }
 
-      public HtmlAttributeDictionary MergeAttributes<TValue>(IDictionary<string, TValue>/*?*/ attributes, bool replaceExisting) {
-
-         if (attributes != null) {
-            foreach (var entry in attributes) {
-               MergeAttribute(entry.Key, entry.Value, replaceExisting);
-            }
-         }
-
-         return this;
-      }
-
-      public HtmlAttributeDictionary MergeBoolean(string key, bool value, bool replaceExisting = false) {
+      public HtmlAttributeDictionary SetBoolean(string key, bool value) {
 
          if (value) {
-            MergeAttribute(key, key, replaceExisting);
+            SetAttribute(key, key);
          }
 
          return this;
       }
 
-      internal HtmlAttributeDictionary GenerateId(string name) {
+      public HtmlAttributeDictionary SetAttributes(object/*?*/ attributes) {
 
-         if (!ContainsKey("id")) {
+         if (attributes != null) {
+            SetAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
+         }
 
-            string sanitizedId = TagBuilder.CreateSanitizedId(name);
+         return this;
+      }
 
-            if (!String.IsNullOrEmpty(sanitizedId)) {
-               this["id"] = sanitizedId;
+      public HtmlAttributeDictionary SetAttributes(IDictionary<string, object>/*?*/ attributes) {
+
+         // NOTE: For backcompat, the dictionary class must be a non-null string to be joined 
+         // with the attribute (or library) class, otherwise it's ignored. If there's no attribute class,
+         // the dictionary class can be null, resulting in an empty attribute.
+         // 
+         // See also HtmlAttributeHelper.WriteClass
+         // 
+         // Previous logic:
+         // if (!String.IsNullOrEmpty(cssClass)) {
+         //    if (DictionaryExtensions.TryGetValue(this, "class", out string existingClass)) {
+         //       this["class"] = existingClass + " " + cssClass;
+         //    } else {
+         //       this["class"] = cssClass;
+         //    }
+         // }
+
+         if (attributes != null) {
+
+            foreach (var entry in attributes) {
+
+               if (entry.Key == "class"
+                  && ContainsKey("class")) {
+
+                  if (entry.Value is string s) {
+                     this["class"] = (string)this["class"] + " " + s;
+                  }
+
+               } else {
+                  SetAttribute(entry.Key, entry.Value);
+               }
             }
          }
 
@@ -93,7 +97,7 @@ namespace Xcst.Web.Runtime {
       public void WriteTo(XcstWriter output) {
 
          foreach (var item in this) {
-            output.WriteAttributeString(item.Key, output.SimpleContent.Convert(item.Value));
+            HtmlAttributeHelper.WriteAttribute(item.Key, item.Value, output);
          }
       }
    }

@@ -157,6 +157,7 @@
     <Compile Include="Runtime\DisplayInstructions.cs" />
     <Compile Include="Runtime\EditorInstructions.cs" />
     <Compile Include="Configuration\EditorInfo.cs" />
+    <Compile Include="Runtime\HtmlAttributeHelper.cs" />
     <Compile Include="Runtime\HtmlHelperFactory.cs" />
     <Compile Include="Runtime\InputInstructions.cs" />
     <Compile Include="Runtime\LabelInstructions.cs" />

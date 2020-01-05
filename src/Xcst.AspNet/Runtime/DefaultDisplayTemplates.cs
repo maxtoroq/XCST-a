@@ -46,13 +46,11 @@ namespace Xcst.Web.Runtime {
 
             string className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
 
-            new HtmlAttributeDictionary()
-               .AddCssClass(className)
-               .MergeBoolean("disabled", true)
-               .WriteTo(output);
+            HtmlAttributeHelper.WriteClass(className, null, output);
+            HtmlAttributeHelper.WriteBoolean("disabled", true, output);
 
             foreach (SelectListItem item in DefaultEditorTemplates.TriStateValues(value)) {
-               SelectInstructions.ListItemToOption(output, item);
+               SelectInstructions.WriteOption(item, output);
             }
 
             output.WriteEndElement();
@@ -64,11 +62,9 @@ namespace Xcst.Web.Runtime {
 
             string className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
 
-            new HtmlAttributeDictionary()
-               .AddCssClass(className)
-               .MergeBoolean("disabled", true)
-               .MergeBoolean("checked", value.GetValueOrDefault())
-               .WriteTo(output);
+            HtmlAttributeHelper.WriteClass(className, null, output);
+            HtmlAttributeHelper.WriteBoolean("disabled", true, output);
+            HtmlAttributeHelper.WriteBoolean("checked", value.GetValueOrDefault(), output);
 
             output.WriteEndElement();
          }

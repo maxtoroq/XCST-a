@@ -157,7 +157,9 @@ namespace Xcst.Web.Runtime {
                                  bool allowMultiple,
                                  IDictionary<string, object> htmlAttributes) {
 
-         string fullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+         ViewDataDictionary viewData = htmlHelper.ViewData;
+
+         string fullName = viewData.TemplateInfo.GetFullHtmlFieldName(name);
 
          if (String.IsNullOrEmpty(fullName)) {
             throw new ArgumentNullException(nameof(name));
@@ -186,7 +188,7 @@ namespace Xcst.Web.Runtime {
                if (!usedViewData
                   && !String.IsNullOrEmpty(name)) {
 
-                  defaultValue = htmlHelper.ViewData.Eval(name);
+                  defaultValue = viewData.Eval(name);
                }
 
             } else {
@@ -199,43 +201,37 @@ namespace Xcst.Web.Runtime {
          }
 
          output.WriteStartElement("select");
-
-         var attribs = new HtmlAttributeDictionary(htmlAttributes)
-            .MergeAttribute("name", fullName, replaceExisting: true)
-            .GenerateId(fullName);
-
-         attribs.MergeBoolean("multiple", allowMultiple);
+         HtmlAttributeHelper.WriteId(fullName, output);
+         output.WriteAttributeString("name", fullName);
+         HtmlAttributeHelper.WriteBoolean("multiple", allowMultiple, output);
 
          // If there are any errors for a named field, we add the css attribute.
 
-         if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
-            && modelState.Errors.Count > 0) {
+         string cssClass = (viewData.ModelState.TryGetValue(fullName, out ModelState modelState)
+            && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
-            attribs.AddCssClass(HtmlHelper.ValidationInputCssClassName);
-         }
+         HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
+         HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), output);
 
-         var validationAttribs = htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata);
+         // name cannnot be overridden, and class was already written
 
-         attribs.MergeAttributes(validationAttribs, replaceExisting: false)
-            .WriteTo(output);
+         HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "name" || n == "class");
 
-         // Convert each ListItem to an <option> tag and wrap them with <optgroup> if requested.
-
-         BuildItems(output, optionLabel, selectList);
+         WriteOptions(optionLabel, selectList, output);
 
          output.WriteEndElement(); // </select>
       }
 
-      static void BuildItems(XcstWriter output, string optionLabel, IEnumerable<SelectListItem> selectList) {
+      static void WriteOptions(string optionLabel, IEnumerable<SelectListItem> selectList, XcstWriter output) {
 
          // Make optionLabel the first item that gets rendered.
 
          if (optionLabel != null) {
-            ListItemToOption(output, new SelectListItem {
+            WriteOption(new SelectListItem {
                Text = optionLabel,
                Value = String.Empty,
                Selected = false
-            });
+            }, output);
          }
 
          // Group items in the SelectList if requested.
@@ -257,13 +253,11 @@ namespace Xcst.Web.Runtime {
                   output.WriteAttributeString("label", optGroup.Name);
                }
 
-               if (optGroup.Disabled) {
-                  output.WriteAttributeString("disabled", "disabled");
-               }
+               HtmlAttributeHelper.WriteBoolean("disabled", optGroup.Disabled, output);
             }
 
             foreach (SelectListItem item in group) {
-               ListItemToOption(output, item);
+               WriteOption(item, output);
             }
 
             if (optGroup != null) {
@@ -272,7 +266,7 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      internal static void ListItemToOption(XcstWriter output, SelectListItem item) {
+      internal static void WriteOption(SelectListItem item, XcstWriter output) {
 
          output.WriteStartElement("option");
 
@@ -280,13 +274,8 @@ namespace Xcst.Web.Runtime {
             output.WriteAttributeString("value", item.Value);
          }
 
-         if (item.Selected) {
-            output.WriteAttributeString("selected", "selected");
-         }
-
-         if (item.Disabled) {
-            output.WriteAttributeString("disabled", "disabled");
-         }
+         HtmlAttributeHelper.WriteBoolean("selected", item.Selected, output);
+         HtmlAttributeHelper.WriteBoolean("disabled", item.Disabled, output);
 
          output.WriteString(item.Text);
          output.WriteEndElement();

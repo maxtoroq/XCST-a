@@ -128,7 +128,7 @@
                   </if>
                   <call-template name="a:html-attributes-param">
                      <with-param name="merge-attributes" select="@placeholder"/>
-                     <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
+                     <with-param name="bool-attributes" select="@disabled | @readonly | @autofocus"/>
                   </call-template>
                </otherwise>
             </choose>
@@ -232,7 +232,7 @@
             </if>
             <call-template name="a:html-attributes-param">
                <with-param name="merge-attributes" select="@placeholder"/>
-               <with-param name="bool-attributes" select="@disabled, @readonly, @autofocus"/>
+               <with-param name="bool-attributes" select="@disabled | @readonly | @autofocus"/>
             </call-template>
          </code:arguments>
       </code:method-call>
@@ -300,7 +300,7 @@
                </otherwise>
             </choose>
             <call-template name="a:html-attributes-param">
-               <with-param name="bool-attributes" select="@disabled, @autofocus"/>
+               <with-param name="bool-attributes" select="@disabled | @autofocus"/>
             </call-template>
          </code:arguments>
       </code:method-call>
@@ -368,7 +368,7 @@
                </code:argument>
             </if>
             <call-template name="a:html-attributes-param">
-               <with-param name="bool-attributes" select="@disabled, @autofocus"/>
+               <with-param name="bool-attributes" select="@disabled | @autofocus"/>
             </call-template>
          </code:arguments>
       </code:method-call>
@@ -494,7 +494,7 @@
                </code:argument>
             </if>
             <call-template name="a:html-attributes-param">
-               <with-param name="bool-attributes" select="@disabled, @autofocus"/>
+               <with-param name="bool-attributes" select="@disabled | @autofocus"/>
             </call-template>
          </code:arguments>
       </code:method-call>
@@ -874,7 +874,7 @@
 
    <template name="a:editor-additional-view-data">
       <variable name="editor" select="self::a:editor"/>
-      <variable name="boolean-attribs" select="(@autofocus, @disabled, @readonly)[$editor]"/>
+      <variable name="boolean-attribs" select="(@autofocus | @disabled | @readonly)[$editor]"/>
       <variable name="inits" as="element()*">
          <if test="$boolean-attribs">
             <code:collection-initializer>
@@ -1313,46 +1313,29 @@
 
       <code:try line-hidden="true">
          <code:block>
+            <code:method-call name="WriteAttributeString">
+               <sequence select="$doc-output/src:reference/code:*"/>
+               <code:arguments>
+                  <code:string literal="true">method</code:string>
+                  <code:string verbatim="true">
+                     <value-of select="xcst:non-string(@method)"/>
+                  </code:string>
+               </code:arguments>
+            </code:method-call>
             <variable name="attribs" as="element()?">
                <call-template name="a:html-attributes-param">
                   <with-param name="merge-attributes" select="@action | @autocomplete | @enctype"/>
                   <with-param name="omit-param" select="true()"/>
                </call-template>
             </variable>
-            <variable name="method" as="element()">
-               <code:string verbatim="true">
-                  <sequence select="xcst:non-string(@method)"/>
-               </code:string>
-            </variable>
-            <choose>
-               <when test="$attribs">
-                  <code:chain>
-                     <sequence select="$attribs"/>
-                     <code:method-call name="MergeAttribute">
-                        <code:chain-reference/>
-                        <code:arguments>
-                           <code:string literal="true">method</code:string>
-                           <sequence select="$method"/>
-                        </code:arguments>
-                     </code:method-call>
-                     <code:method-call name="WriteTo">
-                        <code:chain-reference/>
-                        <code:arguments>
-                           <sequence select="$doc-output/src:reference/code:*"/>
-                        </code:arguments>
-                     </code:method-call>
-                  </code:chain>
-               </when>
-               <otherwise>
-                  <code:method-call name="WriteAttributeString">
+            <if test="$attribs">
+               <code:method-call name="WriteTo">
+                  <sequence select="$attribs"/>
+                  <code:arguments>
                      <sequence select="$doc-output/src:reference/code:*"/>
-                     <code:arguments>
-                        <code:string literal="true">method</code:string>
-                        <sequence select="$method"/>
-                     </code:arguments>
-                  </code:method-call>
-               </otherwise>
-            </choose>
+                  </code:arguments>
+               </code:method-call>
+            </if>
             <call-template name="a:model-seq-ctor">
                <with-param name="value-attr" select="$value-attr"/>
                <with-param name="as-attr" select="$as-attr"/>
@@ -1712,57 +1695,65 @@
       <param name="bool-attributes" as="attribute()*"/>
       <param name="omit-param" select="false()"/>
 
-      <if test="exists(($attributes, $class, $merge-attributes, $bool-attributes))">
+      <variable name="avts" select="$class | $merge-attributes | $bool-attributes"/>
+
+      <if test="exists(($attributes, $avts))">
          <variable name="expr" as="element()">
             <code:chain>
                <code:new-object>
                   <sequence select="a:helper-type('HtmlAttributeDictionary')"/>
-                  <if test="$attributes">
+               </code:new-object>
+               <for-each select="$avts">
+                  <choose>
+                     <when test=". is $class">
+                        <code:method-call name="SetClass">
+                           <code:chain-reference/>
+                           <code:arguments>
+                              <call-template name="src:expand-attribute">
+                                 <with-param name="attr" select="."/>
+                              </call-template>
+                           </code:arguments>
+                        </code:method-call>
+                     </when>
+                     <when test=". = $bool-attributes">
+                        <code:method-call name="SetBoolean">
+                           <code:chain-reference/>
+                           <code:arguments>
+                              <code:string literal="true">
+                                 <value-of select="local-name()"/>
+                              </code:string>
+                              <call-template name="src:boolean">
+                                 <with-param name="bool" select="xcst:boolean(., true())"/>
+                                 <with-param name="avt" select="."/>
+                              </call-template>
+                           </code:arguments>
+                        </code:method-call>
+                     </when>
+                     <otherwise>
+                        <code:method-call name="SetAttribute">
+                           <code:chain-reference/>
+                           <code:arguments>
+                              <code:string literal="true">
+                                 <value-of select="local-name()"/>
+                              </code:string>
+                              <call-template name="src:expand-attribute">
+                                 <with-param name="attr" select="."/>
+                              </call-template>
+                           </code:arguments>
+                        </code:method-call>
+                     </otherwise>
+                  </choose>
+               </for-each>
+               <if test="$attributes">
+                  <code:method-call name="SetAttributes">
+                     <code:chain-reference/>
                      <code:arguments>
                         <code:expression value="{xcst:expression($attributes)}"/>
                      </code:arguments>
-                  </if>
-               </code:new-object>
-               <if test="$class">
-                  <code:method-call name="AddCssClass">
-                     <code:chain-reference/>
-                     <code:arguments>
-                        <call-template name="src:expand-attribute">
-                           <with-param name="attr" select="$class"/>
-                        </call-template>
-                     </code:arguments>
                   </code:method-call>
                </if>
-               <for-each select="$merge-attributes">
-                  <code:method-call name="MergeAttribute">
-                     <code:chain-reference/>
-                     <code:arguments>
-                        <code:string literal="true">
-                           <value-of select="local-name()"/>
-                        </code:string>
-                        <call-template name="src:expand-attribute">
-                           <with-param name="attr" select="."/>
-                        </call-template>
-                     </code:arguments>
-                  </code:method-call>
-               </for-each>
-               <for-each select="$bool-attributes">
-                  <code:method-call name="MergeBoolean">
-                     <code:chain-reference/>
-                     <code:arguments>
-                        <code:string literal="true">
-                           <value-of select="local-name()"/>
-                        </code:string>
-                        <call-template name="src:boolean">
-                           <with-param name="bool" select="xcst:boolean(., true())"/>
-                           <with-param name="avt" select="."/>
-                        </call-template>
-                     </code:arguments>
-                  </code:method-call>
-               </for-each>
             </code:chain>
          </variable>
-
          <choose>
             <when test="not($omit-param)">
                <code:argument name="htmlAttributes">

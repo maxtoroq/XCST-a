@@ -16,9 +16,10 @@
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 
 namespace Xcst.Web {
 
@@ -39,7 +40,7 @@ namespace Xcst.Web {
       /// <returns><c>true</c> if key was found, value is non-null, and value is of type <typeparamref name="T"/>; otherwise false.</returns>
       public static bool TryGetValue<T>(this IDictionary<string, object> collection, string key, out T value) {
 
-         Contract.Assert(collection != null);
+         Debug.Assert(collection != null);
 
          if (collection.TryGetValue(key, out object valueObj)) {
             if (valueObj is T valueT) {
@@ -54,11 +55,20 @@ namespace Xcst.Web {
 
       public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue @default) {
 
+         Debug.Assert(dict != null);
+
          if (dict.TryGetValue(key, out TValue value)) {
             return value;
          }
 
          return @default;
+      }
+
+      public static Dictionary<TKey, TValue> Clone<TKey, TValue>(this IDictionary<TKey, TValue> dict) {
+
+         Debug.Assert(dict != null);
+
+         return new Dictionary<TKey, TValue>(dict, (dict as Dictionary<TKey, TValue>)?.Comparer);
       }
    }
 }

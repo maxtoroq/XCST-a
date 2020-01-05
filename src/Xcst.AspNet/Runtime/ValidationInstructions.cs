@@ -101,17 +101,17 @@ namespace Xcst.Web.Runtime {
             : HtmlHelper.ValidationMessageValidCssClassName;
 
          output.WriteStartElement(tag);
-
-         var attribs = new HtmlAttributeDictionary(htmlAttributes)
-            .AddCssClass(validationClass);
+         HtmlAttributeHelper.WriteClass(validationClass, htmlAttributes, output);
 
          if (formContext != null) {
 
             bool replaceValidationMessageContents = String.IsNullOrEmpty(validationMessage);
 
             if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
-               attribs.MergeAttribute("data-valmsg-for", modelName);
-               attribs.MergeAttribute("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
+
+               output.WriteAttributeString("data-valmsg-for", modelName);
+               output.WriteAttributeString("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
+
             } else {
 
                FieldValidationMetadata fieldMetadata = ApplyFieldValidationMetadata(htmlHelper, modelMetadata, modelName);
@@ -123,12 +123,25 @@ namespace Xcst.Web.Runtime {
 
                // client validation always requires an ID
 
-               attribs.GenerateId(modelName + "_validationMessage");
-               fieldMetadata.ValidationMessageId = attribs["id"].ToString();
+               string id;
+
+               if (htmlAttributes != null
+                  && htmlAttributes.TryGetValue("id", out var ident)) {
+
+                  id = ident.ToString();
+
+               } else {
+                  id = TagBuilder.CreateSanitizedId(modelName + "_validationMessage");
+                  output.WriteAttributeString("id", id);
+               }
+
+               fieldMetadata.ValidationMessageId = id;
             }
          }
 
-         attribs.WriteTo(output);
+         // class was already written
+
+         HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "class");
 
          if (!String.IsNullOrEmpty(validationMessage)) {
             output.WriteString(validationMessage);
@@ -176,9 +189,7 @@ namespace Xcst.Web.Runtime {
             : HtmlHelper.ValidationSummaryCssClassName;
 
          output.WriteStartElement("div");
-
-         var divAttribs = new HtmlAttributeDictionary(htmlAttributes)
-            .AddCssClass(validationClass);
+         HtmlAttributeHelper.WriteClass(validationClass, htmlAttributes, output);
 
          if (formContext != null) {
 
@@ -188,16 +199,22 @@ namespace Xcst.Web.Runtime {
 
                   // Only put errors in the validation summary if they're supposed to be included there
 
-                  divAttribs.MergeAttribute("data-valmsg-summary", "true");
+                  output.WriteAttributeString("data-valmsg-summary", "true");
                }
 
             } else {
+
                // client val summaries need an ID
-               divAttribs.GenerateId("validationSummary");
+
+               if (htmlAttributes?.ContainsKey("id") ?? false) {
+                  HtmlAttributeHelper.WriteId("validationSummary", output);
+               }
             }
          }
 
-         divAttribs.WriteTo(output);
+         // class was already written
+
+         HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "class");
 
          if (!String.IsNullOrEmpty(message)) {
 

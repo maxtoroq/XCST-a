@@ -148,29 +148,40 @@ namespace Xcst.Web.Runtime {
 
          object value = html.ViewData.TemplateInfo.FormattedModelValue;
          string className = GetEditorCssClass(new EditorInfo("MultilineText", "textarea"), "text-box multi-line");
-         var htmlAttributes = CreateHtmlAttributes(html, className);
-
-         AddInputAttributes(html, htmlAttributes);
+         var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
          TextAreaInstructions.TextArea(html, output, String.Empty, value, 0, 0, htmlAttributes);
       }
 
-      static IDictionary<string, object> CreateHtmlAttributes(HtmlHelper html, string className, string inputType = null) {
+      static IDictionary<string, object> CreateHtmlAttributes(
+            HtmlHelper html, string className, string inputType = null, bool addMetadataAttributes = false) {
 
-         object htmlAttributesObject = html.ViewData["htmlAttributes"];
-
-         HtmlAttributeDictionary htmlAttributes =
-            (htmlAttributesObject is IDictionary<string, object> htmlAttributesDict) ? new HtmlAttributeDictionary(htmlAttributesDict)
-            : (htmlAttributesObject != null) ? new HtmlAttributeDictionary(htmlAttributesObject)
-            : new HtmlAttributeDictionary();
-
-         htmlAttributes.AddCssClass(className);
+         var htmlAttributes = new HtmlAttributeDictionary();
 
          if (inputType != null) {
+            htmlAttributes.Add("type", inputType);
+         }
 
-            // The input type from the provided htmlAttributes overrides the inputType parameter.
+         htmlAttributes.SetClass(className);
 
-            htmlAttributes.MergeAttribute("type", inputType);
+         if (addMetadataAttributes) {
+
+            ModelMetadata metadata = html.ViewData.ModelMetadata;
+
+            if (!String.IsNullOrEmpty(metadata.Watermark)) {
+               htmlAttributes["placeholder"] = metadata.Watermark;
+            }
+
+            htmlAttributes.SetBoolean("readonly", metadata.IsReadOnly);
+         }
+
+         object userAttribs = html.ViewData["htmlAttributes"];
+
+         if (userAttribs is IDictionary<string, object> dict) {
+            htmlAttributes.SetAttributes(dict);
+
+         } else if (userAttribs is object) {
+            htmlAttributes.SetAttributes(userAttribs);
          }
 
          return htmlAttributes;
@@ -426,30 +437,9 @@ namespace Xcst.Web.Runtime {
          object value = html.ViewData.TemplateInfo.FormattedModelValue;
 
          string className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
-         var htmlAttributes = CreateHtmlAttributes(html, className, inputType: inputType);
-
-         AddInputAttributes(html, htmlAttributes);
+         var htmlAttributes = CreateHtmlAttributes(html, className, inputType: inputType, addMetadataAttributes: true);
 
          InputInstructions.Input(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes);
-      }
-
-      static void AddInputAttributes(HtmlHelper html, IDictionary<string, object> htmlAttributes) {
-
-         ModelMetadata metadata = html.ViewData.ModelMetadata;
-
-         string placeholder = metadata.Watermark;
-
-         if (!String.IsNullOrEmpty(placeholder)
-            && !htmlAttributes.ContainsKey("placeholder")) {
-
-            htmlAttributes["placeholder"] = placeholder;
-         }
-
-         if (metadata.IsReadOnly
-            && !htmlAttributes.ContainsKey("readonly")) {
-
-            htmlAttributes["readonly"] = "readonly";
-         }
       }
 
       internal static string GetEditorCssClass(EditorInfo editorInfo, string defaultCssClass) {

@@ -17,7 +17,7 @@
 
    <c:template name='expected'>
       <div>
-         <input type='text' id='n' name='n' value='' class='bar foo'/>
+         <input type='text' id='n' name='n' value='' class='foo bar'/>
          <input type='text' id='n' name='n' value='' autofocus='autofocus'/>
          <input type='text' id='n' name='n' value='' disabled='disabled'/>
          <input type='text' id='n' name='n' value='' readonly='readonly'/>

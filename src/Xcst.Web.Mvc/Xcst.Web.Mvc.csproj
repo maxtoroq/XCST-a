@@ -145,6 +145,9 @@
     <Compile Include="..\Xcst.AspNet\Runtime\HtmlAttributeDictionary.cs">
       <Link>Runtime\HtmlAttributeDictionary.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Runtime\HtmlAttributeHelper.cs">
+      <Link>Runtime\HtmlAttributeHelper.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Runtime\HtmlHelperFactory.cs">
       <Link>Runtime\HtmlHelperFactory.cs</Link>
     </Compile>

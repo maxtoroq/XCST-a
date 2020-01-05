@@ -33,10 +33,6 @@ namespace Xcst.Web.Runtime {
    /// <exclude/>
    public static class InputInstructions {
 
-      // NOTES:
-      // - To simplify implementation, and also as a small perf tweak,
-      //   htmlAttributes parameters are modified, caller should make copy if necessary.
-
       //////////////////////////
       // CheckBox
       //////////////////////////
@@ -107,8 +103,12 @@ namespace Xcst.Web.Runtime {
 
          bool explicitChecked = isChecked.HasValue;
 
-         if (explicitChecked) {
-            htmlAttributes?.Remove("checked"); // Explicit value must override dictionary
+         if (explicitChecked
+            && htmlAttributes != null
+            && htmlAttributes.ContainsKey("checked")) {
+
+            htmlAttributes = htmlAttributes.Clone();
+            htmlAttributes.Remove("checked"); // Explicit value must override dictionary
          }
 
          InputHelper(
@@ -221,8 +221,12 @@ namespace Xcst.Web.Runtime {
 
          bool explicitChecked = isChecked.HasValue;
 
-         if (explicitChecked) {
-            htmlAttributes?.Remove("checked"); // Explicit value must override dictionary
+         if (explicitChecked
+            && htmlAttributes != null
+            && htmlAttributes.ContainsKey("checked")) {
+
+            htmlAttributes = htmlAttributes.Clone();
+            htmlAttributes.Remove("checked"); // Explicit value must override dictionary
          }
 
          InputHelper(
@@ -312,10 +316,9 @@ namespace Xcst.Web.Runtime {
 
          if (type != null
             && (inputType == null || checkBoxOrRadio)
-            && !(htmlAttributes
-                  ?? (htmlAttributes = new Dictionary<string, object>()))
-                  .ContainsKey("type")) {
+            && (htmlAttributes == null || !htmlAttributes.ContainsKey("type"))) {
 
+            htmlAttributes = htmlAttributes?.Clone() ?? new HtmlAttributeDictionary();
             htmlAttributes["type"] = type;
          }
 
@@ -396,12 +399,18 @@ namespace Xcst.Web.Runtime {
 
          output.WriteStartElement("input");
 
-         var attribs = new HtmlAttributeDictionary(htmlAttributes)
-            .MergeAttribute("type", HtmlHelper.GetInputTypeString(inputType))
-            .MergeAttribute("name", fullName, replaceExisting: true);
+         if (setId) {
+            HtmlAttributeHelper.WriteId(fullName, output);
+         }
+
+         string defaultType = HtmlHelper.GetInputTypeString(inputType);
+
+         output.WriteAttributeString("type", defaultType);
+         output.WriteAttributeString("name", fullName);
 
          string valueParameter = htmlHelper.FormatValue(value, format);
          bool usedModelState = false;
+         bool valueWritten = false;
 
          switch (inputType) {
             case InputType.CheckBox:
@@ -437,60 +446,72 @@ namespace Xcst.Web.Runtime {
                   isChecked = htmlHelper.EvalBoolean(fullName);
                }
 
-               attribs.MergeBoolean("checked", isChecked);
-               attribs.MergeAttribute("value", valueParameter, replaceExisting: isExplicitValue);
+               output.WriteAttributeString("value", valueParameter);
+               valueWritten = true;
+
+               HtmlAttributeHelper.WriteBoolean("checked", isChecked, output);
 
                break;
 
             case InputType.Password:
 
                if (value != null) {
-                  attribs.MergeAttribute("value", valueParameter, replaceExisting: isExplicitValue);
+                  output.WriteAttributeString("value", valueParameter);
+                  valueWritten = true;
                }
 
                break;
 
             default:
 
-               bool addValue = true;
-               string typeAttr = attribs["type"]?.ToString();
+               string type;
 
-               if (String.Equals(typeAttr, "file", StringComparison.OrdinalIgnoreCase)
-                  || String.Equals(typeAttr, "image", StringComparison.OrdinalIgnoreCase)) {
+               if (htmlAttributes != null
+                  && htmlAttributes.TryGetValue("type", out var t)) {
 
-                  // 'value' attribute is not needed for 'file' and 'image' input types.
-                  addValue = false;
+                  type = t.ToString();
+               } else {
+                  type = defaultType;
                }
 
-               if (addValue) {
+               bool writeValue = true;
+
+               if (String.Equals(type, "file", StringComparison.OrdinalIgnoreCase)
+                  || String.Equals(type, "image", StringComparison.OrdinalIgnoreCase)) {
+
+                  // 'value' attribute is not needed for 'file' and 'image' input types.
+                  writeValue = false;
+               }
+
+               if (writeValue) {
 
                   string attemptedValue = (string)htmlHelper.GetModelStateValue(fullName, typeof(string));
 
                   string valueAttr = attemptedValue
                      ?? ((useViewData) ? htmlHelper.EvalString(fullName, format) : valueParameter);
 
-                  attribs.MergeAttribute("value", valueAttr, replaceExisting: isExplicitValue);
+                  output.WriteAttributeString("value", valueAttr);
+                  valueWritten = true;
                }
 
                break;
          }
 
-         if (setId) {
-            attribs.GenerateId(fullName);
-         }
-
          // If there are any errors for a named field, we add the css attribute.
 
-         if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
-            && modelState.Errors.Count > 0) {
+         string cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
+            && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
-            attribs.AddCssClass(HtmlHelper.ValidationInputCssClassName);
-         }
+         HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
+         HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), output);
 
-         HtmlAttribs validationAttribs = htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata);
+         // name cannnot be overridden, and class was already written
+         // explicit value cannot be overridden
 
-         attribs.MergeAttributes(validationAttribs, replaceExisting: false)
-            .WriteTo(output);
+         HtmlAttributeHelper.WriteAttributes(
+            htmlAttributes,
+            output,
+            excludeFn: n => n == "name" || n == "class" || (isExplicitValue && valueWritten && (n == "value")));
 
          output.WriteEndElement();
       }

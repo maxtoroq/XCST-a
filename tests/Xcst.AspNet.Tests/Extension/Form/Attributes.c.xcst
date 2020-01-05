@@ -17,7 +17,7 @@
    <c:template name='expected'>
       <div>
          <form method='put'/>
-         <form method='post' class='bar foo'/>
+         <form method='post' class='foo bar'/>
          <form method='post' autocomplete='on'/>
          <form method='post' action='/foo'/>
          <form method='post' enctype='multipart/form-data'/>
