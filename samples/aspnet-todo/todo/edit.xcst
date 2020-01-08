@@ -12,8 +12,8 @@
          
          int id;
          
-         if (String.IsNullOrEmpty(this.UrlData[0])
-            || !Int32.TryParse(this.UrlData[0], out id)) {
+         if (String.IsNullOrEmpty(UrlData[0])
+            || !Int32.TryParse(UrlData[0], out id)) {
             
             Response.StatusCode = 404;
             return;

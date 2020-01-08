@@ -162,7 +162,7 @@ function GeneratePackages([IO.TextWriter]$output) {
 
             $compiler.TargetClass = "_Page_$(CleanIdentifier $file.BaseName)"
             $compiler.TargetNamespace = $ns
-            $compiler.TargetBaseTypes = "global::Xcst.Web.Mvc.XcstViewPage"
+            $compiler.TargetBaseTypes = "global::AspNetPrecompiled.AppPage"
             $compiler.TargetVisibility = "internal"
 
             # Sets a:application-uri, used to generate Href() functions for each module

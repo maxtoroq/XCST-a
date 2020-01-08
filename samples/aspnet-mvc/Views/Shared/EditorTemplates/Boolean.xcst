@@ -9,14 +9,13 @@
 
    <c:param name='htmlAttributes'/>
 
-   <c:variable name='modelValue' value='(ViewData.ModelMetadata.Model != null) ?
-      Convert.ToBoolean(ViewData.ModelMetadata.Model, CultureInfo.InvariantCulture)
-      : default(bool?)' as='bool?'/>
-
    <c:template name='c:initial-template'>
+      <c:variable name='modelValue' value='(ViewData.ModelMetadata.Model != null) ?
+         Convert.ToBoolean(ViewData.ModelMetadata.Model, CultureInfo.InvariantCulture)
+         : default(bool?)' as='bool?'/>
       <c:choose>
          <c:when test='ViewData.ModelMetadata.IsNullableValueType'>
-            <a:select class='form-control' attributes='htmlAttributes'>
+            <a:select class='form-control' attributes='this.htmlAttributes'>
                <a:option value='""' selected='{!modelValue.HasValue}'/>
                <a:option value='"true"' selected='{modelValue.HasValue &amp;&amp; modelValue.Value}'>Yes</a:option>
                <a:option value='"false"' selected='{modelValue.HasValue &amp;&amp; !modelValue.Value}'>No</a:option>
@@ -25,7 +24,7 @@
          <c:otherwise>
             <div class='form-check'>
                <label class='form-check-label'>
-                  <a:check-box checked='{modelValue.GetValueOrDefault()}' class='form-check-input' attributes='htmlAttributes'/>
+                  <a:check-box checked='{modelValue.GetValueOrDefault()}' class='form-check-input' attributes='this.htmlAttributes'/>
                </label>
             </div>
          </c:otherwise>

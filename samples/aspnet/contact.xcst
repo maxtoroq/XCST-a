@@ -29,8 +29,8 @@
 
          var message = new MailMessage {
             From = new MailAddress("noreply@example.com", Request.Url.Host),
-            To = { contactTo },
-            Subject = contactSubject,
+            To = { this.contactTo },
+            Subject = this.contactSubject,
             ReplyToList = { new MailAddress(contact.Email, contact.Name) },
             Body = MailBody(contact),
             IsBodyHtml = true
@@ -105,7 +105,7 @@
       <c:param name='contact' as='Contact' required='yes' tunnel='yes'/>
       <c:param name='sent' as='bool' required='yes' tunnel='yes'/>
 
-      <h1>{title}</h1>
+      <h1>{this.title}</h1>
       <c:if test='sent'>
          <div class='alert alert-success alert-dismissable'>
             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&#215;</button>

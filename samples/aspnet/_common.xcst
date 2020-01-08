@@ -5,4 +5,6 @@
 
    <c:validation required-message='Required field cannot be left blank.'/>
 
+   <c:output method='html' version='5'/>
+
 </c:module>

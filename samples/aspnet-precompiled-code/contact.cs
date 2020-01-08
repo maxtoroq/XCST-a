@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Net.Mail;
+using System.Web.Helpers;
 
 namespace AspNetPrecompiled {
 
-   partial class _Page_contact {
+   partial class _Page_contact : IPageInit {
 
       bool SendMail(Contact contact) {
 
@@ -27,6 +28,26 @@ namespace AspNetPrecompiled {
             ModelState.AddModelError("", "An unexpected error ocurred.");
             return false;
          }
+      }
+
+      public void Init() {
+
+         var contact = new Contact();
+         bool sent = false;
+
+         if (IsPost
+            && AntiForgery.TryValidate()
+            && TryBind(contact)
+            && SendMail(contact)) {
+
+            sent = true;
+
+            // clear form
+            ModelState.Clear();
+            contact = new Contact();
+         }
+
+         layout(new { contact, sent });
       }
    }
 }

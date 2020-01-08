@@ -4,8 +4,6 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='System.Web.Helpers'/>
-
    <c:import href='_common.xcst'/>
 
    <c:variable name='title'>Contact Us</c:variable>
@@ -43,37 +41,11 @@
       </c:return>
    </c:function>
 
-   <c:template name='c:initial-template'>
-      <c:script>
-         <![CDATA[
-
-         var contact = new Contact();
-         bool sent = false;
-
-         if (IsPost
-            && AntiForgery.TryValidate()
-            && TryBind(contact)
-            && SendMail(contact)) {
-
-            sent = true;
-
-            // clear form
-            ModelState.Clear();
-            contact = new Contact();
-         }
-         ]]>
-      </c:script>
-      <c:next-template>
-         <c:with-param name='contact' value='contact' tunnel='yes'/>
-         <c:with-param name='sent' value='sent' tunnel='yes'/>
-      </c:next-template>
-   </c:template>
-
    <c:template name='content' expand-text='yes'>
       <c:param name='contact' as='Contact' required='yes' tunnel='yes'/>
       <c:param name='sent' as='bool' required='yes' tunnel='yes'/>
 
-      <h1>{title}</h1>
+      <h1>{this.title}</h1>
       <c:if test='sent'>
          <div class='alert alert-success alert-dismissable'>
             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&#215;</button>

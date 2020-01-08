@@ -12,7 +12,7 @@
    <c:variable name='title'>Contact Us</c:variable>
 
    <c:template name='content' expand-text='yes'>
-      <h1>{title}</h1>
+      <h1>{this.title}</h1>
       <c:if test='sent'>
          <div class='alert alert-success alert-dismissable'>
             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&#215;</button>

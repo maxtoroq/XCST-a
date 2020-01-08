@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Application.cs" />
     <Compile Include="contact.cs" />
+    <Compile Include="Infrastructure\AppPage.cs" />
     <Compile Include="Infrastructure\Precompilation.cs" />
     <Compile Include="xcst.generated.cs" />
   </ItemGroup>

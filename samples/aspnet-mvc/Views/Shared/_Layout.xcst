@@ -12,7 +12,7 @@
       <html>
          <head>
             <title>
-               <c:value-of value='new[] { title, siteTitle }' separator=' — '/>
+               <c:value-of value='new[] { this.title, this.siteTitle }' separator=' — '/>
             </title>
             <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css' rel='stylesheet'/>
             <link href='/Content/site.css' rel='stylesheet'/>
@@ -22,9 +22,9 @@
             <header class='mb-4'>
                <nav class='navbar navbar-expand-md navbar-dark bg-dark'>
                   <div class='container'>
-                     <a href='/' class='navbar-brand'>{siteTitle}</a>
+                     <a href='/' class='navbar-brand'>{this.siteTitle}</a>
                      <button type='button' class='navbar-toggler' data-toggle='collapse' data-target='body > header .navbar-collapse'>
-                        <span class='navbar-toggler-icon'></span>
+                        <span class='navbar-toggler-icon'/>
                      </button>
                      <div class='navbar-collapse collapse'>
                         <ul class='navbar-nav'>
@@ -43,7 +43,7 @@
                <c:call-template name='content'/>
                <hr />
                <footer>
-                  <p>© {DateTime.Now.Year} - {siteTitle}</p>
+                  <p>© {DateTime.Now.Year} - {this.siteTitle}</p>
                </footer>
             </div>
             <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'/>

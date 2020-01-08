@@ -33,8 +33,8 @@
                         </c:when>
                         <c:otherwise>
                            <div class='form-group row'>
-                              <a:label name='{propertyName}' class='col-form-label {labelColumnClass}'/>
-                              <div class='{fieldColumnClass}'>
+                              <a:label name='{propertyName}' class='col-form-label {this.labelColumnClass}'/>
+                              <div class='{this.fieldColumnClass}'>
                                  <p class='form-control-plaintext'>
                                     <a:display name='{propertyName}' template='{displayTemplate}'/>
                                  </p>
