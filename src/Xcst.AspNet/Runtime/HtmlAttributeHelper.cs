@@ -51,9 +51,11 @@ namespace Xcst.Web.Runtime {
          bool cssClassHasValue = !String.IsNullOrEmpty(cssClass);
          object dictClass = null;
 
+         bool dictHasClass = htmlAttributes != null
+            && htmlAttributes.TryGetValue("class", out dictClass);
+
          if (cssClassHasValue
-            || (htmlAttributes != null
-               && htmlAttributes.TryGetValue("class", out dictClass))) {
+            || dictHasClass) {
 
             string joinedClass = (cssClassHasValue && dictClass is string s) ?
                s + " " + cssClass
