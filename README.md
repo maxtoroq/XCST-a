@@ -43,7 +43,7 @@ cd XCST-a
 MSBuild
 ```
 
-[XCST]: http://maxtoroq.github.io/XCST/
+[XCST]: https://maxtoroq.github.io/XCST/
 [Xcst.AspNet]: https://www.nuget.org/packages/Xcst.AspNet
 [Xcst.AspNet.Extension]: https://www.nuget.org/packages/Xcst.AspNet.Extension
 [Xcst.AspNet.Compilation]: https://www.nuget.org/packages/Xcst.AspNet.Compilation
