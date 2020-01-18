@@ -568,6 +568,9 @@
             </oneOrMore>
             <zeroOrMore>
                <choice>
+                  <attribute name="id">
+                     <ref name="avt"/>
+                  </attribute>
                   <attribute name="action">
                      <ref name="avt"/>
                   </attribute>

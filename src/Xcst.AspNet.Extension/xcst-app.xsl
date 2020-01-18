@@ -1278,10 +1278,11 @@
 
       <call-template name="xcst:validate-attribs">
          <with-param name="required" select="'method'"/>
-         <with-param name="optional" select="'model-value', 'model-type', 'action', 'autocomplete', 'enctype', 'class', 'attributes', 'field-prefix', 'helper-name'"/>
+         <with-param name="optional" select="'model-value', 'model-type', 'id', 'action', 'autocomplete', 'enctype', 'class', 'attributes', 'field-prefix', 'helper-name'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
+      <variable name="method-attr" select="@method"/>
       <variable name="value-attr" select="@model-value"/>
       <variable name="as-attr" select="@model-type"/>
 
@@ -1313,18 +1314,30 @@
 
       <code:try line-hidden="true">
          <code:block>
-            <code:method-call name="WriteAttributeString">
-               <sequence select="$doc-output/src:reference/code:*"/>
-               <code:arguments>
-                  <code:string literal="true">method</code:string>
-                  <code:string verbatim="true">
-                     <value-of select="xcst:non-string(@method)"/>
-                  </code:string>
-               </code:arguments>
-            </code:method-call>
+            <for-each select="$method-attr | @id | @action | @autocomplete | @enctype">
+               <code:method-call name="WriteAttributeString">
+                  <sequence select="$doc-output/src:reference/code:*"/>
+                  <code:arguments>
+                     <code:string literal="true">
+                        <value-of select="local-name()"/>
+                     </code:string>
+                     <choose>
+                        <when test=". is $method-attr">
+                           <code:string verbatim="true">
+                              <value-of select="xcst:non-string(.)"/>
+                           </code:string>
+                        </when>
+                        <otherwise>
+                           <call-template name="src:expand-attribute">
+                              <with-param name="attr" select="."/>
+                           </call-template>
+                        </otherwise>
+                     </choose>
+                  </code:arguments>
+               </code:method-call>
+            </for-each>
             <variable name="attribs" as="element()?">
                <call-template name="a:html-attributes-param">
-                  <with-param name="merge-attributes" select="@action | @autocomplete | @enctype"/>
                   <with-param name="omit-param" select="true()"/>
                </call-template>
             </variable>
