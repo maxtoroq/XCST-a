@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Compilation;
 using Xcst.Web;
+using Xcst.Web.Runtime;
 
 namespace AspNetPrecompiled.Infrastructure {
 
@@ -182,6 +183,30 @@ namespace AspNetPrecompiled.Infrastructure {
 
          pagePath = null;
          return false;
+      }
+   }
+
+   public static class LinkToHelper {
+
+      public static string LinkTo(string path, params object[] pathParts) {
+         return UrlUtil.GenerateClientUrl(null, path, pathParts);
+      }
+
+      public static string LinkToDefault(string path, string defaultPath, params object[] pathParts) {
+
+         if (pathParts == null
+            || pathParts.Length == 0
+            || pathParts.All(p => p == null || !IsDisplayableType(p.GetType()))) {
+
+            return LinkTo(defaultPath, pathParts);
+         }
+
+         return LinkTo(path, pathParts);
+      }
+
+      // see System.Web.Mvc.UrlUtil
+      static bool IsDisplayableType(Type t) {
+         return t.GetInterfaces().Length != 0;
       }
    }
 }

@@ -122,6 +122,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-precompiled-site", "
 		SlnRelativePath = "samples\aspnet-precompiled-site\"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xcst-codegen", "samples\xcst-codegen\xcst-codegen.csproj", "{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CodeAnalysis|Any CPU = CodeAnalysis|Any CPU
@@ -189,6 +191,12 @@ Global
 		{526FF9FB-17E3-4235-9DCA-B0F2986A6251}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{526FF9FB-17E3-4235-9DCA-B0F2986A6251}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{526FF9FB-17E3-4235-9DCA-B0F2986A6251}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
+		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
+		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,6 +212,7 @@ Global
 		{5039E116-8B5F-406D-A7FD-550F309A7178} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
 		{85105E77-C24A-4006-B523-99C94E418219} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{526FF9FB-17E3-4235-9DCA-B0F2986A6251} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
+		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9D68F6E0-43F6-4AF7-8617-714A04B12736}

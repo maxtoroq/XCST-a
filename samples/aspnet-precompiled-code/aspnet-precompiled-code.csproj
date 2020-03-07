@@ -59,23 +59,23 @@
     <None Include="EditorTemplates\ObjectPackage.xcst" />
     <None Include="index.xcst" />
     <None Include="packages.config" />
-    <None Include="Infrastructure\xcst.ps1" />
     <None Include="_common.xcst" />
     <None Include="LayoutPackage.xcst" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xcst.AspNet.Extension\Xcst.AspNet.Extension.csproj">
-      <Project>{5039e116-8b5f-406d-a7fd-550f309a7178}</Project>
-      <Name>Xcst.AspNet.Extension</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\Xcst.AspNet\Xcst.AspNet.csproj">
       <Project>{5cb9aa5e-52b2-4fbb-8db3-d1d53193d34f}</Project>
       <Name>Xcst.AspNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\xcst-codegen\xcst-codegen.csproj">
+      <Project>{3ec3cda1-62bc-4cc7-9c97-d47b3b1328b4}</Project>
+      <Name>xcst-codegen</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>powershell -NoProfile -ExecutionPolicy RemoteSigned -File $(ProjectDir)\Infrastructure\xcst.ps1 $(ProjectPath) $(ConfigurationName)</PreBuildEvent>
+    <PreBuildEventDependsOn>ResolveReferences</PreBuildEventDependsOn>
+    <PreBuildEvent>$(ProjectDir)\..\xcst-codegen\bin\$(ConfigurationName)\xcst-codegen.exe $(ProjectPath) $(ConfigurationName) -LibsAndPages</PreBuildEvent>
   </PropertyGroup>
 </Project>
