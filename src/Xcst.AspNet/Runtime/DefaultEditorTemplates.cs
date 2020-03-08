@@ -256,7 +256,7 @@ namespace Xcst.Web.Runtime {
       public static void PasswordTemplate(HtmlHelper html, XcstWriter output) {
 
          string className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
-         var htmlAttributes = CreateHtmlAttributes(html, className);
+         var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
          InputInstructions.Input(html, output, String.Empty, value: null, type: "password", htmlAttributes: htmlAttributes);
       }
