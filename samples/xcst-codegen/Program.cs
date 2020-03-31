@@ -34,7 +34,6 @@ namespace XcstCodeGen {
       void LoadProjectDependencies(XDocument projectDoc) {
 
          XNamespace xmlns = projectDoc.Root.Name.Namespace;
-         XName itemGroupName = xmlns + "ItemGroup";
 
          foreach (XElement projectRef in projectDoc.Root.Elements(xmlns + "ItemGroup").Elements(xmlns + "ProjectReference")) {
 
