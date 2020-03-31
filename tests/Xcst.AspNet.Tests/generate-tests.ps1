@@ -110,6 +110,7 @@ function GenerateTestsForDirectory([IO.DirectoryInfo]$directory, [string]$relati
 
          PopIndent
          WriteLine "}"
+         WriteLine "#line default"
       }
 
       PopIndent

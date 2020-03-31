@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using System.Xml;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
@@ -46,18 +44,32 @@ namespace Xcst.Web.Tests {
 
          } catch (CompileException ex) {
 
-            Console.WriteLine($"// {ex.Message}");
-            Console.WriteLine($"// Module URI: {ex.ModuleUri}");
-            Console.WriteLine($"// Line number: {ex.LineNumber}");
+            if (correct) {
+               Console.WriteLine($"// {ex.Message}");
+               Console.WriteLine($"// Module URI: {ex.ModuleUri}");
+               Console.WriteLine($"// Line number: {ex.LineNumber}");
+            }
 
             throw;
          }
 
-         bool printCode = true;
+         bool printCode = false;
 
          try {
 
-            Type packageType = CompileCode(xcstResult, packageName, packageUri);
+            Type packageType;
+
+            try {
+               packageType = CompileCode(xcstResult, packageName, packageUri, correct);
+
+            } catch (CompileException) {
+
+               if (correct) {
+                  printCode = true;
+               }
+
+               throw;
+            }
 
             if (!correct) {
                return;
@@ -75,13 +87,20 @@ namespace Xcst.Web.Tests {
 
                   SimplyRun(packageType, packageUri);
 
+                  // did not fail, print code
+                  printCode = true;
+
                } else {
 
                   if (xcstResult.Templates.Contains(InitialName)) {
 
                      if (xcstResult.Templates.Contains(ExpectedName)) {
-                        bool equals = printCode = OutputEqualsToExpected(packageType);
+
+                        bool equals = OutputEqualsToExpected(packageType);
+                        printCode = !equals;
+
                         TestAssert.IsTrue(equals);
+
                      } else {
                         SimplyRun(packageType, packageUri);
                      }
@@ -93,7 +112,11 @@ namespace Xcst.Web.Tests {
 
             } catch (RuntimeException ex) {
 
-               Console.WriteLine($"// {ex.Message}");
+               if (!fail) {
+                  Console.WriteLine($"// {ex.Message}");
+                  printCode = true;
+               }
+
                throw;
             }
 
@@ -131,7 +154,7 @@ namespace Xcst.Web.Tests {
          return Tuple.Create(result, compiler.TargetNamespace + "." + compiler.TargetClass);
       }
 
-      static Type CompileCode(CompileResult result, string packageName, Uri packageUri) {
+      static Type CompileCode(CompileResult result, string packageName, Uri packageUri, bool correct) {
 
          var parseOptions = new CSharpParseOptions(preprocessorSymbols: new[] { "DEBUG", "TRACE" });
 
@@ -173,7 +196,9 @@ namespace Xcst.Web.Tests {
                      .Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error)
                      .FirstOrDefault();
 
-                  if (error != null) {
+                  if (error != null
+                     && correct) {
+
                      Console.WriteLine($"// {error.Id}: {error.GetMessage()}");
                      Console.WriteLine($"// Line number: {error.Location.GetLineSpan().StartLinePosition.Line}");
                   }
