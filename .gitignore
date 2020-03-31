@@ -1,6 +1,7 @@
 /.vs/
 /packages/
 /PrecompiledWeb/
+/TestResult.xml
 
 [Bb]in
 [Oo]bj

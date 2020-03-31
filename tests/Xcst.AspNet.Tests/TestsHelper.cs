@@ -16,7 +16,7 @@ using Moq;
 using Xcst.Compiler;
 using Xcst.Web.Extension;
 using Xcst.Web.Mvc;
-using TestAssert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+using TestAssert = NUnit.Framework.Assert;
 
 namespace Xcst.Web.Tests {
 
@@ -32,16 +32,15 @@ namespace Xcst.Web.Tests {
          CompilerFactory.RegisterExtensionsForAssembly(typeof(ExtensionLoader).Assembly);
       }
 
-      public static void RunXcstTest(string packageFile, bool correct, bool fail) {
+      public static void RunXcstTest(string packageFile, string testName, string testNamespace, bool correct, bool fail) {
 
          var packageUri = new Uri(packageFile, UriKind.Absolute);
-         MethodBase testMethod = new StackFrame(1, true).GetMethod();
 
          CompileResult xcstResult;
          string packageName;
 
          try {
-            var codegenResult = GenerateCode(packageUri, testMethod);
+            var codegenResult = GenerateCode(packageUri, testName, testNamespace);
             xcstResult = codegenResult.Item1;
             packageName = codegenResult.Item2;
 
@@ -117,12 +116,12 @@ namespace Xcst.Web.Tests {
          return compiler;
       }
 
-      static Tuple<CompileResult, string> GenerateCode(Uri packageUri, MethodBase testMethod) {
+      static Tuple<CompileResult, string> GenerateCode(Uri packageUri, string testName, string testNamespace) {
 
          XcstCompiler compiler = CreateCompiler();
-         compiler.TargetNamespace = testMethod.DeclaringType.Namespace;
-         compiler.TargetClass = testMethod.Name;
-         compiler.UsePackageBase = testMethod.DeclaringType.Namespace;
+         compiler.TargetNamespace = testNamespace;
+         compiler.TargetClass = testName;
+         compiler.UsePackageBase = testNamespace;
          compiler.SetTargetBaseTypes(typeof(TestBase));
 
          compiler.SetParameter(XmlNamespaces.XcstApplication, "default-model-dynamic", true);
@@ -153,7 +152,7 @@ namespace Xcst.Web.Tests {
             MetadataReference.CreateFromFile(typeof(System.Web.HttpContext).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(System.Web.Mvc.ViewContext).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(Microsoft.VisualStudio.TestTools.UnitTesting.Assert).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(TestAssert).Assembly.Location),
             MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location)
          };
 
