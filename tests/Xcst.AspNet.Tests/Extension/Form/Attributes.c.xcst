@@ -7,6 +7,7 @@
    <c:template name='c:initial-template'>
       <div>
          <a:form method='post' model-type='object' attributes='new { method = "put" }'/>
+         <a:form method='post' model-type='object' id='form1' attributes='new { id = "form2" }'/>
          <a:form method='post' model-type='object' class='foo' attributes='new { @class = "bar" }'/>
          <a:form method='post' model-type='object' autocomplete='off' attributes='new { autocomplete = "on" }'/>
          <a:form method='post' model-type='object' action='/' attributes='new { action = "/foo" }'/>
@@ -17,6 +18,7 @@
    <c:template name='expected'>
       <div>
          <form method='put'/>
+         <form method='post' id='form2'/>
          <form method='post' class='foo bar'/>
          <form method='post' autocomplete='on'/>
          <form method='post' action='/foo'/>
