@@ -329,7 +329,7 @@ namespace Xcst.Web.Runtime {
          HtmlInputTemplateHelper(html, output, "UInt64", inputType: "number");
       }
 
-#if !ASPNETLIB
+#if ASPNETMVC
       public static void ColorInputTemplate(HtmlHelper html, XcstWriter output) {
 
          ViewDataDictionary viewData = html.ViewData;

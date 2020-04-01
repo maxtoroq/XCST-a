@@ -24,7 +24,7 @@ namespace Xcst.Web.Configuration {
 
       public EditorTemplatesConfiguration EditorTemplates { get; } = new EditorTemplatesConfiguration();
 
-#if ASPNETLIB
+#if !ASPNETMVC
       public DisplayTemplatesConfiguration DisplayTemplates { get; } = new DisplayTemplatesConfiguration();
 
       public ModelBindingConfiguration ModelBinding { get; } = new ModelBindingConfiguration();
@@ -41,7 +41,7 @@ namespace Xcst.Web.Configuration {
       /// </summary>
       public Func<string> DefaultValidationMessage { get; set; }
 
-#if ASPNETLIB
+#if !ASPNETMVC
       /// <summary>
       /// Validation message for numeric types.
       /// </summary>
@@ -58,7 +58,7 @@ namespace Xcst.Web.Configuration {
       public Func<EditorInfo, string, string> EditorCssClass { get; set; }
    }
 
-#if ASPNETLIB
+#if !ASPNETMVC
 
    public class DisplayTemplatesConfiguration {
       public Func<string, ViewContext, XcstViewPage> TemplateFactory { get; set; }

@@ -62,7 +62,7 @@ namespace Xcst.Web.Mvc {
             if (_Url == null
                && ViewContext != null) {
                _Url =
-#if !ASPNETLIB
+#if ASPNETMVC
                   (ViewContext.Controller as Controller)?.Url ??
 #endif
                   new UrlHelper(ViewContext.RequestContext);
@@ -98,7 +98,7 @@ namespace Xcst.Web.Mvc {
          _ViewData = viewData;
       }
 
-#if ASPNETLIB
+#if !ASPNETMVC
       public override IHttpHandler CreateHttpHandler() {
          return new XcstViewPageHandler(this);
       }
@@ -187,7 +187,7 @@ namespace Xcst.Web.Mvc {
          if (page is XcstViewPage viewPage) {
 
             viewPage.ViewContext = this.ViewContext.Clone(
-#if !ASPNETLIB
+#if ASPNETMVC
                view: new XcstView(this.ViewContext, viewPage.VirtualPath),
 #endif
                viewData: (_ViewData != null) ? new ViewDataDictionary(_ViewData)

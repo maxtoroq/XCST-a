@@ -18,7 +18,7 @@
 
 using System;
 using System.Collections.Generic;
-#if !ASPNETLIB
+#if ASPNETMVC
 using System.Data;
 #endif
 using System.Diagnostics.CodeAnalysis;
@@ -76,7 +76,7 @@ namespace Xcst.Web.Runtime {
             return show;
          }
 
-#if !ASPNETLIB
+#if ASPNETMVC
          if (propertyMetadata.ModelType == typeof(EntityState)) {
             return false;
          }

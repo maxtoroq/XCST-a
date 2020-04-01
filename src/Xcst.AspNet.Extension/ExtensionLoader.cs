@@ -21,7 +21,7 @@ using Xcst.Web;
 
 namespace Xcst.Web.Extension {
 
-#if ASPNETLIB
+#if !ASPNETMVC
    public
 #endif
    class ExtensionLoader : XcstExtensionLoader {

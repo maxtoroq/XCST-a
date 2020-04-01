@@ -74,7 +74,7 @@ namespace Xcst.Web.Runtime {
             { "DropDownList", DefaultEditorTemplates.DropDownListTemplate },
             { "ListBox", DefaultEditorTemplates.ListBoxTemplate },
             { nameof(Enum), DefaultEditorTemplates.EnumTemplate },
-#if !ASPNETLIB
+#if ASPNETMVC
             { nameof(Color), DefaultEditorTemplates.ColorInputTemplate },
 #endif
             { nameof(Byte), DefaultEditorTemplates.ByteInputTemplate },
@@ -233,7 +233,7 @@ namespace Xcst.Web.Runtime {
 
          foreach (string viewName in getViewNames(metadata, templateHints)) {
 
-#if ASPNETLIB
+#if !ASPNETMVC
             XcstViewPage viewPage = ((mode == DataBoundControlMode.ReadOnly) ?
                config.DisplayTemplates.TemplateFactory
                : config.EditorTemplates.TemplateFactory)?.Invoke(viewName, html.ViewContext);
@@ -255,7 +255,7 @@ namespace Xcst.Web.Runtime {
 
             } else {
 
-#if !ASPNETLIB
+#if ASPNETMVC
                ViewEngineResult viewEngineResult = ViewEngines.Engines.FindPartialView(html.ViewContext, fullViewName);
 
                if (viewEngineResult.View != null) {
@@ -385,7 +385,7 @@ namespace Xcst.Web.Runtime {
          return newHelper;
       }
 
-#if !ASPNETLIB
+#if ASPNETMVC
       static void RenderView(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, ViewEngineResult viewEngineResult) {
 
          IView view = viewEngineResult.View;
@@ -436,7 +436,7 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-#if !ASPNETLIB
+#if ASPNETMVC
       class ActionCacheViewItem : ActionCacheItem {
 
          public string ViewName { get; set; }

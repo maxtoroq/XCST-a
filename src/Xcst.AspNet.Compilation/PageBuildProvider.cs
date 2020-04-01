@@ -111,8 +111,8 @@ namespace Xcst.Web.Compilation {
 
          compiler.SetParameter(XmlNamespaces.XcstApplication, "application-uri", this.applicationUri);
 
-#if !ASPNETLIB
-         compiler.SetParameter(XmlNamespaces.XcstApplication, "aspnetlib", false);
+#if ASPNETMVC
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "aspnetmvc", true);
 #endif
       }
 

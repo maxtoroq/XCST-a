@@ -27,15 +27,15 @@
    <import href="../../../XCST/src/Xcst.Compiler/CodeGeneration/xcst-core.xsl" use-when="false()"/>
 
    <param name="a:application-uri" as="xs:anyURI?"/>
-   <param name="a:aspnetlib" select="true()" as="xs:boolean"/>
    <param name="a:page-type" as="element(code:type-reference)?"/>
    <param name="a:default-model" as="element(code:type-reference)?"/>
    <param name="a:default-model-dynamic" select="false()" as="xs:boolean"/>
+   <param name="a:aspnetmvc" select="false()" as="xs:boolean"/>
 
    <variable name="a:html-attributes" select="'class', 'attributes'"/>
    <variable name="a:input-attributes" select="'for', 'name', 'value', 'disabled', 'autofocus', $a:html-attributes"/>
    <variable name="a:text-box-attributes" select="'readonly', 'placeholder', $a:input-attributes"/>
-   <variable name="a:href-fn" select="$a:aspnetlib and not($src:named-package) and $a:application-uri"/>
+   <variable name="a:href-fn" select="not($a:aspnetmvc) and not($src:named-package) and $a:application-uri"/>
 
    <!--
       ## Forms
@@ -387,7 +387,23 @@
       <param name="output" tunnel="yes"/>
 
       <choose>
-         <when test="$a:aspnetlib">
+         <when test="$a:aspnetmvc">
+            <code:method-call name="WriteRaw">
+               <sequence select="$output/src:reference/code:*"/>
+               <code:arguments>
+                  <code:chain>
+                     <code:type-reference name="AntiForgery" namespace="System.Web.Helpers"/>
+                     <code:method-call name="GetHtml">
+                        <code:chain-reference/>
+                     </code:method-call>
+                     <code:method-call name="ToString">
+                        <code:chain-reference/>
+                     </code:method-call>
+                  </code:chain>
+               </code:arguments>
+            </code:method-call>
+         </when>
+         <otherwise>
             <variable name="output-is-doc" select="src:output-is-doc($output)"/>
             <variable name="doc-output" select="src:doc-output(., $output)"/>
             <if test="not($output-is-doc)">
@@ -413,22 +429,6 @@
                      </code:property-reference>
                   </code:chain>
                   <sequence select="$doc-output/src:reference/code:*"/>
-               </code:arguments>
-            </code:method-call>
-         </when>
-         <otherwise>
-            <code:method-call name="WriteRaw">
-               <sequence select="$output/src:reference/code:*"/>
-               <code:arguments>
-                  <code:chain>
-                     <code:type-reference name="AntiForgery" namespace="System.Web.Helpers"/>
-                     <code:method-call name="GetHtml">
-                        <code:chain-reference/>
-                     </code:method-call>
-                     <code:method-call name="ToString">
-                        <code:chain-reference/>
-                     </code:method-call>
-                  </code:chain>
                </code:arguments>
             </code:method-call>
          </otherwise>
@@ -1580,7 +1580,7 @@
          return if ($modules[$pos] is current()) then $pos else ()"/>
       <variable name="principal-module" select="$module-pos eq count($modules)"/>
 
-      <if test="$a:aspnetlib
+      <if test="not($a:aspnetmvc)
          and $a:directives/sessionstate
          and $principal-module">
 

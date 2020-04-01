@@ -30,14 +30,14 @@ namespace Xcst.Web {
       HttpResponseBase _Response;
       HttpSessionStateBase _Session;
 
-#if ASPNETLIB
+#if !ASPNETMVC
       IList<string> _UrlData;
 #endif
       IPrincipal _User;
 
       public virtual string VirtualPath { get; set; }
 
-#if ASPNETLIB
+#if !ASPNETMVC
       public virtual string PathInfo { get; set; }
 #endif
 
@@ -51,7 +51,7 @@ namespace Xcst.Web {
             _Request = null;
             _Response = null;
             _Session = null;
-#if ASPNETLIB
+#if !ASPNETMVC
             _UrlData = null;
 #endif
          }
@@ -78,7 +78,7 @@ namespace Xcst.Web {
          }
       }
 
-#if ASPNETLIB
+#if !ASPNETMVC
       public virtual IList<string> UrlData {
          get {
             return _UrlData
@@ -100,7 +100,7 @@ namespace Xcst.Web {
 
       public virtual bool IsAjax => Request?.IsAjaxRequest() ?? false;
 
-#if ASPNETLIB
+#if !ASPNETMVC
       public virtual IHttpHandler CreateHttpHandler() {
          return new XcstPageHandler(this);
       }
@@ -190,7 +190,7 @@ namespace Xcst.Web {
       string[] FileDependencies { get; }
    }
 
-#if ASPNETLIB
+#if !ASPNETMVC
    public interface ISessionStateAware {
 
       SessionStateBehavior SessionStateBehavior { get; }

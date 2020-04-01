@@ -23,7 +23,7 @@ namespace Xcst.Web {
 
    static class FrameworkExtensions {
 
-#if !ASPNETLIB
+#if ASPNETMVC
       static readonly Func<ModelMetadata, Type> getRealModelType =
          (Func<ModelMetadata, Type>)Delegate.CreateDelegate(typeof(Func<ModelMetadata, Type>), typeof(ModelMetadata).GetProperty("RealModelType", BindingFlags.Instance | BindingFlags.NonPublic).GetGetMethod(nonPublic: true));
 
@@ -35,48 +35,48 @@ namespace Xcst.Web {
 #endif
 
       public static string GroupName(this ModelMetadata metadata) {
-#if ASPNETLIB
-         return metadata.GroupName;
-#else
+#if ASPNETMVC
          return null;
+#else
+         return metadata.GroupName;
 #endif
       }
 
       public static Type RealModelType(this ModelMetadata metadata) {
-#if ASPNETLIB
-         return metadata.RealModelType;
-#else
+#if ASPNETMVC
          return getRealModelType(metadata);
+#else
+         return metadata.RealModelType;
 #endif
       }
 
       public static HashSet<object> VisitedObjects(this TemplateInfo templateInfo) {
-#if ASPNETLIB
-         return templateInfo.VisitedObjects;
-#else
+#if ASPNETMVC
          return getVisitedObjects(templateInfo);
+#else
+         return templateInfo.VisitedObjects;
 #endif
       }
 
       public static void VisitedObjects(this TemplateInfo templateInfo, HashSet<object> value) {
-#if ASPNETLIB
-         templateInfo.VisitedObjects = value;
-#else
+#if ASPNETMVC
          setVisitedObjects(templateInfo, value);
+#else
+         templateInfo.VisitedObjects = value;
 #endif
       }
 
       public static bool HasNonDefaultEditFormat(this ModelMetadata metadata) {
-#if ASPNETLIB
-         return metadata.HasNonDefaultEditFormat;
-#else
+#if ASPNETMVC
          return (bool)metadata.GetType()
             .GetProperty("HasNonDefaultEditFormat", BindingFlags.Instance | BindingFlags.NonPublic)
             .GetValue(metadata);
+#else
+         return metadata.HasNonDefaultEditFormat;
 #endif
       }
 
-#if !ASPNETLIB
+#if ASPNETMVC
       public static object GetModelStateValue(this HtmlHelper htmlHelper, string key, Type destinationType) {
 
          if (htmlHelper.ViewData.ModelState.TryGetValue(key, out ModelState modelState)
@@ -107,7 +107,7 @@ namespace Xcst.Web {
 
       internal static ViewContext Clone(
             this ViewContext context,
-#if !ASPNETLIB
+#if ASPNETMVC
             IView view = null,
 #endif
             ViewDataDictionary viewData = null,
@@ -116,12 +116,12 @@ namespace Xcst.Web {
 
          return new ViewContext(
             context,
-#if !ASPNETLIB
+#if ASPNETMVC
             view ?? context.View,
 #endif
             viewData ?? context.ViewData,
             tempData ?? context.TempData
-#if !ASPNETLIB
+#if ASPNETMVC
             , writer ?? context.Writer
 #endif
          ) {

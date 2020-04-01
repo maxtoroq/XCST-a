@@ -18,7 +18,7 @@
 
 using System;
 using System.Collections.Generic;
-#if !ASPNETLIB
+#if ASPNETMVC
 using System.Data.Linq;
 #endif
 using System.Diagnostics.CodeAnalysis;
@@ -329,7 +329,7 @@ namespace Xcst.Web.Runtime {
 
          if (inputType == InputType.Hidden) {
 
-#if !ASPNETLIB
+#if ASPNETMVC
             if (value is Binary binaryValue) {
                value = binaryValue.ToArray();
             }
