@@ -375,11 +375,16 @@
    </template>
 
    <template match="a:anti-forgery-token" mode="src:extension-instruction">
-      <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
          <with-param name="extension" select="true()"/>
       </call-template>
+
+      <call-template name="a:anti-forgery-token"/>
+   </template>
+
+   <template name="a:anti-forgery-token">
+      <param name="output" tunnel="yes"/>
 
       <choose>
          <when test="$a:aspnetlib">
@@ -1278,7 +1283,7 @@
 
       <call-template name="xcst:validate-attribs">
          <with-param name="required" select="'method'"/>
-         <with-param name="optional" select="'model-value', 'model-type', 'id', 'action', 'autocomplete', 'enctype', 'class', 'attributes', 'field-prefix', 'helper-name'"/>
+         <with-param name="optional" select="'model-value', 'model-type', 'id', 'action', 'autocomplete', 'enctype', 'class', 'attributes', 'field-prefix', 'helper-name', 'antiforgery'"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
@@ -1314,6 +1319,7 @@
 
       <code:try line-hidden="true">
          <code:block>
+
             <for-each select="$method-attr | @id | @action | @autocomplete | @enctype">
                <code:method-call name="WriteAttributeString">
                   <sequence select="$doc-output/src:reference/code:*"/>
@@ -1336,11 +1342,13 @@
                   </code:arguments>
                </code:method-call>
             </for-each>
+
             <variable name="attribs" as="element()?">
                <call-template name="a:html-attributes-param">
                   <with-param name="omit-param" select="true()"/>
                </call-template>
             </variable>
+
             <if test="$attribs">
                <code:method-call name="WriteTo">
                   <sequence select="$attribs"/>
@@ -1349,11 +1357,37 @@
                   </code:arguments>
                </code:method-call>
             </if>
+
             <call-template name="a:model-seq-ctor">
                <with-param name="value-attr" select="$value-attr"/>
                <with-param name="as-attr" select="$as-attr"/>
                <with-param name="output" select="$doc-output" tunnel="yes"/>
             </call-template>
+
+            <if test="@antiforgery">
+               <variable name="antiforgery" select="xcst:boolean(@antiforgery, true())"/>
+               <choose>
+                  <when test="$antiforgery">
+                     <call-template name="a:anti-forgery-token">
+                        <with-param name="output" select="$doc-output" tunnel="yes"/>
+                     </call-template>
+                  </when>
+                  <when test="$antiforgery eq false()"/>
+                  <otherwise>
+                     <code:if line-hidden="true">
+                        <call-template name="src:boolean">
+                           <with-param name="bool" select="$antiforgery"/>
+                           <with-param name="avt" select="@antiforgery"/>
+                        </call-template>
+                        <code:block>
+                           <call-template name="a:anti-forgery-token">
+                              <with-param name="output" select="$doc-output" tunnel="yes"/>
+                           </call-template>
+                        </code:block>
+                     </code:if>
+                  </otherwise>
+               </choose>
+            </if>
          </code:block>
          <code:finally line-hidden="true">
             <code:method-call name="WriteEndElement">

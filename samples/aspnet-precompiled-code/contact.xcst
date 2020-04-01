@@ -52,8 +52,7 @@
             <c:text>Thanks for contacting us. We'll get back to you shortly.</c:text>
          </div>
       </c:if>
-      <a:form method='post' model-value='contact'>
-         <a:anti-forgery-token/>
+      <a:form method='post' model-value='contact' antiforgery='yes'>
          <a:validation-summary/>
          <a:editor with-params='new { labelColumnClass = "col-md-3", fieldColumnClass = "col-md-9" }'/>
          <div class='form-group row'>

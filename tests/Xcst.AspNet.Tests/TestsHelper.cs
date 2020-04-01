@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -97,7 +98,10 @@ namespace Xcst.Web.Tests {
                      if (xcstResult.Templates.Contains(ExpectedName)) {
 
                         bool equals = OutputEqualsToExpected(packageType);
-                        printCode = !equals;
+
+                        if (!printCode) {
+                           printCode = !equals;
+                        }
 
                         TestAssert.IsTrue(equals);
 
@@ -118,6 +122,7 @@ namespace Xcst.Web.Tests {
                }
 
                throw;
+
             }
 
          } finally {
@@ -222,7 +227,16 @@ namespace Xcst.Web.Tests {
          XcstViewPage package = (XcstViewPage)Activator.CreateInstance(packageType);
 
          var httpContextMock = new Mock<HttpContextBase>();
-         httpContextMock.Setup(c => c.Items).Returns(() => new System.Collections.Hashtable());
+
+         httpContextMock.Setup(c => c.Items)
+            .Returns(() => new System.Collections.Hashtable());
+
+         // Cookies and Headers used by a:anti-forgery-token
+         httpContextMock.Setup(c => c.Response.Cookies)
+            .Returns(() => new HttpCookieCollection());
+
+         httpContextMock.Setup(c => c.Response.Headers)
+            .Returns(() => new NameValueCollection());
 
          package.ViewContext = new ViewContext(httpContextMock.Object);
 

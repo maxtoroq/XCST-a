@@ -580,6 +580,12 @@
                   <attribute name="enctype">
                      <ref name="avt"/>
                   </attribute>
+                  <attribute name="antiforgery">
+                     <choice>
+                        <ref name="boolean"/>
+                        <ref name="avt-expr"/>
+                     </choice>
+                  </attribute>
                </choice>
             </zeroOrMore>
             <ref name="html-attribs"/>

@@ -291,6 +291,11 @@
                <xs:attribute name="action" type="a:avt"/>
                <xs:attribute name="autocomplete" type="a:avt"/>
                <xs:attribute name="enctype" type="a:avt"/>
+               <xs:attribute name="antiforgery">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:boolean a:avt-expr"/>
+                  </xs:simpleType>
+               </xs:attribute>
                <xs:attributeGroup ref="a:html-attribs"/>
             </xs:extension>
          </xs:complexContent>
