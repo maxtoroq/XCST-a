@@ -117,6 +117,7 @@ namespace XcstCodeGen {
             compiler.PackagesLocation = startUri.LocalPath;
             compiler.PackageFileExtension = FileExt;
             compiler.IndentChars = "   ";
+            compiler.CompilationUnitHandler = href => output;
 
             if (nullable != null) {
                compiler.NullableAnnotate = true;
@@ -163,10 +164,6 @@ namespace XcstCodeGen {
             } catch (CompileException ex) {
                VisualStudioErrorLog(ex);
                throw;
-            }
-
-            foreach (string cu in xcstResult.CompilationUnits) {
-               output.Write(cu);
             }
 
             if (isPage) {

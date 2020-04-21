@@ -65,6 +65,7 @@
             <code:method-call name="CastElement">
                <sequence select="src:helper-type('DocumentWriter')"/>
                <code:arguments>
+                  <code:this-reference/>
                   <sequence select="$output/src:reference/code:*"/>
                </code:arguments>
             </code:method-call>
@@ -156,6 +157,7 @@
             <code:method-call name="CastElement">
                <sequence select="src:helper-type('DocumentWriter')"/>
                <code:arguments>
+                  <code:this-reference/>
                   <sequence select="$output/src:reference/code:*"/>
                </code:arguments>
             </code:method-call>
@@ -327,6 +329,7 @@
             <code:method-call name="CastElement">
                <sequence select="src:helper-type('DocumentWriter')"/>
                <code:arguments>
+                  <code:this-reference/>
                   <sequence select="$output/src:reference/code:*"/>
                </code:arguments>
             </code:method-call>
@@ -411,6 +414,7 @@
                   <code:method-call name="CastElement">
                      <sequence select="src:helper-type('DocumentWriter')"/>
                      <code:arguments>
+                        <code:this-reference/>
                         <sequence select="$output/src:reference/code:*"/>
                      </code:arguments>
                   </code:method-call>
@@ -455,6 +459,7 @@
             <code:method-call name="CastElement">
                <sequence select="src:helper-type('DocumentWriter')"/>
                <code:arguments>
+                  <code:this-reference/>
                   <sequence select="$output/src:reference/code:*"/>
                </code:arguments>
             </code:method-call>
@@ -630,6 +635,7 @@
             <code:method-call name="CastElement">
                <sequence select="src:helper-type('DocumentWriter')"/>
                <code:arguments>
+                  <code:this-reference/>
                   <sequence select="$output/src:reference/code:*"/>
                </code:arguments>
             </code:method-call>
@@ -691,6 +697,7 @@
             <code:method-call name="CastElement">
                <sequence select="src:helper-type('DocumentWriter')"/>
                <code:arguments>
+                  <code:this-reference/>
                   <sequence select="$output/src:reference/code:*"/>
                </code:arguments>
             </code:method-call>
@@ -747,6 +754,7 @@
             <code:method-call name="CastElement">
                <sequence select="src:helper-type('DocumentWriter')"/>
                <code:arguments>
+                  <code:this-reference/>
                   <sequence select="$output/src:reference/code:*"/>
                </code:arguments>
             </code:method-call>
@@ -820,6 +828,7 @@
             <code:method-call name="CastElement">
                <sequence select="src:helper-type('DocumentWriter')"/>
                <code:arguments>
+                  <code:this-reference/>
                   <sequence select="$output/src:reference/code:*"/>
                </code:arguments>
             </code:method-call>
@@ -1303,6 +1312,7 @@
             <code:method-call name="CastElement">
                <sequence select="src:helper-type('DocumentWriter')"/>
                <code:arguments>
+                  <code:this-reference/>
                   <sequence select="$output/src:reference/code:*"/>
                </code:arguments>
             </code:method-call>
