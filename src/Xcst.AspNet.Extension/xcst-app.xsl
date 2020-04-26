@@ -137,6 +137,10 @@
       </code:method-call>
    </template>
 
+   <template match="a:input | a:hidden" mode="xcst:extension-instruction">
+      <call-template name="a:element-instruction"/>
+   </template>
+
    <template match="a:textarea" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
 
@@ -238,6 +242,10 @@
             </call-template>
          </code:arguments>
       </code:method-call>
+   </template>
+
+   <template match="a:textarea" mode="xcst:extension-instruction">
+      <call-template name="a:element-instruction"/>
    </template>
 
    <template match="a:check-box" mode="src:extension-instruction">
@@ -377,6 +385,10 @@
       </code:method-call>
    </template>
 
+   <template match="a:radio-button" mode="xcst:extension-instruction">
+      <call-template name="a:element-instruction"/>
+   </template>
+
    <template match="a:anti-forgery-token" mode="src:extension-instruction">
 
       <call-template name="xcst:validate-attribs">
@@ -384,6 +396,10 @@
       </call-template>
 
       <call-template name="a:anti-forgery-token"/>
+   </template>
+
+   <template match="a:anti-forgery-token" mode="xcst:extension-instruction">
+      <call-template name="a:element-instruction"/>
    </template>
 
    <template name="a:anti-forgery-token">
@@ -508,6 +524,10 @@
             </call-template>
          </code:arguments>
       </code:method-call>
+   </template>
+
+   <template match="a:select" mode="xcst:extension-instruction">
+      <call-template name="a:element-instruction"/>
    </template>
 
    <template name="a:options">
@@ -1407,6 +1427,10 @@
       </code:try>
    </template>
 
+   <template match="a:form" mode="xcst:extension-instruction">
+      <call-template name="a:element-instruction"/>
+   </template>
+
    <template match="a:model" mode="src:extension-instruction">
 
       <call-template name="xcst:validate-attribs">
@@ -1829,5 +1853,11 @@
 
       <code:type-reference name="{$helper}" namespace="Xcst.Web.Runtime"/>
    </function>
+
+   <template name="a:element-instruction" as="element(xcst:instruction)">
+      <xcst:instruction>
+         <code:type-reference name="XElement" namespace="System.Xml.Linq"/>
+      </xcst:instruction>
+   </template>
 
 </stylesheet>

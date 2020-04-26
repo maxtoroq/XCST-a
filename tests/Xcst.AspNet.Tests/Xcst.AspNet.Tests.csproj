@@ -168,6 +168,7 @@
     <Compile Include="Tests.generated.cs" />
     <Compile Include="TestsHelper.cs" />
     <None Include="app.config" />
+    <None Include="Extension\AntiForgeryToken\TypeInference.c.xcst" />
     <None Include="Extension\Attributes\SkipBinding.c.xcst" />
     <None Include="Extension\Attributes\member.skip-binding.type.c.xcst" />
     <None Include="Extension\Attributes\member.skip-binding.type.i.xcst" />
@@ -243,18 +244,24 @@
     <None Include="Extension\Form\form.model-value_or_model-type.req.i.xcst" />
     <None Include="Extension\Form\form.attributes.type.i.xcst" />
     <None Include="Extension\Form\form.method.req.i.xcst" />
+    <None Include="Extension\Form\TypeInference.c.xcst" />
+    <None Include="Extension\Hidden\TypeInference.c.xcst" />
     <None Include="Extension\Hidden\Value.c.xcst" />
     <None Include="Extension\Input\Attributes.c.xcst" />
     <None Include="Extension\Input\FileOmitValue.c.xcst" />
     <None Include="Extension\Input\NoCheckBox.c.xcst" />
+    <None Include="Extension\Input\TypeInference.c.xcst" />
     <None Include="Extension\Input\Value.c.xcst" />
     <None Include="Extension\Model\CopyViewData.c.xcst" />
     <None Include="Extension\Model\HelperVariableScope.i.xcst" />
     <None Include="Extension\Model\model.field-prefix.type.c.xcst" />
     <None Include="Extension\RadioButton\Checked.c.xcst" />
+    <None Include="Extension\RadioButton\TypeInference.c.xcst" />
     <None Include="Extension\Select\DynamicListEmpty.c.xcst" />
+    <None Include="Extension\Select\TypeInference.c.xcst" />
     <None Include="Extension\Select\Multiple\Selected.c.xcst" />
     <None Include="Extension\Select\Selected.c.xcst" />
+    <None Include="Extension\Textarea\TypeInference.c.xcst" />
     <None Include="Extension\Textarea\Value.c.xcst" />
     <None Include="generate-tests.ps1" />
   </ItemGroup>
