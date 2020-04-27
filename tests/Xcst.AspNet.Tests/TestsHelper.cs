@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -15,11 +16,15 @@ using Moq;
 using Xcst.Compiler;
 using Xcst.Web.Extension;
 using Xcst.Web.Mvc;
+using CSharpVersion = Microsoft.CodeAnalysis.CSharp.LanguageVersion;
 using TestAssert = NUnit.Framework.Assert;
+using TestAssertException = NUnit.Framework.AssertionException;
 
 namespace Xcst.Web.Tests {
 
    static class TestsHelper {
+
+      const bool PrintCode = false;
 
       static readonly XcstCompilerFactory CompilerFactory = new XcstCompilerFactory();
 
@@ -54,14 +59,37 @@ namespace Xcst.Web.Tests {
             throw;
          }
 
-         bool printCode = false;
+         if (fail) {
+
+            if (!xcstResult.Templates.Contains(InitialName)) {
+               TestAssert.Fail("A failing package should define an initial template.");
+            } else if (xcstResult.Templates.Contains(ExpectedName)) {
+               TestAssert.Fail("A failing package should not define an 'expected' template.");
+            }
+
+         } else {
+
+            if (xcstResult.Templates.Contains(ExpectedName)
+               && !xcstResult.Templates.Contains(InitialName)) {
+
+               TestAssert.Fail("A package that defines an 'expected' template without an initial template makes no sense.");
+            }
+         }
+
+         bool printCode = PrintCode;
 
          try {
 
             Type packageType;
 
             try {
-               packageType = CompileCode(xcstResult, packageName, packageUri, correct);
+
+               packageType = CompileCode(packageName, packageUri, xcstResult.CompilationUnits, xcstResult.Language, correct);
+
+               if (!correct) {
+                  // did not fail, caller Assert.Throws will
+                  return;
+               }
 
             } catch (CompileException) {
 
@@ -72,45 +100,21 @@ namespace Xcst.Web.Tests {
                throw;
             }
 
-            if (!correct) {
-               return;
-            }
-
             try {
 
                if (fail) {
-
-                  if (!xcstResult.Templates.Contains(InitialName)) {
-                     TestAssert.Fail("A failing package should define an initial template.");
-                  } else if (xcstResult.Templates.Contains(ExpectedName)) {
-                     TestAssert.Fail("A failing package should not define an 'expected' template.");
-                  }
 
                   SimplyRun(packageType, packageUri);
 
                   // did not fail, print code
                   printCode = true;
 
-               } else {
+               } else if (xcstResult.Templates.Contains(InitialName)) {
 
-                  if (xcstResult.Templates.Contains(InitialName)) {
-
-                     if (xcstResult.Templates.Contains(ExpectedName)) {
-
-                        bool equals = OutputEqualsToExpected(packageType);
-
-                        if (!printCode) {
-                           printCode = !equals;
-                        }
-
-                        TestAssert.IsTrue(equals);
-
-                     } else {
-                        SimplyRun(packageType, packageUri);
-                     }
-
-                  } else if (xcstResult.Templates.Contains(ExpectedName)) {
-                     TestAssert.Fail("A package that defines an 'expected' template without an initial template makes no sense.");
+                  if (xcstResult.Templates.Contains(ExpectedName)) {
+                     TestAssert.IsTrue(OutputEqualsToExpected(packageType, packageUri));
+                  } else {
+                     SimplyRun(packageType, packageUri);
                   }
                }
 
@@ -123,6 +127,10 @@ namespace Xcst.Web.Tests {
 
                throw;
 
+            } catch (TestAssertException) {
+
+               printCode = true;
+               throw;
             }
 
          } finally {
@@ -159,15 +167,16 @@ namespace Xcst.Web.Tests {
          return Tuple.Create(result, compiler.TargetNamespace + "." + compiler.TargetClass);
       }
 
-      static Type CompileCode(CompileResult result, string packageName, Uri packageUri, bool correct) {
+      public static Type CompileCode(string packageName, Uri packageUri, IEnumerable<string> compilationUnits, string language, bool correct) {
 
-         var parseOptions = new CSharpParseOptions(preprocessorSymbols: new[] { "DEBUG", "TRACE" });
+         var csOptions = new CSharpParseOptions(CSharpVersion.CSharp6, preprocessorSymbols: new[] { "DEBUG", "TRACE" });
 
-         SyntaxTree[] syntaxTrees = result.CompilationUnits
-            .Select(c => CSharpSyntaxTree.ParseText(c, parseOptions, path: packageUri.LocalPath, encoding: Encoding.UTF8))
+         SyntaxTree[] syntaxTrees = compilationUnits
+            .Select(c => CSharpSyntaxTree.ParseText(c, csOptions, path: packageUri.LocalPath, encoding: Encoding.UTF8))
             .ToArray();
 
          MetadataReference[] references = {
+            // XCST dependencies
             MetadataReference.CreateFromFile(typeof(System.Object).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(System.Uri).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location),
@@ -184,7 +193,7 @@ namespace Xcst.Web.Tests {
             MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location)
          };
 
-         CSharpCompilation compilation = CSharpCompilation.Create(
+         var compilation = CSharpCompilation.Create(
             Path.GetRandomFileName(),
             syntaxTrees: syntaxTrees,
             references: references,
@@ -193,11 +202,11 @@ namespace Xcst.Web.Tests {
          using (var assemblyStream = new MemoryStream()) {
             using (var pdbStream = new MemoryStream()) {
 
-               EmitResult csharpResult = compilation.Emit(assemblyStream, pdbStream);
+               EmitResult codeResult = compilation.Emit(assemblyStream, pdbStream);
 
-               if (!csharpResult.Success) {
+               if (!codeResult.Success) {
 
-                  Diagnostic error = csharpResult.Diagnostics
+                  Diagnostic error = codeResult.Diagnostics
                      .Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error)
                      .FirstOrDefault();
 
@@ -208,7 +217,7 @@ namespace Xcst.Web.Tests {
                      Console.WriteLine($"// Line number: {error.Location.GetLineSpan().StartLinePosition.Line}");
                   }
 
-                  throw new CompileException("C# compilation failed.");
+                  throw new CompileException($"{language} compilation failed.");
                }
 
                assemblyStream.Position = 0;
@@ -243,7 +252,7 @@ namespace Xcst.Web.Tests {
          return package;
       }
 
-      static bool OutputEqualsToExpected(Type packageType) {
+      static bool OutputEqualsToExpected(Type packageType, Uri packageUri) {
 
          XcstViewPage package = CreatePackage(packageType);
 
@@ -256,6 +265,8 @@ namespace Xcst.Web.Tests {
 
             evaluator.CallInitialTemplate()
                .OutputTo(actualWriter)
+               .WithBaseUri(packageUri)
+               .WithBaseOutputUri(packageUri)
                .Run();
          }
 
@@ -298,31 +309,25 @@ namespace Xcst.Web.Tests {
 
    public abstract class TestBase<TModel> : XcstViewPage<TModel> {
 
-      protected Type CompileType<T>(T obj) {
-         return typeof(T);
-      }
+      protected Type CompileType<T>(T obj) =>
+         typeof(T);
 
       public static class Assert {
 
-         public static void IsTrue(bool condition) {
+         public static void IsTrue(bool condition) =>
             TestAssert.IsTrue(condition);
-         }
 
-         public static void IsFalse(bool condition) {
+         public static void IsFalse(bool condition) =>
             TestAssert.IsFalse(condition);
-         }
 
-         public static void AreEqual<T>(T expected, T actual) {
+         public static void AreEqual<T>(T expected, T actual) =>
             TestAssert.AreEqual(expected, actual);
-         }
 
-         public static void IsNull(object value) {
+         public static void IsNull(object value) =>
             TestAssert.IsNull(value);
-         }
 
-         public static void IsNotNull(object value) {
+         public static void IsNotNull(object value) =>
             TestAssert.IsNotNull(value);
-         }
       }
    }
 }
