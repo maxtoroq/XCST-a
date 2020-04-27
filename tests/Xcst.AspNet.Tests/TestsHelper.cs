@@ -319,6 +319,10 @@ namespace Xcst.Web.Tests {
          public static void IsNull(object value) {
             TestAssert.IsNull(value);
          }
+
+         public static void IsNotNull(object value) {
+            TestAssert.IsNotNull(value);
+         }
       }
    }
 }

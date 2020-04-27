@@ -27,10 +27,14 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using Xcst.PackageModel;
+using Xcst.Runtime;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Runtime {
+
+   using TemplateAction = Action<HtmlHelper, IXcstPackage, ISequenceWriter<object>>;
 
    static class TemplateHelpers {
 
@@ -40,8 +44,8 @@ namespace Xcst.Web.Runtime {
             { DataBoundControlMode.Edit, "EditorTemplates" }
          };
 
-      static readonly Dictionary<string, Action<HtmlHelper, XcstWriter>> _defaultDisplayActions =
-         new Dictionary<string, Action<HtmlHelper, XcstWriter>>(StringComparer.OrdinalIgnoreCase) {
+      static readonly Dictionary<string, TemplateAction> _defaultDisplayActions =
+         new Dictionary<string, TemplateAction>(StringComparer.OrdinalIgnoreCase) {
             { "EmailAddress", DefaultDisplayTemplates.EmailAddressTemplate },
             { "HiddenInput", DefaultDisplayTemplates.HiddenInputTemplate },
             { "Html", DefaultDisplayTemplates.HtmlTemplate },
@@ -56,8 +60,8 @@ namespace Xcst.Web.Runtime {
             { nameof(Object), DefaultDisplayTemplates.ObjectTemplate },
          };
 
-      static readonly Dictionary<string, Action<HtmlHelper, XcstWriter>> _defaultEditorActions =
-         new Dictionary<string, Action<HtmlHelper, XcstWriter>>(StringComparer.OrdinalIgnoreCase) {
+      static readonly Dictionary<string, TemplateAction> _defaultEditorActions =
+         new Dictionary<string, TemplateAction>(StringComparer.OrdinalIgnoreCase) {
             { "HiddenInput", DefaultEditorTemplates.HiddenInputTemplate },
             { "MultilineText", DefaultEditorTemplates.MultilineTextTemplate },
             { "Password", DefaultEditorTemplates.PasswordTemplate },
@@ -92,23 +96,25 @@ namespace Xcst.Web.Runtime {
 
       static string CacheItemId = Guid.NewGuid().ToString();
 
-      internal delegate void ExecuteTemplateDelegate(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, string templateName,
-                                                     DataBoundControlMode mode, GetViewNamesDelegate getViewNames,
-                                                     GetDefaultActionsDelegate getDefaultActions);
+      internal delegate void ExecuteTemplateDelegate(
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData, string templateName,
+            DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions);
 
-      internal delegate Dictionary<string, Action<HtmlHelper, XcstWriter>> GetDefaultActionsDelegate(DataBoundControlMode mode);
+      internal delegate Dictionary<string, TemplateAction> GetDefaultActionsDelegate(DataBoundControlMode mode);
 
       internal delegate IEnumerable<string> GetViewNamesDelegate(ModelMetadata metadata, params string[] templateHints);
 
-      internal delegate void TemplateHelperDelegate(HtmlHelper html, XcstWriter output, ModelMetadata metadata, string htmlFieldName,
-                                                    string templateName, DataBoundControlMode mode, object additionalViewData);
+      internal delegate void TemplateHelperDelegate(
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string htmlFieldName,
+            string templateName, DataBoundControlMode mode, object additionalViewData);
 
-      public static void Template(HtmlHelper html, XcstWriter output, string expression, string templateName, string htmlFieldName, DataBoundControlMode mode, object additionalViewData) {
-         Template(html, output, expression, templateName, htmlFieldName, mode, additionalViewData, TemplateHelper);
-      }
+      public static void Template(
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string templateName, string htmlFieldName, DataBoundControlMode mode, object additionalViewData) =>
+         Template(html, package, output, expression, templateName, htmlFieldName, mode, additionalViewData, TemplateHelper);
 
-      internal static void Template(HtmlHelper html, XcstWriter output, string expression, string templateName, string htmlFieldName,
-                                    DataBoundControlMode mode, object additionalViewData, TemplateHelperDelegate templateHelper) {
+      internal static void Template(
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string templateName, string htmlFieldName,
+            DataBoundControlMode mode, object additionalViewData, TemplateHelperDelegate templateHelper) {
 
          ModelMetadata metadata = ModelMetadata.FromStringExpression(expression, html.ViewData);
 
@@ -116,19 +122,17 @@ namespace Xcst.Web.Runtime {
             htmlFieldName = ExpressionHelper.GetExpressionText(expression);
          }
 
-         templateHelper(html, output, metadata, htmlFieldName, templateName, mode, additionalViewData);
+         templateHelper(html, package, output, metadata, htmlFieldName, templateName, mode, additionalViewData);
       }
 
-      public static void TemplateFor<TContainer, TValue>(this HtmlHelper<TContainer> html, XcstWriter output, Expression<Func<TContainer, TValue>> expression,
-                                                         string templateName, string htmlFieldName, DataBoundControlMode mode,
-                                                         object additionalViewData) {
+      public static void TemplateFor<TContainer, TValue>(
+            this HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
+            string templateName, string htmlFieldName, DataBoundControlMode mode, object additionalViewData) =>
+         TemplateFor(html, package, output, expression, templateName, htmlFieldName, mode, additionalViewData, TemplateHelper);
 
-         TemplateFor(html, output, expression, templateName, htmlFieldName, mode, additionalViewData, TemplateHelper);
-      }
-
-      internal static void TemplateFor<TContainer, TValue>(this HtmlHelper<TContainer> html, XcstWriter output, Expression<Func<TContainer, TValue>> expression,
-                                                           string templateName, string htmlFieldName, DataBoundControlMode mode,
-                                                           object additionalViewData, TemplateHelperDelegate templateHelper) {
+      internal static void TemplateFor<TContainer, TValue>(
+            this HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
+            string templateName, string htmlFieldName, DataBoundControlMode mode, object additionalViewData, TemplateHelperDelegate templateHelper) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
 
@@ -136,14 +140,15 @@ namespace Xcst.Web.Runtime {
             htmlFieldName = ExpressionHelper.GetExpressionText(expression);
          }
 
-         templateHelper(html, output, metadata, htmlFieldName, templateName, mode, additionalViewData);
+         templateHelper(html, package, output, metadata, htmlFieldName, templateName, mode, additionalViewData);
       }
 
-      public static void TemplateHelper(HtmlHelper html, XcstWriter output, ModelMetadata metadata, string htmlFieldName, string templateName, DataBoundControlMode mode, object additionalViewData) {
-         TemplateHelper(html, output, metadata, htmlFieldName, templateName, mode, additionalViewData, ExecuteTemplate);
-      }
+      public static void TemplateHelper(
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string htmlFieldName, string templateName, DataBoundControlMode mode, object additionalViewData) =>
+         TemplateHelper(html, package, output, metadata, htmlFieldName, templateName, mode, additionalViewData, ExecuteTemplate);
 
-      internal static void TemplateHelper(HtmlHelper html, XcstWriter output, ModelMetadata metadata, string htmlFieldName, string templateName, DataBoundControlMode mode, object additionalViewData, ExecuteTemplateDelegate executeTemplate) {
+      internal static void TemplateHelper(
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string htmlFieldName, string templateName, DataBoundControlMode mode, object additionalViewData, ExecuteTemplateDelegate executeTemplate) {
 
          bool displayMode = mode == DataBoundControlMode.ReadOnly;
 
@@ -169,7 +174,7 @@ namespace Xcst.Web.Runtime {
             && !String.IsNullOrEmpty(formatString)) {
 
             formattedModelValue = (displayMode) ?
-               output.SimpleContent.Format(formatString, metadata.Model)
+               package.Context.SimpleContent.Format(formatString, metadata.Model)
                : String.Format(CultureInfo.CurrentCulture, formatString, metadata.Model);
          }
 
@@ -207,10 +212,12 @@ namespace Xcst.Web.Runtime {
 
          viewData.TemplateInfo.VisitedObjects().Add(visitedObjectsKey); // DDB #224750
 
-         executeTemplate(html, output, viewData, templateName, mode, GetViewNames, GetDefaultActions);
+         executeTemplate(html, package, output, viewData, templateName, mode, GetViewNames, GetDefaultActions);
       }
 
-      static void ExecuteTemplate(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, string templateName, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
+      static void ExecuteTemplate(
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output,
+            ViewDataDictionary viewData, string templateName, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
 
          var actionCache = GetActionCache(html);
          var defaultActions = getDefaultActions(mode);
@@ -249,7 +256,7 @@ namespace Xcst.Web.Runtime {
             if (actionCache.TryGetValue(fullViewName, out ActionCacheItem cacheItem)) {
 
                if (cacheItem != null) {
-                  cacheItem.Execute(html, output, viewData);
+                  cacheItem.Execute(html, package, output, viewData);
                   return;
                }
 
@@ -275,7 +282,7 @@ namespace Xcst.Web.Runtime {
 
                   actionCache[fullViewName] = item;
 
-                  item.Execute(html, output, viewData);
+                  item.Execute(html, package, output, viewData);
                   return;
                }
 
@@ -301,7 +308,7 @@ namespace Xcst.Web.Runtime {
          return result;
       }
 
-      static Dictionary<string, Action<HtmlHelper, XcstWriter>> GetDefaultActions(DataBoundControlMode mode) {
+      static Dictionary<string, TemplateAction> GetDefaultActions(DataBoundControlMode mode) {
 
          return (mode == DataBoundControlMode.ReadOnly) ?
             _defaultDisplayActions : _defaultEditorActions;
@@ -386,7 +393,7 @@ namespace Xcst.Web.Runtime {
       }
 
 #if ASPNETMVC
-      static void RenderView(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, ViewEngineResult viewEngineResult) {
+      static void RenderView(HtmlHelper html, ISequenceWriter<object> output, ViewDataDictionary viewData, ViewEngineResult viewEngineResult) {
 
          IView view = viewEngineResult.View;
 
@@ -408,7 +415,7 @@ namespace Xcst.Web.Runtime {
       }
 #endif
 
-      static void RenderViewPage(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData, XcstViewPage viewPage) {
+      static void RenderViewPage(HtmlHelper html, ISequenceWriter<object> output, ViewDataDictionary viewData, XcstViewPage viewPage) {
 
          viewPage.ViewContext = html.ViewContext.Clone(viewData: viewData);
 
@@ -419,20 +426,20 @@ namespace Xcst.Web.Runtime {
          }
 
          evaluator.CallInitialTemplate()
-            .OutputTo(output)
+            .OutputToRaw(output)
             .Run();
       }
 
       abstract class ActionCacheItem {
-         public abstract void Execute(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData);
+         public abstract void Execute(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData);
       }
 
       class ActionCacheCodeItem : ActionCacheItem {
 
-         public Action<HtmlHelper, XcstWriter> Action { get; set; }
+         public TemplateAction Action { get; set; }
 
-         public override void Execute(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData) {
-            Action(MakeHtmlHelper(html, viewData), output);
+         public override void Execute(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData) {
+            Action(MakeHtmlHelper(html, viewData), package, output);
          }
       }
 
@@ -441,7 +448,7 @@ namespace Xcst.Web.Runtime {
 
          public string ViewName { get; set; }
 
-         public override void Execute(HtmlHelper html, XcstWriter output, ViewDataDictionary viewData) {
+         public override void Execute(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData) {
 
             ViewEngineResult viewEngineResult = ViewEngines.Engines.FindPartialView(html.ViewContext, this.ViewName);
 

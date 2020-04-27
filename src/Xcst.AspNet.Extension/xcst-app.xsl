@@ -260,27 +260,14 @@
          <with-param name="attribs" select="@name, @checked"/>
       </call-template>
 
-      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
-      <variable name="doc-output" select="src:doc-output(., $output)"/>
-
-      <if test="not($output-is-doc)">
-         <code:variable name="{$doc-output/src:reference/code:*/@name}">
-            <code:method-call name="CastElement">
-               <sequence select="src:helper-type('DocumentWriter')"/>
-               <code:arguments>
-                  <sequence select="$output/src:reference/code:*"/>
-               </code:arguments>
-            </code:method-call>
-         </code:variable>
-      </if>
-
       <variable name="for-model" select="empty((@for, @name))"/>
 
       <code:method-call name="CheckBox{'For'[current()/@for], 'ForModel'[$for-model]}">
          <sequence select="a:helper-type('InputInstructions')"/>
          <code:arguments>
             <call-template name="a:html-helper"/>
-            <sequence select="$doc-output/src:reference/code:*"/>
+            <code:this-reference/>
+            <sequence select="$output/src:reference/code:*"/>
             <choose>
                <when test="@for">
                   <variable name="param" select="src:aux-variable(generate-id())"/>
@@ -314,6 +301,17 @@
             </call-template>
          </code:arguments>
       </code:method-call>
+   </template>
+
+   <template match="a:check-box" mode="xcst:extension-instruction">
+      <variable name="instruction" as="element()">
+         <call-template name="a:element-instruction"/>
+      </variable>
+      <xcst:instruction>
+         <code:type-reference array-dimensions="1">
+            <copy-of select="$instruction/code:type-reference"/>
+         </code:type-reference>
+      </xcst:instruction>
    </template>
 
    <template match="a:radio-button" mode="src:extension-instruction">
@@ -840,28 +838,14 @@
 
       <call-template name="a:validate-for"/>
 
-      <variable name="output-is-doc" select="src:output-is-doc($output)"/>
-      <variable name="doc-output" select="src:doc-output(., $output)"/>
-
-      <if test="not($output-is-doc)">
-         <code:variable name="{$doc-output/src:reference/code:*/@name}">
-            <code:method-call name="CastElement">
-               <sequence select="src:helper-type('DocumentWriter')"/>
-               <code:arguments>
-                  <code:this-reference/>
-                  <sequence select="$output/src:reference/code:*"/>
-               </code:arguments>
-            </code:method-call>
-         </code:variable>
-      </if>
-
       <variable name="for-model" select="empty((@for, @name))"/>
 
       <code:method-call name="{if ($editor) then 'Editor' else 'Display'}{'For'[current()/@for], 'ForModel'[$for-model]}">
          <sequence select="a:helper-type(concat((if ($editor) then 'Editor' else 'Display'), 'Instructions'))"/>
          <code:arguments>
             <call-template name="a:html-helper"/>
-            <sequence select="$doc-output/src:reference/code:*"/>
+            <code:this-reference/>
+            <sequence select="$output/src:reference/code:*"/>
             <if test="not($for-model)">
                <choose>
                   <when test="@for">

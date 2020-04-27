@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Linq'/>
+   <c:import-namespace ns='System.Xml.Linq'/>
+
+   <c:type name='Foo'>
+      <c:member name='a' as='string'/>
+      <c:member name='b' as='string'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:call-template name='default'/>
+      <c:call-template name='member-template'/>
+   </c:template>
+
+   <c:template name='default'>
+
+      <c:variable name='result'>
+         <a:model value='new Foo()'>
+            <a:display/>
+         </a:model>
+      </c:variable>
+
+      <c:variable name='elements' value='result.Cast&lt;XElement>().ToArray()'/>
+
+      <c:void value='Assert.IsNotNull(elements)'/>
+      <c:void value='Assert.AreEqual(4, elements.Length)'/>
+   </c:template>
+
+   <c:template name='member-template'>
+
+      <c:variable name='result'>
+         <a:model value='new Foo()'>
+            <a:display>
+               <a:member-template>
+                  <i/>
+                  <i/>
+               </a:member-template>
+            </a:display>
+         </a:model>
+      </c:variable>
+
+      <c:variable name='elements' value='result.Cast&lt;XElement>().ToArray()'/>
+
+      <c:void value='Assert.IsNotNull(elements)'/>
+      <c:void value='Assert.AreEqual(4, elements.Length)'/>
+   </c:template>
+
+</c:module>

@@ -24,13 +24,17 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using Xcst.PackageModel;
+using Xcst.Runtime;
 using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Runtime {
 
    static class DefaultDisplayTemplates {
 
-      public static void BooleanTemplate(HtmlHelper html, XcstWriter output) {
+      public static void BooleanTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          ViewDataDictionary viewData = html.ViewData;
 
@@ -70,11 +74,10 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      public static void CollectionTemplate(HtmlHelper html, XcstWriter output) {
-         CollectionTemplate(html, output, TemplateHelpers.TemplateHelper);
-      }
+      public static void CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         CollectionTemplate(html, package, seqOutput, TemplateHelpers.TemplateHelper);
 
-      internal static void CollectionTemplate(HtmlHelper html, XcstWriter output, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+      internal static void CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
          ViewDataDictionary viewData = html.ViewData;
 
@@ -118,7 +121,7 @@ namespace Xcst.Web.Runtime {
                ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => item, itemType);
                string fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-               templateHelper(html, output, metadata, fieldName, null, DataBoundControlMode.ReadOnly, additionalViewData: null);
+               templateHelper(html, package, seqOutput, metadata, fieldName, null, DataBoundControlMode.ReadOnly, additionalViewData: null);
             }
 
          } finally {
@@ -126,20 +129,22 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      public static void DecimalTemplate(HtmlHelper html, XcstWriter output) {
+      public static void DecimalTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ViewDataDictionary viewData = html.ViewData;
 
          if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelMetadata.Model) {
 
             viewData.TemplateInfo.FormattedModelValue =
-               output.SimpleContent.Format("{0:0.00}", viewData.ModelMetadata.Model);
+               package.Context.SimpleContent.Format("{0:0.00}", viewData.ModelMetadata.Model);
          }
 
-         StringTemplate(html, output);
+         StringTemplate(html, package, seqOutput);
       }
 
-      public static void EmailAddressTemplate(HtmlHelper html, XcstWriter output) {
+      public static void EmailAddressTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          ViewDataDictionary viewData = html.ViewData;
 
@@ -149,22 +154,20 @@ namespace Xcst.Web.Runtime {
          output.WriteEndElement();
       }
 
-      public static void HiddenInputTemplate(HtmlHelper html, XcstWriter output) {
+      public static void HiddenInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          if (!html.ViewData.ModelMetadata.HideSurroundingHtml) {
-            StringTemplate(html, output);
+            StringTemplate(html, package, seqOutput);
          }
       }
 
-      public static void HtmlTemplate(HtmlHelper html, XcstWriter output) {
-         output.WriteRaw(output.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
-      }
+      public static void HtmlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         seqOutput.WriteRaw(package.Context.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
 
-      public static void ObjectTemplate(HtmlHelper html, XcstWriter output) {
-         ObjectTemplate(html, output, TemplateHelpers.TemplateHelper);
-      }
+      public static void ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         ObjectTemplate(html, package, seqOutput, TemplateHelpers.TemplateHelper);
 
-      internal static void ObjectTemplate(HtmlHelper html, XcstWriter output, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+      internal static void ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
          ViewDataDictionary viewData = html.ViewData;
          ModelMetadata modelMetadata = viewData.ModelMetadata;
@@ -172,7 +175,7 @@ namespace Xcst.Web.Runtime {
          if (modelMetadata.Model == null
             || viewData.TemplateInfo.TemplateDepth > 1) {
 
-            MetadataInstructions.DisplayTextHelper(html, output, modelMetadata);
+            MetadataInstructions.DisplayTextHelper(html, seqOutput, modelMetadata);
             return;
          }
 
@@ -185,14 +188,21 @@ namespace Xcst.Web.Runtime {
 
          foreach (var group in groupedProperties) {
 
+            XcstWriter fieldsetWriter = null;
+
             if (createFieldset) {
-               output.WriteStartElement("fieldset");
-               output.WriteStartElement("legend");
-               output.WriteString(group.Key);
-               output.WriteEndElement();
+
+               fieldsetWriter = DocumentWriter.CastElement(package, seqOutput);
+
+               fieldsetWriter.WriteStartElement("fieldset");
+               fieldsetWriter.WriteStartElement("legend");
+               fieldsetWriter.WriteString(group.Key);
+               fieldsetWriter.WriteEndElement();
             }
 
             foreach (ModelMetadata propertyMeta in group) {
+
+               XcstWriter fieldWriter = null;
 
                if (!propertyMeta.HideSurroundingHtml) {
 
@@ -200,37 +210,44 @@ namespace Xcst.Web.Runtime {
                      DisplayInstructions.MemberTemplate(html, propertyMeta);
 
                   if (memberTemplate != null) {
-                     memberTemplate(null, output);
+                     memberTemplate(null, fieldsetWriter ?? seqOutput);
                      continue;
                   }
 
-                  output.WriteStartElement("div");
-                  output.WriteAttributeString("class", "display-label");
-                  output.WriteString(propertyMeta.GetDisplayName() ?? String.Empty);
-                  output.WriteEndElement();
+                  XcstWriter labelWriter = fieldsetWriter
+                     ?? DocumentWriter.CastElement(package, seqOutput);
 
-                  output.WriteStartElement("div");
-                  output.WriteAttributeString("class", "display-field");
+                  labelWriter.WriteStartElement("div");
+                  labelWriter.WriteAttributeString("class", "display-label");
+                  labelWriter.WriteString(propertyMeta.GetDisplayName() ?? String.Empty);
+                  labelWriter.WriteEndElement();
+
+                  fieldWriter = fieldsetWriter
+                     ?? DocumentWriter.CastElement(package, seqOutput);
+
+                  fieldWriter.WriteStartElement("div");
+                  fieldWriter.WriteAttributeString("class", "display-field");
                }
 
-               templateHelper(html, output, propertyMeta, propertyMeta.PropertyName, null, DataBoundControlMode.ReadOnly, additionalViewData: null);
+               templateHelper(html, package, fieldWriter ?? fieldsetWriter ?? seqOutput, propertyMeta, propertyMeta.PropertyName, null, DataBoundControlMode.ReadOnly, additionalViewData: null);
 
                if (!propertyMeta.HideSurroundingHtml) {
-                  output.WriteEndElement(); // </div>
+                  fieldWriter.WriteEndElement(); // </div>
                }
             }
 
             if (createFieldset) {
-               output.WriteEndElement(); // </fieldset>
+               fieldsetWriter.WriteEndElement(); // </fieldset>
             }
          }
       }
 
-      public static void StringTemplate(HtmlHelper html, XcstWriter output) {
-         output.WriteString(output.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
-      }
+      public static void StringTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         seqOutput.WriteString(package.Context.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
 
-      public static void UrlTemplate(HtmlHelper html, XcstWriter output) {
+      public static void UrlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          ViewDataDictionary viewData = html.ViewData;
 
@@ -240,18 +257,21 @@ namespace Xcst.Web.Runtime {
          output.WriteEndElement();
       }
 
-      public static void ImageUrlTemplate(HtmlHelper html, XcstWriter output) {
+      public static void ImageUrlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ViewDataDictionary viewData = html.ViewData;
 
          if (viewData.Model != null) {
+
+            XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
+
             output.WriteStartElement("img");
             output.WriteAttributeString("src", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
             output.WriteEndElement();
          }
       }
 
-      public static void EnumTemplate(HtmlHelper html, XcstWriter output) {
+      public static void EnumTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ViewDataDictionary viewData = html.ViewData;
          ModelMetadata modelMetadata = viewData.ModelMetadata;
@@ -281,7 +301,7 @@ namespace Xcst.Web.Runtime {
             }
          }
 
-         StringTemplate(html, output);
+         StringTemplate(html, package, seqOutput);
       }
    }
 }

@@ -17,7 +17,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 #if ASPNETMVC
 using System.Data;
 #endif
@@ -26,6 +25,7 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using Xcst.PackageModel;
 using Xcst.Runtime;
 
 namespace Xcst.Web.Runtime {
@@ -33,36 +33,21 @@ namespace Xcst.Web.Runtime {
    /// <exclude/>
    public static class EditorInstructions {
 
-
-      public static void Editor(HtmlHelper html,
-                                XcstWriter output,
-                                string expression,
-                                string templateName = null,
-                                string htmlFieldName = null,
-                                object additionalViewData = null) {
-
-         TemplateHelpers.Template(html, output, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
-      }
+      public static void Editor(
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression,
+            string templateName = null, string htmlFieldName = null, object additionalViewData = null) =>
+         TemplateHelpers.Template(html, package, output, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void EditorFor<TModel, TValue>(HtmlHelper<TModel> html,
-                                                   XcstWriter output,
-                                                   Expression<Func<TModel, TValue>> expression,
-                                                   string templateName = null,
-                                                   string htmlFieldName = null,
-                                                   object additionalViewData = null) {
+      public static void EditorFor<TModel, TValue>(
+            HtmlHelper<TModel> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TModel, TValue>> expression,
+            string templateName = null, string htmlFieldName = null, object additionalViewData = null) =>
+         TemplateHelpers.TemplateFor(html, package, output, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
 
-         TemplateHelpers.TemplateFor(html, output, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
-      }
-
-      public static void EditorForModel(HtmlHelper html,
-                                        XcstWriter output,
-                                        string templateName = null,
-                                        string htmlFieldName = null,
-                                        object additionalViewData = null) {
-
-         TemplateHelpers.TemplateHelper(html, output, html.ViewData.ModelMetadata, htmlFieldName, templateName, DataBoundControlMode.Edit, additionalViewData);
-      }
+      public static void EditorForModel(
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output,
+            string templateName = null, string htmlFieldName = null, object additionalViewData = null) =>
+         TemplateHelpers.TemplateHelper(html, package, output, html.ViewData.ModelMetadata, htmlFieldName, templateName, DataBoundControlMode.Edit, additionalViewData);
 
       public static bool ShowForEdit(HtmlHelper html, ModelMetadata propertyMetadata) {
 

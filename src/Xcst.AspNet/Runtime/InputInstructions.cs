@@ -25,6 +25,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using System.Xml.Linq;
+using Xcst.PackageModel;
+using Xcst.Runtime;
 
 namespace Xcst.Web.Runtime {
 
@@ -38,48 +41,45 @@ namespace Xcst.Web.Runtime {
       //////////////////////////
 
       public static void CheckBox(
-            HtmlHelper htmlHelper, XcstWriter output, string name, HtmlAttribs htmlAttributes = null) {
-
-         CheckBoxHelper(htmlHelper, output, default(ModelMetadata), name, isChecked: null, htmlAttributes: htmlAttributes);
-      }
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, HtmlAttribs htmlAttributes = null) =>
+         CheckBoxHelper(htmlHelper, package, output, default(ModelMetadata), name, isChecked: null, htmlAttributes: htmlAttributes);
 
       public static void CheckBox(
-            HtmlHelper htmlHelper, XcstWriter output, string name, bool isChecked, HtmlAttribs htmlAttributes = null) {
-
-         CheckBoxHelper(htmlHelper, output, default(ModelMetadata), name, isChecked, htmlAttributes);
-      }
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, bool isChecked, HtmlAttribs htmlAttributes = null) =>
+         CheckBoxHelper(htmlHelper, package, output, default(ModelMetadata), name, isChecked, htmlAttributes);
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void CheckBoxFor<TModel>(
-            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, bool>> expression, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression, HtmlAttribs htmlAttributes = null) {
 
          if (expression == null) throw new ArgumentNullException(nameof(expression));
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
 
-         CheckBoxForMetadata(htmlHelper, output, metadata, expressionString, /*isChecked: */null, htmlAttributes);
+         CheckBoxForMetadata(htmlHelper, package, output, metadata, expressionString, /*isChecked: */null, htmlAttributes);
       }
 
       public static void CheckBoxForModel(
-            HtmlHelper htmlHelper, XcstWriter output, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, HtmlAttribs htmlAttributes = null) {
 
          ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
 
-         CheckBoxForMetadata(htmlHelper, output, metadata, /*expression: */String.Empty, /*isChecked: */null, htmlAttributes);
+         CheckBoxForMetadata(htmlHelper, package, output, metadata, /*expression: */String.Empty, /*isChecked: */null, htmlAttributes);
       }
 
       public static void CheckBoxForModel(
-            HtmlHelper htmlHelper, XcstWriter output, bool isChecked, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, bool isChecked, HtmlAttribs htmlAttributes = null) {
 
          ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
 
-         CheckBoxForMetadata(htmlHelper, output, metadata, /*expression: */String.Empty, isChecked, htmlAttributes);
+         CheckBoxForMetadata(htmlHelper, package, output, metadata, /*expression: */String.Empty, isChecked, htmlAttributes);
       }
 
       static void CheckBoxForMetadata(
             HtmlHelper htmlHelper,
-            XcstWriter output,
+            IXcstPackage package,
+            ISequenceWriter<XElement> output,
             ModelMetadata/*?*/ metadata,
             string expression,
             bool? isChecked,
@@ -95,11 +95,14 @@ namespace Xcst.Web.Runtime {
             }
          }
 
-         CheckBoxHelper(htmlHelper, output, metadata, expression, isChecked, htmlAttributes);
+         CheckBoxHelper(htmlHelper, package, output, metadata, expression, isChecked, htmlAttributes);
       }
 
       static void CheckBoxHelper(
-            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata/*?*/ metadata, string name, bool? isChecked, HtmlAttribs/*?*/ htmlAttributes) {
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelMetadata/*?*/ metadata, string name, bool? isChecked, HtmlAttribs/*?*/ htmlAttributes) {
+
+         XcstWriter inputWriter = DocumentWriter.CastElement(package, output);
+         XcstWriter hiddenWriter = DocumentWriter.CastElement(package, output);
 
          bool explicitChecked = isChecked.HasValue;
 
@@ -113,7 +116,7 @@ namespace Xcst.Web.Runtime {
 
          InputHelper(
             htmlHelper,
-            output,
+            inputWriter,
             InputType.CheckBox,
             metadata,
             name,
@@ -132,11 +135,11 @@ namespace Xcst.Web.Runtime {
          // Sending a hidden input makes it possible to know that the checkbox was present
          // on the page when the request was submitted.
 
-         output.WriteStartElement("input");
-         output.WriteAttributeString("type", HtmlHelper.GetInputTypeString(InputType.Hidden));
-         output.WriteAttributeString("name", fullName);
-         output.WriteAttributeString("value", "false");
-         output.WriteEndElement();
+         hiddenWriter.WriteStartElement("input");
+         hiddenWriter.WriteAttributeString("type", HtmlHelper.GetInputTypeString(InputType.Hidden));
+         hiddenWriter.WriteAttributeString("name", fullName);
+         hiddenWriter.WriteAttributeString("value", "false");
+         hiddenWriter.WriteEndElement();
       }
 
       //////////////////////////

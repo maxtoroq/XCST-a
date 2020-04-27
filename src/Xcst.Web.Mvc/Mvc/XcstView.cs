@@ -17,6 +17,7 @@ using System.IO;
 using System.Web;
 using System.Web.Compilation;
 using System.Web.Mvc;
+using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc {
 
@@ -32,7 +33,7 @@ namespace Xcst.Web.Mvc {
          RenderViewImpl(viewContext, t => t.OutputTo(writer), instance);
       }
 
-      internal void RenderXcstView(ViewContext viewContext, XcstWriter writer) {
+      internal void RenderXcstView(ViewContext viewContext, ISequenceWriter<object> writer) {
 
          object instance = null;
 
@@ -46,7 +47,7 @@ namespace Xcst.Web.Mvc {
             throw new InvalidOperationException($"The view found at '{this.ViewPath}' was not created.");
          }
 
-         RenderViewImpl(viewContext, t => t.OutputTo(writer), instance);
+         RenderViewImpl(viewContext, t => t.OutputToRaw(writer), instance);
       }
 
       void RenderViewImpl(ViewContext viewContext, Func<XcstTemplateEvaluator, XcstOutputter> getOutputter, object instance) {

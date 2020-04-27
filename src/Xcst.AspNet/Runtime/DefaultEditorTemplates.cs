@@ -28,13 +28,15 @@ using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.UI.WebControls;
+using Xcst.PackageModel;
+using Xcst.Runtime;
 using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Runtime {
 
    static class DefaultEditorTemplates {
 
-      public static void BooleanTemplate(HtmlHelper html, XcstWriter output) {
+      public static void BooleanTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ViewDataDictionary viewData = html.ViewData;
 
@@ -46,6 +48,8 @@ namespace Xcst.Web.Runtime {
 
          if (viewData.ModelMetadata.IsNullableValueType) {
 
+            XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
+
             string className = GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
             var htmlAttributes = CreateHtmlAttributes(html, className);
 
@@ -56,15 +60,14 @@ namespace Xcst.Web.Runtime {
             string className = GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
             var htmlAttributes = CreateHtmlAttributes(html, className);
 
-            InputInstructions.CheckBox(html, output, String.Empty, value.GetValueOrDefault(), htmlAttributes: htmlAttributes);
+            InputInstructions.CheckBox(html, package, seqOutput, String.Empty, value.GetValueOrDefault(), htmlAttributes: htmlAttributes);
          }
       }
 
-      public static void CollectionTemplate(HtmlHelper html, XcstWriter output) {
-         CollectionTemplate(html, output, TemplateHelpers.TemplateHelper);
-      }
+      public static void CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         CollectionTemplate(html, package, seqOutput, TemplateHelpers.TemplateHelper);
 
-      internal static void CollectionTemplate(HtmlHelper html, XcstWriter output, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+      internal static void CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
          ViewDataDictionary viewData = html.ViewData;
          object model = viewData.ModelMetadata.Model;
@@ -107,7 +110,7 @@ namespace Xcst.Web.Runtime {
                ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => item, itemType);
                string fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-               templateHelper(html, output, metadata, fieldName, null, DataBoundControlMode.Edit, additionalViewData: null);
+               templateHelper(html, package, seqOutput, metadata, fieldName, null, DataBoundControlMode.Edit, additionalViewData: null);
             }
 
          } finally {
@@ -115,7 +118,7 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      public static void DecimalTemplate(HtmlHelper html, XcstWriter output) {
+      public static void DecimalTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ViewDataDictionary viewData = html.ViewData;
 
@@ -125,16 +128,18 @@ namespace Xcst.Web.Runtime {
                String.Format(CultureInfo.CurrentCulture, "{0:0.00}", viewData.ModelMetadata.Model);
          }
 
-         HtmlInputTemplateHelper(html, output, "Decimal");
+         HtmlInputTemplateHelper(html, package, seqOutput, "Decimal");
       }
 
-      public static void HiddenInputTemplate(HtmlHelper html, XcstWriter output) {
+      public static void HiddenInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ViewDataDictionary viewData = html.ViewData;
 
          if (!viewData.ModelMetadata.HideSurroundingHtml) {
-            DefaultDisplayTemplates.StringTemplate(html, output);
+            DefaultDisplayTemplates.StringTemplate(html, package, seqOutput);
          }
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          object model = viewData.Model;
 
@@ -144,7 +149,9 @@ namespace Xcst.Web.Runtime {
          InputInstructions.Input(html, output, String.Empty, model, type: "hidden", htmlAttributes: htmlAttributes);
       }
 
-      public static void MultilineTextTemplate(HtmlHelper html, XcstWriter output) {
+      public static void MultilineTextTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          object value = html.ViewData.TemplateInfo.FormattedModelValue;
          string className = GetEditorCssClass(new EditorInfo("MultilineText", "textarea"), "text-box multi-line");
@@ -187,17 +194,16 @@ namespace Xcst.Web.Runtime {
          return htmlAttributes;
       }
 
-      public static void ObjectTemplate(HtmlHelper html, XcstWriter output) {
-         ObjectTemplate(html, output, TemplateHelpers.TemplateHelper);
-      }
+      public static void ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         ObjectTemplate(html, package, seqOutput, TemplateHelpers.TemplateHelper);
 
-      internal static void ObjectTemplate(HtmlHelper html, XcstWriter output, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+      internal static void ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
          ViewDataDictionary viewData = html.ViewData;
          ModelMetadata modelMetadata = viewData.ModelMetadata;
 
          if (viewData.TemplateInfo.TemplateDepth > 1) {
-            MetadataInstructions.DisplayTextHelper(html, output, modelMetadata);
+            MetadataInstructions.DisplayTextHelper(html, seqOutput, modelMetadata);
             return;
          }
 
@@ -210,14 +216,21 @@ namespace Xcst.Web.Runtime {
 
          foreach (var group in groupedProperties) {
 
+            XcstWriter fieldsetWriter = null;
+
             if (createFieldset) {
-               output.WriteStartElement("fieldset");
-               output.WriteStartElement("legend");
-               output.WriteString(group.Key);
-               output.WriteEndElement();
+
+               fieldsetWriter = DocumentWriter.CastElement(package, seqOutput);
+
+               fieldsetWriter.WriteStartElement("fieldset");
+               fieldsetWriter.WriteStartElement("legend");
+               fieldsetWriter.WriteString(group.Key);
+               fieldsetWriter.WriteEndElement();
             }
 
             foreach (ModelMetadata propertyMeta in group) {
+
+               XcstWriter fieldWriter = null;
 
                if (!propertyMeta.HideSurroundingHtml) {
 
@@ -225,35 +238,43 @@ namespace Xcst.Web.Runtime {
                      EditorInstructions.MemberTemplate(html, propertyMeta);
 
                   if (memberTemplate != null) {
-                     memberTemplate(null, output);
+                     memberTemplate(null, fieldsetWriter ?? seqOutput);
                      continue;
                   }
 
-                  output.WriteStartElement("div");
-                  output.WriteAttributeString("class", "editor-label");
-                  LabelInstructions.LabelHelper(html, output, propertyMeta, propertyMeta.PropertyName);
-                  output.WriteEndElement();
+                  XcstWriter labelWriter = fieldsetWriter
+                     ?? DocumentWriter.CastElement(package, seqOutput);
 
-                  output.WriteStartElement("div");
-                  output.WriteAttributeString("class", "editor-field");
+                  labelWriter.WriteStartElement("div");
+                  labelWriter.WriteAttributeString("class", "editor-label");
+                  LabelInstructions.LabelHelper(html, labelWriter, propertyMeta, propertyMeta.PropertyName);
+                  labelWriter.WriteEndElement();
+
+                  fieldWriter = fieldsetWriter
+                     ?? DocumentWriter.CastElement(package, seqOutput);
+
+                  fieldWriter.WriteStartElement("div");
+                  fieldWriter.WriteAttributeString("class", "editor-field");
                }
 
-               templateHelper(html, output, propertyMeta, propertyMeta.PropertyName, null, DataBoundControlMode.Edit, additionalViewData: null);
+               templateHelper(html, package, fieldWriter ?? fieldsetWriter ?? seqOutput, propertyMeta, propertyMeta.PropertyName, null, DataBoundControlMode.Edit, additionalViewData: null);
 
                if (!propertyMeta.HideSurroundingHtml) {
-                  output.WriteString(" ");
-                  ValidationInstructions.ValidationMessageHelper(html, output, propertyMeta, propertyMeta.PropertyName, null, null, null);
-                  output.WriteEndElement(); // </div>
+                  fieldWriter.WriteString(" ");
+                  ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyMeta, propertyMeta.PropertyName, null, null, null);
+                  fieldWriter.WriteEndElement(); // </div>
                }
             }
 
             if (createFieldset) {
-               output.WriteEndElement(); // </fieldset>
+               fieldsetWriter.WriteEndElement(); // </fieldset>
             }
          }
       }
 
-      public static void PasswordTemplate(HtmlHelper html, XcstWriter output) {
+      public static void PasswordTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          string className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
          var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
@@ -261,76 +282,65 @@ namespace Xcst.Web.Runtime {
          InputInstructions.Input(html, output, String.Empty, value: null, type: "password", htmlAttributes: htmlAttributes);
       }
 
-      public static void StringTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "String");
-      }
+      public static void StringTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "String");
 
-      public static void TextTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "Text");
-      }
+      public static void TextTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "Text");
 
-      public static void PhoneNumberInputTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "PhoneNumber", inputType: "tel");
-      }
+      public static void PhoneNumberInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "PhoneNumber", inputType: "tel");
 
-      public static void UrlInputTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "Url", inputType: "url");
-      }
+      public static void UrlInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "Url", inputType: "url");
 
-      public static void EmailAddressInputTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "EmailAddress", inputType: "email");
-      }
+      public static void EmailAddressInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "EmailAddress", inputType: "email");
 
-      public static void DateTimeInputTemplate(HtmlHelper html, XcstWriter output) {
+      public static void DateTimeInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fffK}");
-         HtmlInputTemplateHelper(html, output, "DateTime", inputType: "datetime");
+         HtmlInputTemplateHelper(html, package, seqOutput, "DateTime", inputType: "datetime");
       }
 
-      public static void DateTimeLocalInputTemplate(HtmlHelper html, XcstWriter output) {
+      public static void DateTimeLocalInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fff}");
-         HtmlInputTemplateHelper(html, output, "DateTime-local", inputType: "datetime-local");
+         HtmlInputTemplateHelper(html, package, seqOutput, "DateTime-local", inputType: "datetime-local");
       }
 
-      public static void DateInputTemplate(HtmlHelper html, XcstWriter output) {
+      public static void DateInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-dd}");
-         HtmlInputTemplateHelper(html, output, "Date", inputType: "date");
+         HtmlInputTemplateHelper(html, package, seqOutput, "Date", inputType: "date");
       }
 
-      public static void TimeInputTemplate(HtmlHelper html, XcstWriter output) {
+      public static void TimeInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ApplyRfc3339DateFormattingIfNeeded(html, "{0:HH:mm:ss.fff}");
-         HtmlInputTemplateHelper(html, output, "Time", inputType: "time");
+         HtmlInputTemplateHelper(html, package, seqOutput, "Time", inputType: "time");
       }
 
-      public static void ByteInputTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "Byte", inputType: "number");
-      }
+      public static void ByteInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "Byte", inputType: "number");
 
-      public static void SByteInputTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "SByte", inputType: "number");
-      }
+      public static void SByteInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "SByte", inputType: "number");
 
-      public static void Int32InputTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "Int32", inputType: "number");
-      }
+      public static void Int32InputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "Int32", inputType: "number");
 
-      public static void UInt32InputTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "UInt32", inputType: "number");
-      }
+      public static void UInt32InputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "UInt32", inputType: "number");
 
-      public static void Int64InputTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "Int64", inputType: "number");
-      }
+      public static void Int64InputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "Int64", inputType: "number");
 
-      public static void UInt64InputTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "UInt64", inputType: "number");
-      }
+      public static void UInt64InputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "UInt64", inputType: "number");
 
 #if ASPNETMVC
-      public static void ColorInputTemplate(HtmlHelper html, XcstWriter output) {
+      public static void ColorInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
          ViewDataDictionary viewData = html.ViewData;
 
@@ -343,19 +353,19 @@ namespace Xcst.Web.Runtime {
             }
          }
 
-         HtmlInputTemplateHelper(html, output, "Color", "color");
+         HtmlInputTemplateHelper(html, package, seqOutput, "Color", "color");
       }
 #endif
 
-      public static void UploadTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "Upload", inputType: "file");
-      }
+      public static void UploadTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "Upload", inputType: "file");
 
-      public static void HttpPostedFileBaseTemplate(HtmlHelper html, XcstWriter output) {
-         HtmlInputTemplateHelper(html, output, "HttpPostedFileBase", inputType: "file");
-      }
+      public static void HttpPostedFileBaseTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+         HtmlInputTemplateHelper(html, package, seqOutput, "HttpPostedFileBase", inputType: "file");
 
-      public static void DropDownListTemplate(HtmlHelper html, XcstWriter output) {
+      public static void DropDownListTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          string className = GetEditorCssClass(new EditorInfo("DropDownList", "select"), null);
          var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -373,7 +383,9 @@ namespace Xcst.Web.Runtime {
          SelectInstructions.SelectHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, multiple: false, htmlAttributes: htmlAttributes);
       }
 
-      public static void ListBoxTemplate(HtmlHelper html, XcstWriter output) {
+      public static void ListBoxTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          string className = GetEditorCssClass(new EditorInfo("ListBox", "select"), null);
          var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -384,7 +396,9 @@ namespace Xcst.Web.Runtime {
          SelectInstructions.SelectHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel: null, multiple: true, htmlAttributes: htmlAttributes);
       }
 
-      public static void EnumTemplate(HtmlHelper html, XcstWriter output) {
+      public static void EnumTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          string className = GetEditorCssClass(new EditorInfo("Enum", "select"), null);
          var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -432,7 +446,9 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      static void HtmlInputTemplateHelper(HtmlHelper html, XcstWriter output, string templateName, string inputType = null) {
+      static void HtmlInputTemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, string templateName, string inputType = null) {
+
+         XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          object value = html.ViewData.TemplateInfo.FormattedModelValue;
 

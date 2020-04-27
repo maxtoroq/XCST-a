@@ -184,6 +184,7 @@
     <None Include="Extension\CheckBox\check-box.autofocus.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.disabled.type.i.xcst" />
     <None Include="Extension\CheckBox\Checked.c.xcst" />
+    <None Include="Extension\CheckBox\TypeInference.c.xcst" />
     <None Include="Extension\Directives\InheritsImported.c.xcst" />
     <None Include="Extension\Directives\ModelImported.c.xcst" />
     <None Include="Extension\Directives\Model.c.xcst" />
@@ -206,8 +207,9 @@
     <None Include="Extension\Display\Templates\Enum\FormatString.c.xcst" />
     <None Include="Extension\Display\Templates\Enum\Null.c.xcst" />
     <None Include="Extension\Display\Templates\Enum\Enum.c.xcst" />
-    <None Include="Extension\Display\Templates\ObjectGrouped.c.xcst" />
-    <None Include="Extension\Display\Templates\Object.c.xcst" />
+    <None Include="Extension\Display\Templates\Object\ObjectGrouped.c.xcst" />
+    <None Include="Extension\Display\Templates\Object\Object.c.xcst" />
+    <None Include="Extension\Display\Templates\Object\ObjectRaw.c.xcst" />
     <None Include="Extension\Editor\editor.field-name.type.c.xcst" />
     <None Include="Extension\Editor\editor.autofocus.type.c.xcst" />
     <None Include="Extension\Editor\editor.disabled.type.c.xcst" />
@@ -217,6 +219,7 @@
     <None Include="Extension\Editor\editor.autofocus.type.i.xcst" />
     <None Include="Extension\Editor\MemberTemplate\CopyViewData.c.xcst" />
     <None Include="Extension\Editor\Templates\Object\HttpPostedFileBase.c.xcst" />
+    <None Include="Extension\Editor\Templates\Object\ObjectRaw.c.xcst" />
     <None Include="Extension\Editor\Templates\Object\ObjectGrouped.c.xcst" />
     <None Include="Extension\Editor\Templates\Object\Object.c.xcst" />
     <None Include="Extension\Editor\Templates\Upload.c.xcst" />
