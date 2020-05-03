@@ -13,10 +13,7 @@ namespace System.Web.Mvc {
    public static class ExpressionHelper {
 
       public static string GetExpressionText(string expression) {
-
-         return String.Equals(expression, "model", StringComparison.OrdinalIgnoreCase) ?
-            String.Empty // If it's exactly "model", then give them an empty string, to replicate the lambda behavior
-            : expression;
+         return expression;
       }
 
       public static string GetExpressionText(LambdaExpression expression) {
@@ -73,14 +70,6 @@ namespace System.Web.Mvc {
             } else {
                break;
             }
-         }
-
-         // If it starts with "model", then strip that away
-
-         if (nameParts.Count > 0
-            && String.Equals(nameParts.Peek(), ".model", StringComparison.OrdinalIgnoreCase)) {
-
-            nameParts.Pop();
          }
 
          if (nameParts.Count > 0) {
