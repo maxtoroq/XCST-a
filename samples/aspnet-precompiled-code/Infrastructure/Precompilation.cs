@@ -35,7 +35,7 @@ namespace AspNetPrecompiled.Infrastructure {
          foreach (KeyValuePair<string, Type> item in pairs) {
 
             if (_pageMap.ContainsKey(item.Key)) {
-               throw new InvalidOperationException($"Ambiguous path '{item.Key}', is used by '{_pageMap[item.Key].AssemblyQualifiedName}' and {item.Value.AssemblyQualifiedName}.");
+               throw new InvalidOperationException($"Ambiguous path '{item.Key}', is used by '{_pageMap[item.Key].AssemblyQualifiedName}' and '{item.Value.AssemblyQualifiedName}'.");
             }
 
             _pageMap.Add(item.Key, item.Value);
@@ -188,9 +188,8 @@ namespace AspNetPrecompiled.Infrastructure {
 
    public static class LinkToHelper {
 
-      public static string LinkTo(string path, params object[] pathParts) {
-         return UrlUtil.GenerateClientUrl(null, path, pathParts);
-      }
+      public static string LinkTo(string path, params object[] pathParts) =>
+         UrlUtil.GenerateClientUrl(null, path, pathParts);
 
       public static string LinkToDefault(string path, string defaultPath, params object[] pathParts) {
 
@@ -205,8 +204,7 @@ namespace AspNetPrecompiled.Infrastructure {
       }
 
       // see System.Web.Mvc.UrlUtil
-      static bool IsDisplayableType(Type t) {
-         return t.GetInterfaces().Length != 0;
-      }
+      static bool IsDisplayableType(Type t) =>
+         t.GetInterfaces().Length != 0;
    }
 }
