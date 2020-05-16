@@ -26,7 +26,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
 using Xcst.PackageModel;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
@@ -465,5 +464,10 @@ namespace Xcst.Web.Runtime {
 
          public ViewDataDictionary ViewData { get; set; }
       }
+   }
+
+   enum DataBoundControlMode {
+      ReadOnly = 0,
+      Edit = 1
    }
 }
