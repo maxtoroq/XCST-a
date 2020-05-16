@@ -135,7 +135,6 @@ namespace System.Web.Mvc {
          var binders = new ModelBinderDictionary() {
             { typeof(HttpPostedFileBase), new HttpPostedFileBaseModelBinder() },
             { typeof(byte[]), new ByteArrayModelBinder() },
-            { typeof(CancellationToken), new CancellationTokenModelBinder() }
          };
 
          return binders;

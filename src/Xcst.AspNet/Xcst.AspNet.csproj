@@ -108,7 +108,6 @@
     <Compile Include="Framework\ModelMetadata.cs" />
     <Compile Include="Framework\ModelBinding\BindAttribute.cs" />
     <Compile Include="Framework\ModelBinding\ByteArrayModelBinder.cs" />
-    <Compile Include="Framework\ModelBinding\CancellationTokenModelBinder.cs" />
     <Compile Include="Framework\ModelBinding\CustomModelBinderAttribute.cs" />
     <Compile Include="Framework\ModelBinding\DefaultModelBinder.cs" />
     <Compile Include="Framework\ModelBinding\DictionaryValueProvider.cs" />
