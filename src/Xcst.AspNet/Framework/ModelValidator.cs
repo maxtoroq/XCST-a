@@ -25,29 +25,24 @@ namespace System.Web.Mvc {
       }
 
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method may perform non-trivial work.")]
-      public virtual IEnumerable<ModelClientValidationRule> GetClientValidationRules() {
-         return Enumerable.Empty<ModelClientValidationRule>();
-      }
+      public virtual IEnumerable<ModelClientValidationRule> GetClientValidationRules() =>
+         Enumerable.Empty<ModelClientValidationRule>();
 
-      public static ModelValidator GetModelValidator(ModelMetadata metadata, ControllerContext context) {
-         return new CompositeModelValidator(metadata, context);
-      }
+      public static ModelValidator GetModelValidator(ModelMetadata metadata, ControllerContext context) =>
+         new CompositeModelValidator(metadata, context);
 
       public abstract IEnumerable<ModelValidationResult> Validate(object container);
 
       class CompositeModelValidator : ModelValidator {
 
          public CompositeModelValidator(ModelMetadata metadata, ControllerContext controllerContext)
-            : base(metadata, controllerContext) {
-         }
+            : base(metadata, controllerContext) { }
 
-         static ModelValidationResult CreateSubPropertyResult(ModelMetadata propertyMetadata, ModelValidationResult propertyResult) {
-
-            return new ModelValidationResult {
+         static ModelValidationResult CreateSubPropertyResult(ModelMetadata propertyMetadata, ModelValidationResult propertyResult) =>
+            new ModelValidationResult {
                MemberName = CreateSubPropertyName(propertyMetadata.PropertyName, propertyResult.MemberName),
                Message = propertyResult.Message
             };
-         }
 
          static string CreateSubPropertyName(string prefix, string propertyName) {
 
@@ -98,13 +93,13 @@ namespace System.Web.Mvc {
       string _message;
 
       public string MemberName {
-         get { return _memberName ?? String.Empty; }
-         set { _memberName = value; }
+         get => _memberName ?? String.Empty;
+         set => _memberName = value;
       }
 
       public string Message {
-         get { return _message ?? String.Empty; }
-         set { _message = value; }
+         get => _message ?? String.Empty;
+         set => _message = value;
       }
    }
 
@@ -114,9 +109,8 @@ namespace System.Web.Mvc {
 
    class EmptyModelValidatorProvider : ModelValidatorProvider {
 
-      public override IEnumerable<ModelValidator> GetValidators(ModelMetadata metadata, ControllerContext context) {
-         return Enumerable.Empty<ModelValidator>();
-      }
+      public override IEnumerable<ModelValidator> GetValidators(ModelMetadata metadata, ControllerContext context) =>
+         Enumerable.Empty<ModelValidator>();
    }
 
    class ModelValidatorProviderCollection : Collection<ModelValidatorProvider> {
@@ -191,12 +185,10 @@ namespace System.Web.Mvc {
 
    static class ModelValidatorProviders {
 
-      static readonly ModelValidatorProviderCollection _providers = new ModelValidatorProviderCollection {
+      public static ModelValidatorProviderCollection Providers { get; } = new ModelValidatorProviderCollection {
          new DataAnnotationsModelValidatorProvider(),
          new DataErrorInfoModelValidatorProvider(),
          new ClientDataTypeModelValidatorProvider()
       };
-
-      public static ModelValidatorProviderCollection Providers => _providers;
    }
 }

@@ -22,20 +22,19 @@ namespace System.Web.Helpers.AntiXsrf {
          _validator = validator;
       }
 
-      private void CheckSSLConfig(HttpContextBase httpContext) {
+      void CheckSSLConfig(HttpContextBase httpContext) {
          if (_config.RequireSSL && !httpContext.Request.IsSecureConnection) {
             throw new InvalidOperationException(WebPageResources.AntiForgeryWorker_RequireSSL);
          }
       }
 
-      private AntiForgeryToken DeserializeToken(string serializedToken, bool throwOnError = true) {
-         return (!String.IsNullOrEmpty(serializedToken)) ?
+      AntiForgeryToken DeserializeToken(string serializedToken, bool throwOnError = true) =>
+         (!String.IsNullOrEmpty(serializedToken)) ?
             _serializer.Deserialize(serializedToken, throwOnError)
             : null;
-      }
 
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Caller will just regenerate token in case of failure.")]
-      private AntiForgeryToken DeserializeTokenNoThrow(string serializedToken) {
+      AntiForgeryToken DeserializeTokenNoThrow(string serializedToken) {
 
          try {
             return DeserializeToken(serializedToken);
@@ -45,12 +44,11 @@ namespace System.Web.Helpers.AntiXsrf {
          }
       }
 
-      private static IIdentity ExtractIdentity(HttpContextBase httpContext) {
-         return httpContext?.User?.Identity;
-      }
+      static IIdentity ExtractIdentity(HttpContextBase httpContext) =>
+         httpContext?.User?.Identity;
 
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Caller will just regenerate token in case of failure.")]
-      private AntiForgeryToken GetCookieTokenNoThrow(HttpContextBase httpContext) {
+      AntiForgeryToken GetCookieTokenNoThrow(HttpContextBase httpContext) {
 
          try {
             return _tokenStore.GetCookieToken(httpContext);
@@ -133,9 +131,8 @@ namespace System.Web.Helpers.AntiXsrf {
          formToken = _validator.GenerateFormToken(httpContext, ExtractIdentity(httpContext), oldCookieToken);
       }
 
-      private string Serialize(AntiForgeryToken token) {
-         return (token != null) ? _serializer.Serialize(token) : null;
-      }
+      string Serialize(AntiForgeryToken token) =>
+         (token != null) ? _serializer.Serialize(token) : null;
 
       // [ ENTRY POINT ]
       // Given an HttpContext, validates that the anti-XSRF tokens contained

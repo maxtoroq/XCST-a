@@ -12,9 +12,8 @@ namespace System.Web.Mvc {
 
    public static class ExpressionHelper {
 
-      public static string GetExpressionText(string expression) {
-         return expression;
-      }
+      public static string GetExpressionText(string expression) =>
+         expression;
 
       public static string GetExpressionText(LambdaExpression expression) {
 

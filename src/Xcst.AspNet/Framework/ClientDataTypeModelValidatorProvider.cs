@@ -21,8 +21,8 @@ namespace System.Web.Mvc {
       static string _resourceClassKey;
 
       public static string ResourceClassKey {
-         get { return _resourceClassKey ?? String.Empty; }
-         set { _resourceClassKey = value; }
+         get => _resourceClassKey ?? String.Empty;
+         set => _resourceClassKey = value;
       }
 
       public override IEnumerable<ModelValidator> GetValidators(ModelMetadata metadata, ControllerContext context) {
@@ -46,35 +46,24 @@ namespace System.Web.Mvc {
          }
       }
 
-      static bool IsNumericType(Type type) {
-         return _numericTypes.Contains(GetTypeToValidate(type));
-      }
+      static bool IsNumericType(Type type) =>
+         _numericTypes.Contains(GetTypeToValidate(type));
 
-      static bool IsDateTimeType(Type type, ModelMetadata metadata) {
-
-         return typeof(DateTime) == GetTypeToValidate(type)
+      static bool IsDateTimeType(Type type, ModelMetadata metadata) =>
+         typeof(DateTime) == GetTypeToValidate(type)
             && String.Equals(metadata.DataTypeName, "Date", StringComparison.OrdinalIgnoreCase);
-      }
 
-      static Type GetTypeToValidate(Type type) {
-
+      static Type GetTypeToValidate(Type type) =>
          // strip off the Nullable<>
+         Nullable.GetUnderlyingType(type) ?? type;
 
-         return Nullable.GetUnderlyingType(type)
-            ?? type;
-      }
-
-      static string GetFieldMustBeNumericResource(ControllerContext controllerContext) {
-
-         return XcstWebConfiguration.Instance.EditorTemplates.NumberValidationMessage?.Invoke()
+      static string GetFieldMustBeNumericResource(ControllerContext controllerContext) =>
+         XcstWebConfiguration.Instance.EditorTemplates.NumberValidationMessage?.Invoke()
             ?? MvcResources.ClientDataTypeModelValidatorProvider_FieldMustBeNumeric;
-      }
 
-      static string GetFieldMustBeDateResource(ControllerContext controllerContext) {
-
-         return XcstWebConfiguration.Instance.EditorTemplates.DateValidationMessage?.Invoke()
+      static string GetFieldMustBeDateResource(ControllerContext controllerContext) =>
+         XcstWebConfiguration.Instance.EditorTemplates.DateValidationMessage?.Invoke()
             ?? MvcResources.ClientDataTypeModelValidatorProvider_FieldMustBeDate;
-      }
 
       internal sealed class DateModelValidator : ClientModelValidator {
 
@@ -113,19 +102,13 @@ namespace System.Web.Mvc {
             return new ModelClientValidationRule[] { rule };
          }
 
-         string FormatErrorMessage(string displayName) {
-
+         string FormatErrorMessage(string displayName) =>
             // use CurrentCulture since this message is intended for the site visitor
+            String.Format(CultureInfo.CurrentCulture, _errorMessage, displayName);
 
-            return String.Format(CultureInfo.CurrentCulture, _errorMessage, displayName);
-         }
-
-         public sealed override IEnumerable<ModelValidationResult> Validate(object container) {
-
+         public sealed override IEnumerable<ModelValidationResult> Validate(object container) =>
             // this is not a server-side validator
-
-            return Enumerable.Empty<ModelValidationResult>();
-         }
+            Enumerable.Empty<ModelValidationResult>();
       }
    }
 }

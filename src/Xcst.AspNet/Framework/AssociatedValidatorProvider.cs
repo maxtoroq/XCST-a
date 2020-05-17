@@ -9,9 +9,8 @@ namespace System.Web.Mvc {
 
    abstract class AssociatedValidatorProvider : ModelValidatorProvider {
 
-      protected virtual ICustomTypeDescriptor GetTypeDescriptor(Type type) {
-         return TypeDescriptorHelper.Get(type);
-      }
+      protected virtual ICustomTypeDescriptor GetTypeDescriptor(Type type) =>
+         TypeDescriptorHelper.Get(type);
 
       public sealed override IEnumerable<ModelValidator> GetValidators(ModelMetadata metadata, ControllerContext context) {
 
@@ -40,8 +39,7 @@ namespace System.Web.Mvc {
          return GetValidators(metadata, context, new AttributeList(property.Attributes));
       }
 
-      IEnumerable<ModelValidator> GetValidatorsForType(ModelMetadata metadata, ControllerContext context) {
-         return GetValidators(metadata, context, new AttributeList(GetTypeDescriptor(metadata.ModelType).GetAttributes()));
-      }
+      IEnumerable<ModelValidator> GetValidatorsForType(ModelMetadata metadata, ControllerContext context) =>
+         GetValidators(metadata, context, new AttributeList(GetTypeDescriptor(metadata.ModelType).GetAttributes()));
    }
 }

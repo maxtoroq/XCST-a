@@ -18,60 +18,48 @@ namespace System.Web.Mvc {
 
    static class DependencyResolverExtensions {
 
-      public static TService GetService<TService>(this IDependencyResolver resolver) {
-         return (TService)resolver.GetService(typeof(TService));
-      }
+      public static TService GetService<TService>(this IDependencyResolver resolver) =>
+         (TService)resolver.GetService(typeof(TService));
 
-      public static IEnumerable<TService> GetServices<TService>(this IDependencyResolver resolver) {
-         return resolver.GetServices(typeof(TService)).Cast<TService>();
-      }
+      public static IEnumerable<TService> GetServices<TService>(this IDependencyResolver resolver) =>
+         resolver.GetServices(typeof(TService)).Cast<TService>();
    }
 
    class DependencyResolver {
 
       static DependencyResolver _instance = new DependencyResolver();
 
-      IDependencyResolver _current;
-
-      /// <summary>
-      /// Cache should always be a new CacheDependencyResolver(_current).
-      /// </summary>
-      CacheDependencyResolver _currentCache;
-
       public static IDependencyResolver Current => _instance.InnerCurrent;
 
       internal static IDependencyResolver CurrentCache => _instance.InnerCurrentCache;
 
-      public IDependencyResolver InnerCurrent => _current;
+      public IDependencyResolver InnerCurrent { get; private set; }
 
       /// <summary>
       /// Provides caching over results returned by Current.
       /// </summary>
-      internal IDependencyResolver InnerCurrentCache => _currentCache;
+      internal IDependencyResolver InnerCurrentCache { get; private set; }
 
       public DependencyResolver() {
          InnerSetResolver(new DefaultDependencyResolver());
       }
 
-      public static void SetResolver(IDependencyResolver resolver) {
+      public static void SetResolver(IDependencyResolver resolver) =>
          _instance.InnerSetResolver(resolver);
-      }
 
-      public static void SetResolver(object commonServiceLocator) {
+      public static void SetResolver(object commonServiceLocator) =>
          _instance.InnerSetResolver(commonServiceLocator);
-      }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types.")]
-      public static void SetResolver(Func<Type, object> getService, Func<Type, IEnumerable<object>> getServices) {
+      public static void SetResolver(Func<Type, object> getService, Func<Type, IEnumerable<object>> getServices) =>
          _instance.InnerSetResolver(getService, getServices);
-      }
 
       public void InnerSetResolver(IDependencyResolver resolver) {
 
          if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
-         _current = resolver;
-         _currentCache = new CacheDependencyResolver(_current);
+         this.InnerCurrent = resolver;
+         this.InnerCurrentCache = new CacheDependencyResolver(this.InnerCurrent);
       }
 
       public void InnerSetResolver(object commonServiceLocator) {
@@ -132,15 +120,13 @@ namespace System.Web.Mvc {
             _getServicesDelegate = _resolver.GetServices;
          }
 
-         public object GetService(Type serviceType) {
+         public object GetService(Type serviceType) =>
             // Use a saved delegate to prevent per-call delegate allocation
-            return _cache.GetOrAdd(serviceType, _getServiceDelegate);
-         }
+            _cache.GetOrAdd(serviceType, _getServiceDelegate);
 
-         public IEnumerable<object> GetServices(Type serviceType) {
+         public IEnumerable<object> GetServices(Type serviceType) =>
             // Use a saved delegate to prevent per-call delegate allocation
-            return _cacheMultiple.GetOrAdd(serviceType, _getServicesDelegate);
-         }
+            _cacheMultiple.GetOrAdd(serviceType, _getServicesDelegate);
       }
 
       class DefaultDependencyResolver : IDependencyResolver {
@@ -164,15 +150,14 @@ namespace System.Web.Mvc {
             }
          }
 
-         public IEnumerable<object> GetServices(Type serviceType) {
-            return Enumerable.Empty<object>();
-         }
+         public IEnumerable<object> GetServices(Type serviceType) =>
+            Enumerable.Empty<object>();
       }
 
       class DelegateBasedDependencyResolver : IDependencyResolver {
 
-         Func<Type, object> _getService;
-         Func<Type, IEnumerable<object>> _getServices;
+         readonly Func<Type, object> _getService;
+         readonly Func<Type, IEnumerable<object>> _getServices;
 
          public DelegateBasedDependencyResolver(Func<Type, object> getService, Func<Type, IEnumerable<object>> getServices) {
             _getService = getService;
@@ -189,15 +174,15 @@ namespace System.Web.Mvc {
             }
          }
 
-         public IEnumerable<object> GetServices(Type type) {
-            return _getServices(type);
-         }
+         public IEnumerable<object> GetServices(Type type) =>
+            _getServices(type);
       }
    }
 
    static class MultiServiceResolver {
 
-      internal static TService[] GetCombined<TService>(IList<TService> items, IDependencyResolver resolver = null) where TService : class {
+      internal static TService[] GetCombined<TService>(IList<TService> items, IDependencyResolver resolver = null)
+            where TService : class {
 
          if (resolver == null) {
             resolver = DependencyResolver.Current;

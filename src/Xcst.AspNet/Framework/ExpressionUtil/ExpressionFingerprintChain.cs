@@ -68,9 +68,8 @@ namespace System.Web.Mvc.ExpressionUtil {
          return true;
       }
 
-      public override bool Equals(object obj) {
-         return Equals(obj as ExpressionFingerprintChain);
-      }
+      public override bool Equals(object obj) =>
+         Equals(obj as ExpressionFingerprintChain);
 
       public override int GetHashCode() {
 

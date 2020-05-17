@@ -45,7 +45,7 @@ namespace Xcst.Web {
       // need to cache result
 
       public virtual HttpContextBase Context {
-         get { return _Context; }
+         get => _Context;
          set {
             _Context = value;
             _Request = null;
@@ -57,43 +57,26 @@ namespace Xcst.Web {
          }
       }
 
-      public HttpRequestBase Request {
-         get {
-            return _Request
-               ?? (_Request = Context?.Request);
-         }
-      }
+      public HttpRequestBase Request =>
+         _Request ?? (_Request = Context?.Request);
 
-      public HttpResponseBase Response {
-         get {
-            return _Response
-               ?? (_Response = Context?.Response);
-         }
-      }
+      public HttpResponseBase Response =>
+         _Response ?? (_Response = Context?.Response);
 
-      public HttpSessionStateBase Session {
-         get {
-            return _Session
-               ?? (_Session = Context?.Session);
-         }
-      }
+      public HttpSessionStateBase Session =>
+         _Session ?? (_Session = Context?.Session);
 
 #if !ASPNETMVC
       public virtual IList<string> UrlData {
-         get {
-            return _UrlData
-               ?? (_UrlData = new UrlDataList(PathInfo ?? Request?.PathInfo?.TrimStart('/')));
-         }
-         set { _UrlData = value; }
+         get => _UrlData
+            ?? (_UrlData = new UrlDataList(PathInfo ?? Request?.PathInfo?.TrimStart('/')));
+         set => _UrlData = value;
       }
 #endif
 
       public virtual IPrincipal User {
-         get {
-            return _User
-               ?? (_User = Context?.User);
-         }
-         set { _User = value; }
+         get => _User ?? (_User = Context?.User);
+         set => _User = value;
       }
 
       public virtual bool IsPost => Request?.HttpMethod == "POST";
@@ -101,9 +84,8 @@ namespace Xcst.Web {
       public virtual bool IsAjax => Request?.IsAjaxRequest() ?? false;
 
 #if !ASPNETMVC
-      public virtual IHttpHandler CreateHttpHandler() {
-         return new XcstPageHandler(this);
-      }
+      public virtual IHttpHandler CreateHttpHandler() =>
+         new XcstPageHandler(this);
 
       public virtual bool TryAuthorize(string[] users = null, string[] roles = null) {
 
@@ -186,13 +168,11 @@ namespace Xcst.Web {
    }
 
    public interface IFileDependent {
-
       string[] FileDependencies { get; }
    }
 
 #if !ASPNETMVC
    public interface ISessionStateAware {
-
       SessionStateBehavior SessionStateBehavior { get; }
    }
 #endif

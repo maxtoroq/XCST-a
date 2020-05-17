@@ -17,13 +17,8 @@ namespace System.Web.Mvc {
       public string AttemptedValue { get; protected set; }
 
       public CultureInfo Culture {
-         get {
-            if (_instanceCulture == null) {
-               _instanceCulture = _staticCulture;
-            }
-            return _instanceCulture;
-         }
-         protected set { _instanceCulture = value; }
+         get => _instanceCulture ?? (_instanceCulture = _staticCulture);
+         protected set => _instanceCulture = value;
       }
 
       public object RawValue { get; protected set; }
@@ -115,9 +110,8 @@ namespace System.Web.Mvc {
          }
       }
 
-      public object ConvertTo(Type type) {
-         return ConvertTo(type, null /* culture */);
-      }
+      public object ConvertTo(Type type) =>
+         ConvertTo(type, null /* culture */);
 
       public virtual object ConvertTo(Type type, CultureInfo culture) {
 

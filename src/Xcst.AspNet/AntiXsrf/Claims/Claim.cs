@@ -26,23 +26,20 @@ namespace System.Web.Helpers.Claims {
       //   string Value { get; }
       // }
 
-      internal static Claim Create<TClaim>(TClaim claim) {
-         return ClaimFactory<TClaim>.Create(claim);
-      }
+      internal static Claim Create<TClaim>(TClaim claim) =>
+         ClaimFactory<TClaim>.Create(claim);
 
       static class ClaimFactory<TClaim> {
 
          static readonly Func<TClaim, string> _claimTypeGetter = CreateClaimTypeGetter();
          static readonly Func<TClaim, string> _valueGetter = CreateValueGetter();
 
-         public static Claim Create(TClaim claim) {
-            return new Claim(_claimTypeGetter(claim), _valueGetter(claim));
-         }
+         public static Claim Create(TClaim claim) =>
+            new Claim(_claimTypeGetter(claim), _valueGetter(claim));
 
-         static Func<TClaim, string> CreateClaimTypeGetter() {
+         static Func<TClaim, string> CreateClaimTypeGetter() =>
             // the claim type might go by one of two different property names
-            return CreateGeneralPropertyGetter("ClaimType") ?? CreateGeneralPropertyGetter("Type");
-         }
+            CreateGeneralPropertyGetter("ClaimType") ?? CreateGeneralPropertyGetter("Type");
 
          static Func<TClaim, string> CreateGeneralPropertyGetter(string propertyName) {
 
@@ -60,9 +57,8 @@ namespace System.Web.Helpers.Claims {
             return (Func<TClaim, string>)Delegate.CreateDelegate(typeof(Func<TClaim, string>), propGetter);
          }
 
-         static Func<TClaim, string> CreateValueGetter() {
-            return CreateGeneralPropertyGetter("Value");
-         }
+         static Func<TClaim, string> CreateValueGetter() =>
+            CreateGeneralPropertyGetter("Value");
       }
    }
 }

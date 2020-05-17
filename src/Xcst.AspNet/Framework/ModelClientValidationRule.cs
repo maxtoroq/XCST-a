@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace System.Web.Mvc {
 
@@ -15,8 +14,8 @@ namespace System.Web.Mvc {
       public IDictionary<string, object> ValidationParameters => _validationParameters;
 
       public string ValidationType {
-         get { return _validationType ?? String.Empty; }
-         set { _validationType = value; }
+         get => _validationType ?? String.Empty;
+         set => _validationType = value;
       }
    }
 

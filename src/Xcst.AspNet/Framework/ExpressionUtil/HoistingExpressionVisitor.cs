@@ -27,9 +27,8 @@ namespace System.Web.Mvc.ExpressionUtil {
          return rewrittenLambdaExpr;
       }
 
-      protected override Expression VisitConstant(ConstantExpression node) {
+      protected override Expression VisitConstant(ConstantExpression node) =>
          // rewrite the constant expression as (TConst)hoistedConstants[i];
-         return Expression.Convert(Expression.Property(_hoistedConstantsParamExpr, "Item", Expression.Constant(_numConstantsProcessed++)), node.Type);
-      }
+         Expression.Convert(Expression.Property(_hoistedConstantsParamExpr, "Item", Expression.Constant(_numConstantsProcessed++)), node.Type);
    }
 }

@@ -27,7 +27,7 @@ namespace System.Web.Helpers.Claims {
          _converters = converters;
       }
 
-      static bool IsGrandfatheredIdentityType(IIdentity claimsIdentity) {
+      static bool IsGrandfatheredIdentityType(IIdentity claimsIdentity) =>
 
          // These specific types might also be claims-based types depending on
          // the version of the framework we're running, but we don't want to
@@ -35,10 +35,9 @@ namespace System.Web.Helpers.Claims {
          // will suffice as a unique identifier within the security realm of the
          // current application.
 
-         return claimsIdentity is FormsIdentity
+         claimsIdentity is FormsIdentity
             || claimsIdentity is WindowsIdentity
             || claimsIdentity is GenericIdentity;
-      }
 
       public ClaimsIdentity TryConvert(IIdentity identity) {
 

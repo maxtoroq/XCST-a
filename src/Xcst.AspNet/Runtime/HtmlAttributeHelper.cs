@@ -81,8 +81,7 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      public static void WriteAttribute(string key, object/*?*/ value, XcstWriter output) {
+      public static void WriteAttribute(string key, object/*?*/ value, XcstWriter output) =>
          output.WriteAttributeString(key, output.SimpleContent.Convert(value));
-      }
    }
 }

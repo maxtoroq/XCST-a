@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace System.Web.Mvc.ExpressionUtil {
-   
+
    // This is a visitor which produces a fingerprint of an expression. It doesn't
    // rewrite the expression in a form which can be compiled and cached.
 
@@ -18,7 +18,7 @@ namespace System.Web.Mvc.ExpressionUtil {
       private FingerprintingExpressionVisitor() { }
 
       private T GiveUp<T>(T node) {
-         
+
          // We don't understand this node, so just quit.
 
          _gaveUp = true;
@@ -63,13 +63,11 @@ namespace System.Web.Mvc.ExpressionUtil {
          return base.VisitBinary(node);
       }
 
-      protected override Expression VisitBlock(BlockExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitBlock(BlockExpression node) =>
+         GiveUp(node);
 
-      protected override CatchBlock VisitCatchBlock(CatchBlock node) {
-         return GiveUp(node);
-      }
+      protected override CatchBlock VisitCatchBlock(CatchBlock node) =>
+         GiveUp(node);
 
       protected override Expression VisitConditional(ConditionalExpression node) {
 
@@ -92,9 +90,8 @@ namespace System.Web.Mvc.ExpressionUtil {
          return base.VisitConstant(node);
       }
 
-      protected override Expression VisitDebugInfo(DebugInfoExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitDebugInfo(DebugInfoExpression node) =>
+         GiveUp(node);
 
       protected override Expression VisitDefault(DefaultExpression node) {
 
@@ -106,21 +103,17 @@ namespace System.Web.Mvc.ExpressionUtil {
          return base.VisitDefault(node);
       }
 
-      protected override Expression VisitDynamic(DynamicExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitDynamic(DynamicExpression node) =>
+         GiveUp(node);
 
-      protected override ElementInit VisitElementInit(ElementInit node) {
-         return GiveUp(node);
-      }
+      protected override ElementInit VisitElementInit(ElementInit node) =>
+         GiveUp(node);
 
-      protected override Expression VisitExtension(Expression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitExtension(Expression node) =>
+         GiveUp(node);
 
-      protected override Expression VisitGoto(GotoExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitGoto(GotoExpression node) =>
+         GiveUp(node);
 
       protected override Expression VisitIndex(IndexExpression node) {
 
@@ -132,17 +125,14 @@ namespace System.Web.Mvc.ExpressionUtil {
          return base.VisitIndex(node);
       }
 
-      protected override Expression VisitInvocation(InvocationExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitInvocation(InvocationExpression node) =>
+         GiveUp(node);
 
-      protected override Expression VisitLabel(LabelExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitLabel(LabelExpression node) =>
+         GiveUp(node);
 
-      protected override LabelTarget VisitLabelTarget(LabelTarget node) {
-         return GiveUp(node);
-      }
+      protected override LabelTarget VisitLabelTarget(LabelTarget node) =>
+         GiveUp(node);
 
       protected override Expression VisitLambda<T>(Expression<T> node) {
 
@@ -154,13 +144,11 @@ namespace System.Web.Mvc.ExpressionUtil {
          return base.VisitLambda<T>(node);
       }
 
-      protected override Expression VisitListInit(ListInitExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitListInit(ListInitExpression node) =>
+         GiveUp(node);
 
-      protected override Expression VisitLoop(LoopExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitLoop(LoopExpression node) =>
+         GiveUp(node);
 
       protected override Expression VisitMember(MemberExpression node) {
 
@@ -172,25 +160,20 @@ namespace System.Web.Mvc.ExpressionUtil {
          return base.VisitMember(node);
       }
 
-      protected override MemberAssignment VisitMemberAssignment(MemberAssignment node) {
-         return GiveUp(node);
-      }
+      protected override MemberAssignment VisitMemberAssignment(MemberAssignment node) =>
+         GiveUp(node);
 
-      protected override MemberBinding VisitMemberBinding(MemberBinding node) {
-         return GiveUp(node);
-      }
+      protected override MemberBinding VisitMemberBinding(MemberBinding node) =>
+         GiveUp(node);
 
-      protected override Expression VisitMemberInit(MemberInitExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitMemberInit(MemberInitExpression node) =>
+         GiveUp(node);
 
-      protected override MemberListBinding VisitMemberListBinding(MemberListBinding node) {
-         return GiveUp(node);
-      }
+      protected override MemberListBinding VisitMemberListBinding(MemberListBinding node) =>
+         GiveUp(node);
 
-      protected override MemberMemberBinding VisitMemberMemberBinding(MemberMemberBinding node) {
-         return GiveUp(node);
-      }
+      protected override MemberMemberBinding VisitMemberMemberBinding(MemberMemberBinding node) =>
+         GiveUp(node);
 
       protected override Expression VisitMethodCall(MethodCallExpression node) {
 
@@ -202,13 +185,11 @@ namespace System.Web.Mvc.ExpressionUtil {
          return base.VisitMethodCall(node);
       }
 
-      protected override Expression VisitNew(NewExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitNew(NewExpression node) =>
+         GiveUp(node);
 
-      protected override Expression VisitNewArray(NewArrayExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitNewArray(NewArrayExpression node) =>
+         GiveUp(node);
 
       protected override Expression VisitParameter(ParameterExpression node) {
 
@@ -229,21 +210,17 @@ namespace System.Web.Mvc.ExpressionUtil {
          return base.VisitParameter(node);
       }
 
-      protected override Expression VisitRuntimeVariables(RuntimeVariablesExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitRuntimeVariables(RuntimeVariablesExpression node) =>
+         GiveUp(node);
 
-      protected override Expression VisitSwitch(SwitchExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitSwitch(SwitchExpression node) =>
+         GiveUp(node);
 
-      protected override SwitchCase VisitSwitchCase(SwitchCase node) {
-         return GiveUp(node);
-      }
+      protected override SwitchCase VisitSwitchCase(SwitchCase node) =>
+         GiveUp(node);
 
-      protected override Expression VisitTry(TryExpression node) {
-         return GiveUp(node);
-      }
+      protected override Expression VisitTry(TryExpression node) =>
+         GiveUp(node);
 
       protected override Expression VisitTypeBinary(TypeBinaryExpression node) {
 

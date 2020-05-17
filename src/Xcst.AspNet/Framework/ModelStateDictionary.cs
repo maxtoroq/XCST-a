@@ -28,7 +28,7 @@ namespace System.Web.Mvc {
             _innerDictionary.TryGetValue(key, out value);
             return value;
          }
-         set { _innerDictionary[key] = value; }
+         set => _innerDictionary[key] = value;
       }
 
       // For unit testing
@@ -45,41 +45,32 @@ namespace System.Web.Mvc {
          _innerDictionary = new CopyOnWriteDictionary<string, ModelState>(dictionary, StringComparer.OrdinalIgnoreCase);
       }
 
-      public void Add(KeyValuePair<string, ModelState> item) {
+      public void Add(KeyValuePair<string, ModelState> item) =>
          _innerDictionary.Add(item);
-      }
 
-      public void Add(string key, ModelState value) {
+      public void Add(string key, ModelState value) =>
          _innerDictionary.Add(key, value);
-      }
 
-      public void AddModelError(string key, Exception exception) {
+      public void AddModelError(string key, Exception exception) =>
          GetModelStateForKey(key).Errors.Add(exception);
-      }
 
-      public void AddModelError(string key, string errorMessage) {
+      public void AddModelError(string key, string errorMessage) =>
          GetModelStateForKey(key).Errors.Add(errorMessage);
-      }
 
-      public void Clear() {
+      public void Clear() =>
          _innerDictionary.Clear();
-      }
 
-      public bool Contains(KeyValuePair<string, ModelState> item) {
-         return _innerDictionary.Contains(item);
-      }
+      public bool Contains(KeyValuePair<string, ModelState> item) =>
+         _innerDictionary.Contains(item);
 
-      public bool ContainsKey(string key) {
-         return _innerDictionary.ContainsKey(key);
-      }
+      public bool ContainsKey(string key) =>
+         _innerDictionary.ContainsKey(key);
 
-      public void CopyTo(KeyValuePair<string, ModelState>[] array, int arrayIndex) {
+      public void CopyTo(KeyValuePair<string, ModelState>[] array, int arrayIndex) =>
          _innerDictionary.CopyTo(array, arrayIndex);
-      }
 
-      public IEnumerator<KeyValuePair<string, ModelState>> GetEnumerator() {
-         return _innerDictionary.GetEnumerator();
-      }
+      public IEnumerator<KeyValuePair<string, ModelState>> GetEnumerator() =>
+         _innerDictionary.GetEnumerator();
 
       private ModelState GetModelStateForKey(string key) {
 
@@ -150,29 +141,21 @@ namespace System.Web.Mvc {
          }
       }
 
-      public bool Remove(KeyValuePair<string, ModelState> item) {
-         return _innerDictionary.Remove(item);
-      }
+      public bool Remove(KeyValuePair<string, ModelState> item) =>
+         _innerDictionary.Remove(item);
 
-      public bool Remove(string key) {
-         return _innerDictionary.Remove(key);
-      }
+      public bool Remove(string key) =>
+         _innerDictionary.Remove(key);
 
-      public void SetModelValue(string key, ValueProviderResult value) {
+      public void SetModelValue(string key, ValueProviderResult value) =>
          GetModelStateForKey(key).Value = value;
-      }
 
-      public bool TryGetValue(string key, out ModelState value) {
-         return _innerDictionary.TryGetValue(key, out value);
-      }
-
-      #region IEnumerable Members
+      public bool TryGetValue(string key, out ModelState value) =>
+         _innerDictionary.TryGetValue(key, out value);
 
       IEnumerator IEnumerable.GetEnumerator() {
          return GetEnumerator();
       }
-
-      #endregion
    }
 
    [Serializable]
@@ -188,13 +171,11 @@ namespace System.Web.Mvc {
    [Serializable]
    public class ModelErrorCollection : Collection<ModelError> {
 
-      public void Add(Exception exception) {
+      public void Add(Exception exception) =>
          Add(new ModelError(exception));
-      }
 
-      public void Add(string errorMessage) {
+      public void Add(string errorMessage) =>
          Add(new ModelError(errorMessage));
-      }
    }
 
    [Serializable]

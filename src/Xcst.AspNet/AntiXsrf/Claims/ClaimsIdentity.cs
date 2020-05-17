@@ -24,14 +24,14 @@ namespace System.Web.Helpers.Claims {
       // where TClaimsCollection is assignable to IEnumerable<TClaim>,
       // and where TClaim is valid for Claim.Create<TClaim>.
 
-      static ClaimsIdentity TryConvert<TClaimsIdentity, TClaim>(IIdentity identity) where TClaimsIdentity : class, IIdentity {
-
-         return (identity is TClaimsIdentity castClaimsIdentity) ?
+      static ClaimsIdentity TryConvert<TClaimsIdentity, TClaim>(IIdentity identity)
+            where TClaimsIdentity : class, IIdentity =>
+         (identity is TClaimsIdentity castClaimsIdentity) ?
             new ClaimsIdentityImpl<TClaimsIdentity, TClaim>(castClaimsIdentity)
             : null;
-      }
 
-      sealed class ClaimsIdentityImpl<TClaimsIdentity, TClaim> : ClaimsIdentity where TClaimsIdentity : class, IIdentity {
+      sealed class ClaimsIdentityImpl<TClaimsIdentity, TClaim> : ClaimsIdentity
+            where TClaimsIdentity : class, IIdentity {
 
          static readonly Func<TClaimsIdentity, IEnumerable<TClaim>> _claimsGetter = CreateClaimsGetter();
          readonly TClaimsIdentity _claimsIdentity;
@@ -52,9 +52,8 @@ namespace System.Web.Helpers.Claims {
             return (Func<TClaimsIdentity, IEnumerable<TClaim>>)Delegate.CreateDelegate(typeof(Func<TClaimsIdentity, IEnumerable<TClaim>>), propGetter);
          }
 
-         public override IEnumerable<Claim> GetClaims() {
-            return _claimsGetter(_claimsIdentity).Select(Claim.Create);
-         }
+         public override IEnumerable<Claim> GetClaims() =>
+            _claimsGetter(_claimsIdentity).Select(Claim.Create);
       }
    }
 }

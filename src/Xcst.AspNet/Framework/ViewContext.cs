@@ -38,21 +38,15 @@ namespace System.Web.Mvc {
       public virtual string ValidationMessageElement { get; set; } = "span";
 
       public virtual FormContext FormContext {
-         get {
+         get => HttpContext.Items[_formContextKey] as FormContext
             // Never return a null form context, this is important for validation purposes
-            return HttpContext.Items[_formContextKey] as FormContext ?? _defaultFormContext;
-         }
-         set { HttpContext.Items[_formContextKey] = value; }
+            ?? _defaultFormContext;
+         set => HttpContext.Items[_formContextKey] = value;
       }
 
-      public dynamic ViewBag {
-         get {
-            if (_dynamicViewDataDictionary == null) {
-               _dynamicViewDataDictionary = new DynamicViewDataDictionary(() => ViewData);
-            }
-            return _dynamicViewDataDictionary;
-         }
-      }
+      public dynamic ViewBag =>
+         _dynamicViewDataDictionary
+            ?? (_dynamicViewDataDictionary = new DynamicViewDataDictionary(() => ViewData));
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The property setter is only here to support mocking this type and should not be called at runtime.")]
       public virtual ViewDataDictionary/*?*/ ViewData { get; set; }
@@ -81,9 +75,8 @@ namespace System.Web.Mvc {
          this.TempData = tempData;
       }
 
-      internal FormContext GetFormContextForClientValidation() {
-         return (this.ClientValidationEnabled) ? this.FormContext : null;
-      }
+      internal FormContext GetFormContextForClientValidation() =>
+         (this.ClientValidationEnabled) ? this.FormContext : null;
    }
 
    public class FormContext {
@@ -93,9 +86,8 @@ namespace System.Web.Mvc {
 
       public IDictionary<string, FieldValidationMetadata> FieldValidators => _fieldValidators;
 
-      public FieldValidationMetadata GetValidationMetadataForField(string fieldName) {
-         return GetValidationMetadataForField(fieldName, createIfNotFound: false);
-      }
+      public FieldValidationMetadata GetValidationMetadataForField(string fieldName) =>
+         GetValidationMetadataForField(fieldName, createIfNotFound: false);
 
       public FieldValidationMetadata GetValidationMetadataForField(string fieldName, bool createIfNotFound) {
 
@@ -124,9 +116,8 @@ namespace System.Web.Mvc {
          return result;
       }
 
-      public void RenderedField(string fieldName, bool value) {
+      public void RenderedField(string fieldName, bool value) =>
          _renderedFields[fieldName] = value;
-      }
    }
 
    public class FieldValidationMetadata {
@@ -135,8 +126,8 @@ namespace System.Web.Mvc {
       string _fieldName;
 
       public string FieldName {
-         get { return _fieldName ?? String.Empty; }
-         set { _fieldName = value; }
+         get => _fieldName ?? String.Empty;
+         set => _fieldName = value;
       }
 
       public bool ReplaceValidationMessageContents { get; set; }

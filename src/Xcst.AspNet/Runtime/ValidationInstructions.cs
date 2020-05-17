@@ -28,16 +28,15 @@ using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Runtime {
 
+   using HtmlAttribs = IDictionary<string, object>;
+
    /// <exclude/>
    public static class ValidationInstructions {
 
       [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
-      public static void ValidationMessage(HtmlHelper htmlHelper,
-                                           XcstWriter output,
-                                           string modelName,
-                                           string validationMessage = null,
-                                           IDictionary<string, object> htmlAttributes = null,
-                                           string tag = null) {
+      public static void ValidationMessage(
+            HtmlHelper htmlHelper, XcstWriter output, string modelName, string validationMessage = null, HtmlAttribs htmlAttributes = null,
+            string tag = null) {
 
          if (modelName == null) throw new ArgumentNullException(nameof(modelName));
 
@@ -47,12 +46,9 @@ namespace Xcst.Web.Runtime {
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void ValidationMessageFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper,
-                                                                 XcstWriter output,
-                                                                 Expression<Func<TModel, TProperty>> expression,
-                                                                 string validationMessage = null,
-                                                                 IDictionary<string, object> htmlAttributes = null,
-                                                                 string tag = null) {
+      public static void ValidationMessageFor<TModel, TProperty>(
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string validationMessage = null,
+            HtmlAttribs htmlAttributes = null, string tag = null) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
@@ -61,13 +57,9 @@ namespace Xcst.Web.Runtime {
       }
 
       [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Normalization to lowercase is a common requirement for JavaScript and HTML values")]
-      internal static void ValidationMessageHelper(HtmlHelper htmlHelper,
-                                                   XcstWriter output,
-                                                   ModelMetadata modelMetadata,
-                                                   string expression,
-                                                   string validationMessage,
-                                                   IDictionary<string, object> htmlAttributes,
-                                                   string tag) {
+      internal static void ValidationMessageHelper(
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata modelMetadata, string expression, string validationMessage,
+            HtmlAttribs htmlAttributes, string tag) {
 
          ViewDataDictionary viewData = htmlHelper.ViewData;
 
@@ -153,12 +145,9 @@ namespace Xcst.Web.Runtime {
          output.WriteEndElement();
       }
 
-      public static void ValidationSummary(HtmlHelper htmlHelper,
-                                           XcstWriter output,
-                                           bool includePropertyErrors = false,
-                                           string message = null,
-                                           IDictionary<string, object> htmlAttributes = null,
-                                           string headingTag = null) {
+      public static void ValidationSummary(
+            HtmlHelper htmlHelper, XcstWriter output, bool includePropertyErrors = false, string message = null, HtmlAttribs htmlAttributes = null,
+            string headingTag = null) {
 
          if (htmlHelper == null) throw new ArgumentNullException(nameof(htmlHelper));
 

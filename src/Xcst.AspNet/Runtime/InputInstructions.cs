@@ -77,13 +77,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void CheckBoxForMetadata(
-            HtmlHelper htmlHelper,
-            IXcstPackage package,
-            ISequenceWriter<XElement> output,
-            ModelMetadata/*?*/ metadata,
-            string expression,
-            bool? isChecked,
-            HtmlAttribs htmlAttributes) {
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelMetadata/*?*/ metadata, string expression,
+            bool? isChecked, HtmlAttribs htmlAttributes) {
 
          object model = metadata?.Model;
 
@@ -200,12 +195,7 @@ namespace Xcst.Web.Runtime {
       }
 
       static void RadioButtonForMetadata(
-            HtmlHelper htmlHelper,
-            XcstWriter output,
-            ModelMetadata/*?*/ metadata,
-            string expression,
-            object value,
-            bool? isChecked,
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata/*?*/ metadata, string expression, object value, bool? isChecked,
             HtmlAttribs htmlAttributes) {
 
          object model = metadata?.Model;
@@ -259,10 +249,8 @@ namespace Xcst.Web.Runtime {
       //////////////////////////
 
       public static void Input(
-            HtmlHelper htmlHelper, XcstWriter output, string name, object value = null, string type = null, string format = null, HtmlAttribs htmlAttributes = null) {
-
+            HtmlHelper htmlHelper, XcstWriter output, string name, object value = null, string type = null, string format = null, HtmlAttribs htmlAttributes = null) =>
          InputImpl(htmlHelper, output, type, /*metadata: */null, name, value, /*useViewData: */null, format, htmlAttributes);
-      }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void InputFor<TModel, TProperty>(
@@ -283,14 +271,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void InputForMetadata(
-            HtmlHelper htmlHelper,
-            XcstWriter output,
-            string/*?*/ type,
-            ModelMetadata/*?*/ metadata,
-            string expression,
-            object/*?*/ value,
-            string/*?*/ format,
-            HtmlAttribs/*?*/ htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, string/*?*/ type, ModelMetadata/*?*/ metadata, string expression, object/*?*/ value,
+            string/*?*/ format, HtmlAttribs/*?*/ htmlAttributes) {
 
          if (value == null
             && metadata != null
@@ -303,15 +285,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void InputImpl(
-            HtmlHelper htmlHelper,
-            XcstWriter output,
-            string/*?*/ type,
-            ModelMetadata/*?*/ metadata,
-            string expression,
-            object/*?*/ value,
-            bool? useViewData,
-            string/*?*/ format,
-            HtmlAttribs/*?*/ htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, string/*?*/ type, ModelMetadata/*?*/ metadata, string expression, object/*?*/ value,
+            bool? useViewData, string/*?*/ format, HtmlAttribs/*?*/ htmlAttributes) {
 
          InputType? inputType = GetInputType(type);
          bool checkBoxOrRadio = inputType == InputType.CheckBox
@@ -381,18 +356,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void InputHelper(
-            HtmlHelper htmlHelper,
-            XcstWriter output,
-            InputType inputType,
-            ModelMetadata/*?*/ metadata,
-            string name,
-            object value,
-            bool useViewData,
-            bool isChecked,
-            bool setId,
-            bool isExplicitValue,
-            string format,
-            HtmlAttribs/*?*/ htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, InputType inputType, ModelMetadata/*?*/ metadata, string name, object value,
+            bool useViewData, bool isChecked, bool setId, bool isExplicitValue, string format, HtmlAttribs/*?*/ htmlAttributes) {
 
          string fullName = Name(htmlHelper, name);
 
@@ -523,16 +488,13 @@ namespace Xcst.Web.Runtime {
       // Name
       //////////////////////////
 
-      public static string Name(HtmlHelper html, string name) {
-         return html.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
-      }
+      public static string Name(HtmlHelper html, string name) =>
+         html.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
 
-      public static string NameFor<TModel, TProperty>(HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression) {
-         return Name(html, ExpressionHelper.GetExpressionText(expression));
-      }
+      public static string NameFor<TModel, TProperty>(HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression) =>
+         Name(html, ExpressionHelper.GetExpressionText(expression));
 
-      public static string NameForModel(HtmlHelper html) {
-         return Name(html, String.Empty);
-      }
+      public static string NameForModel(HtmlHelper html) =>
+         Name(html, String.Empty);
    }
 }

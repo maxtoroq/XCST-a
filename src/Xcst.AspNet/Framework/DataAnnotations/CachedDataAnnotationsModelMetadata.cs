@@ -20,12 +20,10 @@ namespace System.Web.Mvc {
       public CachedDataAnnotationsModelMetadata(CachedDataAnnotationsModelMetadataProvider provider, Type containerType, Type modelType, string propertyName, IEnumerable<Attribute> attributes)
          : base(provider, containerType, modelType, propertyName, new CachedDataAnnotationsMetadataAttributes(attributes.ToArray())) { }
 
-      protected override bool ComputeConvertEmptyStringToNull() {
-
-         return (this.PrototypeCache.DisplayFormat != null) ?
+      protected override bool ComputeConvertEmptyStringToNull() =>
+         (this.PrototypeCache.DisplayFormat != null) ?
             this.PrototypeCache.DisplayFormat.ConvertEmptyStringToNull
             : base.ComputeConvertEmptyStringToNull();
-      }
 
       protected override string ComputeDataTypeName() {
 
@@ -42,27 +40,20 @@ namespace System.Web.Mvc {
          return base.ComputeDataTypeName();
       }
 
-      protected override string ComputeDescription() {
-
-         return (this.PrototypeCache.Display != null) ?
+      protected override string ComputeDescription() =>
+         (this.PrototypeCache.Display != null) ?
             this.PrototypeCache.Display.GetDescription()
             : base.ComputeDescription();
-      }
 
-      protected override string ComputeDisplayFormatString() {
-
-         return (this.PrototypeCache.DisplayFormat != null) ?
+      protected override string ComputeDisplayFormatString() =>
+         (this.PrototypeCache.DisplayFormat != null) ?
             this.PrototypeCache.DisplayFormat.DataFormatString
             : base.ComputeDisplayFormatString();
-      }
 
-      protected override string ComputeDisplayName() {
-
-         string result = this.PrototypeCache.Display?.GetName()
-            ?? this.PrototypeCache.DisplayName?.DisplayName;
-
-         return result ?? base.ComputeDisplayName();
-      }
+      protected override string ComputeDisplayName() =>
+         this.PrototypeCache.Display?.GetName()
+            ?? this.PrototypeCache.DisplayName?.DisplayName
+            ?? base.ComputeDisplayName();
 
       protected override string ComputeEditFormatString() {
 
@@ -105,19 +96,15 @@ namespace System.Web.Mvc {
          return base.ComputeHasNonDefaultEditFormat();
       }
 
-      protected override bool ComputeHideSurroundingHtml() {
-
-         return (this.PrototypeCache.HiddenInput != null) ?
+      protected override bool ComputeHideSurroundingHtml() =>
+         (this.PrototypeCache.HiddenInput != null) ?
             !this.PrototypeCache.HiddenInput.DisplayValue
             : base.ComputeHideSurroundingHtml();
-      }
 
-      protected override bool ComputeHtmlEncode() {
-
-         return (this.PrototypeCache.DisplayFormat != null) ?
+      protected override bool ComputeHtmlEncode() =>
+         (this.PrototypeCache.DisplayFormat != null) ?
             this.PrototypeCache.DisplayFormat.HtmlEncode
             : base.ComputeHtmlEncode();
-      }
 
       protected override bool ComputeIsReadOnly() {
 
@@ -132,47 +119,32 @@ namespace System.Web.Mvc {
          return base.ComputeIsReadOnly();
       }
 
-      protected override bool ComputeIsRequired() {
+      protected override bool ComputeIsRequired() =>
+         (this.PrototypeCache.Required != null) ? true : base.ComputeIsRequired();
 
-         return (this.PrototypeCache.Required != null) ?
-            true
-            : base.ComputeIsRequired();
-      }
-
-      protected override string ComputeNullDisplayText() {
-
-         return (this.PrototypeCache.DisplayFormat != null) ?
+      protected override string ComputeNullDisplayText() =>
+         (this.PrototypeCache.DisplayFormat != null) ?
             this.PrototypeCache.DisplayFormat.NullDisplayText
             : base.ComputeNullDisplayText();
-      }
 
-      protected override int ComputeOrder() {
+      protected override int ComputeOrder() =>
+         this.PrototypeCache.Display?.GetOrder()
+            ?? base.ComputeOrder();
 
-         int? result = this.PrototypeCache.Display?.GetOrder();
-
-         return result ?? base.ComputeOrder();
-      }
-
-      protected override string ComputeShortDisplayName() {
-
-         return (this.PrototypeCache.Display != null) ?
+      protected override string ComputeShortDisplayName() =>
+         (this.PrototypeCache.Display != null) ?
             this.PrototypeCache.Display.GetShortName()
             : base.ComputeShortDisplayName();
-      }
 
-      protected override bool ComputeShowForDisplay() {
-
-         return (this.PrototypeCache.ScaffoldColumn != null) ?
+      protected override bool ComputeShowForDisplay() =>
+         (this.PrototypeCache.ScaffoldColumn != null) ?
             this.PrototypeCache.ScaffoldColumn.Scaffold
             : base.ComputeShowForDisplay();
-      }
 
-      protected override bool ComputeShowForEdit() {
-
-         return (this.PrototypeCache.ScaffoldColumn != null) ?
+      protected override bool ComputeShowForEdit() =>
+         (this.PrototypeCache.ScaffoldColumn != null) ?
             this.PrototypeCache.ScaffoldColumn.Scaffold
             : base.ComputeShowForEdit();
-      }
 
       protected override string ComputeSimpleDisplayText() {
 
@@ -208,19 +180,15 @@ namespace System.Web.Mvc {
          return base.ComputeTemplateHint();
       }
 
-      protected override string ComputeWatermark() {
-
-         return (this.PrototypeCache.Display != null) ?
+      protected override string ComputeWatermark() =>
+         (this.PrototypeCache.Display != null) ?
             this.PrototypeCache.Display.GetPrompt()
             : base.ComputeWatermark();
-      }
 
-      protected override string ComputeGroupName() {
-
-         return (this.PrototypeCache.Display != null) ?
+      protected override string ComputeGroupName() =>
+         (this.PrototypeCache.Display != null) ?
             this.PrototypeCache.Display.GetGroupName()
             : base.ComputeGroupName();
-      }
 
       static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo displayColumnProperty, Type modelType) {
 
@@ -296,12 +264,10 @@ namespace System.Web.Mvc {
 
    class CachedDataAnnotationsModelMetadataProvider : CachedAssociatedMetadataProvider<CachedDataAnnotationsModelMetadata> {
 
-      protected override CachedDataAnnotationsModelMetadata CreateMetadataPrototype(IEnumerable<Attribute> attributes, Type containerType, Type modelType, string propertyName) {
-         return new CachedDataAnnotationsModelMetadata(this, containerType, modelType, propertyName, attributes);
-      }
+      protected override CachedDataAnnotationsModelMetadata CreateMetadataPrototype(IEnumerable<Attribute> attributes, Type containerType, Type modelType, string propertyName) =>
+         new CachedDataAnnotationsModelMetadata(this, containerType, modelType, propertyName, attributes);
 
-      protected override CachedDataAnnotationsModelMetadata CreateMetadataFromPrototype(CachedDataAnnotationsModelMetadata prototype, Func<object> modelAccessor) {
-         return new CachedDataAnnotationsModelMetadata(prototype, modelAccessor);
-      }
+      protected override CachedDataAnnotationsModelMetadata CreateMetadataFromPrototype(CachedDataAnnotationsModelMetadata prototype, Func<object> modelAccessor) =>
+         new CachedDataAnnotationsModelMetadata(prototype, modelAccessor);
    }
 }

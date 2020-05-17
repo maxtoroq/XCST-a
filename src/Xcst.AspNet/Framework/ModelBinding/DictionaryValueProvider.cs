@@ -10,15 +10,10 @@ namespace System.Web.Mvc {
       PrefixContainer _prefixContainer;
       readonly Dictionary<string, ValueProviderResult> _values = new Dictionary<string, ValueProviderResult>(StringComparer.OrdinalIgnoreCase);
 
-      private PrefixContainer PrefixContainer {
-         get {
-            if (_prefixContainer == null) {
-               // Race condition on initialization has no side effects
-               _prefixContainer = new PrefixContainer(_values.Keys);
-            }
-            return _prefixContainer;
-         }
-      }
+      private PrefixContainer PrefixContainer =>
+         _prefixContainer
+            // Race condition on initialization has no side effects
+            ?? (_prefixContainer = new PrefixContainer(_values.Keys));
 
       public DictionaryValueProvider(IDictionary<string, TValue> dictionary, CultureInfo culture) {
 
@@ -32,9 +27,8 @@ namespace System.Web.Mvc {
          }
       }
 
-      public virtual bool ContainsPrefix(string prefix) {
-         return PrefixContainer.ContainsPrefix(prefix);
-      }
+      public virtual bool ContainsPrefix(string prefix) =>
+         PrefixContainer.ContainsPrefix(prefix);
 
       public virtual ValueProviderResult GetValue(string key) {
 
@@ -46,8 +40,7 @@ namespace System.Web.Mvc {
          return valueProviderResult;
       }
 
-      public virtual IDictionary<string, string> GetKeysFromPrefix(string prefix) {
-         return PrefixContainer.GetKeysFromPrefix(prefix);
-      }
+      public virtual IDictionary<string, string> GetKeysFromPrefix(string prefix) =>
+         PrefixContainer.GetKeysFromPrefix(prefix);
    }
 }

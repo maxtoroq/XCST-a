@@ -15,7 +15,7 @@ namespace System.Web.Mvc {
       string[] _includeSplit = new string[0];
 
       public string Exclude {
-         get { return _exclude ?? String.Empty; }
+         get => _exclude ?? String.Empty;
          set {
             _exclude = value;
             _excludeSplit = SplitString(value);
@@ -23,7 +23,7 @@ namespace System.Web.Mvc {
       }
 
       public string Include {
-         get { return _include ?? String.Empty; }
+         get => _include ?? String.Empty;
          set {
             _include = value;
             _includeSplit = SplitString(value);
@@ -44,9 +44,8 @@ namespace System.Web.Mvc {
          return includeProperty && !excludeProperty;
       }
 
-      public bool IsPropertyAllowed(string propertyName) {
-         return IsPropertyAllowed(propertyName, _includeSplit, _excludeSplit);
-      }
+      public bool IsPropertyAllowed(string propertyName) =>
+         IsPropertyAllowed(propertyName, _includeSplit, _excludeSplit);
 
       static string[] SplitString(string original) {
 

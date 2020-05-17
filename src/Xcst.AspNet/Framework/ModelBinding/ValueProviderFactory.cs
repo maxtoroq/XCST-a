@@ -12,7 +12,7 @@ namespace System.Web.Mvc {
 
    public static class ValueProviderFactories {
 
-      static readonly ValueProviderFactoryCollection _factories = new ValueProviderFactoryCollection {
+      public static ValueProviderFactoryCollection Factories { get; } = new ValueProviderFactoryCollection {
          new FormValueProviderFactory(),
          new JsonValueProviderFactory(),
          new RouteDataValueProviderFactory(),
@@ -20,8 +20,6 @@ namespace System.Web.Mvc {
          new HttpFileCollectionValueProviderFactory(),
          new JQueryFormValueProviderFactory()
       };
-
-      public static ValueProviderFactoryCollection Factories => _factories;
    }
 
    public class ValueProviderFactoryCollection : Collection<ValueProviderFactory> {

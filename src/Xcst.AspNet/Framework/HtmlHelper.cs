@@ -35,17 +35,12 @@ namespace System.Web.Mvc {
             }
             return _idAttributeDotReplacement;
          }
-         set { _idAttributeDotReplacement = value; }
+         set => _idAttributeDotReplacement = value;
       }
 
-      public dynamic ViewBag {
-         get {
-            if (_dynamicViewDataDictionary == null) {
-               _dynamicViewDataDictionary = new DynamicViewDataDictionary(() => ViewData);
-            }
-            return _dynamicViewDataDictionary;
-         }
-      }
+      public dynamic ViewBag =>
+         _dynamicViewDataDictionary
+            ?? (_dynamicViewDataDictionary = new DynamicViewDataDictionary(() => ViewData));
 
       public ViewContext ViewContext { get; private set; }
 
@@ -103,9 +98,8 @@ namespace System.Web.Mvc {
          return result;
       }
 
-      public static string GenerateIdFromName(string name) {
-         return GenerateIdFromName(name, IdAttributeDotReplacement);
-      }
+      public static string GenerateIdFromName(string name) =>
+         GenerateIdFromName(name, IdAttributeDotReplacement);
 
       public static string GenerateIdFromName(string name, string idAttributeDotReplacement) {
 
@@ -150,26 +144,21 @@ namespace System.Web.Mvc {
       /// </example>
       /// <param name="value">The object to be converted.</param>
       /// <returns>The created dictionary of property names and property values.</returns>
-      public static IDictionary<string, object> ObjectToDictionary(object value) {
-         return TypeHelpers.ObjectToDictionary(value);
-      }
+      public static IDictionary<string, object> ObjectToDictionary(object value) =>
+         TypeHelpers.ObjectToDictionary(value);
 
-      internal string EvalString(string key) {
-         return Convert.ToString(this.ViewData.Eval(key), CultureInfo.CurrentCulture);
-      }
+      internal string EvalString(string key) =>
+         Convert.ToString(this.ViewData.Eval(key), CultureInfo.CurrentCulture);
 
-      internal string EvalString(string key, string format) {
-         return Convert.ToString(this.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
-      }
+      internal string EvalString(string key, string format) =>
+         Convert.ToString(this.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
 
       [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-      public string FormatValue(object value, string format) {
-         return ViewDataDictionary.FormatValueInternal(value, format);
-      }
+      public string FormatValue(object value, string format) =>
+         ViewDataDictionary.FormatValueInternal(value, format);
 
-      internal bool EvalBoolean(string key) {
-         return Convert.ToBoolean(this.ViewData.Eval(key), CultureInfo.InvariantCulture);
-      }
+      internal bool EvalBoolean(string key) =>
+         Convert.ToBoolean(this.ViewData.Eval(key), CultureInfo.InvariantCulture);
 
       internal object GetModelStateValue(string key, Type destinationType) {
 
@@ -182,9 +171,8 @@ namespace System.Web.Mvc {
          return null;
       }
 
-      public IDictionary<string, object> GetUnobtrusiveValidationAttributes(string name) {
-         return GetUnobtrusiveValidationAttributes(name, metadata: null);
-      }
+      public IDictionary<string, object> GetUnobtrusiveValidationAttributes(string name) =>
+         GetUnobtrusiveValidationAttributes(name, metadata: null);
 
       // Only render attributes if unobtrusive client-side validation is enabled, and then only if we've
       // never rendered validation for a field with this name in this form. Also, if there's no form context,
@@ -221,29 +209,23 @@ namespace System.Web.Mvc {
          return results;
       }
 
-      public string DisplayNameForModel() {
-         return MetadataInstructions.DisplayNameForModel(this);
-      }
+      public string DisplayNameForModel() =>
+         MetadataInstructions.DisplayNameForModel(this);
 
-      public string DisplayName(string name) {
-         return MetadataInstructions.DisplayName(this, name);
-      }
+      public string DisplayName(string name) =>
+         MetadataInstructions.DisplayName(this, name);
 
-      public string IdForModel() {
-         return Id(String.Empty);
-      }
+      public string IdForModel() =>
+         Id(String.Empty);
 
-      public string Id(string name) {
-         return this.ViewData.TemplateInfo.GetFullHtmlFieldId(name);
-      }
+      public string Id(string name) =>
+         this.ViewData.TemplateInfo.GetFullHtmlFieldId(name);
 
-      public string NameForModel() {
-         return InputInstructions.NameForModel(this);
-      }
+      public string NameForModel() =>
+         InputInstructions.NameForModel(this);
 
-      public string Name(string name) {
-         return InputInstructions.Name(this, name);
-      }
+      public string Name(string name) =>
+         InputInstructions.Name(this, name);
 
       public string ValueForModel() {
 
@@ -314,9 +296,8 @@ namespace System.Web.Mvc {
       /// This method uses the same logic used by the built-in <code>Object</code> display template;
       /// e.g. by default, it returns false for complex types.
       /// </remarks>
-      public bool ShowForDisplay(ModelMetadata propertyMetadata) {
-         return DisplayInstructions.ShowForDisplay(this, propertyMetadata);
-      }
+      public bool ShowForDisplay(ModelMetadata propertyMetadata) =>
+         DisplayInstructions.ShowForDisplay(this, propertyMetadata);
 
       /// <summary>
       /// Determines whether a property should be shown in an editor template, based on its metadata.
@@ -327,18 +308,16 @@ namespace System.Web.Mvc {
       /// This method uses the same logic used by the built-in <code>Object</code> editor template;
       /// e.g. by default, it returns false for complex types.
       /// </remarks>
-      public bool ShowForEdit(ModelMetadata propertyMetadata) {
-         return EditorInstructions.ShowForEdit(this, propertyMetadata);
-      }
+      public bool ShowForEdit(ModelMetadata propertyMetadata) =>
+         EditorInstructions.ShowForEdit(this, propertyMetadata);
 
       /// <summary>
       /// Returns the member template delegate for the provided property.
       /// </summary>
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
-      public XcstDelegate<object> MemberTemplate(ModelMetadata propertyMetadata) {
-         return EditorInstructions.MemberTemplate(this, propertyMetadata);
-      }
+      public XcstDelegate<object> MemberTemplate(ModelMetadata propertyMetadata) =>
+         EditorInstructions.MemberTemplate(this, propertyMetadata);
    }
 
    public class HtmlHelper<TModel> : HtmlHelper {
@@ -359,17 +338,14 @@ namespace System.Web.Mvc {
          }
       }
 
-      public string DisplayNameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
-         return MetadataInstructions.DisplayNameFor(this, expression);
-      }
+      public string DisplayNameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
+         MetadataInstructions.DisplayNameFor(this, expression);
 
-      public string IdFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
-         return Id(ExpressionHelper.GetExpressionText(expression));
-      }
+      public string IdFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
+         Id(ExpressionHelper.GetExpressionText(expression));
 
-      public string NameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
-         return InputInstructions.NameFor(this, expression);
-      }
+      public string NameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
+         InputInstructions.NameFor(this, expression);
 
       public string ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
 
@@ -492,9 +468,8 @@ namespace System.Web.Mvc {
 
    static class TagBuilder {
 
-      public static string CreateSanitizedId(string originalId) {
-         return CreateSanitizedId(originalId, HtmlHelper.IdAttributeDotReplacement);
-      }
+      public static string CreateSanitizedId(string originalId) =>
+         CreateSanitizedId(originalId, HtmlHelper.IdAttributeDotReplacement);
 
       public static string CreateSanitizedId(string originalId, string invalidCharReplacement) {
 
@@ -532,9 +507,8 @@ namespace System.Web.Mvc {
 
       static class Html401IdUtil {
 
-         public static bool IsValidIdCharacter(char c) {
-            return (IsLetter(c) || IsDigit(c) || IsAllowableSpecialCharacter(c));
-         }
+         public static bool IsValidIdCharacter(char c) =>
+            (IsLetter(c) || IsDigit(c) || IsAllowableSpecialCharacter(c));
 
          static bool IsAllowableSpecialCharacter(char c) {
             switch (c) {
@@ -549,13 +523,11 @@ namespace System.Web.Mvc {
             }
          }
 
-         static bool IsDigit(char c) {
-            return ('0' <= c && c <= '9');
-         }
+         static bool IsDigit(char c) =>
+            ('0' <= c && c <= '9');
 
-         public static bool IsLetter(char c) {
-            return (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z'));
-         }
+         public static bool IsLetter(char c) =>
+            (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z'));
       }
    }
 
@@ -564,21 +536,15 @@ namespace System.Web.Mvc {
       static ConcurrentDictionary<Type, PropertyHelper[]> _reflectionCache = new ConcurrentDictionary<Type, PropertyHelper[]>();
 
       public override string Name {
-         get {
-            return base.Name;
-         }
-         protected set {
-            base.Name = value?.Replace('_', '-');
-         }
+         get => base.Name;
+         protected set => base.Name = value?.Replace('_', '-');
       }
 
-      public static new PropertyHelper[] GetProperties(object instance) {
-         return GetProperties(instance, CreateInstance, _reflectionCache);
-      }
+      public static new PropertyHelper[] GetProperties(object instance) =>
+         GetProperties(instance, CreateInstance, _reflectionCache);
 
-      static PropertyHelper CreateInstance(PropertyInfo property) {
-         return new HtmlAttributePropertyHelper(property);
-      }
+      static PropertyHelper CreateInstance(PropertyInfo property) =>
+         new HtmlAttributePropertyHelper(property);
 
       public HtmlAttributePropertyHelper(PropertyInfo property)
          : base(property) { }

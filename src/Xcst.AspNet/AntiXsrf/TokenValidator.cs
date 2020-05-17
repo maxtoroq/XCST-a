@@ -18,15 +18,11 @@ namespace System.Web.Helpers.AntiXsrf {
          _claimUidExtractor = claimUidExtractor;
       }
 
-      public AntiForgeryToken GenerateCookieToken() {
-
-         return new AntiForgeryToken {
-
+      public AntiForgeryToken GenerateCookieToken() =>
+         new AntiForgeryToken {
             // SecurityToken will be populated automatically.
-
             IsSessionToken = true
          };
-      }
 
       public AntiForgeryToken GenerateFormToken(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken cookieToken) {
 
@@ -77,9 +73,8 @@ namespace System.Web.Helpers.AntiXsrf {
          return formToken;
       }
 
-      public bool IsCookieTokenValid(AntiForgeryToken cookieToken) {
-         return cookieToken?.IsSessionToken == true;
-      }
+      public bool IsCookieTokenValid(AntiForgeryToken cookieToken) =>
+         cookieToken?.IsSessionToken == true;
 
       public void ValidateTokens(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
 

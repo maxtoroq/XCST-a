@@ -28,7 +28,7 @@ namespace System.Web.Mvc {
       public ICollection<string> Keys => _innerDictionary.Keys;
 
       public object Model {
-         get { return _model; }
+         get => _model;
          set {
             _modelMetadata = null;
             SetModel(value);
@@ -42,21 +42,15 @@ namespace System.Web.Mvc {
             }
             return _modelMetadata;
          }
-         set { _modelMetadata = value; }
+         set => _modelMetadata = value;
       }
 
-      public ModelStateDictionary ModelState {
-         get { return _modelState; }
-      }
+      public ModelStateDictionary ModelState => _modelState;
 
       public TemplateInfo TemplateInfo {
-         get {
-            if (_templateMetadata == null) {
-               _templateMetadata = new TemplateInfo();
-            }
-            return _templateMetadata;
-         }
-         set { _templateMetadata = value; }
+         get => _templateMetadata
+            ?? (_templateMetadata = new TemplateInfo());
+         set => _templateMetadata = value;
       }
 
       public ICollection<object> Values => _innerDictionary.Values;
@@ -67,7 +61,7 @@ namespace System.Web.Mvc {
             _innerDictionary.TryGetValue(key, out value);
             return value;
          }
-         set { _innerDictionary[key] = value; }
+         set => _innerDictionary[key] = value;
       }
 
       // For unit testing
@@ -100,29 +94,23 @@ namespace System.Web.Mvc {
          _modelMetadata = dictionary._modelMetadata;
       }
 
-      public void Add(KeyValuePair<string, object> item) {
+      public void Add(KeyValuePair<string, object> item) =>
          _innerDictionary.Add(item);
-      }
 
-      public void Add(string key, object value) {
+      public void Add(string key, object value) =>
          _innerDictionary.Add(key, value);
-      }
 
-      public void Clear() {
+      public void Clear() =>
          _innerDictionary.Clear();
-      }
 
-      public bool Contains(KeyValuePair<string, object> item) {
-         return _innerDictionary.Contains(item);
-      }
+      public bool Contains(KeyValuePair<string, object> item) =>
+         _innerDictionary.Contains(item);
 
-      public bool ContainsKey(string key) {
-         return _innerDictionary.ContainsKey(key);
-      }
+      public bool ContainsKey(string key) =>
+         _innerDictionary.ContainsKey(key);
 
-      public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) {
+      public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) =>
          _innerDictionary.CopyTo(array, arrayIndex);
-      }
 
       public object Eval(string expression) {
          ViewDataInfo info = GetViewDataInfo(expression);
@@ -147,9 +135,8 @@ namespace System.Web.Mvc {
          }
       }
 
-      public IEnumerator<KeyValuePair<string, object>> GetEnumerator() {
-         return _innerDictionary.GetEnumerator();
-      }
+      public IEnumerator<KeyValuePair<string, object>> GetEnumerator() =>
+         _innerDictionary.GetEnumerator();
 
       public ViewDataInfo GetViewDataInfo(string expression) {
 
@@ -158,25 +145,21 @@ namespace System.Web.Mvc {
          return ViewDataEvaluator.Eval(this, expression);
       }
 
-      public bool Remove(KeyValuePair<string, object> item) {
-         return _innerDictionary.Remove(item);
-      }
+      public bool Remove(KeyValuePair<string, object> item) =>
+         _innerDictionary.Remove(item);
 
-      public bool Remove(string key) {
-         return _innerDictionary.Remove(key);
-      }
+      public bool Remove(string key) =>
+         _innerDictionary.Remove(key);
 
       // This method will execute before the derived type's instance constructor executes. Derived types must
       // be aware of this and should plan accordingly. For example, the logic in SetModel() should be simple
       // enough so as not to depend on the "this" pointer referencing a fully constructed object.
 
-      protected virtual void SetModel(object value) {
+      protected virtual void SetModel(object value) =>
          _model = value;
-      }
 
-      public bool TryGetValue(string key, out object value) {
-         return _innerDictionary.TryGetValue(key, out value);
-      }
+      public bool TryGetValue(string key, out object value) =>
+         _innerDictionary.TryGetValue(key, out value);
 
       internal static class ViewDataEvaluator {
 
@@ -324,13 +307,8 @@ namespace System.Web.Mvc {
          }
       }
 
-      #region IEnumerable Members
-
-      IEnumerator IEnumerable.GetEnumerator() {
-         return _innerDictionary.GetEnumerator();
-      }
-
-      #endregion
+      IEnumerator IEnumerable.GetEnumerator() =>
+         _innerDictionary.GetEnumerator();
    }
 
    public class TemplateInfo {
@@ -340,13 +318,13 @@ namespace System.Web.Mvc {
       HashSet<object> _visitedObjects;
 
       public object FormattedModelValue {
-         get { return _formattedModelValue ?? String.Empty; }
-         set { _formattedModelValue = value; }
+         get => _formattedModelValue ?? String.Empty;
+         set => _formattedModelValue = value;
       }
 
       public string HtmlFieldPrefix {
-         get { return _htmlFieldPrefix ?? String.Empty; }
-         set { _htmlFieldPrefix = value; }
+         get => _htmlFieldPrefix ?? String.Empty;
+         set => _htmlFieldPrefix = value;
       }
 
       public int TemplateDepth => VisitedObjects.Count;
@@ -354,18 +332,13 @@ namespace System.Web.Mvc {
       // DDB #224750 - Keep a collection of visited objects to prevent infinite recursion
 
       internal HashSet<object> VisitedObjects {
-         get {
-            if (_visitedObjects == null) {
-               _visitedObjects = new HashSet<object>();
-            }
-            return _visitedObjects;
-         }
-         set { _visitedObjects = value; }
+         get => _visitedObjects
+            ?? (_visitedObjects = new HashSet<object>());
+         set => _visitedObjects = value;
       }
 
-      public string GetFullHtmlFieldId(string partialFieldName) {
-         return HtmlHelper.GenerateIdFromName(GetFullHtmlFieldName(partialFieldName));
-      }
+      public string GetFullHtmlFieldId(string partialFieldName) =>
+         HtmlHelper.GenerateIdFromName(GetFullHtmlFieldName(partialFieldName));
 
       public string GetFullHtmlFieldName(string partialFieldName) {
 
@@ -383,9 +356,8 @@ namespace System.Web.Mvc {
          }
       }
 
-      public bool Visited(ModelMetadata metadata) {
-         return this.VisitedObjects.Contains(metadata.Model ?? metadata.ModelType);
-      }
+      public bool Visited(ModelMetadata metadata) =>
+         this.VisitedObjects.Contains(metadata.Model ?? metadata.ModelType);
    }
 
    public class ViewDataInfo {
@@ -422,8 +394,8 @@ namespace System.Web.Mvc {
    public class ViewDataDictionary<TModel> : ViewDataDictionary {
 
       public new TModel Model {
-         get { return (TModel)base.Model; }
-         set { SetModel(value); }
+         get => (TModel)base.Model;
+         set => SetModel(value);
       }
 
       public override ModelMetadata ModelMetadata {
@@ -436,7 +408,7 @@ namespace System.Web.Mvc {
 
             return result;
          }
-         set { base.ModelMetadata = value; }
+         set => base.ModelMetadata = value;
       }
 
       public ViewDataDictionary()
@@ -490,9 +462,8 @@ namespace System.Web.Mvc {
       // Implementing this function improves the debugging experience as it provides the debugger with the list of all
       // the properties currently defined on the object
 
-      public override IEnumerable<string> GetDynamicMemberNames() {
-         return this.ViewData.Keys;
-      }
+      public override IEnumerable<string> GetDynamicMemberNames() =>
+         this.ViewData.Keys;
 
       public override bool TryGetMember(GetMemberBinder binder, out object result) {
 

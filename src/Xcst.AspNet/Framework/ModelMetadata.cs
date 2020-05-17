@@ -46,8 +46,8 @@ namespace System.Web.Mvc {
       public Type ContainerType => _containerType;
 
       public virtual bool ConvertEmptyStringToNull {
-         get { return _convertEmptyStringToNull; }
-         set { _convertEmptyStringToNull = value; }
+         get => _convertEmptyStringToNull;
+         set => _convertEmptyStringToNull = value;
       }
 
       public virtual string DataTypeName { get; set; }
@@ -66,8 +66,8 @@ namespace System.Web.Mvc {
       public virtual bool HideSurroundingHtml { get; set; }
 
       public virtual bool HtmlEncode {
-         get { return _htmlEncode; }
-         set { _htmlEncode = value; }
+         get => _htmlEncode;
+         set => _htmlEncode = value;
       }
 
       public virtual bool IsComplexType => !(TypeDescriptor.GetConverter(ModelType).CanConvertFrom(typeof(string)));
@@ -77,8 +77,8 @@ namespace System.Web.Mvc {
       public virtual bool IsReadOnly { get; set; }
 
       public virtual bool IsRequired {
-         get { return _isRequired; }
-         set { _isRequired = value; }
+         get => _isRequired;
+         set => _isRequired = value;
       }
 
       public object Model {
@@ -102,8 +102,8 @@ namespace System.Web.Mvc {
       public virtual string NullDisplayText { get; set; }
 
       public virtual int Order {
-         get { return _order; }
-         set { _order = value; }
+         get => _order;
+         set => _order = value;
       }
 
       public virtual IEnumerable<ModelMetadata> Properties {
@@ -161,24 +161,19 @@ namespace System.Web.Mvc {
       public virtual string ShortDisplayName { get; set; }
 
       public virtual bool ShowForDisplay {
-         get { return _showForDisplay; }
-         set { _showForDisplay = value; }
+         get => _showForDisplay;
+         set => _showForDisplay = value;
       }
 
       public virtual bool ShowForEdit {
-         get { return _showForEdit; }
-         set { _showForEdit = value; }
+         get => _showForEdit;
+         set => _showForEdit = value;
       }
 
       [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "This property delegates to the method when the user has not yet set a simple display text value.")]
       public virtual string SimpleDisplayText {
-         get {
-            if (_simpleDisplayText == null) {
-               _simpleDisplayText = GetSimpleDisplayText();
-            }
-            return _simpleDisplayText;
-         }
-         set { _simpleDisplayText = value; }
+         get => _simpleDisplayText ?? (_simpleDisplayText = GetSimpleDisplayText());
+         set => _simpleDisplayText = value;
       }
 
       public virtual string TemplateHint { get; set; }
@@ -188,9 +183,8 @@ namespace System.Web.Mvc {
       public virtual string GroupName { get; set; }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static ModelMetadata FromLambdaExpression<TParameter, TValue>(Expression<Func<TParameter, TValue>> expression, ViewDataDictionary<TParameter> viewData) {
-         return FromLambdaExpression(expression, viewData, metadataProvider: null);
-      }
+      public static ModelMetadata FromLambdaExpression<TParameter, TValue>(Expression<Func<TParameter, TValue>> expression, ViewDataDictionary<TParameter> viewData) =>
+         FromLambdaExpression(expression, viewData, metadataProvider: null);
 
       internal static ModelMetadata FromLambdaExpression<TParameter, TValue>(Expression<Func<TParameter, TValue>> expression, ViewDataDictionary<TParameter> viewData, ModelMetadataProvider metadataProvider) {
 
@@ -244,15 +238,12 @@ namespace System.Web.Mvc {
          return GetMetadataFromProvider(modelAccessor, typeof(TValue), propertyName, container, containerType, metadataProvider);
       }
 
-      static ModelMetadata FromModel(ViewDataDictionary viewData, ModelMetadataProvider metadataProvider) {
-
-         return viewData.ModelMetadata
+      static ModelMetadata FromModel(ViewDataDictionary viewData, ModelMetadataProvider metadataProvider) =>
+         viewData.ModelMetadata
             ?? GetMetadataFromProvider(null, typeof(string), null, null, null, metadataProvider);
-      }
 
-      public static ModelMetadata FromStringExpression(string expression, ViewDataDictionary viewData) {
-         return FromStringExpression(expression, viewData, metadataProvider: null);
-      }
+      public static ModelMetadata FromStringExpression(string expression, ViewDataDictionary viewData) =>
+         FromStringExpression(expression, viewData, metadataProvider: null);
 
       internal static ModelMetadata FromStringExpression(string expression, ViewDataDictionary viewData, ModelMetadataProvider metadataProvider) {
 
@@ -316,12 +307,10 @@ namespace System.Web.Mvc {
       }
 
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method is a delegating helper to choose among multiple property values")]
-      public string GetDisplayName() {
-
-         return this.DisplayName
+      public string GetDisplayName() =>
+         this.DisplayName
             ?? this.PropertyName
             ?? this.ModelType.Name;
-      }
 
       private static ModelMetadata GetMetadataFromProvider(Func<object> modelAccessor, Type modelType, string propertyName, object container, Type containerType, ModelMetadataProvider metadataProvider) {
 
@@ -372,9 +361,8 @@ namespace System.Web.Mvc {
          return Convert.ToString(firstProperty.Model, CultureInfo.CurrentCulture);
       }
 
-      internal virtual IEnumerable<ModelValidator> GetValidators(ControllerContext context) {
-         return ModelValidatorProviders.Providers.GetValidators(this, context);
-      }
+      internal virtual IEnumerable<ModelValidator> GetValidators(ControllerContext context) =>
+         ModelValidatorProviders.Providers.GetValidators(this, context);
 
       static ModelMetadata[] SortProperties(ModelMetadata[] properties) {
 
@@ -426,13 +414,13 @@ namespace System.Web.Mvc {
       }
 
       public static ModelMetadataProvider Current {
-         get { return _instance.CurrentInternal; }
-         set { _instance.CurrentInternal = value; }
+         get => _instance.CurrentInternal;
+         set => _instance.CurrentInternal = value;
       }
 
       internal ModelMetadataProvider CurrentInternal {
-         get { return _resolver.Current; }
-         set { _currentProvider = value ?? new EmptyModelMetadataProvider(); }
+         get => _resolver.Current;
+         set => _currentProvider = value ?? new EmptyModelMetadataProvider();
       }
    }
 }

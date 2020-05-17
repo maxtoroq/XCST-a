@@ -27,9 +27,8 @@ namespace System.Web.Mvc {
          this.Attribute = attribute;
       }
 
-      internal static ModelValidator Create(ModelMetadata metadata, ControllerContext context, ValidationAttribute attribute) {
-         return new DataAnnotationsModelValidator(metadata, context, attribute);
-      }
+      internal static ModelValidator Create(ModelMetadata metadata, ControllerContext context, ValidationAttribute attribute) =>
+         new DataAnnotationsModelValidator(metadata, context, attribute);
 
       public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() {
 
@@ -150,9 +149,8 @@ namespace System.Web.Mvc {
             }
          }
 
-         public override string FormatErrorMessage(string name) {
-            return String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, _otherPropertyDisplayName);
-         }
+         public override string FormatErrorMessage(string name) =>
+            String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, _otherPropertyDisplayName);
       }
    }
 
@@ -222,9 +220,8 @@ namespace System.Web.Mvc {
       public MinLengthAttributeAdapter(ModelMetadata metadata, ControllerContext context, MinLengthAttribute attribute)
          : base(metadata, context, attribute) { }
 
-      public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() {
-         return new[] { new ModelClientValidationMinLengthRule(this.ErrorMessage, this.Attribute.Length) };
-      }
+      public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() =>
+         new[] { new ModelClientValidationMinLengthRule(this.ErrorMessage, this.Attribute.Length) };
    }
 
    class RangeAttributeAdapter : DataAnnotationsModelValidator<RangeAttribute> {
@@ -245,9 +242,8 @@ namespace System.Web.Mvc {
       public RegularExpressionAttributeAdapter(ModelMetadata metadata, ControllerContext context, RegularExpressionAttribute attribute)
          : base(metadata, context, attribute) { }
 
-      public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() {
-         return new[] { new ModelClientValidationRegexRule(this.ErrorMessage, this.Attribute.Pattern) };
-      }
+      public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() =>
+         new[] { new ModelClientValidationRegexRule(this.ErrorMessage, this.Attribute.Pattern) };
    }
 
    class RequiredAttributeAdapter : DataAnnotationsModelValidator<RequiredAttribute> {
@@ -255,9 +251,8 @@ namespace System.Web.Mvc {
       public RequiredAttributeAdapter(ModelMetadata metadata, ControllerContext context, RequiredAttribute attribute)
          : base(metadata, context, attribute) { }
 
-      public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() {
-         return new[] { new ModelClientValidationRequiredRule(this.ErrorMessage) };
-      }
+      public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() =>
+         new[] { new ModelClientValidationRequiredRule(this.ErrorMessage) };
    }
 
    class StringLengthAttributeAdapter : DataAnnotationsModelValidator<StringLengthAttribute> {
@@ -265,8 +260,7 @@ namespace System.Web.Mvc {
       public StringLengthAttributeAdapter(ModelMetadata metadata, ControllerContext context, StringLengthAttribute attribute)
          : base(metadata, context, attribute) { }
 
-      public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() {
-         return new[] { new ModelClientValidationStringLengthRule(this.ErrorMessage, this.Attribute.MinimumLength, this.Attribute.MaximumLength) };
-      }
+      public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() =>
+         new[] { new ModelClientValidationStringLengthRule(this.ErrorMessage, this.Attribute.MinimumLength, this.Attribute.MaximumLength) };
    }
 }

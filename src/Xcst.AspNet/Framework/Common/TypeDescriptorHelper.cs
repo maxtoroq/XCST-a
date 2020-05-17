@@ -7,8 +7,7 @@ namespace System.Web.Mvc {
 
    static class TypeDescriptorHelper {
 
-      public static ICustomTypeDescriptor Get(Type type) {
-         return new AssociatedMetadataTypeTypeDescriptionProvider(type).GetTypeDescriptor(type);
-      }
+      public static ICustomTypeDescriptor Get(Type type) =>
+         new AssociatedMetadataTypeTypeDescriptionProvider(type).GetTypeDescriptor(type);
    }
 }

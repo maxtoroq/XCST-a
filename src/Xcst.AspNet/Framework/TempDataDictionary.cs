@@ -20,7 +20,8 @@ namespace System.Web.Mvc {
 
       public ICollection<object> Values => _data.Values;
 
-      bool ICollection<KeyValuePair<string, object>>.IsReadOnly => ((ICollection<KeyValuePair<string, object>>)_data).IsReadOnly;
+      bool ICollection<KeyValuePair<string, object>>.IsReadOnly =>
+         ((ICollection<KeyValuePair<string, object>>)_data).IsReadOnly;
 
       public object this[string key] {
          get {
@@ -46,9 +47,8 @@ namespace System.Web.Mvc {
          _retainedKeys.UnionWith(_data.Keys);
       }
 
-      public void Keep(string key) {
+      public void Keep(string key) =>
          _retainedKeys.Add(key);
-      }
 
       public void Load(ControllerContext controllerContext, ITempDataProvider tempDataProvider) {
 
@@ -116,17 +116,14 @@ namespace System.Web.Mvc {
          _initialKeys.Clear();
       }
 
-      public bool ContainsKey(string key) {
-         return _data.ContainsKey(key);
-      }
+      public bool ContainsKey(string key) =>
+         _data.ContainsKey(key);
 
-      public bool ContainsValue(object value) {
-         return _data.ContainsValue(value);
-      }
+      public bool ContainsValue(object value) =>
+         _data.ContainsValue(value);
 
-      public IEnumerator<KeyValuePair<string, object>> GetEnumerator() {
-         return new TempDataDictionaryEnumerator(this);
-      }
+      public IEnumerator<KeyValuePair<string, object>> GetEnumerator() =>
+         new TempDataDictionaryEnumerator(this);
 
       public bool Remove(string key) {
 
@@ -143,27 +140,24 @@ namespace System.Web.Mvc {
          return _data.TryGetValue(key, out value);
       }
 
-      void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int index) {
+      void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int index) =>
          ((ICollection<KeyValuePair<string, object>>)_data).CopyTo(array, index);
-      }
 
       void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> keyValuePair) {
          _initialKeys.Add(keyValuePair.Key);
          ((ICollection<KeyValuePair<string, object>>)_data).Add(keyValuePair);
       }
 
-      bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> keyValuePair) {
-         return ((ICollection<KeyValuePair<string, object>>)_data).Contains(keyValuePair);
-      }
+      bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> keyValuePair) =>
+         ((ICollection<KeyValuePair<string, object>>)_data).Contains(keyValuePair);
 
       bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> keyValuePair) {
          _initialKeys.Remove(keyValuePair.Key);
          return ((ICollection<KeyValuePair<string, object>>)_data).Remove(keyValuePair);
       }
 
-      IEnumerator IEnumerable.GetEnumerator() {
-         return new TempDataDictionaryEnumerator(this);
-      }
+      IEnumerator IEnumerable.GetEnumerator() =>
+         new TempDataDictionaryEnumerator(this);
 
       private sealed class TempDataDictionaryEnumerator : IEnumerator<KeyValuePair<string, object>> {
 
@@ -185,17 +179,14 @@ namespace System.Web.Mvc {
             _enumerator = _tempData._data.GetEnumerator();
          }
 
-         public bool MoveNext() {
-            return _enumerator.MoveNext();
-         }
+         public bool MoveNext() =>
+            _enumerator.MoveNext();
 
-         public void Reset() {
+         public void Reset() =>
             _enumerator.Reset();
-         }
 
-         void IDisposable.Dispose() {
+         void IDisposable.Dispose() =>
             _enumerator.Dispose();
-         }
       }
    }
 

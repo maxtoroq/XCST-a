@@ -34,47 +34,42 @@ namespace Xcst.Web {
          (Action<TemplateInfo, HashSet<object>>)Delegate.CreateDelegate(typeof(Action<TemplateInfo, HashSet<object>>), typeof(TemplateInfo).GetProperty("VisitedObjects", BindingFlags.Instance | BindingFlags.NonPublic).GetSetMethod(nonPublic: true));
 #endif
 
-      public static string GroupName(this ModelMetadata metadata) {
+      public static string GroupName(this ModelMetadata metadata) =>
 #if ASPNETMVC
-         return null;
+         null;
 #else
-         return metadata.GroupName;
+         metadata.GroupName;
 #endif
-      }
 
-      public static Type RealModelType(this ModelMetadata metadata) {
+      public static Type RealModelType(this ModelMetadata metadata) =>
 #if ASPNETMVC
-         return getRealModelType(metadata);
+         getRealModelType(metadata);
 #else
-         return metadata.RealModelType;
+         metadata.RealModelType;
 #endif
-      }
 
-      public static HashSet<object> VisitedObjects(this TemplateInfo templateInfo) {
+      public static HashSet<object> VisitedObjects(this TemplateInfo templateInfo) =>
 #if ASPNETMVC
-         return getVisitedObjects(templateInfo);
+         getVisitedObjects(templateInfo);
 #else
-         return templateInfo.VisitedObjects;
+         templateInfo.VisitedObjects;
 #endif
-      }
 
-      public static void VisitedObjects(this TemplateInfo templateInfo, HashSet<object> value) {
+      public static void VisitedObjects(this TemplateInfo templateInfo, HashSet<object> value) =>
 #if ASPNETMVC
          setVisitedObjects(templateInfo, value);
 #else
          templateInfo.VisitedObjects = value;
 #endif
-      }
 
-      public static bool HasNonDefaultEditFormat(this ModelMetadata metadata) {
+      public static bool HasNonDefaultEditFormat(this ModelMetadata metadata) =>
 #if ASPNETMVC
-         return (bool)metadata.GetType()
+         (bool)metadata.GetType()
             .GetProperty("HasNonDefaultEditFormat", BindingFlags.Instance | BindingFlags.NonPublic)
             .GetValue(metadata);
 #else
-         return metadata.HasNonDefaultEditFormat;
+         metadata.HasNonDefaultEditFormat;
 #endif
-      }
 
 #if ASPNETMVC
       public static object GetModelStateValue(this HtmlHelper htmlHelper, string key, Type destinationType) {
@@ -88,21 +83,17 @@ namespace Xcst.Web {
          return null;
       }
 
-      public static string EvalString(this HtmlHelper htmlHelper, string key) {
-         return Convert.ToString(htmlHelper.ViewData.Eval(key), CultureInfo.CurrentCulture);
-      }
+      public static string EvalString(this HtmlHelper htmlHelper, string key) =>
+         Convert.ToString(htmlHelper.ViewData.Eval(key), CultureInfo.CurrentCulture);
 
-      public static string EvalString(this HtmlHelper htmlHelper, string key, string format) {
-         return Convert.ToString(htmlHelper.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
-      }
+      public static string EvalString(this HtmlHelper htmlHelper, string key, string format) =>
+         Convert.ToString(htmlHelper.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
 
-      public static bool EvalBoolean(this HtmlHelper htmlHelper, string key) {
-         return Convert.ToBoolean(htmlHelper.ViewData.Eval(key), CultureInfo.InvariantCulture);
-      }
+      public static bool EvalBoolean(this HtmlHelper htmlHelper, string key) =>
+         Convert.ToBoolean(htmlHelper.ViewData.Eval(key), CultureInfo.InvariantCulture);
 
-      public static FormContext GetFormContextForClientValidation(this ViewContext viewContext) {
-         return (viewContext.ClientValidationEnabled) ? viewContext.FormContext : null;
-      }
+      public static FormContext GetFormContextForClientValidation(this ViewContext viewContext) =>
+         (viewContext.ClientValidationEnabled) ? viewContext.FormContext : null;
 #endif
 
       internal static ViewContext Clone(
@@ -112,9 +103,9 @@ namespace Xcst.Web {
 #endif
             ViewDataDictionary viewData = null,
             TempDataDictionary tempData = null,
-            TextWriter writer = null) {
+            TextWriter writer = null) =>
 
-         return new ViewContext(
+         new ViewContext(
             context,
 #if ASPNETMVC
             view ?? context.View,
@@ -130,6 +121,5 @@ namespace Xcst.Web {
             ValidationMessageElement = context.ValidationMessageElement,
             ValidationSummaryMessageElement = context.ValidationSummaryMessageElement
          };
-      }
    }
 }

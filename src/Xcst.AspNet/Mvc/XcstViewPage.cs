@@ -28,7 +28,7 @@ namespace Xcst.Web.Mvc {
       TempDataDictionary _TempData;
 
       public virtual ViewContext ViewContext {
-         get { return _ViewContext; }
+         get => _ViewContext;
          set {
             _ViewContext = value;
 
@@ -50,7 +50,7 @@ namespace Xcst.Web.Mvc {
             }
             return _ViewData;
          }
-         set { SetViewData(value); }
+         set => SetViewData(value);
       }
 
       public dynamic ViewBag => ViewContext?.ViewBag;
@@ -69,7 +69,7 @@ namespace Xcst.Web.Mvc {
             }
             return _Url;
          }
-         set { _Url = value; }
+         set => _Url = value;
       }
 
       public HtmlHelper Html {
@@ -80,18 +80,16 @@ namespace Xcst.Web.Mvc {
             }
             return _Html;
          }
-         set { _Html = value; }
+         set => _Html = value;
       }
 
       public ModelStateDictionary ModelState => ViewData.ModelState;
 
       public virtual TempDataDictionary TempData {
-         get {
-            return _TempData
-               ?? (_TempData = ViewContext?.TempData)
-               ?? (_TempData = new TempDataDictionary());
-         }
-         set { _TempData = value; }
+         get => _TempData
+            ?? (_TempData = ViewContext?.TempData)
+            ?? (_TempData = new TempDataDictionary());
+         set => _TempData = value;
       }
 
       internal virtual void SetViewData(ViewDataDictionary viewData) {
@@ -99,9 +97,8 @@ namespace Xcst.Web.Mvc {
       }
 
 #if !ASPNETMVC
-      public override IHttpHandler CreateHttpHandler() {
-         return new XcstViewPageHandler(this);
-      }
+      public override IHttpHandler CreateHttpHandler() =>
+         new XcstViewPageHandler(this);
 
       public void Redirect(string url) {
 
@@ -212,7 +209,7 @@ namespace Xcst.Web.Mvc {
             }
             return _ViewData;
          }
-         set { SetViewData(value); }
+         set => SetViewData(value);
       }
 
       public new TModel Model => ViewData.Model;
@@ -225,7 +222,7 @@ namespace Xcst.Web.Mvc {
             }
             return _Html;
          }
-         set { _Html = value; }
+         set => _Html = value;
       }
 
       internal override void SetViewData(ViewDataDictionary viewData) {

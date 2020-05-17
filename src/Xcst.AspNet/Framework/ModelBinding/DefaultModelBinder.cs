@@ -19,13 +19,8 @@ namespace System.Web.Mvc {
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Property is settable so that the dictionary can be provided for unit testing purposes.")]
       protected internal ModelBinderDictionary Binders {
-         get {
-            if (_binders == null) {
-               _binders = ModelBinders.Binders;
-            }
-            return _binders;
-         }
-         set { _binders = value; }
+         get => _binders ?? (_binders = ModelBinders.Binders);
+         set => _binders = value;
       }
 
       static void AddValueRequiredMessageToModelState(ControllerContext controllerContext, ModelStateDictionary modelState, string modelStateKey, Type elementType, object value) {
@@ -420,13 +415,11 @@ namespace System.Web.Mvc {
          }
       }
 
-      protected static string CreateSubIndexName(string prefix, int index) {
-         return String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", prefix, index);
-      }
+      protected static string CreateSubIndexName(string prefix, int index) =>
+         String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", prefix, index);
 
-      protected static string CreateSubIndexName(string prefix, string index) {
-         return String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", prefix, index);
-      }
+      protected static string CreateSubIndexName(string prefix, string index) =>
+         String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", prefix, index);
 
       protected internal static string CreateSubPropertyName(string prefix, string propertyName) {
 
@@ -474,9 +467,8 @@ namespace System.Web.Mvc {
          indexes = GetZeroBasedIndexes();
       }
 
-      protected virtual PropertyDescriptorCollection GetModelProperties(ControllerContext controllerContext, ModelBindingContext bindingContext) {
-         return GetTypeDescriptor(controllerContext, bindingContext).GetProperties();
-      }
+      protected virtual PropertyDescriptorCollection GetModelProperties(ControllerContext controllerContext, ModelBindingContext bindingContext) =>
+         GetTypeDescriptor(controllerContext, bindingContext).GetProperties();
 
       protected virtual object GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder) {
 
@@ -489,21 +481,16 @@ namespace System.Web.Mvc {
          return value;
       }
 
-      protected virtual ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext) {
-         return TypeDescriptorHelper.Get(bindingContext.ModelType);
-      }
+      protected virtual ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext) =>
+         TypeDescriptorHelper.Get(bindingContext.ModelType);
 
-      static string GetValueInvalidResource(ControllerContext controllerContext) {
-
-         return XcstWebConfiguration.Instance.ModelBinding.DefaultInvalidPropertyValueErrorMessage?.Invoke()
+      static string GetValueInvalidResource(ControllerContext controllerContext) =>
+         XcstWebConfiguration.Instance.ModelBinding.DefaultInvalidPropertyValueErrorMessage?.Invoke()
             ?? MvcResources.DefaultModelBinder_ValueInvalid;
-      }
 
-      static string GetValueRequiredResource(ControllerContext controllerContext) {
-
-         return XcstWebConfiguration.Instance.ModelBinding.DefaultRequiredPropertyValueErrorMessage?.Invoke()
+      static string GetValueRequiredResource(ControllerContext controllerContext) =>
+         XcstWebConfiguration.Instance.ModelBinding.DefaultRequiredPropertyValueErrorMessage?.Invoke()
             ?? MvcResources.DefaultModelBinder_ValueRequired;
-      }
 
       static IEnumerable<string> GetZeroBasedIndexes() {
 
@@ -544,19 +531,17 @@ namespace System.Web.Mvc {
          }
       }
 
-      protected virtual bool OnModelUpdating(ControllerContext controllerContext, ModelBindingContext bindingContext) {
+      protected virtual bool OnModelUpdating(ControllerContext controllerContext, ModelBindingContext bindingContext) =>
          // default implementation does nothing
-         return true;
-      }
+         true;
 
       protected virtual void OnPropertyValidated(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value) {
          // default implementation does nothing
       }
 
-      protected virtual bool OnPropertyValidating(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value) {
+      protected virtual bool OnPropertyValidating(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value) =>
          // default implementation does nothing
-         return true;
-      }
+         true;
 
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We're recording this exception so that we can act on it later.")]
       protected virtual void SetProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value) {

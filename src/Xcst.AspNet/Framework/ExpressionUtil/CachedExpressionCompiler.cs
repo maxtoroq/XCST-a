@@ -17,9 +17,8 @@ namespace System.Web.Mvc.ExpressionUtil {
       // If the provided expression is particularly obscure and the system doesn't know
       // how to handle it, we'll just compile the expression as normal.
 
-      public static Func<TModel, TValue> Process<TModel, TValue>(Expression<Func<TModel, TValue>> lambdaExpression) {
-         return Compiler<TModel, TValue>.Compile(lambdaExpression);
-      }
+      public static Func<TModel, TValue> Process<TModel, TValue>(Expression<Func<TModel, TValue>> lambdaExpression) =>
+         Compiler<TModel, TValue>.Compile(lambdaExpression);
 
       static class Compiler<TIn, TOut> {
 
@@ -34,14 +33,12 @@ namespace System.Web.Mvc.ExpressionUtil {
          static readonly ConcurrentDictionary<ExpressionFingerprintChain, Hoisted<TIn, TOut>> _fingerprintedCache =
             new ConcurrentDictionary<ExpressionFingerprintChain, Hoisted<TIn, TOut>>();
 
-         public static Func<TIn, TOut> Compile(Expression<Func<TIn, TOut>> expr) {
-
-            return CompileFromIdentityFunc(expr)
+         public static Func<TIn, TOut> Compile(Expression<Func<TIn, TOut>> expr) =>
+            CompileFromIdentityFunc(expr)
                ?? CompileFromConstLookup(expr)
                ?? CompileFromMemberAccess(expr)
                ?? CompileFromFingerprint(expr)
                ?? CompileSlow(expr);
-         }
 
          static Func<TIn, TOut> CompileFromConstLookup(Expression<Func<TIn, TOut>> expr) {
 
@@ -135,11 +132,9 @@ namespace System.Web.Mvc.ExpressionUtil {
             return null;
          }
 
-         static Func<TIn, TOut> CompileSlow(Expression<Func<TIn, TOut>> expr) {
-            
+         static Func<TIn, TOut> CompileSlow(Expression<Func<TIn, TOut>> expr) =>
             // fallback compilation system - just compile the expression directly
-            return expr.Compile();
-         }
+            expr.Compile();
       }
    }
 }

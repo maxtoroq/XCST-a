@@ -11,7 +11,8 @@ namespace System.Web.Mvc {
 
    class PropertyHelper {
 
-      static ConcurrentDictionary<Type, PropertyHelper[]> _reflectionCache = new ConcurrentDictionary<Type, PropertyHelper[]>();
+      static ConcurrentDictionary<Type, PropertyHelper[]> _reflectionCache =
+         new ConcurrentDictionary<Type, PropertyHelper[]>();
 
       Func<object, object> _valueGetter;
 
@@ -77,9 +78,8 @@ namespace System.Web.Mvc {
       /// </summary>
       /// <param name="instance">the instance to extract property accessors for.</param>
       /// <returns>a cached array of all public property getters from the underlying type of this instance.</returns>
-      public static PropertyHelper[] GetProperties(object instance) {
-         return GetProperties(instance, CreateInstance, _reflectionCache);
-      }
+      public static PropertyHelper[] GetProperties(object instance) =>
+         GetProperties(instance, CreateInstance, _reflectionCache);
 
       /// <summary>
       /// Creates a single fast property getter. The result is not cached.
@@ -125,20 +125,21 @@ namespace System.Web.Mvc {
          return (Func<object, object>)callPropertyGetterDelegate;
       }
 
-      static PropertyHelper CreateInstance(PropertyInfo property) {
-         return new PropertyHelper(property);
-      }
+      static PropertyHelper CreateInstance(PropertyInfo property) =>
+         new PropertyHelper(property);
 
       // Implementation of the fast getter.
 
       delegate TValue ByRefFunc<TDeclaringType, TValue>(ref TDeclaringType arg);
 
-      static readonly MethodInfo _callPropertyGetterOpenGenericMethod = typeof(PropertyHelper).GetMethod(nameof(CallPropertyGetter), BindingFlags.NonPublic | BindingFlags.Static);
-      static readonly MethodInfo _callPropertyGetterByReferenceOpenGenericMethod = typeof(PropertyHelper).GetMethod(nameof(CallPropertyGetterByReference), BindingFlags.NonPublic | BindingFlags.Static);
+      static readonly MethodInfo _callPropertyGetterOpenGenericMethod =
+         typeof(PropertyHelper).GetMethod(nameof(CallPropertyGetter), BindingFlags.NonPublic | BindingFlags.Static);
 
-      static object CallPropertyGetter<TDeclaringType, TValue>(Func<TDeclaringType, TValue> getter, object @this) {
-         return getter((TDeclaringType)@this);
-      }
+      static readonly MethodInfo _callPropertyGetterByReferenceOpenGenericMethod =
+         typeof(PropertyHelper).GetMethod(nameof(CallPropertyGetterByReference), BindingFlags.NonPublic | BindingFlags.Static);
+
+      static object CallPropertyGetter<TDeclaringType, TValue>(Func<TDeclaringType, TValue> getter, object @this) =>
+         getter((TDeclaringType)@this);
 
       static object CallPropertyGetterByReference<TDeclaringType, TValue>(ByRefFunc<TDeclaringType, TValue> getter, object @this) {
 
@@ -148,11 +149,11 @@ namespace System.Web.Mvc {
 
       // Implementation of the fast setter.
 
-      static readonly MethodInfo _callPropertySetterOpenGenericMethod = typeof(PropertyHelper).GetMethod(nameof(CallPropertySetter), BindingFlags.NonPublic | BindingFlags.Static);
+      static readonly MethodInfo _callPropertySetterOpenGenericMethod =
+         typeof(PropertyHelper).GetMethod(nameof(CallPropertySetter), BindingFlags.NonPublic | BindingFlags.Static);
 
-      static void CallPropertySetter<TDeclaringType, TValue>(Action<TDeclaringType, TValue> setter, object @this, object value) {
+      static void CallPropertySetter<TDeclaringType, TValue>(Action<TDeclaringType, TValue> setter, object @this, object value) =>
          setter((TDeclaringType)@this, (TValue)value);
-      }
 
       protected static PropertyHelper[] GetProperties(object instance, Func<PropertyInfo, PropertyHelper> createPropertyHelper, ConcurrentDictionary<Type, PropertyHelper[]> cache) {
 

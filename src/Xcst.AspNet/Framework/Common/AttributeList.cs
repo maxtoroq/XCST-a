@@ -14,17 +14,13 @@ namespace System.Web.Mvc {
 
       readonly AttributeCollection _attributes;
 
-      public int Count =>_attributes.Count;
+      public int Count => _attributes.Count;
 
       public bool IsReadOnly => true;
 
       public Attribute this[int index] {
-         get {
-            return _attributes[index];
-         }
-         set {
-            throw new NotSupportedException();
-         }
+         get => _attributes[index];
+         set => throw new NotSupportedException();
       }
 
       public AttributeList(AttributeCollection attributes) {
@@ -33,21 +29,17 @@ namespace System.Web.Mvc {
          _attributes = attributes;
       }
 
-      public void Add(Attribute attribute) {
+      public void Add(Attribute attribute) =>
          throw new NotSupportedException();
-      }
 
-      public void Clear() {
+      public void Clear() =>
          throw new NotSupportedException();
-      }
 
-      public bool Contains(Attribute attribute) {
-         return _attributes.Contains(attribute);
-      }
+      public bool Contains(Attribute attribute) =>
+         _attributes.Contains(attribute);
 
-      public void CopyTo(Attribute[] target, int startIndex) {
+      public void CopyTo(Attribute[] target, int startIndex) =>
          _attributes.CopyTo(target, startIndex);
-      }
 
       public IEnumerator<Attribute> GetEnumerator() {
 
@@ -56,9 +48,8 @@ namespace System.Web.Mvc {
          }
       }
 
-      IEnumerator IEnumerable.GetEnumerator() {
-         return ((IEnumerable)_attributes).GetEnumerator();
-      }
+      IEnumerator IEnumerable.GetEnumerator() =>
+         ((IEnumerable)_attributes).GetEnumerator();
 
       public int IndexOf(Attribute attribute) {
 
@@ -71,16 +62,13 @@ namespace System.Web.Mvc {
          return -1;
       }
 
-      public void Insert(int index, Attribute attribute) {
+      public void Insert(int index, Attribute attribute) =>
          throw new NotSupportedException();
-      }
 
-      bool ICollection<Attribute>.Remove(Attribute attribute) {
+      bool ICollection<Attribute>.Remove(Attribute attribute) =>
          throw new NotSupportedException();
-      }
 
-      public void RemoveAt(int index) {
+      public void RemoveAt(int index) =>
          throw new NotSupportedException();
-      }
    }
 }

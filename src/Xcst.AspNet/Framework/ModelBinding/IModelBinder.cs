@@ -2,11 +2,9 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
-using System.Threading;
 using System.Web.Mvc.Properties;
 
 namespace System.Web.Mvc {
@@ -28,58 +26,38 @@ namespace System.Web.Mvc {
 
       [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "value", Justification = "Cannot remove setter as that's a breaking change")]
       public object Model {
-         get { return ModelMetadata.Model; }
-         set { throw new InvalidOperationException(MvcResources.ModelMetadata_PropertyNotSettable); }
+         get => ModelMetadata.Model;
+         set => throw new InvalidOperationException(MvcResources.ModelMetadata_PropertyNotSettable);
       }
 
       public ModelMetadata ModelMetadata { get; set; }
 
       public string ModelName {
-         get {
-            return _modelName;
-         }
-         set {
-            _modelName = value ?? String.Empty;
-         }
+         get => _modelName;
+         set => _modelName = value ?? String.Empty;
       }
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The containing type is mutable.")]
       public ModelStateDictionary ModelState {
-         get {
-            if (_modelState == null) {
-               _modelState = new ModelStateDictionary();
-            }
-            return _modelState;
-         }
-         set { _modelState = value; }
+         get => _modelState ?? (_modelState = new ModelStateDictionary());
+         set => _modelState = value;
       }
 
       [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "value", Justification = "Cannot remove setter as that's a breaking change")]
       public Type ModelType {
-         get { return ModelMetadata.ModelType; }
-         set { throw new InvalidOperationException(MvcResources.ModelMetadata_PropertyNotSettable); }
+         get => ModelMetadata.ModelType;
+         set => throw new InvalidOperationException(MvcResources.ModelMetadata_PropertyNotSettable);
       }
 
       public Predicate<string> PropertyFilter {
-         get {
-            if (_propertyFilter == null) {
-               _propertyFilter = _defaultPropertyFilter;
-            }
-            return _propertyFilter;
-         }
-         set { _propertyFilter = value; }
+         get => _propertyFilter ?? (_propertyFilter = _defaultPropertyFilter);
+         set => _propertyFilter = value;
       }
 
-      public IDictionary<string, ModelMetadata> PropertyMetadata {
-         get {
-            if (_propertyMetadata == null) {
-               _propertyMetadata = ModelMetadata.PropertiesAsArray
-                  .ToDictionaryFast(m => m.PropertyName, StringComparer.OrdinalIgnoreCase);
-            }
-
-            return _propertyMetadata;
-         }
-      }
+      public IDictionary<string, ModelMetadata> PropertyMetadata =>
+         _propertyMetadata
+            ?? (_propertyMetadata = ModelMetadata.PropertiesAsArray
+               .ToDictionaryFast(m => m.PropertyName, StringComparer.OrdinalIgnoreCase));
 
       public IValueProvider ValueProvider { get; set; }
 
@@ -100,9 +78,7 @@ namespace System.Web.Mvc {
 
    public static class ModelBinders {
 
-      static readonly ModelBinderDictionary _binders = CreateDefaultBinderDictionary();
-
-      public static ModelBinderDictionary Binders => _binders;
+      public static ModelBinderDictionary Binders { get; } = CreateDefaultBinderDictionary();
 
       internal static IModelBinder GetBinderFromAttributes(Type type, Action<Type> errorAction) {
 
@@ -150,16 +126,12 @@ namespace System.Web.Mvc {
       public int Count => _innerDictionary.Count;
 
       public IModelBinder DefaultBinder {
-         get {
-            if (_defaultBinder == null) {
-               _defaultBinder = new DefaultModelBinder();
-            }
-            return _defaultBinder;
-         }
-         set { _defaultBinder = value; }
+         get => _defaultBinder ?? (_defaultBinder = new DefaultModelBinder());
+         set => _defaultBinder = value;
       }
 
-      public bool IsReadOnly => ((IDictionary<Type, IModelBinder>)_innerDictionary).IsReadOnly;
+      public bool IsReadOnly =>
+         ((IDictionary<Type, IModelBinder>)_innerDictionary).IsReadOnly;
 
       public ICollection<Type> Keys => _innerDictionary.Keys;
 
@@ -171,7 +143,7 @@ namespace System.Web.Mvc {
             _innerDictionary.TryGetValue(key, out binder);
             return binder;
          }
-         set { _innerDictionary[key] = value; }
+         set => _innerDictionary[key] = value;
       }
 
       public ModelBinderDictionary()
@@ -181,33 +153,26 @@ namespace System.Web.Mvc {
          _modelBinderProviders = modelBinderProviders;
       }
 
-      public void Add(KeyValuePair<Type, IModelBinder> item) {
+      public void Add(KeyValuePair<Type, IModelBinder> item) =>
          ((IDictionary<Type, IModelBinder>)_innerDictionary).Add(item);
-      }
 
-      public void Add(Type key, IModelBinder value) {
+      public void Add(Type key, IModelBinder value) =>
          _innerDictionary.Add(key, value);
-      }
 
-      public void Clear() {
+      public void Clear() =>
          _innerDictionary.Clear();
-      }
 
-      public bool Contains(KeyValuePair<Type, IModelBinder> item) {
-         return ((IDictionary<Type, IModelBinder>)_innerDictionary).Contains(item);
-      }
+      public bool Contains(KeyValuePair<Type, IModelBinder> item) =>
+         ((IDictionary<Type, IModelBinder>)_innerDictionary).Contains(item);
 
-      public bool ContainsKey(Type key) {
-         return _innerDictionary.ContainsKey(key);
-      }
+      public bool ContainsKey(Type key) =>
+         _innerDictionary.ContainsKey(key);
 
-      public void CopyTo(KeyValuePair<Type, IModelBinder>[] array, int arrayIndex) {
+      public void CopyTo(KeyValuePair<Type, IModelBinder>[] array, int arrayIndex) =>
          ((IDictionary<Type, IModelBinder>)_innerDictionary).CopyTo(array, arrayIndex);
-      }
 
-      public IModelBinder GetBinder(Type modelType) {
-         return GetBinder(modelType, true /* fallbackToDefault */);
-      }
+      public IModelBinder GetBinder(Type modelType) =>
+         GetBinder(modelType, true /* fallbackToDefault */);
 
       public virtual IModelBinder GetBinder(Type modelType, bool fallbackToDefault) {
 
@@ -244,28 +209,19 @@ namespace System.Web.Mvc {
          return binder ?? fallbackBinder;
       }
 
-      public IEnumerator<KeyValuePair<Type, IModelBinder>> GetEnumerator() {
-         return _innerDictionary.GetEnumerator();
-      }
+      public IEnumerator<KeyValuePair<Type, IModelBinder>> GetEnumerator() =>
+         _innerDictionary.GetEnumerator();
 
-      public bool Remove(KeyValuePair<Type, IModelBinder> item) {
-         return ((IDictionary<Type, IModelBinder>)_innerDictionary).Remove(item);
-      }
+      public bool Remove(KeyValuePair<Type, IModelBinder> item) =>
+         ((IDictionary<Type, IModelBinder>)_innerDictionary).Remove(item);
 
-      public bool Remove(Type key) {
-         return _innerDictionary.Remove(key);
-      }
+      public bool Remove(Type key) =>
+         _innerDictionary.Remove(key);
 
-      public bool TryGetValue(Type key, out IModelBinder value) {
-         return _innerDictionary.TryGetValue(key, out value);
-      }
+      public bool TryGetValue(Type key, out IModelBinder value) =>
+         _innerDictionary.TryGetValue(key, out value);
 
-      #region IEnumerable Members
-
-      IEnumerator IEnumerable.GetEnumerator() {
-         return ((IEnumerable)_innerDictionary).GetEnumerator();
-      }
-
-      #endregion
+      IEnumerator IEnumerable.GetEnumerator() =>
+         ((IEnumerable)_innerDictionary).GetEnumerator();
    }
 }

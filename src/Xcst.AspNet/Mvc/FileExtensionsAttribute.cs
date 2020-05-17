@@ -56,9 +56,8 @@ namespace Xcst.Web.Mvc {
             .SetValue(this, "The {0} field only accepts files with the following extensions: {1}");
       }
 
-      public override string FormatErrorMessage(string name) {
-         return String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, this.ExtensionsFormatted);
-      }
+      public override string FormatErrorMessage(string name) =>
+         String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, this.ExtensionsFormatted);
 
       public override bool IsValid(object value) {
 

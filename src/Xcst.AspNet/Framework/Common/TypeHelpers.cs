@@ -14,10 +14,13 @@ namespace System.Web.Mvc {
 
    static class TypeHelpers {
 
-      static readonly Dictionary<Type, TryGetValueDelegate> _tryGetValueDelegateCache = new Dictionary<Type, TryGetValueDelegate>();
+      static readonly Dictionary<Type, TryGetValueDelegate> _tryGetValueDelegateCache =
+         new Dictionary<Type, TryGetValueDelegate>();
+
       static readonly ReaderWriterLockSlim _tryGetValueDelegateCacheLock = new ReaderWriterLockSlim();
 
-      static readonly MethodInfo _strongTryGetValueImplInfo = typeof(TypeHelpers).GetMethod(nameof(StrongTryGetValueImpl), BindingFlags.NonPublic | BindingFlags.Static);
+      static readonly MethodInfo _strongTryGetValueImplInfo =
+         typeof(TypeHelpers).GetMethod(nameof(StrongTryGetValueImpl), BindingFlags.NonPublic | BindingFlags.Static);
 
       public static readonly Assembly MsCorLibAssembly = typeof(string).Assembly;
       public static readonly Assembly MvcAssembly = typeof(ControllerContext).Assembly;
@@ -113,17 +116,14 @@ namespace System.Web.Mvc {
          return MatchGenericTypeFirstOrDefault(queryTypeInterfaces, interfaceType);
       }
 
-      public static object GetDefaultValue(Type type) {
-         return (TypeAllowsNullValue(type)) ? null : Activator.CreateInstance(type);
-      }
+      public static object GetDefaultValue(Type type) =>
+         (TypeAllowsNullValue(type)) ? null : Activator.CreateInstance(type);
 
-      public static bool IsCompatibleObject<T>(object value) {
-         return (value is T || (value == null && TypeAllowsNullValue(typeof(T))));
-      }
+      public static bool IsCompatibleObject<T>(object value) =>
+         (value is T || (value == null && TypeAllowsNullValue(typeof(T))));
 
-      public static bool IsNullableValueType(Type type) {
-         return Nullable.GetUnderlyingType(type) != null;
-      }
+      public static bool IsNullableValueType(Type type) =>
+         Nullable.GetUnderlyingType(type) != null;
 
       /// <summary>
       /// Provide a new <see cref="MissingMethodException"/> if original Message does not contain given full Type name.
@@ -149,9 +149,8 @@ namespace System.Web.Mvc {
          return replacementException;
       }
 
-      static bool MatchesGenericType(Type type, Type matchType) {
-         return type.IsGenericType && type.GetGenericTypeDefinition() == matchType;
-      }
+      static bool MatchesGenericType(Type type, Type matchType) =>
+         type.IsGenericType && type.GetGenericTypeDefinition() == matchType;
 
       static Type MatchGenericTypeFirstOrDefault(Type[] types, Type matchType) {
 
@@ -188,9 +187,8 @@ namespace System.Web.Mvc {
          return containsKey;
       }
 
-      public static bool TypeAllowsNullValue(Type type) {
-         return (!type.IsValueType || IsNullableValueType(type));
-      }
+      public static bool TypeAllowsNullValue(Type type) =>
+         (!type.IsValueType || IsNullableValueType(type));
 
       /// <summary>
       /// Given an object of anonymous type, add each property as a key and associated with its value to a dictionary.
@@ -231,7 +229,6 @@ namespace System.Web.Mvc {
       }
 
       /// <remarks>This code is copied from http://www.liensberger.it/web/blog/?p=191 </remarks>
-
       public static bool IsAnonymousType(Type type) {
 
          if (type == null) throw new ArgumentNullException(nameof(type));
@@ -244,10 +241,8 @@ namespace System.Web.Mvc {
             && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
       }
 
-      public static bool IsIEnumerableNotString(Type type) {
-
-         return typeof(IEnumerable).IsAssignableFrom(type)
+      public static bool IsIEnumerableNotString(Type type) =>
+         typeof(IEnumerable).IsAssignableFrom(type)
             && type != typeof(string);
-      }
    }
 }

@@ -36,19 +36,15 @@ namespace System.Web.Mvc {
          return new ValueProviderResult(rawValue, attemptedValue, CultureInfo.CurrentCulture);
       }
 
-      public IValueProvider ToValueProvider() {
-         return this;
-      }
+      public IValueProvider ToValueProvider() => this;
 
       #region IValueProvider Members
 
-      bool IValueProvider.ContainsPrefix(string prefix) {
-         return CollectionContainsPrefix(this.AllKeys, prefix);
-      }
+      bool IValueProvider.ContainsPrefix(string prefix) =>
+         CollectionContainsPrefix(this.AllKeys, prefix);
 
-      ValueProviderResult IValueProvider.GetValue(string key) {
-         return GetValue(key);
-      }
+      ValueProviderResult IValueProvider.GetValue(string key) =>
+         GetValue(key);
 
       static bool CollectionContainsPrefix(IEnumerable<string> collection, string prefix) {
 
@@ -87,9 +83,7 @@ namespace System.Web.Mvc {
 
          static readonly FormCollectionModelBinder _binder = new FormCollectionModelBinder();
 
-         public override IModelBinder GetBinder() {
-            return _binder;
-         }
+         public override IModelBinder GetBinder() => _binder;
 
          // this class is used for generating a FormCollection object
 

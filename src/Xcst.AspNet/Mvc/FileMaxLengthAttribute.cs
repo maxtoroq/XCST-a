@@ -36,9 +36,8 @@ namespace Xcst.Web.Mvc {
             .SetValue(this, "The {0} file cannot exceed {1} bytes.");
       }
 
-      public override string FormatErrorMessage(string name) {
-         return String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, this.MaxLength);
-      }
+      public override string FormatErrorMessage(string name) =>
+         String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, this.MaxLength);
 
       public override bool IsValid(object value) {
 
@@ -53,8 +52,7 @@ namespace Xcst.Web.Mvc {
          return false;
       }
 
-      bool ValidateLength(int length) {
-         return length <= this.MaxLength;
-      }
+      bool ValidateLength(int length) =>
+         length <= this.MaxLength;
    }
 }

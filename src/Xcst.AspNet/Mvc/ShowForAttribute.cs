@@ -30,7 +30,7 @@ namespace Xcst.Web.Mvc {
       bool edit;
 
       public bool Display {
-         get { return display; }
+         get => display;
          set {
             display = value;
             displaySet = true;
@@ -38,7 +38,7 @@ namespace Xcst.Web.Mvc {
       }
 
       public bool Edit {
-         get { return edit; }
+         get => edit;
          set {
             edit = value;
             editSet = true;

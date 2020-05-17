@@ -30,16 +30,13 @@ namespace System.Web.Mvc.ExpressionUtil {
          combiner.AddObject(this.Type);
       }
 
-      protected bool Equals(ExpressionFingerprint other) {
-
-         return (other != null)
+      protected bool Equals(ExpressionFingerprint other) =>
+         (other != null)
             && (this.NodeType == other.NodeType)
             && Equals(this.Type, other.Type);
-      }
 
-      public override bool Equals(object obj) {
-         return Equals(obj as ExpressionFingerprint);
-      }
+      public override bool Equals(object obj) =>
+         Equals(obj as ExpressionFingerprint);
 
       public override int GetHashCode() {
 
@@ -71,12 +68,10 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public MethodInfo Method { get; private set; }
 
-      public override bool Equals(object obj) {
-
-         return (obj is BinaryExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is BinaryExpressionFingerprint other
             && Equals(this.Method, other.Method)
             && this.Equals(other);
-      }
 
       internal override void AddToHashCodeCombiner(HashCodeCombiner combiner) {
 
@@ -99,11 +94,9 @@ namespace System.Web.Mvc.ExpressionUtil {
          // the fingerprint.
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is ConditionalExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is ConditionalExpressionFingerprint other
             && this.Equals(other);
-      }
    }
 
    // ConstantExpression fingerprint class
@@ -123,11 +116,9 @@ namespace System.Web.Mvc.ExpressionUtil {
          // the fingerprint.
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is ConstantExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is ConstantExpressionFingerprint other
             && this.Equals(other);
-      }
    }
 
    // DefaultExpression fingerprint class
@@ -143,11 +134,9 @@ namespace System.Web.Mvc.ExpressionUtil {
          // the fingerprint.
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is DefaultExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is DefaultExpressionFingerprint other
             && this.Equals(other);
-      }
    }
 
    // IndexExpression fingerprint class
@@ -169,12 +158,10 @@ namespace System.Web.Mvc.ExpressionUtil {
          this.Indexer = indexer;
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is IndexExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is IndexExpressionFingerprint other
             && Equals(this.Indexer, other.Indexer)
             && this.Equals(other);
-      }
 
       internal override void AddToHashCodeCombiner(HashCodeCombiner combiner) {
          combiner.AddObject(Indexer);
@@ -195,11 +182,9 @@ namespace System.Web.Mvc.ExpressionUtil {
          // the fingerprint.
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is LambdaExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is LambdaExpressionFingerprint other
             && this.Equals(other);
-      }
    }
 
    // MemberExpression fingerprint class
@@ -218,12 +203,10 @@ namespace System.Web.Mvc.ExpressionUtil {
          this.Member = member;
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is MemberExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is MemberExpressionFingerprint other
             && Equals(this.Member, other.Member)
             && this.Equals(other);
-      }
 
       internal override void AddToHashCodeCombiner(HashCodeCombiner combiner) {
          combiner.AddObject(this.Member);
@@ -250,12 +233,10 @@ namespace System.Web.Mvc.ExpressionUtil {
          this.Method = method;
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is MethodCallExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is MethodCallExpressionFingerprint other
             && Equals(this.Method, other.Method)
             && this.Equals(other);
-      }
 
       internal override void AddToHashCodeCombiner(HashCodeCombiner combiner) {
          combiner.AddObject(this.Method);
@@ -279,12 +260,10 @@ namespace System.Web.Mvc.ExpressionUtil {
          this.ParameterIndex = parameterIndex;
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is ParameterExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is ParameterExpressionFingerprint other
             && (this.ParameterIndex == other.ParameterIndex)
             && this.Equals(other);
-      }
 
       internal override void AddToHashCodeCombiner(HashCodeCombiner combiner) {
          combiner.AddInt32(this.ParameterIndex);
@@ -308,12 +287,10 @@ namespace System.Web.Mvc.ExpressionUtil {
          this.TypeOperand = typeOperand;
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is TypeBinaryExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is TypeBinaryExpressionFingerprint other
             && Equals(this.TypeOperand, other.TypeOperand)
             && this.Equals(other);
-      }
 
       internal override void AddToHashCodeCombiner(HashCodeCombiner combiner) {
          combiner.AddObject(this.TypeOperand);
@@ -340,12 +317,10 @@ namespace System.Web.Mvc.ExpressionUtil {
          this.Method = method;
       }
 
-      public override bool Equals(object obj) {
-
-         return (obj is UnaryExpressionFingerprint other)
+      public override bool Equals(object obj) =>
+         obj is UnaryExpressionFingerprint other
             && Equals(this.Method, other.Method)
             && this.Equals(other);
-      }
 
       internal override void AddToHashCodeCombiner(HashCodeCombiner combiner) {
          combiner.AddObject(this.Method);

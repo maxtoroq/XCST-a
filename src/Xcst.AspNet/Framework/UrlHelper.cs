@@ -31,9 +31,8 @@ namespace System.Web.Mvc {
          this.RouteCollection = routeCollection;
       }
 
-      public virtual string Content(string contentPath) {
-         return GenerateContentUrl(contentPath, this.RequestContext.HttpContext);
-      }
+      public virtual string Content(string contentPath) =>
+         GenerateContentUrl(contentPath, this.RequestContext.HttpContext);
 
       [SuppressMessage("Microsoft.Design", "CA1055:UriReturnValuesShouldNotBeStrings", Justification = "As the return value will used only for rendering, string return value is more appropriate.")]
       public static string GenerateContentUrl(string contentPath, HttpContextBase httpContext) {
@@ -75,17 +74,13 @@ namespace System.Web.Mvc {
 
       [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", Justification = "Needs to take same parameters as HttpUtility.UrlEncode()")]
       [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-      public virtual string Encode(string url) {
-         return HttpUtility.UrlEncode(url);
-      }
+      public virtual string Encode(string url) =>
+         HttpUtility.UrlEncode(url);
 
       [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "0#", Justification = "Response.Redirect() takes its URI as a string parameter.")]
-      public virtual bool IsLocalUrl(string url) {
-
+      public virtual bool IsLocalUrl(string url) =>
          // TODO this should call the System.Web.dll API once it gets added to the framework and MVC takes a dependency on it.
-
-         return HttpRequestExtensions.IsUrlLocalToHost(this.RequestContext.HttpContext.Request, url);
-      }
+         HttpRequestExtensions.IsUrlLocalToHost(this.RequestContext.HttpContext.Request, url);
    }
 
    static class UrlUtil {
@@ -230,9 +225,8 @@ namespace System.Web.Mvc {
          /// Primarily we do this check to allow anonymous types to represent key-value pairs (anonymous types don't 
          /// implement any interfaces).
          /// </remarks>
-         static bool IsDisplayableType(Type t) {
-            return t.GetInterfaces().Length > 0;
-         }
+         static bool IsDisplayableType(Type t) =>
+            t.GetInterfaces().Length > 0;
 
          static void AppendToQueryString(StringBuilder queryString, object obj) {
 
@@ -344,11 +338,9 @@ namespace System.Web.Mvc {
       bool _urlRewriterIsTurnedOnValue;
       volatile bool _urlRewriterIsTurnedOnCalculated = false;
 
-      public virtual bool WasRequestRewritten(IServiceProvider httpContext, IDictionary httpContextItems) {
-
-         return IsUrlRewriterTurnedOn(httpContext)
+      public virtual bool WasRequestRewritten(IServiceProvider httpContext, IDictionary httpContextItems) =>
+         IsUrlRewriterTurnedOn(httpContext)
             && WasThisRequestRewritten(httpContext, httpContextItems);
-      }
 
       bool IsUrlRewriterTurnedOn(IServiceProvider httpContext) {
 

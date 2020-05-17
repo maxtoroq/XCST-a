@@ -47,9 +47,8 @@ namespace System.Web.Helpers.AntiXsrf {
          _data = data;
       }
 
-      public override bool Equals(object obj) {
-         return Equals(obj as BinaryBlob);
-      }
+      public override bool Equals(object obj) =>
+         Equals(obj as BinaryBlob);
 
       public bool Equals(BinaryBlob other) {
 
@@ -61,9 +60,7 @@ namespace System.Web.Helpers.AntiXsrf {
          return CryptoUtil.AreByteArraysEqual(this._data, other._data);
       }
 
-      public byte[] GetData() {
-         return _data;
-      }
+      public byte[] GetData() => _data;
 
       public override int GetHashCode() {
 

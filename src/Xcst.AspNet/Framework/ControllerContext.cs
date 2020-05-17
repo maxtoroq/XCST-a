@@ -18,13 +18,8 @@ namespace System.Web.Mvc {
       ITempDataProvider _tempDataProvider;
 
       public virtual HttpContextBase HttpContext {
-         get {
-            if (_httpContext == null) {
-               _httpContext = RequestContext?.HttpContext;
-            }
-            return _httpContext;
-         }
-         set { _httpContext = value; }
+         get => _httpContext ?? (_httpContext = RequestContext?.HttpContext);
+         set => _httpContext = value;
       }
 
       public RequestContext RequestContext { get; set; }
@@ -34,18 +29,13 @@ namespace System.Web.Mvc {
       /// By default, it uses the <see cref="DependencyResolver.CurrentCache"/>. 
       /// </summary>
       internal IDependencyResolver Resolver {
-         get { return _resolver ?? DependencyResolver.CurrentCache; }
-         set { _resolver = value; }
+         get => _resolver ?? DependencyResolver.CurrentCache;
+         set => _resolver = value;
       }
 
       public ITempDataProvider TempDataProvider {
-         get {
-            if (_tempDataProvider == null) {
-               _tempDataProvider = CreateTempDataProvider();
-            }
-            return _tempDataProvider;
-         }
-         set { _tempDataProvider = value; }
+         get => _tempDataProvider ?? (_tempDataProvider = CreateTempDataProvider());
+         set => _tempDataProvider = value;
       }
 
       public ControllerContext()

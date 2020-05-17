@@ -31,15 +31,8 @@ namespace System.Web.Helpers {
       /// generate a name.
       /// </remarks>
       public static string CookieName {
-         get {
-            if (_cookieName == null) {
-               _cookieName = GetAntiForgeryCookieName();
-            }
-            return _cookieName;
-         }
-         set {
-            _cookieName = value;
-         }
+         get => _cookieName ?? (_cookieName = GetAntiForgeryCookieName());
+         set => _cookieName = value;
       }
 
       /// <summary>
@@ -84,17 +77,12 @@ namespace System.Web.Helpers {
       /// and "http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider".
       /// </remarks>
       public static string UniqueClaimTypeIdentifier {
-         get {
-            return _uniqueClaimTypeIdentifier ?? String.Empty;
-         }
-         set {
-            _uniqueClaimTypeIdentifier = value;
-         }
+         get => _uniqueClaimTypeIdentifier ?? String.Empty;
+         set => _uniqueClaimTypeIdentifier = value;
       }
 
-      private static string GetAntiForgeryCookieName() {
-         return GetAntiForgeryCookieName(HttpRuntime.AppDomainAppVirtualPath);
-      }
+      static string GetAntiForgeryCookieName() =>
+         GetAntiForgeryCookieName(HttpRuntime.AppDomainAppVirtualPath);
 
       // If the app path is provided, we're generating a cookie name rather than a field name, and the cookie names should
       // be unique so that a development server cookie and an IIS cookie - both running on localhost - don't stomp on

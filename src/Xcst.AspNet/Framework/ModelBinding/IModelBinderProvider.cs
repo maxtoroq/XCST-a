@@ -10,10 +10,7 @@ namespace System.Web.Mvc {
    }
 
    public static class ModelBinderProviders {
-
-      static readonly ModelBinderProviderCollection _binderProviders = new ModelBinderProviderCollection();
-
-      public static ModelBinderProviderCollection BinderProviders => _binderProviders;
+      public static ModelBinderProviderCollection BinderProviders { get; } = new ModelBinderProviderCollection();
    }
 
    public class ModelBinderProviderCollection : Collection<IModelBinderProvider> {

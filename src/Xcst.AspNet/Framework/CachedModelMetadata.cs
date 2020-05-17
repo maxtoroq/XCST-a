@@ -286,11 +286,9 @@ namespace System.Web.Mvc {
       }
 
       public sealed override string SimpleDisplayText {
-         get {
-            // This is already cached in the base class with an appropriate override available
-            return base.SimpleDisplayText;
-         }
-         set { base.SimpleDisplayText = value; }
+         // This is already cached in the base class with an appropriate override available
+         get => base.SimpleDisplayText;
+         set => base.SimpleDisplayText = value;
       }
 
       public sealed override string TemplateHint {
@@ -351,90 +349,69 @@ namespace System.Web.Mvc {
          this.PrototypeCache = prototypeCache;
       }
 
-      protected virtual bool ComputeConvertEmptyStringToNull() {
-         return base.ConvertEmptyStringToNull;
-      }
+      protected virtual bool ComputeConvertEmptyStringToNull() =>
+         base.ConvertEmptyStringToNull;
 
-      protected virtual string ComputeDataTypeName() {
-         return base.DataTypeName;
-      }
+      protected virtual string ComputeDataTypeName() =>
+         base.DataTypeName;
 
-      protected virtual string ComputeDescription() {
-         return base.Description;
-      }
+      protected virtual string ComputeDescription() =>
+         base.Description;
 
-      protected virtual string ComputeDisplayFormatString() {
-         return base.DisplayFormatString;
-      }
+      protected virtual string ComputeDisplayFormatString() =>
+         base.DisplayFormatString;
 
-      protected virtual string ComputeDisplayName() {
-         return base.DisplayName;
-      }
+      protected virtual string ComputeDisplayName() =>
+         base.DisplayName;
 
-      protected virtual string ComputeEditFormatString() {
-         return base.EditFormatString;
-      }
+      protected virtual string ComputeEditFormatString() =>
+         base.EditFormatString;
 
-      protected virtual bool ComputeHasNonDefaultEditFormat() {
-         return base.HasNonDefaultEditFormat;
-      }
+      protected virtual bool ComputeHasNonDefaultEditFormat() =>
+         base.HasNonDefaultEditFormat;
 
-      protected virtual bool ComputeHideSurroundingHtml() {
-         return base.HideSurroundingHtml;
-      }
+      protected virtual bool ComputeHideSurroundingHtml() =>
+         base.HideSurroundingHtml;
 
-      protected virtual bool ComputeHtmlEncode() {
-         return base.HtmlEncode;
-      }
+      protected virtual bool ComputeHtmlEncode() =>
+         base.HtmlEncode;
 
-      protected virtual bool ComputeIsReadOnly() {
-         return base.IsReadOnly;
-      }
+      protected virtual bool ComputeIsReadOnly() =>
+         base.IsReadOnly;
 
-      protected virtual bool ComputeIsRequired() {
-         return base.IsRequired;
-      }
+      protected virtual bool ComputeIsRequired() =>
+         base.IsRequired;
 
-      protected virtual string ComputeNullDisplayText() {
-         return base.NullDisplayText;
-      }
+      protected virtual string ComputeNullDisplayText() =>
+         base.NullDisplayText;
 
-      protected virtual int ComputeOrder() {
-         return base.Order;
-      }
+      protected virtual int ComputeOrder() =>
+         base.Order;
 
-      protected virtual string ComputeShortDisplayName() {
-         return base.ShortDisplayName;
-      }
+      protected virtual string ComputeShortDisplayName() =>
+         base.ShortDisplayName;
 
-      protected virtual bool ComputeShowForDisplay() {
-         return base.ShowForDisplay;
-      }
+      protected virtual bool ComputeShowForDisplay() =>
+         base.ShowForDisplay;
 
-      protected virtual bool ComputeShowForEdit() {
-         return base.ShowForEdit;
-      }
+      protected virtual bool ComputeShowForEdit() =>
+         base.ShowForEdit;
 
-      protected virtual string ComputeSimpleDisplayText() {
-         return base.GetSimpleDisplayText();
-      }
+      protected virtual string ComputeSimpleDisplayText() =>
+         base.GetSimpleDisplayText();
 
-      protected virtual string ComputeTemplateHint() {
-         return base.TemplateHint;
-      }
+      protected virtual string ComputeTemplateHint() =>
+         base.TemplateHint;
 
-      protected virtual string ComputeWatermark() {
-         return base.Watermark;
-      }
+      protected virtual string ComputeWatermark() =>
+         base.Watermark;
 
-      protected virtual string ComputeGroupName() {
-         return base.GroupName;
-      }
+      protected virtual string ComputeGroupName() =>
+         base.GroupName;
 
-      protected sealed override string GetSimpleDisplayText() {
+      protected sealed override string GetSimpleDisplayText() =>
          // Rename for consistency
-         return ComputeSimpleDisplayText();
-      }
+         ComputeSimpleDisplayText();
    }
 
    abstract class CachedAssociatedMetadataProvider<TModelMetadata> : AssociatedMetadataProvider where TModelMetadata : ModelMetadata {
@@ -442,26 +419,18 @@ namespace System.Web.Mvc {
       static ConcurrentDictionary<Type, string> _typeIds = new ConcurrentDictionary<Type, string>();
 
       string _cacheKeyPrefix;
-      CacheItemPolicy _cacheItemPolicy = new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(20) };
       ObjectCache _prototypeCache;
 
-      protected internal CacheItemPolicy CacheItemPolicy {
-         get { return _cacheItemPolicy; }
-         set { _cacheItemPolicy = value; }
-      }
+      protected internal CacheItemPolicy CacheItemPolicy { get; set; } =
+         new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(20) };
 
-      protected string CacheKeyPrefix {
-         get {
-            if (_cacheKeyPrefix == null) {
-               _cacheKeyPrefix = "MetadataPrototypes::" + GetType().GUID.ToString("B");
-            }
-            return _cacheKeyPrefix;
-         }
-      }
+      protected string CacheKeyPrefix =>
+         _cacheKeyPrefix
+            ?? (_cacheKeyPrefix = "MetadataPrototypes::" + GetType().GUID.ToString("B"));
 
       protected internal ObjectCache PrototypeCache {
-         get { return _prototypeCache ?? MemoryCache.Default; }
-         set { _prototypeCache = value; }
+         get => _prototypeCache ?? MemoryCache.Default;
+         set => _prototypeCache = value;
       }
 
       protected sealed override ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) {
@@ -496,25 +465,20 @@ namespace System.Web.Mvc {
          return this.CacheKeyPrefix + GetTypeId(type) + propertyName;
       }
 
-      public sealed override ModelMetadata GetMetadataForProperty(Func<object> modelAccessor, Type containerType, string propertyName) {
-         return base.GetMetadataForProperty(modelAccessor, containerType, propertyName);
-      }
+      public sealed override ModelMetadata GetMetadataForProperty(Func<object> modelAccessor, Type containerType, string propertyName) =>
+         base.GetMetadataForProperty(modelAccessor, containerType, propertyName);
 
-      protected sealed override ModelMetadata GetMetadataForProperty(Func<object> modelAccessor, Type containerType, PropertyDescriptor propertyDescriptor) {
-         return base.GetMetadataForProperty(modelAccessor, containerType, propertyDescriptor);
-      }
+      protected sealed override ModelMetadata GetMetadataForProperty(Func<object> modelAccessor, Type containerType, PropertyDescriptor propertyDescriptor) =>
+         base.GetMetadataForProperty(modelAccessor, containerType, propertyDescriptor);
 
-      public sealed override IEnumerable<ModelMetadata> GetMetadataForProperties(object container, Type containerType) {
-         return base.GetMetadataForProperties(container, containerType);
-      }
+      public sealed override IEnumerable<ModelMetadata> GetMetadataForProperties(object container, Type containerType) =>
+         base.GetMetadataForProperties(container, containerType);
 
-      public sealed override ModelMetadata GetMetadataForType(Func<object> modelAccessor, Type modelType) {
-         return base.GetMetadataForType(modelAccessor, modelType);
-      }
+      public sealed override ModelMetadata GetMetadataForType(Func<object> modelAccessor, Type modelType) =>
+         base.GetMetadataForType(modelAccessor, modelType);
 
-      static string GetTypeId(Type type) {
+      static string GetTypeId(Type type) =>
          // It's fine using a random Guid since we store the mapping for types to guids.
-         return _typeIds.GetOrAdd(type, _ => Guid.NewGuid().ToString("B"));
-      }
+         _typeIds.GetOrAdd(type, _ => Guid.NewGuid().ToString("B"));
    }
 }

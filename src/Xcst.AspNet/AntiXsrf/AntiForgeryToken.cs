@@ -15,12 +15,8 @@ namespace System.Web.Helpers.AntiXsrf {
       string _username;
 
       public string AdditionalData {
-         get {
-            return _additionalData ?? String.Empty;
-         }
-         set {
-            _additionalData = value;
-         }
+         get => _additionalData ?? String.Empty;
+         set => _additionalData = value;
       }
 
       public BinaryBlob ClaimUid { get; set; }
@@ -28,24 +24,13 @@ namespace System.Web.Helpers.AntiXsrf {
       public bool IsSessionToken { get; set; }
 
       public BinaryBlob SecurityToken {
-         get {
-            if (_securityToken == null) {
-               _securityToken = new BinaryBlob(SecurityTokenBitLength);
-            }
-            return _securityToken;
-         }
-         set {
-            _securityToken = value;
-         }
+         get => _securityToken ?? (_securityToken = new BinaryBlob(SecurityTokenBitLength));
+         set => _securityToken = value;
       }
 
       public string Username {
-         get {
-            return _username ?? String.Empty;
-         }
-         set {
-            _username = value;
-         }
+         get => _username ?? String.Empty;
+         set { _username = value; }
       }
    }
 }

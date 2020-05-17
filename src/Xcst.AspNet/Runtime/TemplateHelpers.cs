@@ -437,9 +437,8 @@ namespace Xcst.Web.Runtime {
 
          public TemplateAction Action { get; set; }
 
-         public override void Execute(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData) {
+         public override void Execute(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData) =>
             Action(MakeHtmlHelper(html, viewData), package, output);
-         }
       }
 
 #if ASPNETMVC

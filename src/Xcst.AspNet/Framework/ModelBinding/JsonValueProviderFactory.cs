@@ -93,13 +93,11 @@ namespace System.Web.Mvc {
          return new DictionaryValueProvider<object>(backingStore, CultureInfo.CurrentCulture);
       }
 
-      static string MakeArrayKey(string prefix, int index) {
-         return prefix + "[" + index.ToString(CultureInfo.InvariantCulture) + "]";
-      }
+      static string MakeArrayKey(string prefix, int index) =>
+         prefix + "[" + index.ToString(CultureInfo.InvariantCulture) + "]";
 
-      static string MakePropertyKey(string prefix, string propertyName) {
-         return (String.IsNullOrEmpty(prefix)) ? propertyName : prefix + "." + propertyName;
-      }
+      static string MakePropertyKey(string prefix, string propertyName) =>
+         (String.IsNullOrEmpty(prefix)) ? propertyName : prefix + "." + propertyName;
 
       class EntryLimitedDictionary {
 

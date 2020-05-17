@@ -16,9 +16,8 @@ namespace System.Web.Helpers.AntiXsrf {
          _cryptoSystem = cryptoSystem;
       }
 
-      public AntiForgeryToken Deserialize(string serializedToken) {
-         return Deserialize(serializedToken, throwOnError: true);
-      }
+      public AntiForgeryToken Deserialize(string serializedToken) =>
+         Deserialize(serializedToken, throwOnError: true);
 
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Failures are homogenized; caller handles appropriately.")]
       [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "MemoryStream is safe for multi-dispose.")]
@@ -40,7 +39,9 @@ namespace System.Web.Helpers.AntiXsrf {
          try {
             using (MemoryStream stream = new MemoryStream(_cryptoSystem.Unprotect(serializedToken))) {
                using (BinaryReader reader = new BinaryReader(stream)) {
+
                   AntiForgeryToken token = DeserializeImpl(reader);
+
                   if (token != null) {
                      return token;
                   }

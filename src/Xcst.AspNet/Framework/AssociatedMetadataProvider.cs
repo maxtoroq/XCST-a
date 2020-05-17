@@ -17,9 +17,8 @@ namespace System.Web.Mvc {
 
       protected abstract ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName);
 
-      protected virtual IEnumerable<Attribute> FilterAttributes(Type containerType, PropertyDescriptor propertyDescriptor, IEnumerable<Attribute> attributes) {
-         return attributes;
-      }
+      protected virtual IEnumerable<Attribute> FilterAttributes(Type containerType, PropertyDescriptor propertyDescriptor, IEnumerable<Attribute> attributes) =>
+         attributes;
 
       public override IEnumerable<ModelMetadata> GetMetadataForProperties(object container, Type containerType) {
 
@@ -87,13 +86,11 @@ namespace System.Web.Mvc {
          }
       }
 
-      static Func<object> GetPropertyValueAccessor(object container, PropertyDescriptor property) {
-         return () => property.GetValue(container);
-      }
+      static Func<object> GetPropertyValueAccessor(object container, PropertyDescriptor property) =>
+         () => property.GetValue(container);
 
-      protected virtual ICustomTypeDescriptor GetTypeDescriptor(Type type) {
-         return TypeDescriptorHelper.Get(type);
-      }
+      protected virtual ICustomTypeDescriptor GetTypeDescriptor(Type type) =>
+         TypeDescriptorHelper.Get(type);
    }
 
    // This interface is implemented by attributes which wish to contribute to the
@@ -108,8 +105,7 @@ namespace System.Web.Mvc {
 
    class EmptyModelMetadataProvider : AssociatedMetadataProvider {
 
-      protected override ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) {
-         return new ModelMetadata(this, containerType, modelAccessor, modelType, propertyName);
-      }
+      protected override ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) =>
+         new ModelMetadata(this, containerType, modelAccessor, modelType, propertyName);
    }
 }

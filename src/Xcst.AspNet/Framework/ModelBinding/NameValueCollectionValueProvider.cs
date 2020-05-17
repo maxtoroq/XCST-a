@@ -19,25 +19,13 @@ namespace System.Web.Mvc {
 
       Dictionary<string, ValueProviderResultPlaceholder> _values = null;
 
-      private Dictionary<string, ValueProviderResultPlaceholder> Values {
-         get {
-            if (_values == null) {
-               _values = InitializeCollectionValues();
-            }
+      private Dictionary<string, ValueProviderResultPlaceholder> Values =>
+         _values ?? (_values = InitializeCollectionValues());
 
-            return _values;
-         }
-      }
-
-      private PrefixContainer PrefixContainer {
-         get {
-            if (_prefixContainer == null) {
-               // Race condition on initialization has no side effects
-               _prefixContainer = new PrefixContainer(Values.Keys);
-            }
-            return _prefixContainer;
-         }
-      }
+      private PrefixContainer PrefixContainer =>
+         _prefixContainer
+            // Race condition on initialization has no side effects
+            ?? (_prefixContainer = new PrefixContainer(Values.Keys));
 
       public NameValueCollectionValueProvider(NameValueCollection collection, CultureInfo culture)
          : this(collection, culture, jQueryToMvcRequestNormalizationRequired: false) { }
@@ -64,9 +52,8 @@ namespace System.Web.Mvc {
          _jQueryToMvcRequestNormalizationRequired = jQueryToMvcRequestNormalizationRequired;
       }
 
-      public virtual bool ContainsPrefix(string prefix) {
-         return PrefixContainer.ContainsPrefix(prefix);
-      }
+      public virtual bool ContainsPrefix(string prefix) =>
+         PrefixContainer.ContainsPrefix(prefix);
 
       public virtual ValueProviderResult GetValue(string key) {
 
@@ -82,9 +69,8 @@ namespace System.Web.Mvc {
          }
       }
 
-      public virtual IDictionary<string, string> GetKeysFromPrefix(string prefix) {
-         return PrefixContainer.GetKeysFromPrefix(prefix);
-      }
+      public virtual IDictionary<string, string> GetKeysFromPrefix(string prefix) =>
+         PrefixContainer.GetKeysFromPrefix(prefix);
 
       Dictionary<string, ValueProviderResultPlaceholder> InitializeCollectionValues() {
 
@@ -194,14 +180,9 @@ namespace System.Web.Mvc {
          NameValueCollection _validatedCollection;
          CultureInfo _culture;
 
-         public ValueProviderResult ValidatedResult {
-            get {
-               if (_validatedResult == null) {
-                  _validatedResult = GetResultFromCollection(_key, _validatedCollection, _culture);
-               }
-               return _validatedResult;
-            }
-         }
+         public ValueProviderResult ValidatedResult =>
+            _validatedResult
+               ?? (_validatedResult = GetResultFromCollection(_key, _validatedCollection, _culture));
 
          public ValueProviderResultPlaceholder(string key, NameValueCollection validatedCollection, CultureInfo culture) {
             _key = key;

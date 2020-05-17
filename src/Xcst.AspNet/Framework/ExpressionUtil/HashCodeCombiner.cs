@@ -38,9 +38,8 @@ namespace System.Web.Mvc.ExpressionUtil {
          }
       }
 
-      public void AddInt32(int i) {
+      public void AddInt32(int i) =>
          _combinedHash64 = ((_combinedHash64 << 5) + _combinedHash64) ^ i;
-      }
 
       public void AddObject(object o) {
          int hashCode = (o != null) ? o.GetHashCode() : 0;

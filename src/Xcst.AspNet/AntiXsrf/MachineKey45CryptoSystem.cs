@@ -13,9 +13,8 @@ namespace System.Web.Helpers.AntiXsrf {
 
       public static MachineKey45CryptoSystem Instance => _singletonInstance;
 
-      static MachineKey45CryptoSystem GetSingletonInstance() {
-         return new MachineKey45CryptoSystem();
-      }
+      static MachineKey45CryptoSystem GetSingletonInstance() =>
+         new MachineKey45CryptoSystem();
 
       public string Protect(byte[] data) {
          byte[] rawProtectedBytes = MachineKey.Protect(data, _purposes);

@@ -27,31 +27,23 @@ using System.Web.Mvc;
 
 namespace Xcst.Web.Runtime {
 
+   using HtmlAttribs = IDictionary<string, object>;
+
    /// <exclude/>
    public static class SelectInstructions {
 
       // Select
 
       public static void Select(
-            HtmlHelper htmlHelper,
-            XcstWriter output,
-            string name,
-            IEnumerable<SelectListItem> selectList = null,
-            bool multiple = false,
-            IDictionary<string, object> htmlAttributes = null) {
-
+            HtmlHelper htmlHelper, XcstWriter output, string name, IEnumerable<SelectListItem> selectList = null,
+            bool multiple = false, HtmlAttribs htmlAttributes = null) =>
          SelectHelper(htmlHelper, output, default(ModelMetadata), name, selectList, default(string), multiple, htmlAttributes);
-      }
 
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void SelectFor<TModel, TProperty>(
-            HtmlHelper<TModel> htmlHelper,
-            XcstWriter output,
-            Expression<Func<TModel, TProperty>> expression,
-            IEnumerable<SelectListItem> selectList = null,
-            bool multiple = false,
-            IDictionary<string, object> htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, IEnumerable<SelectListItem> selectList = null,
+            bool multiple = false, HtmlAttribs htmlAttributes = null) {
 
          if (expression == null) throw new ArgumentNullException(nameof(expression));
 
@@ -62,24 +54,14 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void SelectForModel(
-            HtmlHelper htmlHelper,
-            XcstWriter output,
-            IEnumerable<SelectListItem> selectList = null,
-            bool multiple = false,
-            IDictionary<string, object> htmlAttributes = null) {
+            HtmlHelper htmlHelper, XcstWriter output, IEnumerable<SelectListItem> selectList = null,
+            bool multiple = false, HtmlAttribs htmlAttributes = null) =>
 
          SelectHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, String.Empty, selectList, default(string), multiple, htmlAttributes);
-      }
 
       internal static void SelectHelper(
-            HtmlHelper htmlHelper,
-            XcstWriter output,
-            ModelMetadata metadata,
-            string expression,
-            IEnumerable<SelectListItem> selectList,
-            string optionLabel,
-            bool multiple,
-            IDictionary<string, object> htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata metadata, string expression, IEnumerable<SelectListItem> selectList,
+            string optionLabel, bool multiple, HtmlAttribs htmlAttributes) {
 
          if (!multiple
             && optionLabel == null
@@ -108,7 +90,8 @@ namespace Xcst.Web.Runtime {
          return selectList;
       }
 
-      static IEnumerable<SelectListItem> GetSelectListWithDefaultValue(IEnumerable<SelectListItem> selectList, object defaultValue, bool allowMultiple) {
+      static IEnumerable<SelectListItem> GetSelectListWithDefaultValue(
+            IEnumerable<SelectListItem> selectList, object defaultValue, bool allowMultiple) {
 
          IEnumerable defaultValues;
 
@@ -148,14 +131,9 @@ namespace Xcst.Web.Runtime {
          return newSelectList;
       }
 
-      static void SelectInternal(HtmlHelper htmlHelper,
-                                 XcstWriter output,
-                                 ModelMetadata metadata,
-                                 string optionLabel,
-                                 string name,
-                                 IEnumerable<SelectListItem> selectList,
-                                 bool allowMultiple,
-                                 IDictionary<string, object> htmlAttributes) {
+      static void SelectInternal(
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata metadata, string optionLabel, string name, IEnumerable<SelectListItem> selectList,
+            bool allowMultiple, HtmlAttribs htmlAttributes) {
 
          ViewDataDictionary viewData = htmlHelper.ViewData;
 

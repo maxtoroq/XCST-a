@@ -33,9 +33,8 @@ namespace System.Web.Mvc {
          }
       }
 
-      static bool TypeImplementsIDataErrorInfo(Type type) {
-         return typeof(IDataErrorInfo).IsAssignableFrom(type);
-      }
+      static bool TypeImplementsIDataErrorInfo(Type type) =>
+         typeof(IDataErrorInfo).IsAssignableFrom(type);
 
       internal sealed class DataErrorInfoClassModelValidator : ModelValidator {
 

@@ -42,9 +42,8 @@ namespace Xcst.Web.Runtime {
          return new OptionList(staticOptionsCount);
       }
 
-      public static OptionList Create() {
-         return new OptionList(0);
-      }
+      public static OptionList Create() =>
+         new OptionList(0);
 
       private OptionList(int staticOptionsCount) {
          this.staticList = new List<SelectListItem>(staticOptionsCount);
@@ -70,9 +69,8 @@ namespace Xcst.Web.Runtime {
          return this;
       }
 
-      static string ValueString(object value) {
-         return Convert.ToString(value, CultureInfo.CurrentCulture);
-      }
+      static string ValueString(object value) =>
+         Convert.ToString(value, CultureInfo.CurrentCulture);
 
       bool IsSelected(SelectListItem item) {
 
@@ -227,8 +225,7 @@ namespace Xcst.Web.Runtime {
             .GetEnumerator();
       }
 
-      IEnumerator IEnumerable.GetEnumerator() {
-         return GetEnumerator();
-      }
+      IEnumerator IEnumerable.GetEnumerator() =>
+         GetEnumerator();
    }
 }

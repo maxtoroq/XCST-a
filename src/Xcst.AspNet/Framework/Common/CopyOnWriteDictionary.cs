@@ -17,17 +17,11 @@ namespace System.Web.Mvc {
       readonly IEqualityComparer<TKey> _comparer;
       IDictionary<TKey, TValue> _innerDictionary;
 
-      private IDictionary<TKey, TValue> ReadDictionary => _innerDictionary ?? _sourceDictionary;
+      private IDictionary<TKey, TValue> ReadDictionary =>
+         _innerDictionary ?? _sourceDictionary;
 
-      private IDictionary<TKey, TValue> WriteDictionary {
-         get {
-            if (_innerDictionary == null) {
-               _innerDictionary = new Dictionary<TKey, TValue>(_sourceDictionary, _comparer);
-            }
-
-            return _innerDictionary;
-         }
-      }
+      private IDictionary<TKey, TValue> WriteDictionary =>
+         _innerDictionary ?? (_innerDictionary = new Dictionary<TKey, TValue>(_sourceDictionary, _comparer));
 
       public virtual ICollection<TKey> Keys => ReadDictionary.Keys;
 
@@ -38,12 +32,8 @@ namespace System.Web.Mvc {
       public virtual bool IsReadOnly => false;
 
       public virtual TValue this[TKey key] {
-         get {
-            return ReadDictionary[key];
-         }
-         set {
-            WriteDictionary[key] = value;
-         }
+         get => ReadDictionary[key];
+         set => WriteDictionary[key] = value;
       }
 
       public CopyOnWriteDictionary(IDictionary<TKey, TValue> sourceDictionary, IEqualityComparer<TKey> comparer) {
@@ -55,48 +45,37 @@ namespace System.Web.Mvc {
          _comparer = comparer;
       }
 
-      public virtual bool ContainsKey(TKey key) {
-         return this.ReadDictionary.ContainsKey(key);
-      }
+      public virtual bool ContainsKey(TKey key) =>
+         this.ReadDictionary.ContainsKey(key);
 
-      public virtual void Add(TKey key, TValue value) {
+      public virtual void Add(TKey key, TValue value) =>
          this.WriteDictionary.Add(key, value);
-      }
 
-      public virtual bool Remove(TKey key) {
-         return this.WriteDictionary.Remove(key);
-      }
+      public virtual bool Remove(TKey key) =>
+         this.WriteDictionary.Remove(key);
 
-      public virtual bool TryGetValue(TKey key, out TValue value) {
-         return this.ReadDictionary.TryGetValue(key, out value);
-      }
+      public virtual bool TryGetValue(TKey key, out TValue value) =>
+         this.ReadDictionary.TryGetValue(key, out value);
 
-      public virtual void Add(KeyValuePair<TKey, TValue> item) {
+      public virtual void Add(KeyValuePair<TKey, TValue> item) =>
          this.WriteDictionary.Add(item);
-      }
 
-      public virtual void Clear() {
+      public virtual void Clear() =>
          this.WriteDictionary.Clear();
-      }
 
-      public virtual bool Contains(KeyValuePair<TKey, TValue> item) {
-         return this.ReadDictionary.Contains(item);
-      }
+      public virtual bool Contains(KeyValuePair<TKey, TValue> item) =>
+         this.ReadDictionary.Contains(item);
 
-      public virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
+      public virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) =>
          this.ReadDictionary.CopyTo(array, arrayIndex);
-      }
 
-      public bool Remove(KeyValuePair<TKey, TValue> item) {
-         return this.WriteDictionary.Remove(item);
-      }
+      public bool Remove(KeyValuePair<TKey, TValue> item) =>
+         this.WriteDictionary.Remove(item);
 
-      public virtual IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
-         return this.ReadDictionary.GetEnumerator();
-      }
+      public virtual IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() =>
+         this.ReadDictionary.GetEnumerator();
 
-      IEnumerator IEnumerable.GetEnumerator() {
-         return GetEnumerator();
-      }
+      IEnumerator IEnumerable.GetEnumerator() =>
+         GetEnumerator();
    }
 }

@@ -53,9 +53,8 @@ namespace Xcst.Web.Runtime {
          return DisplayNameHelper(metadata, expressionString);
       }
 
-      public static string DisplayNameForModel(HtmlHelper html) {
-         return DisplayNameHelper(html.ViewData.ModelMetadata, String.Empty);
-      }
+      public static string DisplayNameForModel(HtmlHelper html) =>
+         DisplayNameHelper(html.ViewData.ModelMetadata, String.Empty);
 
       internal static string DisplayNameHelper(ModelMetadata metadata, string htmlFieldName) {
 
@@ -71,14 +70,12 @@ namespace Xcst.Web.Runtime {
 
       // display text
 
-      public static void DisplayText(HtmlHelper html, ISequenceWriter<string> output, string name) {
+      public static void DisplayText(HtmlHelper html, ISequenceWriter<string> output, string name) =>
          DisplayTextHelper(html, output, ModelMetadata.FromStringExpression(name, html.ViewData));
-      }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void DisplayTextFor<TModel, TResult>(HtmlHelper<TModel> html, ISequenceWriter<string> output, Expression<Func<TModel, TResult>> expression) {
+      public static void DisplayTextFor<TModel, TResult>(HtmlHelper<TModel> html, ISequenceWriter<string> output, Expression<Func<TModel, TResult>> expression) =>
          DisplayTextHelper(html, output, ModelMetadata.FromLambdaExpression(expression, html.ViewData));
-      }
 
       internal static void DisplayTextHelper(HtmlHelper html, ISequenceWriter<string> output, ModelMetadata metadata) {
 
@@ -91,17 +88,14 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      public static string DisplayString(HtmlHelper html, string name) {
-         return DisplayStringHelper(html, ModelMetadata.FromStringExpression(name, html.ViewData));
-      }
+      public static string DisplayString(HtmlHelper html, string name) =>
+         DisplayStringHelper(html, ModelMetadata.FromStringExpression(name, html.ViewData));
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static string DisplayStringFor<TModel, TResult>(HtmlHelper<TModel> html, Expression<Func<TModel, TResult>> expression) {
-         return DisplayStringHelper(html, ModelMetadata.FromLambdaExpression(expression, html.ViewData));
-      }
+      public static string DisplayStringFor<TModel, TResult>(HtmlHelper<TModel> html, Expression<Func<TModel, TResult>> expression) =>
+         DisplayStringHelper(html, ModelMetadata.FromLambdaExpression(expression, html.ViewData));
 
-      internal static string DisplayStringHelper(HtmlHelper html, ModelMetadata metadata) {
-         return metadata.SimpleDisplayText;
-      }
+      internal static string DisplayStringHelper(HtmlHelper html, ModelMetadata metadata) =>
+         metadata.SimpleDisplayText;
    }
 }
