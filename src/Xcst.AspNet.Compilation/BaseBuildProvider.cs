@@ -35,29 +35,20 @@ namespace Xcst.Web.Compilation {
       bool parsed;
       CompilerType _CodeCompilerType;
 
-      protected string AppRelativeVirtualPath {
-         get {
-            return _AppRelativeVirtualPath
-               ?? (_AppRelativeVirtualPath = VirtualPathUtility.ToAppRelative(VirtualPath));
-         }
-      }
+      protected string AppRelativeVirtualPath =>
+         _AppRelativeVirtualPath
+            ?? (_AppRelativeVirtualPath = VirtualPathUtility.ToAppRelative(VirtualPath));
 
-      protected Uri PhysicalPath {
-         get {
-            return _PhysicalPath
-               ?? (_PhysicalPath = new Uri(HostingEnvironment.MapPath(VirtualPath), UriKind.Absolute));
-         }
-      }
+      protected Uri PhysicalPath =>
+         _PhysicalPath
+            ?? (_PhysicalPath = new Uri(HostingEnvironment.MapPath(VirtualPath), UriKind.Absolute));
 
-      protected bool IsFileInCodeDir {
-         get {
-            return _IsFileInCodeDir
-               ?? (_IsFileInCodeDir = AppRelativeVirtualPath
-                  .Remove(0, 2)
-                  .Split('/')[0]
-                  .Equals("App_Code", StringComparison.OrdinalIgnoreCase)).Value;
-         }
-      }
+      protected bool IsFileInCodeDir =>
+         _IsFileInCodeDir
+            ?? (_IsFileInCodeDir = AppRelativeVirtualPath
+               .Remove(0, 2)
+               .Split('/')[0]
+               .Equals("App_Code", StringComparison.OrdinalIgnoreCase)).Value;
 
       protected string GeneratedTypeName {
          get {
@@ -86,11 +77,9 @@ namespace Xcst.Web.Compilation {
       }
 
       protected string GeneratedTypeFullName {
-         get {
-            return _GeneratedTypeFullName
-               ?? (_GeneratedTypeFullName = (GeneratedTypeNamespace.Length == 0) ? GeneratedTypeName
-                  : String.Concat(GeneratedTypeNamespace, ".", GeneratedTypeName));
-         }
+         get => _GeneratedTypeFullName
+            ?? (_GeneratedTypeFullName = (GeneratedTypeNamespace.Length == 0) ? GeneratedTypeName
+               : String.Concat(GeneratedTypeNamespace, ".", GeneratedTypeName));
          set {
             if (String.IsNullOrEmpty(value)) {
                throw new ArgumentException("value cannot be null or empty", nameof(value));
@@ -178,9 +167,8 @@ namespace Xcst.Web.Compilation {
          return results.CompiledAssembly.GetType(this.GeneratedTypeFullName);
       }
 
-      protected Exception CreateParseException(string message, int line, string virtualPath = null, Exception innerException = null) {
-         return new HttpParseException(message, innerException, virtualPath ?? this.VirtualPath, null, line);
-      }
+      protected Exception CreateParseException(string message, int line, string virtualPath = null, Exception innerException = null) =>
+         new HttpParseException(message, innerException, virtualPath ?? this.VirtualPath, null, line);
 
       string GetNamespaceAndTypeNameFromVirtualPath(int chunksToIgnore, out string typeName) {
 

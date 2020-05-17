@@ -32,12 +32,10 @@ namespace Xcst.Web.Mvc {
          this.PartialViewLocationFormats = this.ViewLocationFormats;
       }
 
-      protected override IView CreatePartialView(ControllerContext controllerContext, string partialPath) {
-         return new XcstView(controllerContext, partialPath);
-      }
+      protected override IView CreatePartialView(ControllerContext controllerContext, string partialPath) =>
+         new XcstView(controllerContext, partialPath);
 
-      protected override IView CreateView(ControllerContext controllerContext, string viewPath, string masterPath) {
-         return new XcstView(controllerContext, viewPath);
-      }
+      protected override IView CreateView(ControllerContext controllerContext, string viewPath, string masterPath) =>
+         new XcstView(controllerContext, viewPath);
    }
 }
