@@ -48,8 +48,7 @@ namespace Xcst.Web.Mvc {
          }
       }
 
-      protected virtual void RenderViewPage(XcstViewPage page, HttpContextBase context) {
+      protected virtual void RenderViewPage(XcstViewPage page, HttpContextBase context) =>
          base.RenderPage(page, context);
-      }
    }
 }

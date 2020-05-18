@@ -38,9 +38,8 @@ namespace Xcst.Web {
          RenderPage(this.page, this.page.Context);
       }
 
-      protected virtual void InitializePage(XcstPage page, HttpContextBase context) {
+      protected virtual void InitializePage(XcstPage page, HttpContextBase context) =>
          page.Context = context;
-      }
 
       protected virtual void RenderPage(XcstPage page, HttpContextBase context) {
 

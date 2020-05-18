@@ -59,7 +59,6 @@ namespace Xcst.Web.Configuration {
    }
 
 #if !ASPNETMVC
-
    public class DisplayTemplatesConfiguration {
       public Func<string, ViewContext, XcstViewPage> TemplateFactory { get; set; }
    }
