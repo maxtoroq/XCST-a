@@ -118,6 +118,9 @@
     <Compile Include="..\Xcst.AspNet\Framework\Common\TypeHelpers.cs">
       <Link>Framework\Common\TypeHelpers.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Framework\DynamicViewDataDictionary.cs">
+      <Link>Framework\DynamicViewDataDictionary.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Mvc\FileExtensionsAttribute.cs">
       <Link>Mvc\FileExtensionsAttribute.cs</Link>
     </Compile>

@@ -23,6 +23,7 @@ namespace Xcst.Web.Mvc {
 
       ViewContext _ViewContext;
       ViewDataDictionary _ViewData;
+      DynamicViewDataDictionary _ViewBag;
       UrlHelper _Url;
       HtmlHelper _Html;
       TempDataDictionary _TempData;
@@ -53,7 +54,8 @@ namespace Xcst.Web.Mvc {
          set => SetViewData(value);
       }
 
-      public dynamic ViewBag => ViewContext?.ViewBag;
+      public dynamic ViewBag => _ViewBag
+         ?? (_ViewBag = new DynamicViewDataDictionary(() => ViewData));
 
       public object Model => ViewData.Model;
 

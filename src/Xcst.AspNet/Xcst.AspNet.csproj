@@ -93,6 +93,7 @@
     <Compile Include="Framework\ControllerContext.cs" />
     <Compile Include="Framework\Common\CopyOnWriteDictionary.cs" />
     <Compile Include="Framework\DependencyResolver.cs" />
+    <Compile Include="Framework\DynamicViewDataDictionary.cs" />
     <Compile Include="Framework\ExpressionHelper.cs" />
     <Compile Include="Framework\ExpressionUtil\CachedExpressionCompiler.cs" />
     <Compile Include="Framework\ExpressionUtil\ExpressionFingerprint.cs" />
