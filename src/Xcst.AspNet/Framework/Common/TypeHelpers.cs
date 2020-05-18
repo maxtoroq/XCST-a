@@ -35,7 +35,7 @@ namespace System.Web.Mvc {
 
          Type targetType = assembly.GetType(typeName, throwOnError: false);
 
-         if (targetType == null) {
+         if (targetType is null) {
             return null;
          }
 
@@ -50,7 +50,7 @@ namespace System.Web.Mvc {
          Type[] argumentTypes = Array.ConvertAll(delegateParameters, pInfo => pInfo.ParameterType);
          MethodInfo targetMethod = targetType.GetMethod(methodName, argumentTypes);
 
-         if (targetMethod == null) {
+         if (targetMethod is null) {
             return null;
          }
 
@@ -91,7 +91,7 @@ namespace System.Web.Mvc {
 
          // wrap a call to the underlying IDictionary.Item()
 
-         if (result == null && typeof(IDictionary).IsAssignableFrom(targetType)) {
+         if (result is null && typeof(IDictionary).IsAssignableFrom(targetType)) {
             result = TryGetValueFromNonGenericDictionary;
          }
 
@@ -120,7 +120,7 @@ namespace System.Web.Mvc {
          (TypeAllowsNullValue(type)) ? null : Activator.CreateInstance(type);
 
       public static bool IsCompatibleObject<T>(object value) =>
-         (value is T || (value == null && TypeAllowsNullValue(typeof(T))));
+         (value is T || (value is null && TypeAllowsNullValue(typeof(T))));
 
       public static bool IsNullableValueType(Type type) =>
          Nullable.GetUnderlyingType(type) != null;
@@ -231,7 +231,7 @@ namespace System.Web.Mvc {
       /// <remarks>This code is copied from http://www.liensberger.it/web/blog/?p=191 </remarks>
       public static bool IsAnonymousType(Type type) {
 
-         if (type == null) throw new ArgumentNullException(nameof(type));
+         if (type is null) throw new ArgumentNullException(nameof(type));
 
          // TODO: The only way to detect anonymous types right now.
 

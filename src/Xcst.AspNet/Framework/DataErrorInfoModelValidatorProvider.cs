@@ -10,8 +10,8 @@ namespace System.Web.Mvc {
 
       public override IEnumerable<ModelValidator> GetValidators(ModelMetadata metadata, ControllerContext context) {
 
-         if (metadata == null) throw new ArgumentNullException(nameof(metadata));
-         if (context == null) throw new ArgumentNullException(nameof(context));
+         if (metadata is null) throw new ArgumentNullException(nameof(metadata));
+         if (context is null) throw new ArgumentNullException(nameof(context));
 
          return GetValidatorsImpl(metadata, context);
       }

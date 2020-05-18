@@ -216,7 +216,7 @@ namespace Xcst.Web.Runtime {
 
       public IEnumerator<SelectListItem> GetEnumerator() {
 
-         if (this.dynamicList == null) {
+         if (this.dynamicList is null) {
             return this.staticList.GetEnumerator();
          }
 

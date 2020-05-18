@@ -117,7 +117,7 @@ namespace Xcst.Web.Runtime {
 
          ModelMetadata metadata = ModelMetadata.FromStringExpression(expression, html.ViewData);
 
-         if (htmlFieldName == null) {
+         if (htmlFieldName is null) {
             htmlFieldName = ExpressionHelper.GetExpressionText(expression);
          }
 
@@ -135,7 +135,7 @@ namespace Xcst.Web.Runtime {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
 
-         if (htmlFieldName == null) {
+         if (htmlFieldName is null) {
             htmlFieldName = ExpressionHelper.GetExpressionText(expression);
          }
 
@@ -159,7 +159,7 @@ namespace Xcst.Web.Runtime {
 
          object formattedModelValue = metadata.Model;
 
-         if (metadata.Model == null
+         if (metadata.Model is null
             && displayMode) {
 
             formattedModelValue = metadata.NullDisplayText;
@@ -365,7 +365,7 @@ namespace Xcst.Web.Runtime {
 
                fieldType = fieldType.BaseType;
 
-               if (fieldType == null) {
+               if (fieldType is null) {
                   break;
                }
 

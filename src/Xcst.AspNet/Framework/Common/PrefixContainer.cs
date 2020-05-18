@@ -16,7 +16,7 @@ namespace System.Web.Mvc {
 
       internal PrefixContainer(ICollection<string> values) {
 
-         if (values == null) throw new ArgumentNullException(nameof(values));
+         if (values is null) throw new ArgumentNullException(nameof(values));
 
          _originalValues = values;
          _sortedValues = _originalValues.ToArrayWithoutNulls();
@@ -25,7 +25,7 @@ namespace System.Web.Mvc {
 
       internal bool ContainsPrefix(string prefix) {
 
-         if (prefix == null) throw new ArgumentNullException(nameof(prefix));
+         if (prefix is null) throw new ArgumentNullException(nameof(prefix));
 
          if (prefix.Length == 0) {
             return _sortedValues.Length > 0; // only match empty string when we have some value
@@ -138,7 +138,7 @@ namespace System.Web.Mvc {
 
       internal static bool IsPrefixMatch(string prefix, string testString) {
 
-         if (testString == null) {
+         if (testString is null) {
             return false;
          }
 

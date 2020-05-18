@@ -31,7 +31,7 @@ namespace System.Web.Mvc {
 
       internal static string ToDataTypeName(this DataTypeAttribute attribute, Func<DataTypeAttribute, Boolean> isDataType = null) {
 
-         if (isDataType == null) {
+         if (isDataType is null) {
             isDataType = t => t.GetType().Equals(typeof(DataTypeAttribute));
          }
 
@@ -45,7 +45,7 @@ namespace System.Web.Mvc {
 
             string name = KnownDataTypeToString(attribute.DataType);
 
-            if (name == null) {
+            if (name is null) {
                // Unknown types fallback to a dictionary lookup.
                // Code running on .NET 4.5 will not enter this code for statically known data types.
                // Versions of .NET greater than 4.5 will enter this code for any new data types added to those frameworks
@@ -110,7 +110,7 @@ namespace System.Web.Mvc {
             // This is a workingset size optimization.
 
             if (dataTypeValue != DataType.Custom
-               && KnownDataTypeToString(dataTypeValue) == null) {
+               && KnownDataTypeToString(dataTypeValue) is null) {
 
                string name = Enum.GetName(typeof(DataType), dataTypeValue);
                dataTypeToName[dataTypeValue] = name;

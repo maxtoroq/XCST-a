@@ -38,7 +38,7 @@ namespace System.Web.Mvc {
          // An empty include list implies all properties are allowed.
          // An empty exclude list implies no properties are disallowed.
 
-         bool includeProperty = (includeProperties == null) || (includeProperties.Count == 0) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
+         bool includeProperty = (includeProperties is null) || (includeProperties.Count == 0) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
          bool excludeProperty = (excludeProperties != null) && excludeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
 
          return includeProperty && !excludeProperty;

@@ -46,7 +46,7 @@ namespace Xcst.Web.Mvc {
 
       public ViewDataDictionary ViewData {
          get {
-            if (_ViewData == null) {
+            if (_ViewData is null) {
                SetViewData(new ViewDataDictionary());
             }
             return _ViewData;
@@ -61,7 +61,7 @@ namespace Xcst.Web.Mvc {
 
       public virtual UrlHelper Url {
          get {
-            if (_Url == null
+            if (_Url is null
                && ViewContext != null) {
                _Url =
 #if ASPNETMVC
@@ -76,7 +76,7 @@ namespace Xcst.Web.Mvc {
 
       public HtmlHelper Html {
          get {
-            if (_Html == null
+            if (_Html is null
                && ViewContext != null) {
                _Html = new HtmlHelper(ViewContext, this);
             }
@@ -118,13 +118,13 @@ namespace Xcst.Web.Mvc {
 
       public bool TryBind(object value, Type type = null, string prefix = null, string[] includeProperties = null, string[] excludeProperties = null, IValueProvider valueProvider = null) {
 
-         if (value == null) throw new ArgumentNullException(nameof(value));
+         if (value is null) throw new ArgumentNullException(nameof(value));
 
-         if (type == null) {
+         if (type is null) {
             type = value.GetType();
          }
 
-         if (valueProvider == null) {
+         if (valueProvider is null) {
             valueProvider = ValueProviderFactories.Factories.GetValueProvider(this.ViewContext);
          }
 
@@ -145,7 +145,7 @@ namespace Xcst.Web.Mvc {
 
       public bool TryValidate(object value, string prefix = null) {
 
-         if (value == null) throw new ArgumentNullException(nameof(value));
+         if (value is null) throw new ArgumentNullException(nameof(value));
 
          ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => value, value.GetType());
 
@@ -160,7 +160,7 @@ namespace Xcst.Web.Mvc {
          // We allow a property to be bound if its both in the include list AND not in the exclude list.
          // An empty include list implies all properties are allowed.
          // An empty exclude list implies no properties are disallowed.
-         bool includeProperty = (includeProperties == null) || (includeProperties.Length == 0) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
+         bool includeProperty = (includeProperties is null) || (includeProperties.Length == 0) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
          bool excludeProperty = (excludeProperties != null) && excludeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
          return includeProperty && !excludeProperty;
       }
@@ -206,7 +206,7 @@ namespace Xcst.Web.Mvc {
 
       public new ViewDataDictionary<TModel> ViewData {
          get {
-            if (_ViewData == null) {
+            if (_ViewData is null) {
                SetViewData(new ViewDataDictionary<TModel>());
             }
             return _ViewData;
@@ -218,7 +218,7 @@ namespace Xcst.Web.Mvc {
 
       public new HtmlHelper<TModel> Html {
          get {
-            if (_Html == null
+            if (_Html is null
                && ViewContext != null) {
                _Html = new HtmlHelper<TModel>(ViewContext, this);
             }

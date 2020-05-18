@@ -47,7 +47,7 @@ namespace Xcst.Web.Mvc {
 
       public void OnMetadataCreated(ModelMetadata metadata) {
 
-         if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+         if (metadata is null) throw new ArgumentNullException(nameof(metadata));
 
          // because the framework uses true as default, we need a way to 
          // tell if a value is explicitly specified, hence the use of AdditionalValues

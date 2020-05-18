@@ -436,13 +436,13 @@ namespace System.Web.Mvc {
       protected sealed override ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) {
 
          // If metadata is being created for a property then containerType != null && propertyName != null
-         // If metadata is being created for a type then containerType == null && propertyName == null, so we have to use modelType for the cache key.
+         // If metadata is being created for a type then containerType is null && propertyName is null, so we have to use modelType for the cache key.
 
          Type typeForCache = containerType ?? modelType;
          string cacheKey = GetCacheKey(typeForCache, propertyName);
          TModelMetadata prototype = PrototypeCache.Get(cacheKey) as TModelMetadata;
 
-         if (prototype == null) {
+         if (prototype is null) {
             prototype = CreateMetadataPrototype(attributes, containerType, modelType, propertyName);
             PrototypeCache.Add(cacheKey, prototype, this.CacheItemPolicy);
          }

@@ -38,7 +38,7 @@ namespace Xcst.Web.Runtime {
             HtmlHelper htmlHelper, XcstWriter output, string modelName, string validationMessage = null, HtmlAttribs htmlAttributes = null,
             string tag = null) {
 
-         if (modelName == null) throw new ArgumentNullException(nameof(modelName));
+         if (modelName is null) throw new ArgumentNullException(nameof(modelName));
 
          ModelMetadata metadata = ModelMetadata.FromStringExpression(modelName, htmlHelper.ViewData);
 
@@ -67,7 +67,7 @@ namespace Xcst.Web.Runtime {
          FormContext formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
 
          if (!viewData.ModelState.ContainsKey(modelName)
-            && formContext == null) {
+            && formContext is null) {
 
             return;
          }
@@ -75,11 +75,11 @@ namespace Xcst.Web.Runtime {
          ModelState modelState = viewData.ModelState[modelName];
          ModelErrorCollection modelErrors = modelState?.Errors;
 
-         ModelError modelError = (modelErrors == null || modelErrors.Count == 0) ? null
+         ModelError modelError = (modelErrors is null || modelErrors.Count == 0) ? null
             : (modelErrors.FirstOrDefault(m => !String.IsNullOrEmpty(m.ErrorMessage)) ?? modelErrors[0]);
 
-         if (modelError == null
-            && formContext == null) {
+         if (modelError is null
+            && formContext is null) {
 
             return;
          }
@@ -149,13 +149,13 @@ namespace Xcst.Web.Runtime {
             HtmlHelper htmlHelper, XcstWriter output, bool includePropertyErrors = false, string message = null, HtmlAttribs htmlAttributes = null,
             string headingTag = null) {
 
-         if (htmlHelper == null) throw new ArgumentNullException(nameof(htmlHelper));
+         if (htmlHelper is null) throw new ArgumentNullException(nameof(htmlHelper));
 
          FormContext formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
 
          if (htmlHelper.ViewData.ModelState.IsValid) {
 
-            if (formContext == null) {
+            if (formContext is null) {
 
                // No client side validation
 
@@ -309,7 +309,7 @@ namespace Xcst.Web.Runtime {
             return error.ErrorMessage;
          }
 
-         if (modelState == null) {
+         if (modelState is null) {
             return null;
          }
 

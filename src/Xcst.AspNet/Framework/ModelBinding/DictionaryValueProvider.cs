@@ -17,7 +17,7 @@ namespace System.Web.Mvc {
 
       public DictionaryValueProvider(IDictionary<string, TValue> dictionary, CultureInfo culture) {
 
-         if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
+         if (dictionary is null) throw new ArgumentNullException(nameof(dictionary));
 
          foreach (KeyValuePair<string, TValue> entry in dictionary) {
 
@@ -32,7 +32,7 @@ namespace System.Web.Mvc {
 
       public virtual ValueProviderResult GetValue(string key) {
 
-         if (key == null) throw new ArgumentNullException(nameof(key));
+         if (key is null) throw new ArgumentNullException(nameof(key));
 
          ValueProviderResult valueProviderResult;
          _values.TryGetValue(key, out valueProviderResult);

@@ -52,7 +52,7 @@ namespace Xcst.Web.Compilation {
 
       protected string GeneratedTypeName {
          get {
-            if (_GeneratedTypeName == null) {
+            if (_GeneratedTypeName is null) {
 
                string typeName;
 
@@ -68,7 +68,7 @@ namespace Xcst.Web.Compilation {
       [SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "s")]
       protected string GeneratedTypeNamespace {
          get {
-            if (_GeneratedTypeNamespace == null) {
+            if (_GeneratedTypeNamespace is null) {
                // getting GeneratedTypeName will initialize _GeneratedTypeNamespace
                string s = GeneratedTypeName;
             }

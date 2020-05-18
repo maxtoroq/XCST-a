@@ -12,7 +12,7 @@ namespace System.Web.Mvc {
 
       public ModelBinderAttribute(Type binderType) {
 
-         if (binderType == null) throw new ArgumentNullException(nameof(binderType));
+         if (binderType is null) throw new ArgumentNullException(nameof(binderType));
 
          if (!typeof(IModelBinder).IsAssignableFrom(binderType)) {
 

@@ -45,7 +45,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public override Expression Visit(Expression node) {
 
-         if (node == null) {
+         if (node is null) {
             _currentChain.Elements.Add(null);
             return null;
          } else {

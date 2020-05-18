@@ -45,7 +45,7 @@ namespace System.Web.Mvc {
 
       static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo displayColumnProperty, Type modelType) {
 
-         if (displayColumnProperty == null) {
+         if (displayColumnProperty is null) {
 
             throw new InvalidOperationException(
                String.Format(
@@ -54,7 +54,7 @@ namespace System.Web.Mvc {
                   modelType.FullName, displayColumnAttribute.DisplayColumn));
          }
 
-         if (displayColumnProperty.GetGetMethod() == null) {
+         if (displayColumnProperty.GetGetMethod() is null) {
 
             throw new InvalidOperationException(
                String.Format(
@@ -156,7 +156,7 @@ namespace System.Web.Mvc {
             result.DataTypeName = dataTypeAttribute.ToDataTypeName();
          }
 
-         if (displayFormatAttribute == null
+         if (displayFormatAttribute is null
             && dataTypeAttribute != null) {
 
             displayFormatAttribute = dataTypeAttribute.DisplayFormat;

@@ -49,8 +49,8 @@ namespace Xcst.Web.Runtime {
 
       public static bool ShowForDisplay(HtmlHelper html, ModelMetadata propertyMetadata) {
 
-         if (html == null) throw new ArgumentNullException(nameof(html));
-         if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));
+         if (html is null) throw new ArgumentNullException(nameof(html));
+         if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
 
          if (!propertyMetadata.ShowForDisplay
             || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {

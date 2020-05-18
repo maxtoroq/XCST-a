@@ -56,7 +56,7 @@ namespace System.Web.Mvc {
 
       public void InnerSetResolver(IDependencyResolver resolver) {
 
-         if (resolver == null) throw new ArgumentNullException(nameof(resolver));
+         if (resolver is null) throw new ArgumentNullException(nameof(resolver));
 
          this.InnerCurrent = resolver;
          this.InnerCurrentCache = new CacheDependencyResolver(this.InnerCurrent);
@@ -64,15 +64,15 @@ namespace System.Web.Mvc {
 
       public void InnerSetResolver(object commonServiceLocator) {
 
-         if (commonServiceLocator == null) throw new ArgumentNullException(nameof(commonServiceLocator));
+         if (commonServiceLocator is null) throw new ArgumentNullException(nameof(commonServiceLocator));
 
          Type locatorType = commonServiceLocator.GetType();
          MethodInfo getInstance = locatorType.GetMethod("GetInstance", new[] { typeof(Type) });
          MethodInfo getInstances = locatorType.GetMethod("GetAllInstances", new[] { typeof(Type) });
 
-         if (getInstance == null
+         if (getInstance is null
             || getInstance.ReturnType != typeof(object)
-            || getInstances == null
+            || getInstances is null
             || getInstances.ReturnType != typeof(IEnumerable<object>)) {
 
             throw new ArgumentException(
@@ -92,8 +92,8 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types.")]
       public void InnerSetResolver(Func<Type, object> getService, Func<Type, IEnumerable<object>> getServices) {
 
-         if (getService == null) throw new ArgumentNullException(nameof(getService));
-         if (getServices == null) throw new ArgumentNullException(nameof(getServices));
+         if (getService is null) throw new ArgumentNullException(nameof(getService));
+         if (getServices is null) throw new ArgumentNullException(nameof(getServices));
 
          InnerSetResolver(new DelegateBasedDependencyResolver(getService, getServices));
       }
@@ -184,7 +184,7 @@ namespace System.Web.Mvc {
       internal static TService[] GetCombined<TService>(IList<TService> items, IDependencyResolver resolver = null)
             where TService : class {
 
-         if (resolver == null) {
+         if (resolver is null) {
             resolver = DependencyResolver.Current;
          }
 

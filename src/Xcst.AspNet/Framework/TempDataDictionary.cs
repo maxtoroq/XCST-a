@@ -232,12 +232,12 @@ namespace System.Web.Mvc {
 
       public virtual void SaveTempData(ControllerContext controllerContext, IDictionary<string, object> values) {
 
-         if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
+         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
          HttpSessionStateBase session = controllerContext.HttpContext.Session;
          bool isDirty = (values != null && values.Count > 0);
 
-         if (session == null) {
+         if (session is null) {
 
             if (isDirty) {
                throw new InvalidOperationException(MvcResources.SessionStateTempDataProvider_SessionStateDisabled);

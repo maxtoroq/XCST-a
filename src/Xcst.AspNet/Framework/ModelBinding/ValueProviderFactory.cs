@@ -30,7 +30,7 @@ namespace System.Web.Mvc {
       internal ValueProviderFactory[] CombinedItems {
          get {
             ValueProviderFactory[] combinedItems = _combinedItems;
-            if (combinedItems == null) {
+            if (combinedItems is null) {
                combinedItems = MultiServiceResolver.GetCombined<ValueProviderFactory>(Items, _dependencyResolver);
                _combinedItems = combinedItems;
             }
@@ -74,7 +74,7 @@ namespace System.Web.Mvc {
 
       protected override void InsertItem(int index, ValueProviderFactory item) {
 
-         if (item == null) throw new ArgumentNullException(nameof(item));
+         if (item is null) throw new ArgumentNullException(nameof(item));
 
          _combinedItems = null;
          base.InsertItem(index, item);
@@ -87,7 +87,7 @@ namespace System.Web.Mvc {
 
       protected override void SetItem(int index, ValueProviderFactory item) {
 
-         if (item == null) throw new ArgumentNullException(nameof(item));
+         if (item is null) throw new ArgumentNullException(nameof(item));
 
          _combinedItems = null;
          base.SetItem(index, item);
@@ -154,14 +154,14 @@ namespace System.Web.Mvc {
 
       protected override void InsertItem(int index, IValueProvider item) {
 
-         if (item == null) throw new ArgumentNullException(nameof(item));
+         if (item is null) throw new ArgumentNullException(nameof(item));
 
          base.InsertItem(index, item);
       }
 
       protected override void SetItem(int index, IValueProvider item) {
 
-         if (item == null) throw new ArgumentNullException(nameof(item));
+         if (item is null) throw new ArgumentNullException(nameof(item));
 
          base.SetItem(index, item);
       }

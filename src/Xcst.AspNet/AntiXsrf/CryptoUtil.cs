@@ -14,7 +14,7 @@ namespace System.Web.Helpers {
 
       public static bool AreByteArraysEqual(byte[] a, byte[] b) {
 
-         if (a == null || b == null || a.Length != b.Length) {
+         if (a is null || b is null || a.Length != b.Length) {
             return false;
          }
 

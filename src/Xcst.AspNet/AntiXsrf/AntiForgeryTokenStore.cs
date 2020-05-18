@@ -21,7 +21,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
          HttpCookie cookie = httpContext.Request.Cookies[_config.CookieName];
 
-         if (cookie == null || String.IsNullOrEmpty(cookie.Value)) {
+         if (cookie is null || String.IsNullOrEmpty(cookie.Value)) {
             // did not exist
             return null;
          }

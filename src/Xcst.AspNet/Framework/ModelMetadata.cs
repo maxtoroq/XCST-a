@@ -108,7 +108,7 @@ namespace System.Web.Mvc {
 
       public virtual IEnumerable<ModelMetadata> Properties {
          get {
-            if (_properties == null) {
+            if (_properties is null) {
 
                IEnumerable<ModelMetadata> originalProperties = Provider.GetMetadataForProperties(Model, RealModelType);
 
@@ -141,7 +141,7 @@ namespace System.Web.Mvc {
 
       internal Type RealModelType {
          get {
-            if (_realModelType == null) {
+            if (_realModelType is null) {
 
                _realModelType = ModelType;
 
@@ -188,8 +188,8 @@ namespace System.Web.Mvc {
 
       internal static ModelMetadata FromLambdaExpression<TParameter, TValue>(Expression<Func<TParameter, TValue>> expression, ViewDataDictionary<TParameter> viewData, ModelMetadataProvider metadataProvider) {
 
-         if (expression == null) throw new ArgumentNullException(nameof(expression));
-         if (viewData == null) throw new ArgumentNullException(nameof(viewData));
+         if (expression is null) throw new ArgumentNullException(nameof(expression));
+         if (viewData is null) throw new ArgumentNullException(nameof(viewData));
 
          string propertyName = null;
          Type containerType = null;
@@ -247,8 +247,8 @@ namespace System.Web.Mvc {
 
       internal static ModelMetadata FromStringExpression(string expression, ViewDataDictionary viewData, ModelMetadataProvider metadataProvider) {
 
-         if (expression == null) throw new ArgumentNullException(nameof(expression));
-         if (viewData == null) throw new ArgumentNullException(nameof(viewData));
+         if (expression is null) throw new ArgumentNullException(nameof(expression));
+         if (viewData is null) throw new ArgumentNullException(nameof(viewData));
 
          if (expression.Length == 0) {
             // Empty string really means "model metadata for the current model"
@@ -294,8 +294,8 @@ namespace System.Web.Mvc {
 
       public ModelMetadata(ModelMetadataProvider provider, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) {
 
-         if (provider == null) throw new ArgumentNullException(nameof(provider));
-         if (modelType == null) throw new ArgumentNullException(nameof(modelType));
+         if (provider is null) throw new ArgumentNullException(nameof(provider));
+         if (modelType is null) throw new ArgumentNullException(nameof(modelType));
 
          this.Provider = provider;
 
@@ -334,13 +334,13 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method is used to resolve the simple display text when it was not explicitly set through other means.")]
       protected virtual string GetSimpleDisplayText() {
 
-         if (this.Model == null) {
+         if (this.Model is null) {
             return this.NullDisplayText;
          }
 
          string toStringResult = Convert.ToString(this.Model, CultureInfo.CurrentCulture);
 
-         if (toStringResult == null) {
+         if (toStringResult is null) {
             return String.Empty;
          }
 
@@ -350,11 +350,11 @@ namespace System.Web.Mvc {
 
          ModelMetadata firstProperty = this.Properties.FirstOrDefault();
 
-         if (firstProperty == null) {
+         if (firstProperty is null) {
             return String.Empty;
          }
 
-         if (firstProperty.Model == null) {
+         if (firstProperty.Model is null) {
             return firstProperty.NullDisplayText;
          }
 

@@ -25,7 +25,7 @@ namespace System.Web.Mvc {
 
       static void AddValueRequiredMessageToModelState(ControllerContext controllerContext, ModelStateDictionary modelState, string modelStateKey, Type elementType, object value) {
 
-         if (value == null
+         if (value is null
             && !TypeHelpers.TypeAllowsNullValue(elementType)
             && modelState.IsValidField(modelStateKey)) {
 
@@ -54,7 +54,7 @@ namespace System.Web.Mvc {
 
          // if we're being asked to create an array, create a list instead, then coerce to an array after the list is created
 
-         if (model == null && modelType.IsArray) {
+         if (model is null && modelType.IsArray) {
 
             Type elementType = modelType.GetElementType();
             Type listType = typeof(List<>).MakeGenericType(elementType);
@@ -70,7 +70,7 @@ namespace System.Web.Mvc {
 
             IList list = (IList)UpdateCollection(controllerContext, arrayBindingContext, elementType);
 
-            if (list == null) {
+            if (list is null) {
                return null;
             }
 
@@ -79,7 +79,7 @@ namespace System.Web.Mvc {
             return array;
          }
 
-         if (model == null) {
+         if (model is null) {
             model = CreateModel(controllerContext, bindingContext, modelType);
          }
 
@@ -141,7 +141,7 @@ namespace System.Web.Mvc {
 
          RuntimeHelpers.EnsureSufficientExecutionStack();
 
-         if (bindingContext == null) throw new ArgumentNullException(nameof(bindingContext));
+         if (bindingContext is null) throw new ArgumentNullException(nameof(bindingContext));
 
          bool performedFallback = false;
 
@@ -236,7 +236,7 @@ namespace System.Web.Mvc {
 
          ModelState modelState = bindingContext.ModelState[fullPropertyKey];
 
-         if (modelState == null
+         if (modelState is null
             || modelState.Errors.Count == 0) {
 
             if (OnPropertyValidating(controllerContext, bindingContext, propertyDescriptor, newPropertyValue)) {
@@ -504,7 +504,7 @@ namespace System.Web.Mvc {
 
       protected static bool IsModelValid(ModelBindingContext bindingContext) {
 
-         if (bindingContext == null) throw new ArgumentNullException(nameof(bindingContext));
+         if (bindingContext is null) throw new ArgumentNullException(nameof(bindingContext));
 
          if (String.IsNullOrEmpty(bindingContext.ModelName)) {
             return bindingContext.ModelState.IsValid;
@@ -559,7 +559,7 @@ namespace System.Web.Mvc {
          // binding system, which is why this code is here instead of in the Validating/Validated
          // methods, which are really the old-school validation hooks.
 
-         if (value == null
+         if (value is null
             && bindingContext.ModelState.IsValidField(modelStateKey)) {
 
             ModelValidator requiredValidator = ModelValidatorProviders.Providers.GetValidators(propertyMetadata, controllerContext).Where(v => v.IsRequired).FirstOrDefault();
@@ -571,7 +571,7 @@ namespace System.Web.Mvc {
             }
          }
 
-         bool isNullValueOnNonNullableType = value == null
+         bool isNullValueOnNonNullableType = value is null
             && !TypeHelpers.TypeAllowsNullValue(propertyDescriptor.PropertyType);
 
          // Try to set a value into the property unless we know it will fail (read-only

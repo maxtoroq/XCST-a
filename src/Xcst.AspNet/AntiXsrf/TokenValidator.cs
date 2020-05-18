@@ -49,7 +49,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
             formToken.ClaimUid = _claimUidExtractor.ExtractClaimUid(identity);
 
-            if (formToken.ClaimUid == null) {
+            if (formToken.ClaimUid is null) {
                formToken.Username = identity.Name;
             }
          }
@@ -62,7 +62,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
          if (requireAuthenticatedUserHeuristicChecks
             && String.IsNullOrEmpty(formToken.Username)
-            && formToken.ClaimUid == null
+            && formToken.ClaimUid is null
             && String.IsNullOrEmpty(formToken.AdditionalData)) {
 
             // Application says user is authenticated, but we have no identifier for the user.
@@ -89,15 +89,15 @@ namespace System.Web.Helpers.AntiXsrf {
 
          Exception ex = ValidateTokensImpl(httpContext, identity, sessionToken, fieldToken);
 
-         return ex == null;
+         return ex is null;
       }
 
       Exception ValidateTokensImpl(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
 
          // Were the tokens even present at all?
 
-         if (sessionToken == null) return HttpAntiForgeryException.CreateCookieMissingException(_config.CookieName);
-         if (fieldToken == null) return HttpAntiForgeryException.CreateFormFieldMissingException(_config.FormFieldName);
+         if (sessionToken is null) return HttpAntiForgeryException.CreateCookieMissingException(_config.CookieName);
+         if (fieldToken is null) return HttpAntiForgeryException.CreateFormFieldMissingException(_config.FormFieldName);
 
          // Do the tokens have the correct format?
 
@@ -120,7 +120,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
             currentClaimUid = _claimUidExtractor.ExtractClaimUid(identity);
 
-            if (currentClaimUid == null) {
+            if (currentClaimUid is null) {
                currentUsername = identity.Name ?? String.Empty;
             }
          }

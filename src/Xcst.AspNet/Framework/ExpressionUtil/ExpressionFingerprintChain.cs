@@ -51,7 +51,7 @@ namespace System.Web.Mvc.ExpressionUtil {
          // Two chains are considered equal if two elements appearing in the same index in
          // each chain are equal (value equality, not referential equality).
 
-         if (other == null) {
+         if (other is null) {
             return false;
          }
 

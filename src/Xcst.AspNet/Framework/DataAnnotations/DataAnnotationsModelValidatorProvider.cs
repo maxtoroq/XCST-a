@@ -82,7 +82,7 @@ namespace System.Web.Mvc {
                if (!AttributeFactories.TryGetValue(attrType, out factory)
                    && (factory = AttributeFactories.Where(pair => pair.Key.IsAssignableFrom(attrType))
                        .Select(pair => pair.Value)
-                       .FirstOrDefault()) == null) {
+                       .FirstOrDefault()) is null) {
                   factory = DefaultAttributeFactory;
                }
 
@@ -168,7 +168,7 @@ namespace System.Web.Mvc {
 
       static void ValidateAttributeAdapterType(Type adapterType) {
 
-         if (adapterType == null) throw new ArgumentNullException(nameof(adapterType));
+         if (adapterType is null) throw new ArgumentNullException(nameof(adapterType));
 
          if (!typeof(ModelValidator).IsAssignableFrom(adapterType)) {
             throw new ArgumentException(
@@ -183,7 +183,7 @@ namespace System.Web.Mvc {
 
       static void ValidateAttributeType(Type attributeType) {
 
-         if (attributeType == null) throw new ArgumentNullException(nameof(attributeType));
+         if (attributeType is null) throw new ArgumentNullException(nameof(attributeType));
 
          if (!typeof(ValidationAttribute).IsAssignableFrom(attributeType)) {
             throw new ArgumentException(
@@ -198,7 +198,7 @@ namespace System.Web.Mvc {
 
       static void ValidateAttributeFactory(DataAnnotationsModelValidationFactory factory) {
 
-         if (factory == null) throw new ArgumentNullException(nameof(factory));
+         if (factory is null) throw new ArgumentNullException(nameof(factory));
       }
 
       #endregion
@@ -284,7 +284,7 @@ namespace System.Web.Mvc {
 
       static void ValidateValidatableAdapterType(Type adapterType) {
 
-         if (adapterType == null) throw new ArgumentNullException(nameof(adapterType));
+         if (adapterType is null) throw new ArgumentNullException(nameof(adapterType));
 
          if (!typeof(ModelValidator).IsAssignableFrom(adapterType)) {
             throw new ArgumentException(
@@ -299,7 +299,7 @@ namespace System.Web.Mvc {
 
       static void ValidateValidatableModelType(Type modelType) {
 
-         if (modelType == null) throw new ArgumentNullException(nameof(modelType));
+         if (modelType is null) throw new ArgumentNullException(nameof(modelType));
 
          if (!typeof(IValidatableObject).IsAssignableFrom(modelType)) {
             throw new ArgumentException(
@@ -314,7 +314,7 @@ namespace System.Web.Mvc {
 
       static void ValidateValidatableFactory(DataAnnotationsValidatableObjectAdapterFactory factory) {
 
-         if (factory == null) throw new ArgumentNullException(nameof(factory));
+         if (factory is null) throw new ArgumentNullException(nameof(factory));
       }
 
       #endregion

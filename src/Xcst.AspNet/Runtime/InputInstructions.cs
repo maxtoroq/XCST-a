@@ -52,7 +52,7 @@ namespace Xcst.Web.Runtime {
       public static void CheckBoxFor<TModel>(
             HtmlHelper<TModel> htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression, HtmlAttribs htmlAttributes = null) {
 
-         if (expression == null) throw new ArgumentNullException(nameof(expression));
+         if (expression is null) throw new ArgumentNullException(nameof(expression));
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
@@ -82,7 +82,7 @@ namespace Xcst.Web.Runtime {
 
          object model = metadata?.Model;
 
-         if (isChecked == null
+         if (isChecked is null
             && model != null) {
 
             if (Boolean.TryParse(model.ToString(), out bool modelChecked)) {
@@ -144,7 +144,7 @@ namespace Xcst.Web.Runtime {
       public static void RadioButton(
             HtmlHelper htmlHelper, XcstWriter output, string name, object value, HtmlAttribs htmlAttributes = null) {
 
-         if (value == null) throw new ArgumentNullException(nameof(value));
+         if (value is null) throw new ArgumentNullException(nameof(value));
 
          // checked attributes is implicit, so we need to ensure that the dictionary takes precedence.
 
@@ -161,7 +161,7 @@ namespace Xcst.Web.Runtime {
       public static void RadioButton(
             HtmlHelper htmlHelper, XcstWriter output, string name, object value, bool isChecked, HtmlAttribs htmlAttributes = null) {
 
-         if (value == null) throw new ArgumentNullException(nameof(value));
+         if (value is null) throw new ArgumentNullException(nameof(value));
 
          RadioButtonHelper(htmlHelper, output, /*metadata: */null, name, value, isChecked, htmlAttributes);
       }
@@ -170,7 +170,7 @@ namespace Xcst.Web.Runtime {
       public static void RadioButtonFor<TModel, TProperty>(
             HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, object value, HtmlAttribs htmlAttributes = null) {
 
-         if (value == null) throw new ArgumentNullException(nameof(value));
+         if (value is null) throw new ArgumentNullException(nameof(value));
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
@@ -200,7 +200,7 @@ namespace Xcst.Web.Runtime {
 
          object model = metadata?.Model;
 
-         if (isChecked == null
+         if (isChecked is null
             && model != null) {
 
             isChecked = RadioButtonValueEquals(value, model.ToString());
@@ -274,7 +274,7 @@ namespace Xcst.Web.Runtime {
             HtmlHelper htmlHelper, XcstWriter output, string/*?*/ type, ModelMetadata/*?*/ metadata, string expression, object/*?*/ value,
             string/*?*/ format, HtmlAttribs/*?*/ htmlAttributes) {
 
-         if (value == null
+         if (value is null
             && metadata != null
             && GetInputType(type) != InputType.Password) {
 
@@ -293,8 +293,8 @@ namespace Xcst.Web.Runtime {
             || inputType == InputType.Radio;
 
          if (type != null
-            && (inputType == null || checkBoxOrRadio)
-            && (htmlAttributes == null || !htmlAttributes.ContainsKey("type"))) {
+            && (inputType is null || checkBoxOrRadio)
+            && (htmlAttributes is null || !htmlAttributes.ContainsKey("type"))) {
 
             htmlAttributes = htmlAttributes?.Clone() ?? new HtmlAttributeDictionary();
             htmlAttributes["type"] = type;
@@ -318,8 +318,8 @@ namespace Xcst.Web.Runtime {
             }
          }
 
-         if (useViewData == null) {
-            useViewData = (value == null);
+         if (useViewData is null) {
+            useViewData = (value is null);
          }
 
          InputHelper(

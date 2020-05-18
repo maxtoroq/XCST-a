@@ -24,8 +24,8 @@ namespace System.Web.Mvc {
 
       public UrlHelper(RequestContext requestContext, RouteCollection routeCollection) {
 
-         if (requestContext == null) throw new ArgumentNullException(nameof(requestContext));
-         if (routeCollection == null) throw new ArgumentNullException(nameof(routeCollection));
+         if (requestContext is null) throw new ArgumentNullException(nameof(requestContext));
+         if (routeCollection is null) throw new ArgumentNullException(nameof(routeCollection));
 
          this.RequestContext = requestContext;
          this.RouteCollection = routeCollection;
@@ -38,7 +38,7 @@ namespace System.Web.Mvc {
       public static string GenerateContentUrl(string contentPath, HttpContextBase httpContext) {
 
          if (String.IsNullOrEmpty(contentPath)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(contentPath));
-         if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
+         if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
 
          if (contentPath[0] == '~') {
             return UrlUtil.GenerateClientUrl(httpContext, contentPath);
@@ -151,7 +151,7 @@ namespace System.Web.Mvc {
 
             string finalPath;
 
-            if (pathParts == null
+            if (pathParts is null
                || pathParts.Length == 0) {
 
                query = String.Empty;
@@ -161,7 +161,7 @@ namespace System.Web.Mvc {
 
                object pathPart = pathParts[0];
 
-               if (pathPart == null) {
+               if (pathPart is null) {
                   query = String.Empty;
                   finalPath = path;
 
@@ -190,7 +190,7 @@ namespace System.Web.Mvc {
 
                   object pathPart = pathParts[i];
 
-                  if (pathPart == null) {
+                  if (pathPart is null) {
                      continue;
                   }
 

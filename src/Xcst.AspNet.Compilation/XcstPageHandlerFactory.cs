@@ -22,7 +22,7 @@ namespace Xcst.Web {
 
       public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated) {
 
-         if (url == null) throw new ArgumentNullException(nameof(url));
+         if (url is null) throw new ArgumentNullException(nameof(url));
 
          string virtualPath = url;
          var page = (XcstPage)BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(XcstPage));

@@ -82,7 +82,7 @@ namespace Xcst.Web.Runtime {
 
          object model = viewData.ModelMetadata.Model;
 
-         if (model == null) {
+         if (model is null) {
             return;
          }
 
@@ -171,7 +171,7 @@ namespace Xcst.Web.Runtime {
          ViewDataDictionary viewData = html.ViewData;
          ModelMetadata modelMetadata = viewData.ModelMetadata;
 
-         if (modelMetadata.Model == null
+         if (modelMetadata.Model is null
             || viewData.TemplateInfo.TemplateDepth > 1) {
 
             MetadataInstructions.DisplayTextHelper(html, seqOutput, modelMetadata);

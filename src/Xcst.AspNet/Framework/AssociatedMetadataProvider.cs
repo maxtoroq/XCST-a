@@ -22,7 +22,7 @@ namespace System.Web.Mvc {
 
       public override IEnumerable<ModelMetadata> GetMetadataForProperties(object container, Type containerType) {
 
-         if (containerType == null) throw new ArgumentNullException(nameof(containerType));
+         if (containerType is null) throw new ArgumentNullException(nameof(containerType));
 
          PropertyDescriptorCollection properties = GetTypeDescriptor(containerType).GetProperties();
 
@@ -32,7 +32,7 @@ namespace System.Web.Mvc {
          for (int i = 0; i < properties.Count; i++) {
 
             PropertyDescriptor property = properties[i];
-            Func<object> modelAccessor = (container == null) ? null : GetPropertyValueAccessor(container, property);
+            Func<object> modelAccessor = (container is null) ? null : GetPropertyValueAccessor(container, property);
             ModelMetadata propertyMetadata = GetMetadataForProperty(modelAccessor, containerType, property);
 
             if (propertyMetadata != null) {
@@ -47,7 +47,7 @@ namespace System.Web.Mvc {
 
       public override ModelMetadata GetMetadataForProperty(Func<object> modelAccessor, Type containerType, string propertyName) {
 
-         if (containerType == null) throw new ArgumentNullException(nameof(containerType));
+         if (containerType is null) throw new ArgumentNullException(nameof(containerType));
          if (String.IsNullOrEmpty(propertyName)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(propertyName));
 
          ICustomTypeDescriptor typeDescriptor = GetTypeDescriptor(containerType);
@@ -70,7 +70,7 @@ namespace System.Web.Mvc {
 
       public override ModelMetadata GetMetadataForType(Func<object> modelAccessor, Type modelType) {
 
-         if (modelType == null) throw new ArgumentNullException(nameof(modelType));
+         if (modelType is null) throw new ArgumentNullException(nameof(modelType));
 
          AttributeList attributes = new AttributeList(GetTypeDescriptor(modelType).GetAttributes());
          ModelMetadata result = CreateMetadata(attributes, null /* containerType */, modelAccessor, modelType, null /* propertyName */);

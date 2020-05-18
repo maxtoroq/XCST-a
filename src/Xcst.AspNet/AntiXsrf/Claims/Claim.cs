@@ -45,7 +45,7 @@ namespace System.Web.Helpers.Claims {
 
             PropertyInfo propInfo = typeof(TClaim).GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance, null, typeof(string), Type.EmptyTypes, null);
 
-            if (propInfo == null) {
+            if (propInfo is null) {
                return null;
             }
 

@@ -75,7 +75,7 @@ namespace System.Web.Mvc {
 
             // Have a non-empty EditFormatString based on [DisplayFormat] from our cache
 
-            if (this.PrototypeCache.DataType == null) {
+            if (this.PrototypeCache.DataType is null) {
                // Attributes include no [DataType]; [DisplayFormat] was applied directly
                return true;
             }
@@ -192,7 +192,7 @@ namespace System.Web.Mvc {
 
       static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo displayColumnProperty, Type modelType) {
 
-         if (displayColumnProperty == null) {
+         if (displayColumnProperty is null) {
 
             throw new InvalidOperationException(
                String.Format(
@@ -201,7 +201,7 @@ namespace System.Web.Mvc {
                   modelType.FullName, displayColumnAttribute.DisplayColumn));
          }
 
-         if (displayColumnProperty.GetGetMethod() == null) {
+         if (displayColumnProperty.GetGetMethod() is null) {
 
             throw new InvalidOperationException(
                String.Format(
@@ -254,7 +254,7 @@ namespace System.Web.Mvc {
          this.UIHint = uiHintAttributes.FirstOrDefault(a => String.Equals(a.PresentationLayer, "MVC", StringComparison.OrdinalIgnoreCase))
             ?? uiHintAttributes.FirstOrDefault(a => String.IsNullOrEmpty(a.PresentationLayer));
 
-         if (this.DisplayFormat == null
+         if (this.DisplayFormat is null
             && this.DataType != null) {
 
             this.DisplayFormat = this.DataType.DisplayFormat;

@@ -16,18 +16,18 @@ namespace System.Web.Mvc {
 
       public FormCollection(NameValueCollection collection) {
 
-         if (collection == null) throw new ArgumentNullException(nameof(collection));
+         if (collection is null) throw new ArgumentNullException(nameof(collection));
 
          Add(collection);
       }
 
       public ValueProviderResult GetValue(string name) {
 
-         if (name == null) throw new ArgumentNullException(nameof(name));
+         if (name is null) throw new ArgumentNullException(nameof(name));
 
          string[] rawValue = GetValues(name);
 
-         if (rawValue == null) {
+         if (rawValue is null) {
             return null;
          }
 
@@ -91,7 +91,7 @@ namespace System.Web.Mvc {
 
             public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
-               if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
+               if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
                return new FormCollection(controllerContext.HttpContext.Request.Form);
             }

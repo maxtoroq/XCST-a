@@ -50,8 +50,8 @@ namespace Xcst.Web.Runtime {
 
       public static bool ShowForEdit(HtmlHelper html, ModelMetadata propertyMetadata) {
 
-         if (html == null) throw new ArgumentNullException(nameof(html));
-         if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));
+         if (html is null) throw new ArgumentNullException(nameof(html));
+         if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
 
          if (!propertyMetadata.ShowForEdit
             || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
@@ -78,8 +78,8 @@ namespace Xcst.Web.Runtime {
 
       public static XcstDelegate<object> MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) {
 
-         if (html == null) throw new ArgumentNullException(nameof(html));
-         if (propertyMetadata == null) throw new ArgumentNullException(nameof(propertyMetadata));
+         if (html is null) throw new ArgumentNullException(nameof(html));
+         if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
 
          if (html.ViewData.TryGetValue("__xcst_member_template", out Action<HtmlHelper, ISequenceWriter<object>> memberTemplate)) {
 

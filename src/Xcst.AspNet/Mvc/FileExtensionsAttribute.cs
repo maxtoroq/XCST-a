@@ -61,7 +61,7 @@ namespace Xcst.Web.Mvc {
 
       public override bool IsValid(object value) {
 
-         if (value == null) {
+         if (value is null) {
             return true;
          }
 

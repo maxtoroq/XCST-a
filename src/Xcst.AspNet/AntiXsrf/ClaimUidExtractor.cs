@@ -23,7 +23,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
       public BinaryBlob ExtractClaimUid(IIdentity identity) {
 
-         if (identity == null || !identity.IsAuthenticated || _config.SuppressIdentityHeuristicChecks) {
+         if (identity is null || !identity.IsAuthenticated || _config.SuppressIdentityHeuristicChecks) {
             // Skip anonymous users
             // Skip when claims-based checks are disabled
             return null;
@@ -31,7 +31,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
          ClaimsIdentity claimsIdentity = _claimsIdentityConverter.TryConvert(identity);
 
-         if (claimsIdentity == null) {
+         if (claimsIdentity is null) {
             // not a claims-based identity
             return null;
          }
@@ -54,7 +54,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
             Claim matchingClaim = claims.SingleOrDefault(claim => String.Equals(uniqueClaimTypeIdentifier, claim.ClaimType, StringComparison.Ordinal));
 
-            if (matchingClaim == null || String.IsNullOrEmpty(matchingClaim.Value)) {
+            if (matchingClaim is null || String.IsNullOrEmpty(matchingClaim.Value)) {
                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, WebPageResources.ClaimUidExtractor_ClaimNotPresent, uniqueClaimTypeIdentifier));
             }
 
@@ -75,9 +75,9 @@ namespace System.Web.Helpers.AntiXsrf {
          Claim nameIdentifierClaim = claims.SingleOrDefault(claim => String.Equals(NameIdentifierClaimType, claim.ClaimType, StringComparison.Ordinal));
          Claim identityProviderClaim = claims.SingleOrDefault(claim => String.Equals(IdentityProviderClaimType, claim.ClaimType, StringComparison.Ordinal));
 
-         if (nameIdentifierClaim == null
+         if (nameIdentifierClaim is null
             || String.IsNullOrEmpty(nameIdentifierClaim.Value)
-            || identityProviderClaim == null
+            || identityProviderClaim is null
             || String.IsNullOrEmpty(identityProviderClaim.Value)) {
 
             throw new InvalidOperationException(WebPageResources.ClaimUidExtractor_DefaultClaimsNotPresent);

@@ -94,7 +94,7 @@ namespace System.Web.Mvc {
 
          // For compatibility, return null if no attributes.
 
-         if (attrs == null) {
+         if (attrs is null) {
             return null;
          }
 
@@ -176,7 +176,7 @@ namespace System.Web.Mvc {
 
       public virtual IModelBinder GetBinder(Type modelType, bool fallbackToDefault) {
 
-         if (modelType == null) throw new ArgumentNullException(nameof(modelType));
+         if (modelType is null) throw new ArgumentNullException(nameof(modelType));
 
          return GetBinder(modelType, (fallbackToDefault) ? this.DefaultBinder : null);
       }

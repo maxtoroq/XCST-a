@@ -35,7 +35,7 @@ namespace Xcst.Web {
 
       public void Init(HttpApplication application) {
 
-         if (application.Context.Items[_hasBeenRegisteredKey] == null) {
+         if (application.Context.Items[_hasBeenRegisteredKey] is null) {
             application.Context.Items[_hasBeenRegisteredKey] = true;
             application.PostResolveRequestCache += OnApplicationPostResolveRequestCache;
          }
@@ -82,7 +82,7 @@ namespace Xcst.Web {
 
       static XcstPage CreateFromVirtualPath(string virtualPath, string pathInfo) {
 
-         if (virtualPath == null) throw new ArgumentNullException(nameof(virtualPath));
+         if (virtualPath is null) throw new ArgumentNullException(nameof(virtualPath));
 
          var page = (XcstPage)BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(XcstPage));
 

@@ -14,7 +14,7 @@
 
    <c:template name='c:initial-template' visibility='public' expand-text='yes'>
       <c:choose>
-         <c:when test='Model == null || ViewData.TemplateInfo.TemplateDepth > 1'>
+         <c:when test='Model is null || ViewData.TemplateInfo.TemplateDepth > 1'>
             <a:display-text/>
          </c:when>
          <c:otherwise>

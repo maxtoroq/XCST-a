@@ -37,7 +37,7 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Conversion failure is not fatal")]
       static object ConvertSimpleType(CultureInfo culture, object value, Type destinationType) {
 
-         if (value == null || destinationType.IsInstanceOfType(value)) {
+         if (value is null || destinationType.IsInstanceOfType(value)) {
             return value;
          }
 
@@ -59,7 +59,7 @@ namespace System.Web.Mvc {
 
          // String doesn't provide convertibles to interesting types, and thus it will typically throw rather than succeed.
 
-         if (valueAsString == null) {
+         if (valueAsString is null) {
 
             // If the source type implements IConvertible, try that first
 
@@ -115,7 +115,7 @@ namespace System.Web.Mvc {
 
       public virtual object ConvertTo(Type type, CultureInfo culture) {
 
-         if (type == null) throw new ArgumentNullException(nameof(type));
+         if (type is null) throw new ArgumentNullException(nameof(type));
 
          CultureInfo cultureToUse = culture ?? this.Culture;
 
@@ -124,7 +124,7 @@ namespace System.Web.Mvc {
 
       static object UnwrapPossibleArrayType(CultureInfo culture, object value, Type destinationType) {
 
-         if (value == null
+         if (value is null
             || destinationType.IsInstanceOfType(value)) {
 
             return value;

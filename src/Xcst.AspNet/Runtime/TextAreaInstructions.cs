@@ -90,7 +90,7 @@ namespace Xcst.Web.Runtime {
       public static void TextAreaFor<TModel, TProperty>(
             HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, HtmlAttribs htmlAttributes = null) {
 
-         if (expression == null) throw new ArgumentNullException(nameof(expression));
+         if (expression is null) throw new ArgumentNullException(nameof(expression));
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
@@ -102,7 +102,7 @@ namespace Xcst.Web.Runtime {
       public static void TextAreaFor<TModel, TProperty>(
             HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, int rows, int columns, HtmlAttribs htmlAttributes = null) {
 
-         if (expression == null) throw new ArgumentNullException(nameof(expression));
+         if (expression is null) throw new ArgumentNullException(nameof(expression));
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);

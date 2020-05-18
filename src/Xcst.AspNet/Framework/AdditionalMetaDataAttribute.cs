@@ -15,7 +15,7 @@ namespace System.Web.Mvc {
 
       public AdditionalMetadataAttribute(string name, object value) {
 
-         if (name == null) throw new ArgumentNullException(nameof(name));
+         if (name is null) throw new ArgumentNullException(nameof(name));
 
          this.Name = name;
          this.Value = value;
@@ -23,7 +23,7 @@ namespace System.Web.Mvc {
 
       public void OnMetadataCreated(ModelMetadata metadata) {
 
-         if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+         if (metadata is null) throw new ArgumentNullException(nameof(metadata));
 
          metadata.AdditionalValues[this.Name] = this.Value;
       }

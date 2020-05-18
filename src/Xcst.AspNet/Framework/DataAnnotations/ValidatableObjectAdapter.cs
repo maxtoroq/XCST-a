@@ -20,7 +20,7 @@ namespace System.Web.Mvc {
 
          object model = this.Metadata.Model;
 
-         if (model == null) {
+         if (model is null) {
             return Enumerable.Empty<ModelValidationResult>();
          }
 
@@ -38,7 +38,7 @@ namespace System.Web.Mvc {
          foreach (ValidationResult result in results) {
 
             if (result != ValidationResult.Success) {
-               if (result.MemberNames == null || !result.MemberNames.Any()) {
+               if (result.MemberNames is null || !result.MemberNames.Any()) {
                   yield return new ModelValidationResult { Message = result.ErrorMessage };
                } else {
                   foreach (string memberName in result.MemberNames) {

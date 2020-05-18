@@ -78,11 +78,11 @@ namespace System.Web.Mvc {
 
       public override IValueProvider GetValueProvider(ControllerContext controllerContext) {
 
-         if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
+         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
          object jsonData = GetDeserializedObject(controllerContext);
 
-         if (jsonData == null) {
+         if (jsonData is null) {
             return null;
          }
 

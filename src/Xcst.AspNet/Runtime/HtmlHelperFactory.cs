@@ -25,7 +25,7 @@ namespace Xcst.Web.Runtime {
             TModel model,
             string htmlFieldPrefix = null) {
 
-         if (currentHtml == null) throw new ArgumentNullException(nameof(currentHtml));
+         if (currentHtml is null) throw new ArgumentNullException(nameof(currentHtml));
 
          ViewDataDictionary currentViewData = currentHtml.ViewData;
 
@@ -63,8 +63,8 @@ namespace Xcst.Web.Runtime {
 
       internal static HtmlHelper ForMemberTemplate(HtmlHelper currentHtml, ModelMetadata memberMetadata) {
 
-         if (currentHtml == null) throw new ArgumentNullException(nameof(currentHtml));
-         if (memberMetadata == null) throw new ArgumentNullException(nameof(memberMetadata));
+         if (currentHtml is null) throw new ArgumentNullException(nameof(currentHtml));
+         if (memberMetadata is null) throw new ArgumentNullException(nameof(memberMetadata));
 
          ViewDataDictionary currentViewData = currentHtml.ViewData;
 

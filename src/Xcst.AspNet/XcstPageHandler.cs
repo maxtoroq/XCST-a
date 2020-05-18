@@ -26,7 +26,7 @@ namespace Xcst.Web {
 
       public XcstPageHandler(XcstPage page) {
 
-         if (page == null) throw new ArgumentNullException(nameof(page));
+         if (page is null) throw new ArgumentNullException(nameof(page));
 
          this.page = page;
       }

@@ -71,7 +71,7 @@ namespace Xcst.Web.Runtime {
          ViewDataDictionary viewData = html.ViewData;
          object model = viewData.ModelMetadata.Model;
 
-         if (model == null) {
+         if (model is null) {
             return;
          }
 

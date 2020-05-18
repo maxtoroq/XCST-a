@@ -21,7 +21,7 @@ namespace System.Web.Mvc {
       internal IModelBinderProvider[] CombinedItems {
          get {
             IModelBinderProvider[] combinedItems = _combinedItems;
-            if (combinedItems == null) {
+            if (combinedItems is null) {
                combinedItems = MultiServiceResolver.GetCombined<IModelBinderProvider>(Items, _dependencyResolver);
                _combinedItems = combinedItems;
             }
@@ -47,7 +47,7 @@ namespace System.Web.Mvc {
 
       protected override void InsertItem(int index, IModelBinderProvider item) {
 
-         if (item == null) throw new ArgumentNullException(nameof(item));
+         if (item is null) throw new ArgumentNullException(nameof(item));
 
          _combinedItems = null;
          base.InsertItem(index, item);
@@ -60,7 +60,7 @@ namespace System.Web.Mvc {
 
       protected override void SetItem(int index, IModelBinderProvider item) {
 
-         if (item == null) throw new ArgumentNullException(nameof(item));
+         if (item is null) throw new ArgumentNullException(nameof(item));
 
          _combinedItems = null;
          base.SetItem(index, item);
@@ -68,7 +68,7 @@ namespace System.Web.Mvc {
 
       public IModelBinder GetBinder(Type modelType) {
 
-         if (modelType == null) throw new ArgumentNullException(nameof(modelType));
+         if (modelType is null) throw new ArgumentNullException(nameof(modelType));
 
          // Performance sensitive.
 

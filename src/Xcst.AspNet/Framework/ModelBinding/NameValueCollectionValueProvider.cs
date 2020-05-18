@@ -45,7 +45,7 @@ namespace System.Web.Mvc {
             CultureInfo culture,
             bool jQueryToMvcRequestNormalizationRequired) {
 
-         if (collection == null) throw new ArgumentNullException(nameof(collection));
+         if (collection is null) throw new ArgumentNullException(nameof(collection));
 
          _collection = collection;
          _culture = culture;
@@ -57,12 +57,12 @@ namespace System.Web.Mvc {
 
       public virtual ValueProviderResult GetValue(string key) {
 
-         if (key == null) throw new ArgumentNullException(nameof(key));
+         if (key is null) throw new ArgumentNullException(nameof(key));
 
          ValueProviderResultPlaceholder placeholder;
          Values.TryGetValue(key, out placeholder);
 
-         if (placeholder == null) {
+         if (placeholder is null) {
             return null;
          } else {
             return placeholder.ValidatedResult;
@@ -110,7 +110,7 @@ namespace System.Web.Mvc {
 
       static string NormalizeJQueryToMvc(string key) {
 
-         if (key == null) {
+         if (key is null) {
             return String.Empty;
          }
 

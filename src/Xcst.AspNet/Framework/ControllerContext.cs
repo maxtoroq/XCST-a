@@ -47,7 +47,7 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "The virtual property setters are only to support mocking frameworks, in which case this constructor shouldn't be called anyway.")]
       protected ControllerContext(ControllerContext controllerContext) {
 
-         if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
+         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
          this.RequestContext = controllerContext.RequestContext;
 
@@ -61,7 +61,7 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "The virtual property setters are only to support mocking frameworks, in which case this constructor shouldn't be called anyway.")]
       public ControllerContext(RequestContext requestContext) {
 
-         if (requestContext == null) throw new ArgumentNullException(nameof(requestContext));
+         if (requestContext is null) throw new ArgumentNullException(nameof(requestContext));
 
          this.RequestContext = requestContext;
       }

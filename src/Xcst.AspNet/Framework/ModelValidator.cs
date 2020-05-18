@@ -17,8 +17,8 @@ namespace System.Web.Mvc {
 
       protected ModelValidator(ModelMetadata metadata, ControllerContext controllerContext) {
 
-         if (metadata == null) throw new ArgumentNullException(nameof(metadata));
-         if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
+         if (metadata is null) throw new ArgumentNullException(nameof(metadata));
+         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
          this.Metadata = metadata;
          this.ControllerContext = controllerContext;
@@ -122,7 +122,7 @@ namespace System.Web.Mvc {
          get {
             ModelValidatorProvider[] combinedItems = _combinedItems;
 
-            if (combinedItems == null) {
+            if (combinedItems is null) {
                combinedItems = MultiServiceResolver.GetCombined<ModelValidatorProvider>(Items, _dependencyResolver);
                _combinedItems = combinedItems;
             }
@@ -149,7 +149,7 @@ namespace System.Web.Mvc {
 
       protected override void InsertItem(int index, ModelValidatorProvider item) {
 
-         if (item == null) throw new ArgumentNullException(nameof(item));
+         if (item is null) throw new ArgumentNullException(nameof(item));
 
          _combinedItems = null;
          base.InsertItem(index, item);
@@ -162,7 +162,7 @@ namespace System.Web.Mvc {
 
       protected override void SetItem(int index, ModelValidatorProvider item) {
 
-         if (item == null) throw new ArgumentNullException(nameof(item));
+         if (item is null) throw new ArgumentNullException(nameof(item));
 
          _combinedItems = null;
          base.SetItem(index, item);

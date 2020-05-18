@@ -40,7 +40,7 @@ namespace System.Web.Mvc {
 
       public ModelStateDictionary(ModelStateDictionary dictionary) {
 
-         if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
+         if (dictionary is null) throw new ArgumentNullException(nameof(dictionary));
 
          _innerDictionary = new CopyOnWriteDictionary<string, ModelState>(dictionary, StringComparer.OrdinalIgnoreCase);
       }
@@ -74,7 +74,7 @@ namespace System.Web.Mvc {
 
       private ModelState GetModelStateForKey(string key) {
 
-         if (key == null) throw new ArgumentNullException(nameof(key));
+         if (key is null) throw new ArgumentNullException(nameof(key));
 
          ModelState modelState;
 
@@ -88,7 +88,7 @@ namespace System.Web.Mvc {
 
       public bool IsValidField(string key) {
 
-         if (key == null) throw new ArgumentNullException(nameof(key));
+         if (key is null) throw new ArgumentNullException(nameof(key));
 
          // if the key is not found in the dictionary, we just say that it's valid (since there are no errors)
 
@@ -132,7 +132,7 @@ namespace System.Web.Mvc {
 
       public void Merge(ModelStateDictionary dictionary) {
 
-         if (dictionary == null) {
+         if (dictionary is null) {
             return;
          }
 
@@ -191,7 +191,7 @@ namespace System.Web.Mvc {
       public ModelError(Exception exception, string errorMessage)
          : this(errorMessage) {
 
-         if (exception == null) throw new ArgumentNullException(nameof(exception));
+         if (exception is null) throw new ArgumentNullException(nameof(exception));
 
          this.Exception = exception;
       }

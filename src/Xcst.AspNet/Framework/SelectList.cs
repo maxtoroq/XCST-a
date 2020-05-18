@@ -290,7 +290,7 @@ namespace System.Web.Mvc {
       public MultiSelectList(IEnumerable items, string dataValueField, string dataTextField, string dataGroupField, IEnumerable selectedValues,
             IEnumerable disabledValues, IEnumerable disabledGroups) {
 
-         if (items == null) throw new ArgumentNullException(nameof(items));
+         if (items is null) throw new ArgumentNullException(nameof(items));
 
          this.Items = items;
          this.DataValueField = dataValueField;
@@ -364,7 +364,7 @@ namespace System.Web.Mvc {
 
       SelectListGroup GetGroup(object container, HashSet<string> disabledGroups) {
 
-         if (_groups == null) {
+         if (_groups is null) {
             return null;
          }
 
@@ -379,7 +379,7 @@ namespace System.Web.Mvc {
          SelectListGroup group = _groups.FirstOrDefault(
              g => String.Equals(g.Name, groupName, StringComparison.CurrentCulture));
 
-         if (group == null) {
+         if (group is null) {
 
             group = new SelectListGroup {
                Name = groupName,

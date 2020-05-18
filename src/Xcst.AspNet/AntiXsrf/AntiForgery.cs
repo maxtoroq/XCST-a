@@ -42,8 +42,8 @@ namespace System.Web.Helpers {
       [EditorBrowsable(EditorBrowsableState.Never)]
       public static void GetHtml(HttpContextBase httpContext, XcstWriter output) {
 
-         if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
-         if (output == null) throw new ArgumentNullException(nameof(output));
+         if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
+         if (output is null) throw new ArgumentNullException(nameof(output));
 
          _worker.GetFormInputElement(httpContext, output);
       }
@@ -76,7 +76,7 @@ namespace System.Web.Helpers {
 
          HttpContext context = HttpContext.Current;
 
-         if (context == null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
+         if (context is null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
 
          _worker.GetTokens(new HttpContextWrapper(context), oldCookieToken, out newCookieToken, out formToken);
       }
@@ -92,7 +92,7 @@ namespace System.Web.Helpers {
 
          HttpContext context = HttpContext.Current;
 
-         if (context == null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
+         if (context is null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
 
          _worker.Validate(new HttpContextWrapper(context));
       }
@@ -110,7 +110,7 @@ namespace System.Web.Helpers {
 
          HttpContext context = HttpContext.Current;
 
-         if (context == null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
+         if (context is null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
 
          _worker.Validate(new HttpContextWrapper(context), cookieToken, formToken);
       }
@@ -119,14 +119,14 @@ namespace System.Web.Helpers {
 
          HttpContext context = HttpContext.Current;
 
-         if (context == null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
+         if (context is null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
 
          return TryValidate(new HttpContextWrapper(context));
       }
 
       public static bool TryValidate(HttpContextBase context) {
 
-         if (context == null) throw new ArgumentNullException(nameof(context));
+         if (context is null) throw new ArgumentNullException(nameof(context));
 
          return _worker.TryValidate(context);
       }
@@ -136,7 +136,7 @@ namespace System.Web.Helpers {
 
          HttpContext context = HttpContext.Current;
 
-         if (context == null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
+         if (context is null) throw new ArgumentException(WebPageResources.HttpContextUnavailable);
 
          return TryValidate(new HttpContextWrapper(context), cookieToken, formToken);
       }
@@ -144,7 +144,7 @@ namespace System.Web.Helpers {
       [EditorBrowsable(EditorBrowsableState.Advanced)]
       public static bool TryValidate(HttpContextBase context, string cookieToken, string formToken) {
 
-         if (context == null) throw new ArgumentNullException(nameof(context));
+         if (context is null) throw new ArgumentNullException(nameof(context));
 
          return _worker.TryValidate(context, cookieToken, formToken);
       }

@@ -25,7 +25,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
          AntiForgeryToken token = DeserializeImpl(serializedToken);
 
-         if (token == null
+         if (token is null
             && throwOnError) {
 
             throw HttpAntiForgeryException.CreateDeserializationFailedException();

@@ -22,7 +22,7 @@ namespace System.Web.Mvc {
       public DataAnnotationsModelValidator(ModelMetadata metadata, ControllerContext context, ValidationAttribute attribute)
          : base(metadata, context) {
 
-         if (attribute == null) throw new ArgumentNullException(nameof(attribute));
+         if (attribute is null) throw new ArgumentNullException(nameof(attribute));
 
          this.Attribute = attribute;
       }
@@ -124,13 +124,13 @@ namespace System.Web.Mvc {
 
             _otherPropertyDisplayName = attribute.OtherPropertyDisplayName;
 
-            if (_otherPropertyDisplayName == null
+            if (_otherPropertyDisplayName is null
                && metadata.ContainerType != null) {
 
                _otherPropertyDisplayName = ModelMetadataProviders.Current.GetMetadataForProperty(() => metadata.Model, metadata.ContainerType, attribute.OtherProperty).GetDisplayName();
             }
 
-            if (_otherPropertyDisplayName == null) {
+            if (_otherPropertyDisplayName is null) {
                _otherPropertyDisplayName = attribute.OtherProperty;
             }
 

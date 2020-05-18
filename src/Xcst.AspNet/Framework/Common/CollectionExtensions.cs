@@ -64,7 +64,7 @@ namespace System.Web.Mvc {
             var typedValue = list[i] as TMatch;
 
             if (typedValue != null) {
-               if (result == null) {
+               if (result is null) {
                   result = typedValue;
                } else {
                   errorAction(errorArg1);

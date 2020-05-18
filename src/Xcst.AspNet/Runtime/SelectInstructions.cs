@@ -45,7 +45,7 @@ namespace Xcst.Web.Runtime {
             HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, IEnumerable<SelectListItem> selectList = null,
             bool multiple = false, HtmlAttribs htmlAttributes = null) {
 
-         if (expression == null) throw new ArgumentNullException(nameof(expression));
+         if (expression is null) throw new ArgumentNullException(nameof(expression));
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
@@ -64,7 +64,7 @@ namespace Xcst.Web.Runtime {
             string optionLabel, bool multiple, HtmlAttribs htmlAttributes) {
 
          if (!multiple
-            && optionLabel == null
+            && optionLabel is null
             && selectList != null) {
 
             var optionList = selectList as OptionList;
@@ -99,7 +99,7 @@ namespace Xcst.Web.Runtime {
 
             defaultValues = defaultValue as IEnumerable;
 
-            if (defaultValues == null || defaultValues is string) {
+            if (defaultValues is null || defaultValues is string) {
                throw new InvalidOperationException("The parameter 'expression' must evaluate to an IEnumerable when multiple selection is allowed.");
             }
          } else {
@@ -147,7 +147,7 @@ namespace Xcst.Web.Runtime {
 
          // If we got a null selectList, try to use ViewData to get the list of items.
 
-         if (selectList == null) {
+         if (selectList is null) {
             selectList = GetSelectData(htmlHelper, name);
             usedViewData = true;
          }
@@ -159,9 +159,9 @@ namespace Xcst.Web.Runtime {
          // If we haven't already used ViewData to get the entire list of items then we need to
          // use the ViewData-supplied value before using the parameter-supplied value.
 
-         if (defaultValue == null) {
+         if (defaultValue is null) {
 
-            if (metadata == null) {
+            if (metadata is null) {
 
                if (!usedViewData
                   && !String.IsNullOrEmpty(name)) {
@@ -217,7 +217,7 @@ namespace Xcst.Web.Runtime {
          // so they are added according to the original order.
 
          var groupedSelectList = selectList.GroupBy<SelectListItem, int>(
-             i => (i.Group == null) ? i.GetHashCode() : i.Group.GetHashCode());
+             i => (i.Group is null) ? i.GetHashCode() : i.Group.GetHashCode());
 
          foreach (var group in groupedSelectList) {
 

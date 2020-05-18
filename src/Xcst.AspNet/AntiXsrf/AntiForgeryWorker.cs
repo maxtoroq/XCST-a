@@ -87,7 +87,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
             HttpResponseBase response = httpContext.Response;
 
-            if (response.Headers[FrameHeaderName] == null) {
+            if (response.Headers[FrameHeaderName] is null) {
                response.AddHeader(FrameHeaderName, "SAMEORIGIN");
             }
          }

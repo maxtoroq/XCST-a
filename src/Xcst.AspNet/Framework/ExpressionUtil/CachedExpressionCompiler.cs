@@ -61,7 +61,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
                // don't need to lock, as all identity funcs are identical
 
-               if (_identityFunc == null) {
+               if (_identityFunc is null) {
                   _identityFunc = expr.Compile();
                }
 
@@ -104,7 +104,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
             if (expr.Body is MemberExpression memberExpr) {
 
-               if (memberExpr.Expression == expr.Parameters[0] || memberExpr.Expression == null) {
+               if (memberExpr.Expression == expr.Parameters[0] || memberExpr.Expression is null) {
                   // model => model.Member or model => StaticMember
                   return _simpleMemberAccessDict.GetOrAdd(memberExpr.Member, _ => expr.Compile());
                }

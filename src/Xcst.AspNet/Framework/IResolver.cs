@@ -23,8 +23,8 @@ namespace System.Web.Mvc {
 
       public SingleServiceResolver(Func<TService> currentValueThunk, TService defaultValue, string callerMethodName) {
 
-         if (currentValueThunk == null) throw new ArgumentNullException(nameof(currentValueThunk));
-         if (defaultValue == null) throw new ArgumentNullException(nameof(defaultValue));
+         if (currentValueThunk is null) throw new ArgumentNullException(nameof(currentValueThunk));
+         if (defaultValue is null) throw new ArgumentNullException(nameof(defaultValue));
 
          _resolverThunk = () => DependencyResolver.Current;
          _currentValueFromResolver = new Lazy<TService>(GetValueFromResolver);

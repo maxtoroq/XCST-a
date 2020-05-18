@@ -6,13 +6,13 @@ namespace System.Web.Mvc {
 
       public virtual object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
-         if (bindingContext == null) throw new ArgumentNullException(nameof(bindingContext));
+         if (bindingContext is null) throw new ArgumentNullException(nameof(bindingContext));
 
          ValueProviderResult valueResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
          // case 1: there was no <input ... /> element containing this data
 
-         if (valueResult == null) {
+         if (valueResult is null) {
             return null;
          }
 

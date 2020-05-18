@@ -35,7 +35,7 @@ namespace System.Web.Mvc {
 
       public virtual ModelMetadata ModelMetadata {
          get {
-            if (_modelMetadata == null && _model != null) {
+            if (_modelMetadata is null && _model != null) {
                _modelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => _model, _model.GetType());
             }
             return _modelMetadata;
@@ -80,7 +80,7 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "See note on SetModel() method.")]
       public ViewDataDictionary(ViewDataDictionary dictionary) {
 
-         if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
+         if (dictionary is null) throw new ArgumentNullException(nameof(dictionary));
 
          _innerDictionary = new CopyOnWriteDictionary<string, object>(dictionary, StringComparer.OrdinalIgnoreCase);
          _modelState = new ModelStateDictionary(dictionary.ModelState);
@@ -122,7 +122,7 @@ namespace System.Web.Mvc {
 
       internal static string FormatValueInternal(object value, string format) {
 
-         if (value == null) {
+         if (value is null) {
             return String.Empty;
          }
 
@@ -275,7 +275,7 @@ namespace System.Web.Mvc {
             }
 
             // If the container is null, we're out of options
-            if (container == null) {
+            if (container is null) {
                return null;
             }
 
@@ -283,7 +283,7 @@ namespace System.Web.Mvc {
             PropertyDescriptor descriptor = TypeDescriptor.GetProperties(container)
                .Find(propertyName, ignoreCase: true);
 
-            if (descriptor == null) {
+            if (descriptor is null) {
                return null;
             }
 
@@ -400,7 +400,7 @@ namespace System.Web.Mvc {
          get {
             ModelMetadata result = base.ModelMetadata;
 
-            if (result == null) {
+            if (result is null) {
                result = base.ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, typeof(TModel));
             }
 

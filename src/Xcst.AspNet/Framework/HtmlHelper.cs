@@ -61,9 +61,9 @@ namespace System.Web.Mvc {
 
       public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, RouteCollection routeCollection) {
 
-         if (viewContext == null) throw new ArgumentNullException(nameof(viewContext));
-         if (viewDataContainer == null) throw new ArgumentNullException(nameof(viewDataContainer));
-         if (routeCollection == null) throw new ArgumentNullException(nameof(routeCollection));
+         if (viewContext is null) throw new ArgumentNullException(nameof(viewContext));
+         if (viewDataContainer is null) throw new ArgumentNullException(nameof(viewDataContainer));
+         if (routeCollection is null) throw new ArgumentNullException(nameof(routeCollection));
 
          this.ViewContext = viewContext;
          this.ViewDataContainer = viewDataContainer;
@@ -102,8 +102,8 @@ namespace System.Web.Mvc {
 
       public static string GenerateIdFromName(string name, string idAttributeDotReplacement) {
 
-         if (name == null) throw new ArgumentNullException(nameof(name));
-         if (idAttributeDotReplacement == null) throw new ArgumentNullException(nameof(idAttributeDotReplacement));
+         if (name is null) throw new ArgumentNullException(nameof(name));
+         if (idAttributeDotReplacement is null) throw new ArgumentNullException(nameof(idAttributeDotReplacement));
 
          // TagBuilder.CreateSanitizedId returns null for empty strings, return String.Empty instead to avoid breaking change
 
@@ -189,7 +189,7 @@ namespace System.Web.Mvc {
 
          FormContext formContext = this.ViewContext.GetFormContextForClientValidation();
 
-         if (formContext == null) {
+         if (formContext is null) {
             return results;
          }
 
@@ -235,7 +235,7 @@ namespace System.Web.Mvc {
 
       public string Value(string name) {
 
-         if (name == null) throw new ArgumentNullException(nameof(name));
+         if (name is null) throw new ArgumentNullException(nameof(name));
 
          ModelMetadata metadata = ModelMetadata.FromStringExpression(name, this.ViewData);
 
@@ -244,7 +244,7 @@ namespace System.Web.Mvc {
 
       public string Value(string name, string format) {
 
-         if (name == null) throw new ArgumentNullException(nameof(name));
+         if (name is null) throw new ArgumentNullException(nameof(name));
 
          return ValueHelper(name, value: null, format: format, useViewData: true);
       }
@@ -393,8 +393,8 @@ namespace System.Web.Mvc {
 
       public static void GetValidationAttributes(IEnumerable<ModelClientValidationRule> clientRules, IDictionary<string, object> results) {
 
-         if (clientRules == null) throw new ArgumentNullException(nameof(clientRules));
-         if (results == null) throw new ArgumentNullException(nameof(results));
+         if (clientRules is null) throw new ArgumentNullException(nameof(clientRules));
+         if (results is null) throw new ArgumentNullException(nameof(results));
 
          bool renderedRules = false;
 
@@ -476,7 +476,7 @@ namespace System.Web.Mvc {
             return null;
          }
 
-         if (invalidCharReplacement == null) {
+         if (invalidCharReplacement is null) {
             throw new ArgumentNullException(nameof(invalidCharReplacement));
          }
 

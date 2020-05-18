@@ -71,7 +71,7 @@ namespace Xcst.Web.Compilation {
 
       protected PageBuildProvider(Type pageType) {
 
-         if (pageType == null) throw new ArgumentNullException(nameof(pageType));
+         if (pageType is null) throw new ArgumentNullException(nameof(pageType));
          if (!pageType.IsClass) throw new ArgumentException("pageType must be a class.", nameof(pageType));
 
          this.PageType = pageType;

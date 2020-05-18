@@ -32,7 +32,7 @@ namespace System.Web.Mvc {
       /// <returns></returns>
       public override IValueProvider GetValueProvider(ControllerContext controllerContext) {
 
-         if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
+         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
          return new JQueryFormValueProvider(controllerContext);
       }

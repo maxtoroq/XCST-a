@@ -119,7 +119,7 @@ namespace Xcst.Web {
 
       static bool IsAuthorized(IPrincipal user, string[] users, string[] roles) {
 
-         if (user == null
+         if (user is null
             || !user.Identity.IsAuthenticated) {
 
             return false;
@@ -145,7 +145,7 @@ namespace Xcst.Web {
 
       protected XcstPage LoadPage(string path) {
 
-         if (path == null) throw new ArgumentNullException(nameof(path));
+         if (path is null) throw new ArgumentNullException(nameof(path));
 
          string absolutePath = VirtualPathUtility.Combine(this.VirtualPath, path);
 

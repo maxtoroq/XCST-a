@@ -72,7 +72,7 @@ namespace Xcst.Web.Runtime {
 
             foreach (var item in htmlAttributes) {
 
-               if (excludeFn == null
+               if (excludeFn is null
                   || !excludeFn.Invoke(item.Key)) {
 
                   WriteAttribute(item.Key, item.Value, output);

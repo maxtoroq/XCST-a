@@ -28,7 +28,7 @@ namespace Xcst.Web.Mvc {
 
       protected override void RenderView(ViewContext viewContext, TextWriter writer, object instance) {
 
-         if (writer == null) throw new ArgumentNullException(nameof(writer));
+         if (writer is null) throw new ArgumentNullException(nameof(writer));
 
          RenderViewImpl(viewContext, t => t.OutputTo(writer), instance);
       }
@@ -43,7 +43,7 @@ namespace Xcst.Web.Mvc {
             instance = Activator.CreateInstance(type);
          }
 
-         if (instance == null) {
+         if (instance is null) {
             throw new InvalidOperationException($"The view found at '{this.ViewPath}' was not created.");
          }
 
@@ -52,8 +52,8 @@ namespace Xcst.Web.Mvc {
 
       void RenderViewImpl(ViewContext viewContext, Func<XcstTemplateEvaluator, XcstOutputter> getOutputter, object instance) {
 
-         if (viewContext == null) throw new ArgumentNullException(nameof(viewContext));
-         if (instance == null) throw new ArgumentNullException(nameof(instance));
+         if (viewContext is null) throw new ArgumentNullException(nameof(viewContext));
+         if (instance is null) throw new ArgumentNullException(nameof(instance));
 
          XcstViewPage viewPage = instance as XcstViewPage
             ?? throw new InvalidOperationException($"The view at '{ViewPath}' must derive from {nameof(XcstViewPage)}, or {nameof(XcstViewPage)}<TModel>.");

@@ -65,10 +65,10 @@ namespace System.Web.Mvc {
       public ViewContext(ControllerContext controllerContext, ViewDataDictionary/*?*/ viewData, TempDataDictionary/*?*/ tempData)
          : base(controllerContext) {
 
-         if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
+         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
          // When cloning, ViewData/TempData can be null if ViewContext was initialized with HttpContextBase only
-         //if (viewData == null) throw new ArgumentNullException(nameof(viewData));
-         //if (tempData == null) throw new ArgumentNullException(nameof(tempData));
+         //if (viewData is null) throw new ArgumentNullException(nameof(viewData));
+         //if (tempData is null) throw new ArgumentNullException(nameof(tempData));
 
          this.ViewData = viewData;
          this.TempData = tempData;

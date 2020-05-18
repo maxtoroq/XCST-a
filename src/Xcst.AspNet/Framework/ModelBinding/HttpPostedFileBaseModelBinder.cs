@@ -6,8 +6,8 @@ namespace System.Web.Mvc {
 
       public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
-         if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
-         if (bindingContext == null) throw new ArgumentNullException(nameof(bindingContext));
+         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
+         if (bindingContext is null) throw new ArgumentNullException(nameof(bindingContext));
 
          HttpPostedFileBase theFile = controllerContext.HttpContext.Request.Files[bindingContext.ModelName];
          return ChooseFileOrNull(theFile);
@@ -17,7 +17,7 @@ namespace System.Web.Mvc {
       internal static HttpPostedFileBase ChooseFileOrNull(HttpPostedFileBase rawFile) {
 
          // case 1: there was no <input type="file" ... /> element in the post
-         if (rawFile == null) {
+         if (rawFile is null) {
             return null;
          }
 

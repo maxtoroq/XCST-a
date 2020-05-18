@@ -61,7 +61,7 @@ namespace AspNetPrecompiled.Infrastructure {
 
       public void Init(HttpApplication application) {
 
-         if (application.Context.Items[_hasBeenRegisteredKey] == null) {
+         if (application.Context.Items[_hasBeenRegisteredKey] is null) {
             application.Context.Items[_hasBeenRegisteredKey] = true;
             application.PostResolveRequestCache += OnApplicationPostResolveRequestCache;
          }
@@ -193,9 +193,9 @@ namespace AspNetPrecompiled.Infrastructure {
 
       public static string LinkToDefault(string path, string defaultPath, params object[] pathParts) {
 
-         if (pathParts == null
+         if (pathParts is null
             || pathParts.Length == 0
-            || pathParts.All(p => p == null || !IsDisplayableType(p.GetType()))) {
+            || pathParts.All(p => p is null || !IsDisplayableType(p.GetType()))) {
 
             return LinkTo(defaultPath, pathParts);
          }

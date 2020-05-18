@@ -23,7 +23,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public void AddEnumerable(IEnumerable e) {
 
-         if (e == null) {
+         if (e is null) {
             AddInt32(0);
          } else {
 

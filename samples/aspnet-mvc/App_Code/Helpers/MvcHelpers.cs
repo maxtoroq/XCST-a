@@ -26,7 +26,7 @@ namespace AspNetMvc {
 
          ViewEngineResult viewResult = ViewEngines.Engines.FindPartialView(context, viewName);
 
-         if (viewResult.View == null) {
+         if (viewResult.View is null) {
             throw new InvalidOperationException();
          }
 

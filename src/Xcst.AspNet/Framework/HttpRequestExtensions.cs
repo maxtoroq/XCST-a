@@ -10,7 +10,7 @@ namespace System.Web.Mvc {
 
       public static string GetHttpMethodOverride(this HttpRequestBase request) {
 
-         if (request == null) throw new ArgumentNullException(nameof(request));
+         if (request is null) throw new ArgumentNullException(nameof(request));
 
          string incomingVerb = request.HttpMethod;
 
@@ -52,7 +52,7 @@ namespace System.Web.Mvc {
 
       public static bool IsAjaxRequest(this HttpRequestBase request) {
 
-         if (request == null) throw new ArgumentNullException(nameof(request));
+         if (request is null) throw new ArgumentNullException(nameof(request));
 
          return request["X-Requested-With"] == "XMLHttpRequest"
             || (request.Headers != null
