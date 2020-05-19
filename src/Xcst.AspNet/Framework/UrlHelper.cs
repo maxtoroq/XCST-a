@@ -6,33 +6,25 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Web.Mvc.Properties;
-using System.Web.Routing;
 
 namespace System.Web.Mvc {
 
    public class UrlHelper {
 
-      public RequestContext RequestContext { get; private set; }
-
-      public RouteCollection RouteCollection { get; private set; }
+      readonly HttpContextBase _httpContext;
 
       // The default constructor is intended for use by unit testing only.
       public UrlHelper() { }
 
-      public UrlHelper(RequestContext requestContext)
-         : this(requestContext, RouteTable.Routes) { }
+      public UrlHelper(HttpContextBase httpContext) {
 
-      public UrlHelper(RequestContext requestContext, RouteCollection routeCollection) {
+         if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
 
-         if (requestContext is null) throw new ArgumentNullException(nameof(requestContext));
-         if (routeCollection is null) throw new ArgumentNullException(nameof(routeCollection));
-
-         this.RequestContext = requestContext;
-         this.RouteCollection = routeCollection;
+         _httpContext = httpContext;
       }
 
       public virtual string Content(string contentPath) =>
-         GenerateContentUrl(contentPath, this.RequestContext.HttpContext);
+         GenerateContentUrl(contentPath, _httpContext);
 
       [SuppressMessage("Microsoft.Design", "CA1055:UriReturnValuesShouldNotBeStrings", Justification = "As the return value will used only for rendering, string return value is more appropriate.")]
       public static string GenerateContentUrl(string contentPath, HttpContextBase httpContext) {
@@ -64,9 +56,9 @@ namespace System.Web.Mvc {
          // the virtual app path and url rewrites
 
          if (String.IsNullOrEmpty(query)) {
-            return UrlUtil.GenerateClientUrlInternal(this.RequestContext.HttpContext, processedPath);
+            return UrlUtil.GenerateClientUrlInternal(_httpContext, processedPath);
          } else {
-            return UrlUtil.GenerateClientUrlInternal(this.RequestContext.HttpContext, processedPath) + query;
+            return UrlUtil.GenerateClientUrlInternal(_httpContext, processedPath) + query;
          }
       }
 
@@ -80,7 +72,7 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "0#", Justification = "Response.Redirect() takes its URI as a string parameter.")]
       public virtual bool IsLocalUrl(string url) =>
          // TODO this should call the System.Web.dll API once it gets added to the framework and MVC takes a dependency on it.
-         HttpRequestExtensions.IsUrlLocalToHost(this.RequestContext.HttpContext.Request, url);
+         HttpRequestExtensions.IsUrlLocalToHost(_httpContext.Request, url);
    }
 
    static class UrlUtil {
@@ -255,7 +247,7 @@ namespace System.Web.Mvc {
 
       internal static class UrlRewrite {
 
-         static UrlRewriterHelper _urlRewriterHelper = new UrlRewriterHelper();
+         static readonly UrlRewriterHelper _urlRewriterHelper = new UrlRewriterHelper();
 
          internal static string GenerateClientUrlInternal(HttpContextBase httpContext, string contentPath) {
 

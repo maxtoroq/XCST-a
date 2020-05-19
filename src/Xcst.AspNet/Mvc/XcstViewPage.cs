@@ -65,9 +65,11 @@ namespace Xcst.Web.Mvc {
                && ViewContext != null) {
                _Url =
 #if ASPNETMVC
-                  (ViewContext.Controller as Controller)?.Url ??
+                  (ViewContext.Controller as Controller)?.Url
+                     ?? new UrlHelper(ViewContext.RequestContext);
+#else
+                  new UrlHelper(Context);
 #endif
-                  new UrlHelper(ViewContext.RequestContext);
             }
             return _Url;
          }
