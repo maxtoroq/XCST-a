@@ -15,8 +15,6 @@ namespace System.Web.Mvc {
 
       static readonly object _formContextKey = new object();
 
-      DynamicViewDataDictionary _ViewBag;
-
       // We need a default FormContext if the user uses html <form> instead of an MvcForm
 
       FormContext _defaultFormContext = new FormContext();
