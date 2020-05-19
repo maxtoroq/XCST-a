@@ -307,11 +307,9 @@ namespace Xcst.Web.Runtime {
          return result;
       }
 
-      static Dictionary<string, TemplateAction> GetDefaultActions(DataBoundControlMode mode) {
-
-         return (mode == DataBoundControlMode.ReadOnly) ?
-            _defaultDisplayActions : _defaultEditorActions;
-      }
+      static Dictionary<string, TemplateAction> GetDefaultActions(DataBoundControlMode mode) =>
+         (mode == DataBoundControlMode.ReadOnly) ? _defaultDisplayActions
+            : _defaultEditorActions;
 
       static IEnumerable<string> GetViewNames(ModelMetadata metadata, params string[] templateHints) {
 
@@ -378,18 +376,8 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      static HtmlHelper MakeHtmlHelper(HtmlHelper html, ViewDataDictionary viewData) {
-
-         var newHelper = new HtmlHelper(
-            html.ViewContext.Clone(viewData: viewData),
-            new ViewDataContainer(viewData),
-            html.RouteCollection
-         );
-
-         newHelper.Html5DateRenderingMode = html.Html5DateRenderingMode;
-
-         return newHelper;
-      }
+      static HtmlHelper MakeHtmlHelper(HtmlHelper currentHtml, ViewDataDictionary viewData) =>
+         currentHtml.Clone(currentHtml.ViewContext.Clone(viewData: viewData), new ViewDataContainer(viewData));
 
 #if ASPNETMVC
       static void RenderView(HtmlHelper html, ISequenceWriter<object> output, ViewDataDictionary viewData, ViewEngineResult viewEngineResult) {

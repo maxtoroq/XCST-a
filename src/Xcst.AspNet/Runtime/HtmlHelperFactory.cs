@@ -53,12 +53,9 @@ namespace Xcst.Web.Runtime {
          }
 
          // new ViewContext resets FormContext
-
          var newViewContext = currentHtml.ViewContext.Clone(viewData: container.ViewData);
 
-         return new HtmlHelper<TModel>(newViewContext, container, currentHtml.RouteCollection) {
-            Html5DateRenderingMode = currentHtml.Html5DateRenderingMode
-         };
+         return currentHtml.Clone<TModel>(newViewContext, container);
       }
 
       internal static HtmlHelper ForMemberTemplate(HtmlHelper currentHtml, ModelMetadata memberMetadata) {
@@ -78,9 +75,7 @@ namespace Xcst.Web.Runtime {
             }
          };
 
-         return new HtmlHelper(currentHtml.ViewContext, container, currentHtml.RouteCollection) {
-            Html5DateRenderingMode = currentHtml.Html5DateRenderingMode
-         };
+         return currentHtml.Clone(currentHtml.ViewContext, container);
       }
 
       class ViewDataContainer : IViewDataContainer {

@@ -121,5 +121,25 @@ namespace Xcst.Web {
             ValidationMessageElement = context.ValidationMessageElement,
             ValidationSummaryMessageElement = context.ValidationSummaryMessageElement
          };
+
+      internal static HtmlHelper Clone(
+            this HtmlHelper currentHtml, ViewContext viewContext, IViewDataContainer container) =>
+         new HtmlHelper(
+            viewContext,
+            container
+#if ASPNETMVC
+            , currentHtml.RouteCollection
+#endif
+         ) { Html5DateRenderingMode = currentHtml.Html5DateRenderingMode };
+
+      internal static HtmlHelper<TModel> Clone<TModel>(
+            this HtmlHelper currentHtml, ViewContext viewContext, IViewDataContainer container) =>
+         new HtmlHelper<TModel>(
+            viewContext,
+            container
+#if ASPNETMVC
+            , currentHtml.RouteCollection
+#endif
+         ) { Html5DateRenderingMode = currentHtml.Html5DateRenderingMode };
    }
 }

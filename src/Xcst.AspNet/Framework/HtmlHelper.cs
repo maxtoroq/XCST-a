@@ -47,8 +47,6 @@ namespace System.Web.Mvc {
 
       public IViewDataContainer ViewDataContainer { get; internal set; }
 
-      public RouteCollection RouteCollection { get; private set; }
-
       [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "The usage of the property is as an instance property of the helper.")]
       public Html5DateRenderingMode Html5DateRenderingMode { get; set; }
 
@@ -56,18 +54,13 @@ namespace System.Web.Mvc {
 
       internal Func<string, ModelMetadata, IEnumerable<ModelClientValidationRule>> ClientValidationRuleFactory { get; set; }
 
-      public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
-         : this(viewContext, viewDataContainer, RouteTable.Routes) { }
-
-      public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, RouteCollection routeCollection) {
+      public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer) {
 
          if (viewContext is null) throw new ArgumentNullException(nameof(viewContext));
          if (viewDataContainer is null) throw new ArgumentNullException(nameof(viewDataContainer));
-         if (routeCollection is null) throw new ArgumentNullException(nameof(routeCollection));
 
          this.ViewContext = viewContext;
          this.ViewDataContainer = viewDataContainer;
-         this.RouteCollection = routeCollection;
          this.ClientValidationRuleFactory = (name, metadata) =>
             ModelValidatorProviders.Providers
                .GetValidators(metadata ?? ModelMetadata.FromStringExpression(name, this.ViewData), this.ViewContext)
@@ -324,10 +317,7 @@ namespace System.Web.Mvc {
       public new ViewDataDictionary<TModel> ViewData => (ViewDataDictionary<TModel>)ViewDataContainer.ViewData;
 
       public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
-         : this(viewContext, viewDataContainer, RouteTable.Routes) { }
-
-      public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, RouteCollection routeCollection)
-         : base(viewContext, viewDataContainer, routeCollection) {
+         : base(viewContext, viewDataContainer) {
 
          if (!(viewDataContainer.ViewData is ViewDataDictionary<TModel>)) {
             throw new ArgumentException(
