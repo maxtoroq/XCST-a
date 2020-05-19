@@ -44,9 +44,6 @@ namespace System.Web.Mvc {
          set => HttpContext.Items[_formContextKey] = value;
       }
 
-      public dynamic ViewBag => _ViewBag
-         ?? (_ViewBag = new DynamicViewDataDictionary(() => ViewData));
-
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The property setter is only here to support mocking this type and should not be called at runtime.")]
       public virtual ViewDataDictionary/*?*/ ViewData { get; set; }
 
