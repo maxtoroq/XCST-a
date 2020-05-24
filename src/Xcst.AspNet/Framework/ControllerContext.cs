@@ -17,12 +17,10 @@ namespace System.Web.Mvc {
       IDependencyResolver _resolver;
       ITempDataProvider _tempDataProvider;
 
-      public virtual HttpContextBase HttpContext {
-         get => _httpContext ?? (_httpContext = RequestContext?.HttpContext);
+      public HttpContextBase HttpContext {
+         get => _httpContext ?? (_httpContext = new EmptyHttpContext());
          set => _httpContext = value;
       }
-
-      public RequestContext RequestContext { get; set; }
 
       /// <summary>
       /// Represents a replaceable dependency resolver providing services.
@@ -38,32 +36,25 @@ namespace System.Web.Mvc {
          set => _tempDataProvider = value;
       }
 
-      public ControllerContext()
-         : this(new RequestContext(new EmptyHttpContext(), new RouteData())) { }
+      public ControllerContext() { }
 
       // copy constructor - allows for subclassed types to take an existing ControllerContext as a parameter
       // and we'll automatically set the appropriate properties
 
-      [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "The virtual property setters are only to support mocking frameworks, in which case this constructor shouldn't be called anyway.")]
       protected ControllerContext(ControllerContext controllerContext) {
 
          if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
-         this.RequestContext = controllerContext.RequestContext;
-
+         _httpContext = controllerContext._httpContext;
          _resolver = controllerContext._resolver;
          _tempDataProvider = controllerContext._tempDataProvider;
       }
 
-      public ControllerContext(HttpContextBase httpContext, RouteData routeData)
-         : this(new RequestContext(httpContext, routeData)) { }
+      public ControllerContext(HttpContextBase httpContext) {
 
-      [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "The virtual property setters are only to support mocking frameworks, in which case this constructor shouldn't be called anyway.")]
-      public ControllerContext(RequestContext requestContext) {
+         if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
 
-         if (requestContext is null) throw new ArgumentNullException(nameof(requestContext));
-
-         this.RequestContext = requestContext;
+         _httpContext = httpContext;
       }
 
       ITempDataProvider CreateTempDataProvider() {

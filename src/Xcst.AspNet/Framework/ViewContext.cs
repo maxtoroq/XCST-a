@@ -52,9 +52,7 @@ namespace System.Web.Mvc {
       public ViewContext() { }
 
       public ViewContext(HttpContextBase httpContext)
-         : base((httpContext != null) ?
-            httpContext.Request?.RequestContext ?? new RequestContext(httpContext, new RouteData())
-            : throw new ArgumentNullException(nameof(httpContext))) { }
+         : base(httpContext) { }
 
       [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "The virtual property setters are only to support mocking frameworks, in which case this constructor shouldn't be called anyway.")]
       public ViewContext(ControllerContext controllerContext, ViewDataDictionary/*?*/ viewData, TempDataDictionary/*?*/ tempData)
