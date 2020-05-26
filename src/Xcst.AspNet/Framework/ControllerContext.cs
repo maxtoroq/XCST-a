@@ -15,7 +15,7 @@ namespace System.Web.Mvc {
       ITempDataProvider? _tempDataProvider;
 
       public HttpContextBase HttpContext {
-         get => _httpContext ?? (_httpContext = new EmptyHttpContext());
+         get => _httpContext ??= new EmptyHttpContext();
          set => _httpContext = value;
       }
 
@@ -29,7 +29,7 @@ namespace System.Web.Mvc {
       }
 
       public ITempDataProvider TempDataProvider {
-         get => _tempDataProvider ?? (_tempDataProvider = CreateTempDataProvider());
+         get => _tempDataProvider ??= CreateTempDataProvider();
          set => _tempDataProvider = value;
       }
 

@@ -61,8 +61,7 @@ namespace Xcst.Web.Compilation {
       protected override string GeneratedTypeNamePrefix => "_Page_";
 
       protected override bool IgnoreFile =>
-         _IgnoreFile
-            ?? (_IgnoreFile = VirtualPath.Split('/').Last()[0] == '_').Value;
+         _IgnoreFile ??= VirtualPath.Split('/').Last()[0] == '_';
 
       protected Type PageType { get; }
 

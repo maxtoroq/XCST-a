@@ -21,7 +21,7 @@ namespace System.Web.Mvc {
          _innerDictionary ?? _sourceDictionary;
 
       private IDictionary<TKey, TValue> WriteDictionary =>
-         _innerDictionary ?? (_innerDictionary = new Dictionary<TKey, TValue>(_sourceDictionary, _comparer));
+         _innerDictionary ??= new Dictionary<TKey, TValue>(_sourceDictionary, _comparer);
 
       public virtual ICollection<TKey> Keys => ReadDictionary.Keys;
 

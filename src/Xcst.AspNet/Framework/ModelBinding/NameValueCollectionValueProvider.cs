@@ -20,12 +20,11 @@ namespace System.Web.Mvc {
       Dictionary<string, ValueProviderResultPlaceholder>? _values = null;
 
       private Dictionary<string, ValueProviderResultPlaceholder> Values =>
-         _values ?? (_values = InitializeCollectionValues());
+         _values ??= InitializeCollectionValues();
 
       private PrefixContainer PrefixContainer =>
-         _prefixContainer
-            // Race condition on initialization has no side effects
-            ?? (_prefixContainer = new PrefixContainer(Values.Keys));
+         // Race condition on initialization has no side effects
+         _prefixContainer ??= new PrefixContainer(Values.Keys);
 
       public NameValueCollectionValueProvider(NameValueCollection collection, CultureInfo culture)
          : this(collection, culture, jQueryToMvcRequestNormalizationRequired: false) { }
@@ -131,12 +130,12 @@ namespace System.Web.Mvc {
                   return key;
                }
 
-               sb = sb ?? new StringBuilder();
+               sb ??= new StringBuilder();
                sb.Append(key, i, key.Length - i);
                break; // no more brackets
             }
 
-            sb = sb ?? new StringBuilder();
+            sb ??= new StringBuilder();
             sb.Append(key, i, indexOpen - i); // everything up to "["
 
             // Find closing bracket.
@@ -181,8 +180,7 @@ namespace System.Web.Mvc {
          CultureInfo _culture;
 
          public ValueProviderResult ValidatedResult =>
-            _validatedResult
-               ?? (_validatedResult = GetResultFromCollection(_key, _validatedCollection, _culture));
+            _validatedResult ??= GetResultFromCollection(_key, _validatedCollection, _culture);
 
          public ValueProviderResultPlaceholder(string key, NameValueCollection validatedCollection, CultureInfo culture) {
             _key = key;

@@ -11,9 +11,8 @@ namespace System.Web.Mvc {
       readonly Dictionary<string, ValueProviderResult> _values = new Dictionary<string, ValueProviderResult>(StringComparer.OrdinalIgnoreCase);
 
       private PrefixContainer PrefixContainer =>
-         _prefixContainer
-            // Race condition on initialization has no side effects
-            ?? (_prefixContainer = new PrefixContainer(_values.Keys));
+         // Race condition on initialization has no side effects
+         _prefixContainer ??= new PrefixContainer(_values.Keys);
 
       public DictionaryValueProvider(IDictionary<string, TValue> dictionary, CultureInfo culture) {
 

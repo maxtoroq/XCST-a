@@ -172,7 +172,7 @@ namespace System.Web.Mvc {
 
       [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "This property delegates to the method when the user has not yet set a simple display text value.")]
       public virtual string SimpleDisplayText {
-         get => _simpleDisplayText ?? (_simpleDisplayText = GetSimpleDisplayText());
+         get => _simpleDisplayText ??= GetSimpleDisplayText();
          set => _simpleDisplayText = value;
       }
 

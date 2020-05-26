@@ -19,7 +19,7 @@ namespace System.Web.Mvc {
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Property is settable so that the dictionary can be provided for unit testing purposes.")]
       protected internal ModelBinderDictionary Binders {
-         get => _binders ?? (_binders = ModelBinders.Binders);
+         get => _binders ??= ModelBinders.Binders;
          set => _binders = value;
       }
 

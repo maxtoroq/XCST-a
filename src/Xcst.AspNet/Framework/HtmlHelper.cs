@@ -38,8 +38,8 @@ namespace System.Web.Mvc {
          set => _idAttributeDotReplacement = value;
       }
 
-      public dynamic ViewBag => _ViewBag
-         ?? (_ViewBag = new DynamicViewDataDictionary(() => ViewData));
+      public dynamic ViewBag =>
+         _ViewBag ??= new DynamicViewDataDictionary(() => ViewData);
 
       public ViewContext ViewContext { get; private set; }
 

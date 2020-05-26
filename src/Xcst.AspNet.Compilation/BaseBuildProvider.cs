@@ -36,19 +36,16 @@ namespace Xcst.Web.Compilation {
       CompilerType? _CodeCompilerType;
 
       protected string AppRelativeVirtualPath =>
-         _AppRelativeVirtualPath
-            ?? (_AppRelativeVirtualPath = VirtualPathUtility.ToAppRelative(VirtualPath));
+         _AppRelativeVirtualPath ??= VirtualPathUtility.ToAppRelative(VirtualPath);
 
       protected Uri PhysicalPath =>
-         _PhysicalPath
-            ?? (_PhysicalPath = new Uri(HostingEnvironment.MapPath(VirtualPath), UriKind.Absolute));
+         _PhysicalPath ??= new Uri(HostingEnvironment.MapPath(VirtualPath), UriKind.Absolute);
 
       protected bool IsFileInCodeDir =>
-         _IsFileInCodeDir
-            ?? (_IsFileInCodeDir = AppRelativeVirtualPath
-               .Remove(0, 2)
-               .Split('/')[0]
-               .Equals("App_Code", StringComparison.OrdinalIgnoreCase)).Value;
+         _IsFileInCodeDir ??= AppRelativeVirtualPath
+            .Remove(0, 2)
+            .Split('/')[0]
+            .Equals("App_Code", StringComparison.OrdinalIgnoreCase);
 
       protected string GeneratedTypeName {
          get {
@@ -77,9 +74,9 @@ namespace Xcst.Web.Compilation {
       }
 
       protected string GeneratedTypeFullName {
-         get => _GeneratedTypeFullName
-            ?? (_GeneratedTypeFullName = (GeneratedTypeNamespace.Length == 0) ? GeneratedTypeName
-               : String.Concat(GeneratedTypeNamespace, ".", GeneratedTypeName));
+         get => _GeneratedTypeFullName ??= (GeneratedTypeNamespace.Length == 0) ?
+            GeneratedTypeName
+            : String.Concat(GeneratedTypeNamespace, ".", GeneratedTypeName);
          set {
             if (String.IsNullOrEmpty(value)) {
                throw new ArgumentException("value cannot be null or empty", nameof(value));

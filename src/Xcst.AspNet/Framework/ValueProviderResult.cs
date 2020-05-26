@@ -17,7 +17,7 @@ namespace System.Web.Mvc {
       public string? AttemptedValue { get; protected set; }
 
       public CultureInfo Culture {
-         get => _instanceCulture ?? (_instanceCulture = _staticCulture);
+         get => _instanceCulture ??= _staticCulture;
          protected set => _instanceCulture = value;
       }
 

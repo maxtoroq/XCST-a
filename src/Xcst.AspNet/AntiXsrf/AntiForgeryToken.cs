@@ -24,13 +24,13 @@ namespace System.Web.Helpers.AntiXsrf {
       public bool IsSessionToken { get; set; }
 
       public BinaryBlob SecurityToken {
-         get => _securityToken ?? (_securityToken = new BinaryBlob(SecurityTokenBitLength));
+         get => _securityToken ??= new BinaryBlob(SecurityTokenBitLength);
          set => _securityToken = value;
       }
 
       public string Username {
          get => _username ?? String.Empty;
-         set { _username = value; }
+         set => _username = value;
       }
    }
 }

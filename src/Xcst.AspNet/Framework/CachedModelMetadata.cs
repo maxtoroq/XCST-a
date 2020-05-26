@@ -425,8 +425,7 @@ namespace System.Web.Mvc {
          new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(20) };
 
       protected string CacheKeyPrefix =>
-         _cacheKeyPrefix
-            ?? (_cacheKeyPrefix = "MetadataPrototypes::" + GetType().GUID.ToString("B"));
+         _cacheKeyPrefix ??= "MetadataPrototypes::" + GetType().GUID.ToString("B");
 
       protected internal ObjectCache PrototypeCache {
          get => _prototypeCache ?? MemoryCache.Default;

@@ -66,26 +66,25 @@ namespace Xcst.Web {
 
 #pragma warning disable CS8603
       public HttpRequestBase Request =>
-         _Request ?? (_Request = Context?.Request);
+         _Request ??= Context?.Request;
 
       public HttpResponseBase Response =>
-         _Response ?? (_Response = Context?.Response);
+         _Response ??= Context?.Response;
 
       public HttpSessionStateBase Session =>
-         _Session ?? (_Session = Context?.Session);
+         _Session ??= Context?.Session;
 #pragma warning restore CS8603
 
 #if !ASPNETMVC
       public virtual IList<string> UrlData {
-         get => _UrlData
-            ?? (_UrlData = new UrlDataList(PathInfo ?? Request?.PathInfo?.TrimStart('/')));
+         get => _UrlData ??= new UrlDataList(PathInfo ?? Request?.PathInfo?.TrimStart('/'));
          set => _UrlData = value;
       }
 #endif
 
       public virtual IPrincipal User {
 #pragma warning disable CS8603
-         get => _User ?? (_User = Context?.User);
+         get => _User ??= Context?.User;
 #pragma warning restore CS8603
          set => _User = value;
       }

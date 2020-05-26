@@ -64,8 +64,8 @@ namespace Xcst.Web.Mvc {
          set => SetViewData(value);
       }
 
-      public dynamic ViewBag => _ViewBag
-         ?? (_ViewBag = new DynamicViewDataDictionary(() => ViewData));
+      public dynamic ViewBag =>
+         _ViewBag ??= new DynamicViewDataDictionary(() => ViewData);
 
       public object? Model => ViewData.Model;
 
@@ -104,9 +104,7 @@ namespace Xcst.Web.Mvc {
       public ModelStateDictionary ModelState => ViewData.ModelState;
 
       public virtual TempDataDictionary TempData {
-         get => _TempData
-            ?? (_TempData = ViewContext?.TempData)
-            ?? (_TempData = new TempDataDictionary());
+         get => _TempData ??= ViewContext?.TempData ?? new TempDataDictionary();
          set => _TempData = value;
       }
 

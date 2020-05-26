@@ -39,7 +39,7 @@ namespace System.Web.Mvc {
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The containing type is mutable.")]
       public ModelStateDictionary ModelState {
-         get => _modelState ?? (_modelState = new ModelStateDictionary());
+         get => _modelState ??= new ModelStateDictionary();
          set => _modelState = value;
       }
 
@@ -50,14 +50,13 @@ namespace System.Web.Mvc {
       }
 
       public Predicate<string> PropertyFilter {
-         get => _propertyFilter ?? (_propertyFilter = _defaultPropertyFilter);
+         get => _propertyFilter ??= _defaultPropertyFilter;
          set => _propertyFilter = value;
       }
 
       public IDictionary<string, ModelMetadata> PropertyMetadata =>
-         _propertyMetadata
-            ?? (_propertyMetadata = ModelMetadata.PropertiesAsArray
-               .ToDictionaryFast(m => m.PropertyName!, StringComparer.OrdinalIgnoreCase));
+         _propertyMetadata ??= ModelMetadata.PropertiesAsArray
+            .ToDictionaryFast(m => m.PropertyName!, StringComparer.OrdinalIgnoreCase);
 
       public IValueProvider ValueProvider { get; set; }
 
@@ -126,7 +125,7 @@ namespace System.Web.Mvc {
       public int Count => _innerDictionary.Count;
 
       public IModelBinder DefaultBinder {
-         get => _defaultBinder ?? (_defaultBinder = new DefaultModelBinder());
+         get => _defaultBinder ??= new DefaultModelBinder();
          set => _defaultBinder = value;
       }
 

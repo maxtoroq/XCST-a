@@ -48,8 +48,7 @@ namespace System.Web.Mvc {
       public ModelStateDictionary ModelState => _modelState;
 
       public TemplateInfo TemplateInfo {
-         get => _templateMetadata
-            ?? (_templateMetadata = new TemplateInfo());
+         get => _templateMetadata ??= new TemplateInfo();
          set => _templateMetadata = value;
       }
 
@@ -334,8 +333,7 @@ namespace System.Web.Mvc {
       // DDB #224750 - Keep a collection of visited objects to prevent infinite recursion
 
       internal HashSet<object> VisitedObjects {
-         get => _visitedObjects
-            ?? (_visitedObjects = new HashSet<object>());
+         get => _visitedObjects ??= new HashSet<object>();
          set => _visitedObjects = value;
       }
 
