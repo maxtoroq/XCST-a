@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Xcst.Web {
 
@@ -38,11 +39,11 @@ namespace Xcst.Web {
       /// <param name="key">The key whose value to get.</param>
       /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter.</param>
       /// <returns><c>true</c> if key was found, value is non-null, and value is of type <typeparamref name="T"/>; otherwise false.</returns>
-      public static bool TryGetValue<T>(this IDictionary<string, object> collection, string key, out T value) {
+      public static bool TryGetValue<T>(this IDictionary<string, object?> collection, string key, [MaybeNull]out T value) {
 
-         Debug.Assert(collection != null);
+         Assert.IsNotNull(collection);
 
-         if (collection.TryGetValue(key, out object valueObj)) {
+         if (collection.TryGetValue(key, out object? valueObj)) {
             if (valueObj is T valueT) {
                value = valueT;
                return true;
@@ -55,7 +56,7 @@ namespace Xcst.Web {
 
       public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue @default) {
 
-         Debug.Assert(dict != null);
+         Assert.IsNotNull(dict);
 
          if (dict.TryGetValue(key, out TValue value)) {
             return value;
@@ -66,7 +67,7 @@ namespace Xcst.Web {
 
       public static Dictionary<TKey, TValue> Clone<TKey, TValue>(this IDictionary<TKey, TValue> dict) {
 
-         Debug.Assert(dict != null);
+         Assert.IsNotNull(dict);
 
          return new Dictionary<TKey, TValue>(dict, (dict as Dictionary<TKey, TValue>)?.Comparer);
       }

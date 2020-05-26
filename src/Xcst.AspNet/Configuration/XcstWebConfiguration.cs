@@ -39,28 +39,28 @@ namespace Xcst.Web.Configuration {
       /// Default message used by <code>a:validation-message</code> and <code>a:validation-summary</code>
       /// when model state contains an error but with a null or empty message.
       /// </summary>
-      public Func<string> DefaultValidationMessage { get; set; }
+      public Func<string>? DefaultValidationMessage { get; set; }
 
 #if !ASPNETMVC
       /// <summary>
       /// Validation message for numeric types.
       /// </summary>
-      public Func<string> NumberValidationMessage { get; set; }
+      public Func<string>? NumberValidationMessage { get; set; }
 
       /// <summary>
       /// Validation message for date types.
       /// </summary>
-      public Func<string> DateValidationMessage { get; set; }
+      public Func<string>? DateValidationMessage { get; set; }
 
-      public Func<string, ViewContext, XcstViewPage> TemplateFactory { get; set; }
+      public Func<string, ViewContext, XcstViewPage?>? TemplateFactory { get; set; }
 #endif
 
-      public Func<EditorInfo, string, string> EditorCssClass { get; set; }
+      public Func<EditorInfo, string?, string?>? EditorCssClass { get; set; }
    }
 
 #if !ASPNETMVC
    public class DisplayTemplatesConfiguration {
-      public Func<string, ViewContext, XcstViewPage> TemplateFactory { get; set; }
+      public Func<string, ViewContext, XcstViewPage?>? TemplateFactory { get; set; }
    }
 
    public class ModelBindingConfiguration {
@@ -68,13 +68,13 @@ namespace Xcst.Web.Configuration {
       /// <summary>
       /// Default message used when setting a property results in an exception.
       /// </summary>
-      public Func<string> DefaultInvalidPropertyValueErrorMessage { get; set; }
+      public Func<string>? DefaultInvalidPropertyValueErrorMessage { get; set; }
 
       /// <summary>
       /// Default message used when there's no value for a non-nullable property that does not explicitly
       /// use the <code>RequiredAttribute</code>.
       /// </summary>
-      public Func<string> DefaultRequiredPropertyValueErrorMessage { get; set; }
+      public Func<string>? DefaultRequiredPropertyValueErrorMessage { get; set; }
 
       public int MaxJsonDeserializerMembers { get; set; } = -1;
    }

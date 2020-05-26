@@ -23,29 +23,36 @@ using System.Web.SessionState;
 
 namespace Xcst.Web {
 
+   // Many of the properties of XcstPage can be null if Context is not initialized.
+   // These are however not marked as nullable since, at runtime, Context is always initialized.
+
    public abstract class XcstPage {
 
-      HttpContextBase _Context;
-      HttpRequestBase _Request;
-      HttpResponseBase _Response;
-      HttpSessionStateBase _Session;
+      HttpContextBase? _Context;
+      HttpRequestBase? _Request;
+      HttpResponseBase? _Response;
+      HttpSessionStateBase? _Session;
 
 #if !ASPNETMVC
-      IList<string> _UrlData;
+      IList<string>? _UrlData;
 #endif
-      IPrincipal _User;
+      IPrincipal? _User;
 
+#pragma warning disable CS8618
       public virtual string VirtualPath { get; set; }
+#pragma warning restore CS8618
 
 #if !ASPNETMVC
-      public virtual string PathInfo { get; set; }
+      public virtual string? PathInfo { get; set; }
 #endif
 
       // HttpContextWrapper Request/Response/Session return a new instance every time
       // need to cache result
 
       public virtual HttpContextBase Context {
+#pragma warning disable CS8603
          get => _Context;
+#pragma warning restore CS8603
          set {
             _Context = value;
             _Request = null;
@@ -57,6 +64,7 @@ namespace Xcst.Web {
          }
       }
 
+#pragma warning disable CS8603
       public HttpRequestBase Request =>
          _Request ?? (_Request = Context?.Request);
 
@@ -65,6 +73,7 @@ namespace Xcst.Web {
 
       public HttpSessionStateBase Session =>
          _Session ?? (_Session = Context?.Session);
+#pragma warning restore CS8603
 
 #if !ASPNETMVC
       public virtual IList<string> UrlData {
@@ -75,7 +84,9 @@ namespace Xcst.Web {
 #endif
 
       public virtual IPrincipal User {
+#pragma warning disable CS8603
          get => _User ?? (_User = Context?.User);
+#pragma warning restore CS8603
          set => _User = value;
       }
 
@@ -87,7 +98,7 @@ namespace Xcst.Web {
       public virtual IHttpHandler CreateHttpHandler() =>
          new XcstPageHandler(this);
 
-      public virtual bool TryAuthorize(string[] users = null, string[] roles = null) {
+      public virtual bool TryAuthorize(string[]? users = null, string[]? roles = null) {
 
          if (IsAuthorized(this.User, users, roles)) {
 
@@ -95,7 +106,7 @@ namespace Xcst.Web {
 
             HttpCachePolicyBase cachePolicy = this.Response.Cache;
             cachePolicy.SetProxyMaxAge(new TimeSpan(0));
-            cachePolicy.AddValidationCallback(CacheValidateHandler, new object[2] { users, roles });
+            cachePolicy.AddValidationCallback(CacheValidateHandler, new object?[2] { users, roles });
 
             return true;
 
@@ -108,7 +119,7 @@ namespace Xcst.Web {
 
       void CacheValidateHandler(HttpContext context, object data, ref HttpValidationStatus validationStatus) {
 
-         object[] dataArr = data as object[];
+         object?[]? dataArr = data as object?[];
 
          bool isAuthorized = IsAuthorized(context.User, dataArr?[0] as string[], dataArr?[1] as string[]);
 
@@ -117,7 +128,7 @@ namespace Xcst.Web {
             : HttpValidationStatus.IgnoreThisRequest;
       }
 
-      static bool IsAuthorized(IPrincipal user, string[] users, string[] roles) {
+      static bool IsAuthorized(IPrincipal user, string[]? users, string[]? roles) {
 
          if (user is null
             || !user.Identity.IsAuthenticated) {

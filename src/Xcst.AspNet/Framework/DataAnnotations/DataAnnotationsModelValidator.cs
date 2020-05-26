@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc.Properties;
@@ -41,7 +41,7 @@ namespace System.Web.Mvc {
          return results;
       }
 
-      public override IEnumerable<ModelValidationResult> Validate(object container) {
+      public override IEnumerable<ModelValidationResult> Validate(object? container) {
 
          // Per the WCF RIA Services team, instance can never be null (if you have
          // no parent, you pass yourself for the "instance" parameter).
@@ -65,7 +65,7 @@ namespace System.Web.Mvc {
             // cases. Consequently we'll only set MemberName if this validation returns a MemberName that is different
             // from the property being validated.
 
-            string errorMemberName = result.MemberNames.FirstOrDefault();
+            string? errorMemberName = result.MemberNames.FirstOrDefault();
 
             if (String.Equals(errorMemberName, memberName, StringComparison.Ordinal)) {
                errorMemberName = null;
@@ -97,7 +97,7 @@ namespace System.Web.Mvc {
       public CompareAttributeAdapter(ModelMetadata metadata, ControllerContext context, DataAnnotationsCompareAttribute attribute)
          : base(metadata, context, new CompareAttributeWrapper(attribute, metadata)) {
 
-         Contract.Assert(attribute.GetType() == typeof(DataAnnotationsCompareAttribute));
+         Debug.Assert(attribute.GetType() == typeof(DataAnnotationsCompareAttribute));
       }
 
       public override IEnumerable<ModelClientValidationRule> GetClientValidationRules() {
@@ -106,7 +106,7 @@ namespace System.Web.Mvc {
 
       static string FormatPropertyForClientValidation(string property) {
 
-         Contract.Assert(property != null);
+         Assert.IsNotNull(property);
 
          return "*." + property;
       }

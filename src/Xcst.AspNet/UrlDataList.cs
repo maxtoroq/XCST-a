@@ -41,56 +41,46 @@ namespace Xcst.Web {
             }
             return _urlData[index];
          }
-         set { throw new NotSupportedException(); }
+         set => throw new NotSupportedException();
       }
 
-      public UrlDataList(string pathInfo) {
+      public UrlDataList(string? pathInfo) {
 
          if (String.IsNullOrEmpty(pathInfo)) {
             _urlData = new List<string>();
          } else {
-            _urlData = pathInfo.Split(new char[] { '/' }).ToList();
+            _urlData = pathInfo!.Split(new char[] { '/' }).ToList();
          }
       }
 
-      public int IndexOf(string item) {
-         return _urlData.IndexOf(item);
-      }
+      public int IndexOf(string item) =>
+         _urlData.IndexOf(item);
 
-      public void Insert(int index, string item) {
+      public void Insert(int index, string item) =>
          throw new NotSupportedException();
-      }
 
-      public void RemoveAt(int index) {
+      public void RemoveAt(int index) =>
          throw new NotSupportedException();
-      }
 
-      public void Add(string item) {
+      public void Add(string item) =>
          throw new NotSupportedException();
-      }
 
-      public void Clear() {
+      public void Clear() =>
          throw new NotSupportedException();
-      }
 
-      public bool Contains(string item) {
-         return _urlData.Contains(item);
-      }
+      public bool Contains(string item) =>
+         _urlData.Contains(item);
 
-      public void CopyTo(string[] array, int arrayIndex) {
+      public void CopyTo(string[] array, int arrayIndex) =>
          _urlData.CopyTo(array, arrayIndex);
-      }
 
-      public bool Remove(string item) {
+      public bool Remove(string item) =>
          throw new NotSupportedException();
-      }
 
-      public IEnumerator<string> GetEnumerator() {
-         return _urlData.GetEnumerator();
-      }
+      public IEnumerator<string> GetEnumerator() =>
+         _urlData.GetEnumerator();
 
-      IEnumerator IEnumerable.GetEnumerator() {
-         return _urlData.GetEnumerator();
-      }
+      IEnumerator IEnumerable.GetEnumerator() =>
+         _urlData.GetEnumerator();
    }
 }

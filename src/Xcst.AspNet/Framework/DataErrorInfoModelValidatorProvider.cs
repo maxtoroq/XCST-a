@@ -33,7 +33,7 @@ namespace System.Web.Mvc {
          }
       }
 
-      static bool TypeImplementsIDataErrorInfo(Type type) =>
+      static bool TypeImplementsIDataErrorInfo(Type? type) =>
          typeof(IDataErrorInfo).IsAssignableFrom(type);
 
       internal sealed class DataErrorInfoClassModelValidator : ModelValidator {
@@ -41,7 +41,7 @@ namespace System.Web.Mvc {
          public DataErrorInfoClassModelValidator(ModelMetadata metadata, ControllerContext controllerContext)
             : base(metadata, controllerContext) { }
 
-         public override IEnumerable<ModelValidationResult> Validate(object container) {
+         public override IEnumerable<ModelValidationResult> Validate(object? container) {
 
             if (this.Metadata.Model is IDataErrorInfo castModel) {
 
@@ -61,7 +61,7 @@ namespace System.Web.Mvc {
          public DataErrorInfoPropertyModelValidator(ModelMetadata metadata, ControllerContext controllerContext)
             : base(metadata, controllerContext) { }
 
-         public override IEnumerable<ModelValidationResult> Validate(object container) {
+         public override IEnumerable<ModelValidationResult> Validate(object? container) {
 
             if (container is IDataErrorInfo castContainer
                && !String.Equals(this.Metadata.PropertyName, "error", StringComparison.OrdinalIgnoreCase)) {

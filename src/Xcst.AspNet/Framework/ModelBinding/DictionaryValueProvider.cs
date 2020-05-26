@@ -7,7 +7,7 @@ namespace System.Web.Mvc {
 
    public class DictionaryValueProvider<TValue> : IValueProvider, IEnumerableValueProvider {
 
-      PrefixContainer _prefixContainer;
+      PrefixContainer? _prefixContainer;
       readonly Dictionary<string, ValueProviderResult> _values = new Dictionary<string, ValueProviderResult>(StringComparer.OrdinalIgnoreCase);
 
       private PrefixContainer PrefixContainer =>
@@ -21,7 +21,7 @@ namespace System.Web.Mvc {
 
          foreach (KeyValuePair<string, TValue> entry in dictionary) {
 
-            object rawValue = entry.Value;
+            object? rawValue = entry.Value;
             string attemptedValue = Convert.ToString(rawValue, culture);
             _values[entry.Key] = new ValueProviderResult(rawValue, attemptedValue, culture);
          }

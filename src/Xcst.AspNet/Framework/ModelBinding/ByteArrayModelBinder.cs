@@ -4,11 +4,11 @@ namespace System.Web.Mvc {
 
    public class ByteArrayModelBinder : IModelBinder {
 
-      public virtual object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
+      public virtual object? BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
          if (bindingContext is null) throw new ArgumentNullException(nameof(bindingContext));
 
-         ValueProviderResult valueResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
+         ValueProviderResult? valueResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
          // case 1: there was no <input ... /> element containing this data
 
@@ -16,7 +16,7 @@ namespace System.Web.Mvc {
             return null;
          }
 
-         string value = valueResult.AttemptedValue;
+         string? value = valueResult.AttemptedValue;
 
          // case 2: there was an <input ... /> element but it was left blank
 
@@ -27,7 +27,7 @@ namespace System.Web.Mvc {
          // Future proofing. If the byte array is actually an instance of System.Data.Linq.Binary
          // then we need to remove these quotes put in place by the ToString() method.
 
-         string realValue = value.Replace("\"", String.Empty);
+         string realValue = value!.Replace("\"", String.Empty);
 
          return Convert.FromBase64String(realValue);
       }

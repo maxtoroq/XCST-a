@@ -20,7 +20,7 @@ namespace System.Web.Mvc {
          // Split apart the expression string for property/field accessors to create its name
 
          Stack<string> nameParts = new Stack<string>();
-         Expression part = expression.Body;
+         Expression? part = expression.Body;
 
          while (part != null) {
 
@@ -83,7 +83,7 @@ namespace System.Web.Mvc {
          Expression converted = Expression.Convert(expression, typeof(object));
          ParameterExpression fakeParameter = Expression.Parameter(typeof(object), null);
          Expression<Func<object, object>> lambda = Expression.Lambda<Func<object, object>>(converted, fakeParameter);
-         Func<object, object> func;
+         Func<object?, object> func;
 
          try {
             func = CachedExpressionCompiler.Process(lambda);

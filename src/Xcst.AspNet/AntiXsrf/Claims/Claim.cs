@@ -39,9 +39,11 @@ namespace System.Web.Helpers.Claims {
 
          static Func<TClaim, string> CreateClaimTypeGetter() =>
             // the claim type might go by one of two different property names
-            CreateGeneralPropertyGetter("ClaimType") ?? CreateGeneralPropertyGetter("Type");
+            CreateGeneralPropertyGetter("ClaimType")
+            ?? CreateGeneralPropertyGetter("Type")
+            ?? throw new InvalidOperationException();
 
-         static Func<TClaim, string> CreateGeneralPropertyGetter(string propertyName) {
+         static Func<TClaim, string>? CreateGeneralPropertyGetter(string propertyName) {
 
             PropertyInfo propInfo = typeof(TClaim).GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance, null, typeof(string), Type.EmptyTypes, null);
 
@@ -58,7 +60,8 @@ namespace System.Web.Helpers.Claims {
          }
 
          static Func<TClaim, string> CreateValueGetter() =>
-            CreateGeneralPropertyGetter("Value");
+            CreateGeneralPropertyGetter("Value")
+            ?? throw new InvalidOperationException();
       }
    }
 }

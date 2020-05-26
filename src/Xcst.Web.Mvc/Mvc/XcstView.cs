@@ -35,7 +35,7 @@ namespace Xcst.Web.Mvc {
 
       internal void RenderXcstView(ViewContext viewContext, ISequenceWriter<object> writer) {
 
-         object instance = null;
+         object? instance = null;
 
          Type type = BuildManager.GetCompiledType(this.ViewPath);
 

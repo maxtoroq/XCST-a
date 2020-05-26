@@ -45,7 +45,7 @@ namespace System.Web.Mvc {
          backingStore.Add(prefix, value);
       }
 
-      static object GetDeserializedObject(ControllerContext controllerContext) {
+      static object? GetDeserializedObject(ControllerContext controllerContext) {
 
          HttpRequestBase request = controllerContext.HttpContext.Request;
 
@@ -76,11 +76,11 @@ namespace System.Web.Mvc {
          return jsonData;
       }
 
-      public override IValueProvider GetValueProvider(ControllerContext controllerContext) {
+      public override IValueProvider? GetValueProvider(ControllerContext controllerContext) {
 
          if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
-         object jsonData = GetDeserializedObject(controllerContext);
+         object? jsonData = GetDeserializedObject(controllerContext);
 
          if (jsonData is null) {
             return null;

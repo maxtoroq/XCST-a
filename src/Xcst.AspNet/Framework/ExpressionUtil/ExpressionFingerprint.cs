@@ -30,7 +30,7 @@ namespace System.Web.Mvc.ExpressionUtil {
          combiner.AddObject(this.Type);
       }
 
-      protected bool Equals(ExpressionFingerprint other) =>
+      protected bool Equals(ExpressionFingerprint? other) =>
          (other != null)
             && (this.NodeType == other.NodeType)
             && Equals(this.Type, other.Type);

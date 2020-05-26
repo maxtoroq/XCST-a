@@ -29,7 +29,7 @@ namespace System.Web.Mvc.ExpressionUtil {
       // Returns the fingerprint chain + captured constants list for this expression, or null
       // if the expression couldn't be fingerprinted.
 
-      public static ExpressionFingerprintChain GetFingerprintChain(Expression expr, out List<object> capturedConstants) {
+      public static ExpressionFingerprintChain? GetFingerprintChain(Expression expr, out List<object>? capturedConstants) {
 
          var visitor = new FingerprintingExpressionVisitor();
          visitor.Visit(expr);
@@ -43,7 +43,7 @@ namespace System.Web.Mvc.ExpressionUtil {
          }
       }
 
-      public override Expression Visit(Expression node) {
+      public override Expression? Visit(Expression? node) {
 
          if (node is null) {
             _currentChain.Elements.Add(null);

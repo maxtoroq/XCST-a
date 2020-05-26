@@ -2,8 +2,8 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 
@@ -14,8 +14,9 @@ namespace System.Web.Mvc {
       static ConcurrentDictionary<Type, PropertyHelper[]> _reflectionCache =
          new ConcurrentDictionary<Type, PropertyHelper[]>();
 
-      Func<object, object> _valueGetter;
+      Func<object, object?> _valueGetter;
 
+      [AllowNull]
       public virtual string Name { get; protected set; }
 
       /// <summary>
@@ -24,7 +25,7 @@ namespace System.Web.Mvc {
       [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "This is intended the Name is auto set differently per type and the type is internal")]
       public PropertyHelper(PropertyInfo property) {
 
-         Contract.Assert(property != null);
+         Assert.IsNotNull(property);
 
          this.Name = property.Name;
 
@@ -39,14 +40,14 @@ namespace System.Web.Mvc {
       /// <remarks>This method is more memory efficient than a dynamically compiled lambda, and about the same speed.</remarks>
       public static Action<TDeclaringType, object> MakeFastPropertySetter<TDeclaringType>(PropertyInfo propertyInfo) where TDeclaringType : class {
 
-         Contract.Assert(propertyInfo != null);
+         Assert.IsNotNull(propertyInfo);
 
          MethodInfo setMethod = propertyInfo.GetSetMethod();
 
-         Contract.Assert(setMethod != null);
-         Contract.Assert(!setMethod.IsStatic);
-         Contract.Assert(setMethod.GetParameters().Length == 1);
-         Contract.Assert(!propertyInfo.ReflectedType.IsValueType);
+         Assert.IsNotNull(setMethod);
+         Debug.Assert(!setMethod.IsStatic);
+         Debug.Assert(setMethod.GetParameters().Length == 1);
+         Debug.Assert(!propertyInfo.ReflectedType.IsValueType);
 
          // Instance methods in the CLR can be turned into static methods where the first parameter
          // is open over "this". This parameter is always passed by reference, so we have a code
@@ -66,9 +67,9 @@ namespace System.Web.Mvc {
          return (Action<TDeclaringType, object>)callPropertySetterDelegate;
       }
 
-      public object GetValue(object instance) {
+      public object? GetValue(object instance) {
 
-         Contract.Assert(_valueGetter != null, "Must call Initialize before using this object");
+         Assert.That(_valueGetter != null, "Must call Initialize before using this object");
 
          return _valueGetter(instance);
       }
@@ -87,14 +88,14 @@ namespace System.Web.Mvc {
       /// <param name="propertyInfo">propertyInfo to extract the getter for.</param>
       /// <returns>a fast getter.</returns>
       /// <remarks>This method is more memory efficient than a dynamically compiled lambda, and about the same speed.</remarks>
-      public static Func<object, object> MakeFastPropertyGetter(PropertyInfo propertyInfo) {
+      public static Func<object, object?> MakeFastPropertyGetter(PropertyInfo propertyInfo) {
 
-         Contract.Assert(propertyInfo != null);
+         Assert.IsNotNull(propertyInfo);
 
          MethodInfo getMethod = propertyInfo.GetGetMethod();
-         Contract.Assert(getMethod != null);
-         Contract.Assert(!getMethod.IsStatic);
-         Contract.Assert(getMethod.GetParameters().Length == 0);
+         Assert.IsNotNull(getMethod);
+         Debug.Assert(!getMethod.IsStatic);
+         Debug.Assert(getMethod.GetParameters().Length == 0);
 
          // Instance methods in the CLR can be turned into static methods where the first parameter
          // is open over "this". This parameter is always passed by reference, so we have a code
@@ -122,7 +123,7 @@ namespace System.Web.Mvc {
             callPropertyGetterDelegate = Delegate.CreateDelegate(typeof(Func<object, object>), propertyGetterAsFunc, callPropertyGetterClosedGenericMethod);
          }
 
-         return (Func<object, object>)callPropertyGetterDelegate;
+         return (Func<object, object?>)callPropertyGetterDelegate;
       }
 
       static PropertyHelper CreateInstance(PropertyInfo property) =>
@@ -138,10 +139,10 @@ namespace System.Web.Mvc {
       static readonly MethodInfo _callPropertyGetterByReferenceOpenGenericMethod =
          typeof(PropertyHelper).GetMethod(nameof(CallPropertyGetterByReference), BindingFlags.NonPublic | BindingFlags.Static);
 
-      static object CallPropertyGetter<TDeclaringType, TValue>(Func<TDeclaringType, TValue> getter, object @this) =>
+      static object? CallPropertyGetter<TDeclaringType, TValue>(Func<TDeclaringType, TValue> getter, object @this) =>
          getter((TDeclaringType)@this);
 
-      static object CallPropertyGetterByReference<TDeclaringType, TValue>(ByRefFunc<TDeclaringType, TValue> getter, object @this) {
+      static object? CallPropertyGetterByReference<TDeclaringType, TValue>(ByRefFunc<TDeclaringType, TValue> getter, object @this) {
 
          TDeclaringType unboxed = (TDeclaringType)@this;
          return getter(ref unboxed);

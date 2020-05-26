@@ -15,12 +15,12 @@ namespace System.Web.Mvc {
 
    public class ModelBinderProviderCollection : Collection<IModelBinderProvider> {
 
-      IModelBinderProvider[] _combinedItems;
-      IDependencyResolver _dependencyResolver;
+      IModelBinderProvider[]? _combinedItems;
+      IDependencyResolver? _dependencyResolver;
 
       internal IModelBinderProvider[] CombinedItems {
          get {
-            IModelBinderProvider[] combinedItems = _combinedItems;
+            IModelBinderProvider[]? combinedItems = _combinedItems;
             if (combinedItems is null) {
                combinedItems = MultiServiceResolver.GetCombined<IModelBinderProvider>(Items, _dependencyResolver);
                _combinedItems = combinedItems;
@@ -66,7 +66,7 @@ namespace System.Web.Mvc {
          base.SetItem(index, item);
       }
 
-      public IModelBinder GetBinder(Type modelType) {
+      public IModelBinder? GetBinder(Type modelType) {
 
          if (modelType is null) throw new ArgumentNullException(nameof(modelType));
 

@@ -8,7 +8,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
       // Provides additional data to go into the tokens.
 
-      IAntiForgeryAdditionalDataProvider AdditionalDataProvider { get; }
+      IAntiForgeryAdditionalDataProvider? AdditionalDataProvider { get; }
 
       // Name of the cookie to use.
 

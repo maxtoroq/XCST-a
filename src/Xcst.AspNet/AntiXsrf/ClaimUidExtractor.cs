@@ -21,7 +21,7 @@ namespace System.Web.Helpers.AntiXsrf {
          _claimsIdentityConverter = claimsIdentityConverter;
       }
 
-      public BinaryBlob ExtractClaimUid(IIdentity identity) {
+      public BinaryBlob? ExtractClaimUid(IIdentity identity) {
 
          if (identity is null || !identity.IsAuthenticated || _config.SuppressIdentityHeuristicChecks) {
             // Skip anonymous users
@@ -29,7 +29,7 @@ namespace System.Web.Helpers.AntiXsrf {
             return null;
          }
 
-         ClaimsIdentity claimsIdentity = _claimsIdentityConverter.TryConvert(identity);
+         ClaimsIdentity? claimsIdentity = _claimsIdentityConverter.TryConvert(identity);
 
          if (claimsIdentity is null) {
             // not a claims-based identity

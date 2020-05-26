@@ -24,16 +24,16 @@ namespace System.Web.Mvc {
       public static readonly string ValidationSummaryCssClassName = "validation-summary-errors";
       public static readonly string ValidationSummaryValidCssClassName = "validation-summary-valid";
 
-      static string _idAttributeDotReplacement;
+      static string? _idAttributeDotReplacement;
 
-      DynamicViewDataDictionary _ViewBag;
+      DynamicViewDataDictionary? _ViewBag;
 
       public static string IdAttributeDotReplacement {
          get {
             if (String.IsNullOrEmpty(_idAttributeDotReplacement)) {
                _idAttributeDotReplacement = "_";
             }
-            return _idAttributeDotReplacement;
+            return _idAttributeDotReplacement!;
          }
          set => _idAttributeDotReplacement = value;
       }
@@ -52,7 +52,7 @@ namespace System.Web.Mvc {
 
       public ModelMetadata ModelMetadata => ViewData.ModelMetadata;
 
-      internal Func<string, ModelMetadata, IEnumerable<ModelClientValidationRule>> ClientValidationRuleFactory { get; set; }
+      internal Func<string, ModelMetadata?, IEnumerable<ModelClientValidationRule>> ClientValidationRuleFactory { get; set; }
 
       public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer) {
 
@@ -77,7 +77,7 @@ namespace System.Web.Mvc {
       /// </example>
       /// <param name="htmlAttributes">Anonymous object describing HTML attributes.</param>
       /// <returns>A dictionary that represents HTML attributes.</returns>
-      public static RouteValueDictionary AnonymousObjectToHtmlAttributes(object/*?*/ htmlAttributes) {
+      public static RouteValueDictionary AnonymousObjectToHtmlAttributes(object? htmlAttributes) {
 
          var result = new RouteValueDictionary();
 
@@ -104,7 +104,9 @@ namespace System.Web.Mvc {
             return String.Empty;
          }
 
+#pragma warning disable CS8603 // there's a small chance CreateSanitizedId returns null
          return TagBuilder.CreateSanitizedId(name, idAttributeDotReplacement);
+#pragma warning restore CS8603
       }
 
       public static string GetInputTypeString(InputType inputType) {
@@ -142,17 +144,17 @@ namespace System.Web.Mvc {
       internal string EvalString(string key) =>
          Convert.ToString(this.ViewData.Eval(key), CultureInfo.CurrentCulture);
 
-      internal string EvalString(string key, string format) =>
+      internal string EvalString(string key, string? format) =>
          Convert.ToString(this.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
 
       [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-      public string FormatValue(object value, string format) =>
+      public string FormatValue(object? value, string? format) =>
          ViewDataDictionary.FormatValueInternal(value, format);
 
       internal bool EvalBoolean(string key) =>
          Convert.ToBoolean(this.ViewData.Eval(key), CultureInfo.InvariantCulture);
 
-      internal object GetModelStateValue(string key, Type destinationType) {
+      internal object? GetModelStateValue(string key, Type destinationType) {
 
          if (this.ViewData.ModelState.TryGetValue(key, out ModelState modelState)
             && modelState.Value != null) {
@@ -170,7 +172,7 @@ namespace System.Web.Mvc {
       // never rendered validation for a field with this name in this form. Also, if there's no form context,
       // then we can't render the attributes (we'd have no <form> to attach them to).
 
-      public IDictionary<string, object> GetUnobtrusiveValidationAttributes(string name, ModelMetadata metadata) {
+      public IDictionary<string, object> GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata) {
 
          var results = new Dictionary<string, object>();
 
@@ -180,7 +182,7 @@ namespace System.Web.Mvc {
             return results;
          }
 
-         FormContext formContext = this.ViewContext.GetFormContextForClientValidation();
+         FormContext? formContext = this.ViewContext.GetFormContextForClientValidation();
 
          if (formContext is null) {
             return results;
@@ -221,7 +223,7 @@ namespace System.Web.Mvc {
 
       public string ValueForModel() {
 
-         string format = this.ViewData.ModelMetadata.EditFormatString;
+         string? format = this.ViewData.ModelMetadata.EditFormatString;
 
          return ValueHelper(String.Empty, value: null, format: format, useViewData: true);
       }
@@ -242,10 +244,10 @@ namespace System.Web.Mvc {
          return ValueHelper(name, value: null, format: format, useViewData: true);
       }
 
-      internal string ValueHelper(string name, object value, string format, bool useViewData) {
+      internal string ValueHelper(string name, object? value, string? format, bool useViewData) {
 
          string fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
-         string attemptedValue = (string)GetModelStateValue(fullName, typeof(string));
+         string? attemptedValue = (string?)GetModelStateValue(fullName, typeof(string));
          string resolvedValue;
 
          if (attemptedValue != null) {
@@ -308,7 +310,7 @@ namespace System.Web.Mvc {
       /// </summary>
       /// <param name="propertyMetadata">The property's metadata.</param>
       /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
-      public XcstDelegate<object> MemberTemplate(ModelMetadata propertyMetadata) =>
+      public XcstDelegate<object>? MemberTemplate(ModelMetadata propertyMetadata) =>
          EditorInstructions.MemberTemplate(this, propertyMetadata);
    }
 
@@ -457,10 +459,10 @@ namespace System.Web.Mvc {
 
    static class TagBuilder {
 
-      public static string CreateSanitizedId(string originalId) =>
+      public static string? CreateSanitizedId(string originalId) =>
          CreateSanitizedId(originalId, HtmlHelper.IdAttributeDotReplacement);
 
-      public static string CreateSanitizedId(string originalId, string invalidCharReplacement) {
+      public static string? CreateSanitizedId(string originalId, string invalidCharReplacement) {
 
          if (String.IsNullOrEmpty(originalId)) {
             return null;
@@ -524,6 +526,7 @@ namespace System.Web.Mvc {
 
       static ConcurrentDictionary<Type, PropertyHelper[]> _reflectionCache = new ConcurrentDictionary<Type, PropertyHelper[]>();
 
+      [AllowNull]
       public override string Name {
          get => base.Name;
          protected set => base.Name = value?.Replace('_', '-');

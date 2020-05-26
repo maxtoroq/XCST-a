@@ -47,7 +47,7 @@ namespace Xcst.Web.Runtime {
 
             output.WriteStartElement("select");
 
-            string className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
+            string? className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
 
             HtmlAttributeHelper.WriteClass(className, null, output);
             HtmlAttributeHelper.WriteBoolean("disabled", true, output);
@@ -63,7 +63,7 @@ namespace Xcst.Web.Runtime {
             output.WriteStartElement("input");
             output.WriteAttributeString("type", "checkbox");
 
-            string className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
+            string? className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
 
             HtmlAttributeHelper.WriteClass(className, null, output);
             HtmlAttributeHelper.WriteBoolean("disabled", true, output);
@@ -80,7 +80,7 @@ namespace Xcst.Web.Runtime {
 
          ViewDataDictionary viewData = html.ViewData;
 
-         object model = viewData.ModelMetadata.Model;
+         object? model = viewData.ModelMetadata.Model;
 
          if (model is null) {
             return;
@@ -90,7 +90,7 @@ namespace Xcst.Web.Runtime {
             ?? throw new InvalidOperationException($"The Collection template was used with an object of type '{model.GetType().FullName}', which does not implement System.IEnumerable.");
 
          Type typeInCollection = typeof(string);
-         Type genericEnumerableType = TypeHelpers.ExtractGenericInterface(collection.GetType(), typeof(IEnumerable<>));
+         Type? genericEnumerableType = TypeHelpers.ExtractGenericInterface(collection.GetType(), typeof(IEnumerable<>));
 
          if (genericEnumerableType != null) {
             typeInCollection = genericEnumerableType.GetGenericArguments()[0];
@@ -187,7 +187,7 @@ namespace Xcst.Web.Runtime {
 
          foreach (var group in groupedProperties) {
 
-            XcstWriter fieldsetWriter = null;
+            XcstWriter? fieldsetWriter = null;
 
             if (createFieldset) {
 
@@ -201,15 +201,15 @@ namespace Xcst.Web.Runtime {
 
             foreach (ModelMetadata propertyMeta in group) {
 
-               XcstWriter fieldWriter = null;
+               XcstWriter? fieldWriter = null;
 
                if (!propertyMeta.HideSurroundingHtml) {
 
-                  XcstDelegate<object> memberTemplate =
+                  XcstDelegate<object>? memberTemplate =
                      DisplayInstructions.MemberTemplate(html, propertyMeta);
 
                   if (memberTemplate != null) {
-                     memberTemplate(null, fieldsetWriter ?? seqOutput);
+                     memberTemplate(null!/* argument is not used */, fieldsetWriter ?? seqOutput);
                      continue;
                   }
 
@@ -231,12 +231,12 @@ namespace Xcst.Web.Runtime {
                templateHelper(html, package, fieldWriter ?? fieldsetWriter ?? seqOutput, propertyMeta, propertyMeta.PropertyName, null, DataBoundControlMode.ReadOnly, additionalViewData: null);
 
                if (!propertyMeta.HideSurroundingHtml) {
-                  fieldWriter.WriteEndElement(); // </div>
+                  fieldWriter!.WriteEndElement(); // </div>
                }
             }
 
             if (createFieldset) {
-               fieldsetWriter.WriteEndElement(); // </fieldset>
+               fieldsetWriter!.WriteEndElement(); // </fieldset>
             }
          }
       }

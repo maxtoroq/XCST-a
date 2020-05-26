@@ -11,7 +11,7 @@ namespace System.Web.Mvc {
 
       public string Name { get; private set; }
 
-      public object Value { get; private set; }
+      public object? Value { get; private set; }
 
       public AdditionalMetadataAttribute(string name, object value) {
 

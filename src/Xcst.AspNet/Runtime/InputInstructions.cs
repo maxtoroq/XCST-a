@@ -41,16 +41,16 @@ namespace Xcst.Web.Runtime {
       //////////////////////////
 
       public static void CheckBox(
-            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, HtmlAttribs htmlAttributes = null) =>
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, HtmlAttribs? htmlAttributes = null) =>
          CheckBoxHelper(htmlHelper, package, output, default(ModelMetadata), name, isChecked: null, htmlAttributes: htmlAttributes);
 
       public static void CheckBox(
-            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, bool isChecked, HtmlAttribs htmlAttributes = null) =>
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, bool isChecked, HtmlAttribs? htmlAttributes = null) =>
          CheckBoxHelper(htmlHelper, package, output, default(ModelMetadata), name, isChecked, htmlAttributes);
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void CheckBoxFor<TModel>(
-            HtmlHelper<TModel> htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression, HtmlAttribs? htmlAttributes = null) {
 
          if (expression is null) throw new ArgumentNullException(nameof(expression));
 
@@ -61,7 +61,7 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void CheckBoxForModel(
-            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, HtmlAttribs? htmlAttributes = null) {
 
          ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
 
@@ -69,7 +69,7 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void CheckBoxForModel(
-            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, bool isChecked, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, bool isChecked, HtmlAttribs? htmlAttributes = null) {
 
          ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
 
@@ -77,10 +77,10 @@ namespace Xcst.Web.Runtime {
       }
 
       static void CheckBoxForMetadata(
-            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelMetadata/*?*/ metadata, string expression,
-            bool? isChecked, HtmlAttribs htmlAttributes) {
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelMetadata? metadata, string expression,
+            bool? isChecked, HtmlAttribs? htmlAttributes) {
 
-         object model = metadata?.Model;
+         object? model = metadata?.Model;
 
          if (isChecked is null
             && model != null) {
@@ -94,7 +94,7 @@ namespace Xcst.Web.Runtime {
       }
 
       static void CheckBoxHelper(
-            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelMetadata/*?*/ metadata, string name, bool? isChecked, HtmlAttribs/*?*/ htmlAttributes) {
+            HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelMetadata? metadata, string name, bool? isChecked, HtmlAttribs? htmlAttributes) {
 
          XcstWriter inputWriter = DocumentWriter.CastElement(package, output);
          XcstWriter hiddenWriter = DocumentWriter.CastElement(package, output);
@@ -142,7 +142,7 @@ namespace Xcst.Web.Runtime {
       //////////////////////////
 
       public static void RadioButton(
-            HtmlHelper htmlHelper, XcstWriter output, string name, object value, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, XcstWriter output, string name, object value, HtmlAttribs? htmlAttributes = null) {
 
          if (value is null) throw new ArgumentNullException(nameof(value));
 
@@ -159,7 +159,7 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void RadioButton(
-            HtmlHelper htmlHelper, XcstWriter output, string name, object value, bool isChecked, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, XcstWriter output, string name, object value, bool isChecked, HtmlAttribs? htmlAttributes = null) {
 
          if (value is null) throw new ArgumentNullException(nameof(value));
 
@@ -168,7 +168,7 @@ namespace Xcst.Web.Runtime {
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void RadioButtonFor<TModel, TProperty>(
-            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, object value, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, object value, HtmlAttribs? htmlAttributes = null) {
 
          if (value is null) throw new ArgumentNullException(nameof(value));
 
@@ -179,7 +179,7 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void RadioButtonForModel(
-            HtmlHelper htmlHelper, XcstWriter output, object value, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, XcstWriter output, object value, HtmlAttribs? htmlAttributes = null) {
 
          ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
 
@@ -187,7 +187,7 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void RadioButtonForModel(
-            HtmlHelper htmlHelper, XcstWriter output, object value, bool isChecked, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, XcstWriter output, object value, bool isChecked, HtmlAttribs? htmlAttributes = null) {
 
          ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
 
@@ -195,10 +195,10 @@ namespace Xcst.Web.Runtime {
       }
 
       static void RadioButtonForMetadata(
-            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata/*?*/ metadata, string expression, object value, bool? isChecked,
-            HtmlAttribs htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata? metadata, string expression, object value, bool? isChecked,
+            HtmlAttribs? htmlAttributes) {
 
-         object model = metadata?.Model;
+         object? model = metadata?.Model;
 
          if (isChecked is null
             && model != null) {
@@ -210,7 +210,7 @@ namespace Xcst.Web.Runtime {
       }
 
       static void RadioButtonHelper(
-            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata/*?*/ metadata, string name, object value, bool? isChecked, HtmlAttribs/*?*/ htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata? metadata, string name, object value, bool? isChecked, HtmlAttribs? htmlAttributes) {
 
          bool explicitChecked = isChecked.HasValue;
 
@@ -249,12 +249,12 @@ namespace Xcst.Web.Runtime {
       //////////////////////////
 
       public static void Input(
-            HtmlHelper htmlHelper, XcstWriter output, string name, object value = null, string type = null, string format = null, HtmlAttribs htmlAttributes = null) =>
+            HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null, string? type = null, string? format = null, HtmlAttribs? htmlAttributes = null) =>
          InputImpl(htmlHelper, output, type, /*metadata: */null, name, value, /*useViewData: */null, format, htmlAttributes);
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void InputFor<TModel, TProperty>(
-            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string type = null, string format = null, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string? type = null, string? format = null, HtmlAttribs? htmlAttributes = null) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string exprString = ExpressionHelper.GetExpressionText(expression);
@@ -263,7 +263,7 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void InputForModel(
-            HtmlHelper htmlHelper, XcstWriter output, object value = null, string type = null, string format = null, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, XcstWriter output, object? value = null, string? type = null, string? format = null, HtmlAttribs? htmlAttributes = null) {
 
          ModelMetadata metadata = htmlHelper.ViewData.ModelMetadata;
 
@@ -271,8 +271,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void InputForMetadata(
-            HtmlHelper htmlHelper, XcstWriter output, string/*?*/ type, ModelMetadata/*?*/ metadata, string expression, object/*?*/ value,
-            string/*?*/ format, HtmlAttribs/*?*/ htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, string? type, ModelMetadata? metadata, string expression, object? value,
+            string? format, HtmlAttribs? htmlAttributes) {
 
          if (value is null
             && metadata != null
@@ -285,8 +285,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void InputImpl(
-            HtmlHelper htmlHelper, XcstWriter output, string/*?*/ type, ModelMetadata/*?*/ metadata, string expression, object/*?*/ value,
-            bool? useViewData, string/*?*/ format, HtmlAttribs/*?*/ htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, string? type, ModelMetadata? metadata, string expression, object? value,
+            bool? useViewData, string? format, HtmlAttribs? htmlAttributes) {
 
          InputType? inputType = GetInputType(type);
          bool checkBoxOrRadio = inputType == InputType.CheckBox
@@ -337,7 +337,7 @@ namespace Xcst.Web.Runtime {
             htmlAttributes: htmlAttributes);
       }
 
-      static InputType? GetInputType(string type) {
+      static InputType? GetInputType(string? type) {
 
          switch (type) {
             case "checkbox":
@@ -356,8 +356,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void InputHelper(
-            HtmlHelper htmlHelper, XcstWriter output, InputType inputType, ModelMetadata/*?*/ metadata, string name, object value,
-            bool useViewData, bool isChecked, bool setId, bool isExplicitValue, string format, HtmlAttribs/*?*/ htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, InputType inputType, ModelMetadata? metadata, string name, object? value,
+            bool useViewData, bool isChecked, bool setId, bool isExplicitValue, string? format, HtmlAttribs? htmlAttributes) {
 
          string fullName = Name(htmlHelper, name);
 
@@ -396,7 +396,7 @@ namespace Xcst.Web.Runtime {
 
                if (!usedModelState) {
 
-                  string modelStateValue = htmlHelper.GetModelStateValue(fullName, typeof(string)) as string;
+                  string? modelStateValue = htmlHelper.GetModelStateValue(fullName, typeof(string)) as string;
 
                   if (modelStateValue != null) {
 
@@ -453,7 +453,7 @@ namespace Xcst.Web.Runtime {
 
                if (writeValue) {
 
-                  string attemptedValue = (string)htmlHelper.GetModelStateValue(fullName, typeof(string));
+                  string? attemptedValue = (string?)htmlHelper.GetModelStateValue(fullName, typeof(string));
 
                   string valueAttr = attemptedValue
                      ?? ((useViewData) ? htmlHelper.EvalString(fullName, format) : valueParameter);
@@ -467,7 +467,7 @@ namespace Xcst.Web.Runtime {
 
          // If there are any errors for a named field, we add the css attribute.
 
-         string cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
+         string? cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
             && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
          HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);

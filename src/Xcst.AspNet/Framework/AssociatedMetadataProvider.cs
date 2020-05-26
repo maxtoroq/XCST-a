@@ -15,12 +15,12 @@ namespace System.Web.Mvc {
 
    abstract class AssociatedMetadataProvider : ModelMetadataProvider {
 
-      protected abstract ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName);
+      protected abstract ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type? containerType, Func<object?>? modelAccessor, Type modelType, string? propertyName);
 
       protected virtual IEnumerable<Attribute> FilterAttributes(Type containerType, PropertyDescriptor propertyDescriptor, IEnumerable<Attribute> attributes) =>
          attributes;
 
-      public override IEnumerable<ModelMetadata> GetMetadataForProperties(object container, Type containerType) {
+      public override IEnumerable<ModelMetadata> GetMetadataForProperties(object? container, Type containerType) {
 
          if (containerType is null) throw new ArgumentNullException(nameof(containerType));
 
@@ -32,12 +32,9 @@ namespace System.Web.Mvc {
          for (int i = 0; i < properties.Count; i++) {
 
             PropertyDescriptor property = properties[i];
-            Func<object> modelAccessor = (container is null) ? null : GetPropertyValueAccessor(container, property);
+            Func<object>? modelAccessor = (container is null) ? null : GetPropertyValueAccessor(container, property);
             ModelMetadata propertyMetadata = GetMetadataForProperty(modelAccessor, containerType, property);
-
-            if (propertyMetadata != null) {
-               propertyMetadata.Container = container;
-            }
+            propertyMetadata.Container = container;
 
             metadata[i] = propertyMetadata;
          }
@@ -45,7 +42,7 @@ namespace System.Web.Mvc {
          return metadata;
       }
 
-      public override ModelMetadata GetMetadataForProperty(Func<object> modelAccessor, Type containerType, string propertyName) {
+      public override ModelMetadata GetMetadataForProperty(Func<object?>? modelAccessor, Type containerType, string propertyName) {
 
          if (containerType is null) throw new ArgumentNullException(nameof(containerType));
          if (String.IsNullOrEmpty(propertyName)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(propertyName));
@@ -59,7 +56,7 @@ namespace System.Web.Mvc {
          return GetMetadataForProperty(modelAccessor, containerType, property);
       }
 
-      protected virtual ModelMetadata GetMetadataForProperty(Func<object> modelAccessor, Type containerType, PropertyDescriptor propertyDescriptor) {
+      protected virtual ModelMetadata GetMetadataForProperty(Func<object?>? modelAccessor, Type containerType, PropertyDescriptor propertyDescriptor) {
 
          IEnumerable<Attribute> attributes = FilterAttributes(containerType, propertyDescriptor, new AttributeList(propertyDescriptor.Attributes));
          ModelMetadata result = CreateMetadata(attributes, containerType, modelAccessor, propertyDescriptor.PropertyType, propertyDescriptor.Name);
@@ -68,12 +65,12 @@ namespace System.Web.Mvc {
          return result;
       }
 
-      public override ModelMetadata GetMetadataForType(Func<object> modelAccessor, Type modelType) {
+      public override ModelMetadata GetMetadataForType(Func<object?>? modelAccessor, Type modelType) {
 
          if (modelType is null) throw new ArgumentNullException(nameof(modelType));
 
          AttributeList attributes = new AttributeList(GetTypeDescriptor(modelType).GetAttributes());
-         ModelMetadata result = CreateMetadata(attributes, null /* containerType */, modelAccessor, modelType, null /* propertyName */);
+         ModelMetadata result = CreateMetadata(attributes, null /* containerType */, modelAccessor, modelType, propertyName: null);
          ApplyMetadataAwareAttributes(attributes, result);
 
          return result;
@@ -105,7 +102,7 @@ namespace System.Web.Mvc {
 
    class EmptyModelMetadataProvider : AssociatedMetadataProvider {
 
-      protected override ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) =>
+      protected override ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type? containerType, Func<object?>? modelAccessor, Type modelType, string? propertyName) =>
          new ModelMetadata(this, containerType, modelAccessor, modelType, propertyName);
    }
 }

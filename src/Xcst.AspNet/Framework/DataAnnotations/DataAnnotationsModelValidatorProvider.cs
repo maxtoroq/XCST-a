@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -32,7 +32,6 @@ namespace System.Web.Mvc {
    /// </summary>
    class DataAnnotationsModelValidatorProvider : AssociatedValidatorProvider {
 
-      static bool _addImplicitRequiredAttributeForValueTypes = true;
       static ReaderWriterLockSlim _adaptersLock = new ReaderWriterLockSlim();
 
       // Factories for validation attributes
@@ -49,10 +48,7 @@ namespace System.Web.Mvc {
 
       internal static Dictionary<Type, DataAnnotationsValidatableObjectAdapterFactory> ValidatableFactories = new Dictionary<Type, DataAnnotationsValidatableObjectAdapterFactory>();
 
-      public static bool AddImplicitRequiredAttributeForValueTypes {
-         get { return _addImplicitRequiredAttributeForValueTypes; }
-         set { _addImplicitRequiredAttributeForValueTypes = value; }
-      }
+      public static bool AddImplicitRequiredAttributeForValueTypes { get; set; }
 
       protected override IEnumerable<ModelValidator> GetValidators(ModelMetadata metadata, ControllerContext context, IEnumerable<Attribute> attributes) {
 
@@ -360,7 +356,7 @@ namespace System.Web.Mvc {
 
       static void AddValidationAttributeAdapter(Dictionary<Type, DataAnnotationsModelValidationFactory> dictionary, Type validataionAttributeType, DataAnnotationsModelValidationFactory factory) {
 
-         Contract.Assert(dictionary != null);
+         Assert.IsNotNull(dictionary);
 
          if (validataionAttributeType != null) {
             dictionary.Add(validataionAttributeType, factory);

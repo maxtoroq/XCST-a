@@ -1,7 +1,8 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace System.Web.Mvc {
@@ -17,7 +18,7 @@ namespace System.Web.Mvc {
       /// </summary>
       public static T[] AsArray<T>(this IEnumerable<T> values) {
 
-         Contract.Assert(values != null);
+         Assert.IsNotNull(values);
 
          if (values is T[] array) {
             return array;
@@ -29,10 +30,11 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Return the only value from list, the type's default value if empty, or call the errorAction for 2 or more.
       /// </summary>
+      [return: MaybeNull]
       public static T SingleDefaultOrError<T, TArg1>(this IList<T> list, Action<TArg1> errorAction, TArg1 errorArg1) {
 
-         Contract.Assert(list != null);
-         Contract.Assert(errorAction != null);
+         Assert.IsNotNull(list);
+         Assert.IsNotNull(errorAction);
 
          switch (list.Count) {
             case 0:
@@ -52,12 +54,12 @@ namespace System.Web.Mvc {
       /// Returns a single value in list matching type TMatch if there is only one, null if there are none of type TMatch or calls the
       /// errorAction with errorArg1 if there is more than one.
       /// </summary>
-      public static TMatch SingleOfTypeDefaultOrError<TInput, TMatch, TArg1>(this IList<TInput> list, Action<TArg1> errorAction, TArg1 errorArg1) where TMatch : class {
+      public static TMatch? SingleOfTypeDefaultOrError<TInput, TMatch, TArg1>(this IList<TInput> list, Action<TArg1> errorAction, TArg1 errorArg1) where TMatch : class {
 
-         Contract.Assert(list != null);
-         Contract.Assert(errorAction != null);
+         Assert.IsNotNull(list);
+         Assert.IsNotNull(errorAction);
 
-         TMatch result = null;
+         TMatch? result = null;
 
          for (int i = 0; i < list.Count; i++) {
 
@@ -81,7 +83,7 @@ namespace System.Web.Mvc {
       /// </summary>
       public static T[] ToArrayWithoutNulls<T>(this ICollection<T> collection) where T : class {
 
-         Contract.Assert(collection != null);
+         Assert.IsNotNull(collection);
 
          T[] result = new T[collection.Count];
          int count = 0;
@@ -107,8 +109,8 @@ namespace System.Web.Mvc {
       /// </summary>
       public static Dictionary<TKey, TValue> ToDictionaryFast<TKey, TValue>(this TValue[] array, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer) {
 
-         Contract.Assert(array != null);
-         Contract.Assert(keySelector != null);
+         Assert.IsNotNull(array);
+         Assert.IsNotNull(keySelector);
 
          var dictionary = new Dictionary<TKey, TValue>(array.Length, comparer);
 
@@ -125,8 +127,8 @@ namespace System.Web.Mvc {
       /// </summary>
       public static Dictionary<TKey, TValue> ToDictionaryFast<TKey, TValue>(this IList<TValue> list, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer) {
 
-         Contract.Assert(list != null);
-         Contract.Assert(keySelector != null);
+         Assert.IsNotNull(list);
+         Assert.IsNotNull(keySelector);
 
          if (list is TValue[] array) {
             return ToDictionaryFast(array, keySelector, comparer);
@@ -140,8 +142,8 @@ namespace System.Web.Mvc {
       /// </summary>
       public static Dictionary<TKey, TValue> ToDictionaryFast<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer) {
 
-         Contract.Assert(enumerable != null);
-         Contract.Assert(keySelector != null);
+         Assert.IsNotNull(enumerable);
+         Assert.IsNotNull(keySelector);
 
          if (enumerable is TValue[] array) {
             return ToDictionaryFast(array, keySelector, comparer);
@@ -165,8 +167,8 @@ namespace System.Web.Mvc {
       /// </summary>
       private static Dictionary<TKey, TValue> ToDictionaryFastNoCheck<TKey, TValue>(IList<TValue> list, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer) {
 
-         Contract.Assert(list != null);
-         Contract.Assert(keySelector != null);
+         Assert.IsNotNull(list);
+         Assert.IsNotNull(keySelector);
 
          int listCount = list.Count;
 

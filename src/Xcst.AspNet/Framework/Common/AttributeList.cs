@@ -3,7 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 
 namespace System.Web.Mvc {
 
@@ -25,7 +25,7 @@ namespace System.Web.Mvc {
 
       public AttributeList(AttributeCollection attributes) {
 
-         Contract.Assert(attributes != null);
+         Assert.IsNotNull(attributes);
          _attributes = attributes;
       }
 

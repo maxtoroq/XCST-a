@@ -163,7 +163,7 @@ namespace System.Web.Mvc {
 
       ModelErrorCollection _errors = new ModelErrorCollection();
 
-      public ValueProviderResult Value { get; set; }
+      public ValueProviderResult? Value { get; set; }
 
       public ModelErrorCollection Errors => _errors;
    }
@@ -181,14 +181,14 @@ namespace System.Web.Mvc {
    [Serializable]
    public class ModelError {
 
-      public Exception Exception { get; private set; }
+      public Exception? Exception { get; private set; }
 
       public string ErrorMessage { get; private set; }
 
       public ModelError(Exception exception)
          : this(exception, errorMessage: null) { }
 
-      public ModelError(Exception exception, string errorMessage)
+      public ModelError(Exception exception, string? errorMessage)
          : this(errorMessage) {
 
          if (exception is null) throw new ArgumentNullException(nameof(exception));
@@ -196,7 +196,7 @@ namespace System.Web.Mvc {
          this.Exception = exception;
       }
 
-      public ModelError(string errorMessage) {
+      public ModelError(string? errorMessage) {
          this.ErrorMessage = errorMessage ?? String.Empty;
       }
    }

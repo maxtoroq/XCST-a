@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -18,48 +18,48 @@ namespace System.Web.Mvc {
 
       public const int DefaultOrder = 10000;
 
-      readonly Type _containerType;
+      readonly Type? _containerType;
       readonly Type _modelType;
-      readonly string _propertyName;
+      readonly string? _propertyName;
 
-      Dictionary<string, object> _additionalValues = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+      Dictionary<string, object?> _additionalValues = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
       bool _convertEmptyStringToNull = true;
       bool _htmlEncode = true;
       bool _isRequired;
-      object _model;
-      Func<object> _modelAccessor;
+      object? _model;
+      Func<object?>? _modelAccessor;
       int _order = DefaultOrder;
-      IEnumerable<ModelMetadata> _properties;
-      ModelMetadata[] _propertiesInternal;
-      Type _realModelType;
+      IEnumerable<ModelMetadata>? _properties;
+      ModelMetadata[]? _propertiesInternal;
+      Type? _realModelType;
       bool _showForDisplay = true;
       bool _showForEdit = true;
-      string _simpleDisplayText;
+      string? _simpleDisplayText;
 
-      public virtual Dictionary<string, object> AdditionalValues => _additionalValues;
+      public virtual Dictionary<string, object?> AdditionalValues => _additionalValues;
 
       /// <summary>
       /// A reference to the model's container object. Will be non-null if the model represents a property.
       /// </summary>
-      public object Container { get; set; }
+      public object? Container { get; set; }
 
-      public Type ContainerType => _containerType;
+      public Type? ContainerType => _containerType;
 
       public virtual bool ConvertEmptyStringToNull {
          get => _convertEmptyStringToNull;
          set => _convertEmptyStringToNull = value;
       }
 
-      public virtual string DataTypeName { get; set; }
+      public virtual string? DataTypeName { get; set; }
 
-      public virtual string Description { get; set; }
+      public virtual string? Description { get; set; }
 
-      public virtual string DisplayFormatString { get; set; }
+      public virtual string? DisplayFormatString { get; set; }
 
       [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "The method is a delegating helper to choose among multiple property values")]
-      public virtual string DisplayName { get; set; }
+      public virtual string? DisplayName { get; set; }
 
-      public virtual string EditFormatString { get; set; }
+      public virtual string? EditFormatString { get; set; }
 
       internal virtual bool HasNonDefaultEditFormat { get; set; }
 
@@ -81,7 +81,7 @@ namespace System.Web.Mvc {
          set => _isRequired = value;
       }
 
-      public object Model {
+      public object? Model {
          get {
             if (_modelAccessor != null) {
                _model = _modelAccessor();
@@ -99,7 +99,7 @@ namespace System.Web.Mvc {
 
       public Type ModelType => _modelType;
 
-      public virtual string NullDisplayText { get; set; }
+      public virtual string? NullDisplayText { get; set; }
 
       public virtual int Order {
          get => _order;
@@ -127,15 +127,15 @@ namespace System.Web.Mvc {
             IEnumerable<ModelMetadata> virtualProperties = Properties;
 
             if (Object.ReferenceEquals(virtualProperties, _properties)) {
-               Contract.Assert(_propertiesInternal != null);
-               return _propertiesInternal;
+               Assert.IsNotNull(_propertiesInternal);
+               return _propertiesInternal!;
             }
 
             return virtualProperties.AsArray();
          }
       }
 
-      public string PropertyName => _propertyName;
+      public string? PropertyName => _propertyName;
 
       internal ModelMetadataProvider Provider { get; set; }
 
@@ -158,7 +158,7 @@ namespace System.Web.Mvc {
          }
       }
 
-      public virtual string ShortDisplayName { get; set; }
+      public virtual string? ShortDisplayName { get; set; }
 
       public virtual bool ShowForDisplay {
          get => _showForDisplay;
@@ -176,23 +176,23 @@ namespace System.Web.Mvc {
          set => _simpleDisplayText = value;
       }
 
-      public virtual string TemplateHint { get; set; }
+      public virtual string? TemplateHint { get; set; }
 
-      public virtual string Watermark { get; set; }
+      public virtual string? Watermark { get; set; }
 
-      public virtual string GroupName { get; set; }
+      public virtual string? GroupName { get; set; }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static ModelMetadata FromLambdaExpression<TParameter, TValue>(Expression<Func<TParameter, TValue>> expression, ViewDataDictionary<TParameter> viewData) =>
          FromLambdaExpression(expression, viewData, metadataProvider: null);
 
-      internal static ModelMetadata FromLambdaExpression<TParameter, TValue>(Expression<Func<TParameter, TValue>> expression, ViewDataDictionary<TParameter> viewData, ModelMetadataProvider metadataProvider) {
+      internal static ModelMetadata FromLambdaExpression<TParameter, TValue>(Expression<Func<TParameter, TValue>> expression, ViewDataDictionary<TParameter> viewData, ModelMetadataProvider? metadataProvider) {
 
          if (expression is null) throw new ArgumentNullException(nameof(expression));
          if (viewData is null) throw new ArgumentNullException(nameof(viewData));
 
-         string propertyName = null;
-         Type containerType = null;
+         string? propertyName = null;
+         Type? containerType = null;
          bool legalExpression = false;
 
          // Need to verify the expression is valid; it needs to at least end in something
@@ -227,7 +227,7 @@ namespace System.Web.Mvc {
          }
 
          TParameter container = viewData.Model;
-         Func<object> modelAccessor = () => {
+         Func<object?> modelAccessor = () => {
             try {
                return CachedExpressionCompiler.Process(expression)(container);
             } catch (NullReferenceException) {
@@ -238,14 +238,14 @@ namespace System.Web.Mvc {
          return GetMetadataFromProvider(modelAccessor, typeof(TValue), propertyName, container, containerType, metadataProvider);
       }
 
-      static ModelMetadata FromModel(ViewDataDictionary viewData, ModelMetadataProvider metadataProvider) =>
+      static ModelMetadata FromModel(ViewDataDictionary viewData, ModelMetadataProvider? metadataProvider) =>
          viewData.ModelMetadata
             ?? GetMetadataFromProvider(null, typeof(string), null, null, null, metadataProvider);
 
       public static ModelMetadata FromStringExpression(string expression, ViewDataDictionary viewData) =>
          FromStringExpression(expression, viewData, metadataProvider: null);
 
-      internal static ModelMetadata FromStringExpression(string expression, ViewDataDictionary viewData, ModelMetadataProvider metadataProvider) {
+      internal static ModelMetadata FromStringExpression(string expression, ViewDataDictionary viewData, ModelMetadataProvider? metadataProvider) {
 
          if (expression is null) throw new ArgumentNullException(nameof(expression));
          if (viewData is null) throw new ArgumentNullException(nameof(viewData));
@@ -255,12 +255,12 @@ namespace System.Web.Mvc {
             return FromModel(viewData, metadataProvider);
          }
 
-         ViewDataInfo vdi = viewData.GetViewDataInfo(expression);
-         object container = null;
-         Type containerType = null;
-         Type modelType = null;
-         Func<object> modelAccessor = null;
-         string propertyName = null;
+         ViewDataInfo? vdi = viewData.GetViewDataInfo(expression);
+         object? container = null;
+         Type? containerType = null;
+         Type? modelType = null;
+         Func<object?>? modelAccessor = null;
+         string? propertyName = null;
 
          if (vdi != null) {
 
@@ -292,7 +292,7 @@ namespace System.Web.Mvc {
          return GetMetadataFromProvider(modelAccessor, modelType ?? typeof(string), propertyName, container, containerType, metadataProvider);
       }
 
-      public ModelMetadata(ModelMetadataProvider provider, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) {
+      public ModelMetadata(ModelMetadataProvider provider, Type? containerType, Func<object?>? modelAccessor, Type modelType, string? propertyName) {
 
          if (provider is null) throw new ArgumentNullException(nameof(provider));
          if (modelType is null) throw new ArgumentNullException(nameof(modelType));
@@ -312,18 +312,15 @@ namespace System.Web.Mvc {
             ?? this.PropertyName
             ?? this.ModelType.Name;
 
-      private static ModelMetadata GetMetadataFromProvider(Func<object> modelAccessor, Type modelType, string propertyName, object container, Type containerType, ModelMetadataProvider metadataProvider) {
+      private static ModelMetadata GetMetadataFromProvider(Func<object?>? modelAccessor, Type modelType, string? propertyName, object? container, Type? containerType, ModelMetadataProvider? metadataProvider) {
 
          metadataProvider = metadataProvider ?? ModelMetadataProviders.Current;
 
          if (containerType != null
             && !String.IsNullOrEmpty(propertyName)) {
 
-            ModelMetadata metadata = metadataProvider.GetMetadataForProperty(modelAccessor, containerType, propertyName);
-
-            if (metadata != null) {
-               metadata.Container = container;
-            }
+            ModelMetadata metadata = metadataProvider.GetMetadataForProperty(modelAccessor, containerType, propertyName!);
+            metadata.Container = container;
 
             return metadata;
          }
@@ -394,21 +391,21 @@ namespace System.Web.Mvc {
 
    public abstract class ModelMetadataProvider {
 
-      public abstract IEnumerable<ModelMetadata> GetMetadataForProperties(object container, Type containerType);
+      public abstract IEnumerable<ModelMetadata> GetMetadataForProperties(object? container, Type containerType);
 
-      public abstract ModelMetadata GetMetadataForProperty(Func<object> modelAccessor, Type containerType, string propertyName);
+      public abstract ModelMetadata GetMetadataForProperty(Func<object?>? modelAccessor, Type containerType, string propertyName);
 
-      public abstract ModelMetadata GetMetadataForType(Func<object> modelAccessor, Type modelType);
+      public abstract ModelMetadata GetMetadataForType(Func<object?>? modelAccessor, Type modelType);
    }
 
    public class ModelMetadataProviders {
 
       static ModelMetadataProviders _instance = new ModelMetadataProviders();
 
-      ModelMetadataProvider _currentProvider;
+      ModelMetadataProvider? _currentProvider;
       IResolver<ModelMetadataProvider> _resolver;
 
-      internal ModelMetadataProviders(IResolver<ModelMetadataProvider> resolver = null) {
+      internal ModelMetadataProviders(IResolver<ModelMetadataProvider>? resolver = null) {
          _resolver = resolver
             ?? new SingleServiceResolver<ModelMetadataProvider>(() => _currentProvider, new CachedDataAnnotationsModelMetadataProvider(), "ModelMetadataProviders.Current");
       }

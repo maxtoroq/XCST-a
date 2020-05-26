@@ -10,16 +10,16 @@ namespace System.Web.Helpers.AntiXsrf {
       internal const int SecurityTokenBitLength = 128;
       internal const int ClaimUidBitLength = 256;
 
-      string _additionalData;
-      BinaryBlob _securityToken;
-      string _username;
+      string? _additionalData;
+      BinaryBlob? _securityToken;
+      string? _username;
 
       public string AdditionalData {
          get => _additionalData ?? String.Empty;
          set => _additionalData = value;
       }
 
-      public BinaryBlob ClaimUid { get; set; }
+      public BinaryBlob? ClaimUid { get; set; }
 
       public bool IsSessionToken { get; set; }
 

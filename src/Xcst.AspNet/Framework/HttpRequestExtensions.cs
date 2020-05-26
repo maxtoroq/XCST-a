@@ -18,7 +18,7 @@ namespace System.Web.Mvc {
             return incomingVerb;
          }
 
-         string verbOverride = null;
+         string? verbOverride = null;
          string headerOverrideValue = request.Headers[XHttpMethodOverrideKey];
 
          if (!String.IsNullOrEmpty(headerOverrideValue)) {

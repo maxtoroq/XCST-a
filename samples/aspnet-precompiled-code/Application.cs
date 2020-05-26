@@ -25,7 +25,7 @@ namespace AspNetPrecompiled {
                : null;
       }
 
-      static XcstViewPage LoadDisplayTemplate(string templateName, ViewContext context) {
+      static XcstViewPage? LoadDisplayTemplate(string templateName, ViewContext context) {
 
          switch (templateName) {
             case nameof(Object):
@@ -36,7 +36,7 @@ namespace AspNetPrecompiled {
          }
       }
 
-      static XcstViewPage LoadEditorTemplate(string templateName, ViewContext context) {
+      static XcstViewPage? LoadEditorTemplate(string templateName, ViewContext context) {
 
          switch (templateName) {
             case nameof(Boolean):

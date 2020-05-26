@@ -6,11 +6,11 @@ using System.Web.Mvc.Properties;
 
 namespace System.Web.Mvc {
 
-   public class TempDataDictionary : IDictionary<string, object> {
+   public class TempDataDictionary : IDictionary<string, object?> {
 
       internal const string TempDataSerializationKey = "__tempData";
 
-      Dictionary<string, object> _data;
+      Dictionary<string, object?> _data;
       HashSet<string> _initialKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
       HashSet<string> _retainedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -18,14 +18,14 @@ namespace System.Web.Mvc {
 
       public ICollection<string> Keys => _data.Keys;
 
-      public ICollection<object> Values => _data.Values;
+      public ICollection<object?> Values => _data.Values;
 
-      bool ICollection<KeyValuePair<string, object>>.IsReadOnly =>
-         ((ICollection<KeyValuePair<string, object>>)_data).IsReadOnly;
+      bool ICollection<KeyValuePair<string, object?>>.IsReadOnly =>
+         ((ICollection<KeyValuePair<string, object?>>)_data).IsReadOnly;
 
-      public object this[string key] {
+      public object? this[string key] {
          get {
-            object value;
+            object? value;
             if (TryGetValue(key, out value)) {
                _initialKeys.Remove(key);
                return value;
@@ -39,7 +39,7 @@ namespace System.Web.Mvc {
       }
 
       public TempDataDictionary() {
-         _data = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+         _data = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
       }
 
       public void Keep() {
@@ -52,19 +52,19 @@ namespace System.Web.Mvc {
 
       public void Load(ControllerContext controllerContext, ITempDataProvider tempDataProvider) {
 
-         IDictionary<string, object> providerDictionary = tempDataProvider.LoadTempData(controllerContext);
+         IDictionary<string, object?> providerDictionary = tempDataProvider.LoadTempData(controllerContext);
 
          _data = (providerDictionary != null) ?
-            new Dictionary<string, object>(providerDictionary, StringComparer.OrdinalIgnoreCase)
-            : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            new Dictionary<string, object?>(providerDictionary, StringComparer.OrdinalIgnoreCase)
+            : new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
 
          _initialKeys = new HashSet<string>(_data.Keys, StringComparer.OrdinalIgnoreCase);
          _retainedKeys.Clear();
       }
 
-      public object Peek(string key) {
+      public object? Peek(string key) {
 
-         object value;
+         object? value;
          _data.TryGetValue(key, out value);
 
          return value;
@@ -74,7 +74,7 @@ namespace System.Web.Mvc {
 
          // Frequently called so ensure delegate is stateless
 
-         RemoveFromDictionary(_data, (KeyValuePair<string, object> entry, TempDataDictionary tempData) => {
+         RemoveFromDictionary(_data, (KeyValuePair<string, object?> entry, TempDataDictionary tempData) => {
             string key = entry.Key;
             return !tempData._initialKeys.Contains(key)
                 && !tempData._retainedKeys.Contains(key);
@@ -103,7 +103,7 @@ namespace System.Web.Mvc {
          }
       }
 
-      public void Add(string key, object value) {
+      public void Add(string key, object? value) {
 
          _data.Add(key, value);
          _initialKeys.Add(key);
@@ -119,10 +119,10 @@ namespace System.Web.Mvc {
       public bool ContainsKey(string key) =>
          _data.ContainsKey(key);
 
-      public bool ContainsValue(object value) =>
+      public bool ContainsValue(object? value) =>
          _data.ContainsValue(value);
 
-      public IEnumerator<KeyValuePair<string, object>> GetEnumerator() =>
+      public IEnumerator<KeyValuePair<string, object?>> GetEnumerator() =>
          new TempDataDictionaryEnumerator(this);
 
       public bool Remove(string key) {
@@ -133,40 +133,40 @@ namespace System.Web.Mvc {
          return _data.Remove(key);
       }
 
-      public bool TryGetValue(string key, out object value) {
+      public bool TryGetValue(string key, out object? value) {
 
          _initialKeys.Remove(key);
 
          return _data.TryGetValue(key, out value);
       }
 
-      void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int index) =>
-         ((ICollection<KeyValuePair<string, object>>)_data).CopyTo(array, index);
+      void ICollection<KeyValuePair<string, object?>>.CopyTo(KeyValuePair<string, object?>[] array, int index) =>
+         ((ICollection<KeyValuePair<string, object?>>)_data).CopyTo(array, index);
 
-      void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> keyValuePair) {
+      void ICollection<KeyValuePair<string, object?>>.Add(KeyValuePair<string, object?> keyValuePair) {
          _initialKeys.Add(keyValuePair.Key);
-         ((ICollection<KeyValuePair<string, object>>)_data).Add(keyValuePair);
+         ((ICollection<KeyValuePair<string, object?>>)_data).Add(keyValuePair);
       }
 
-      bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> keyValuePair) =>
-         ((ICollection<KeyValuePair<string, object>>)_data).Contains(keyValuePair);
+      bool ICollection<KeyValuePair<string, object?>>.Contains(KeyValuePair<string, object?> keyValuePair) =>
+         ((ICollection<KeyValuePair<string, object?>>)_data).Contains(keyValuePair);
 
-      bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> keyValuePair) {
+      bool ICollection<KeyValuePair<string, object?>>.Remove(KeyValuePair<string, object?> keyValuePair) {
          _initialKeys.Remove(keyValuePair.Key);
-         return ((ICollection<KeyValuePair<string, object>>)_data).Remove(keyValuePair);
+         return ((ICollection<KeyValuePair<string, object?>>)_data).Remove(keyValuePair);
       }
 
       IEnumerator IEnumerable.GetEnumerator() =>
          new TempDataDictionaryEnumerator(this);
 
-      private sealed class TempDataDictionaryEnumerator : IEnumerator<KeyValuePair<string, object>> {
+      private sealed class TempDataDictionaryEnumerator : IEnumerator<KeyValuePair<string, object?>> {
 
-         IEnumerator<KeyValuePair<string, object>> _enumerator;
+         IEnumerator<KeyValuePair<string, object?>> _enumerator;
          TempDataDictionary _tempData;
 
-         public KeyValuePair<string, object> Current {
+         public KeyValuePair<string, object?> Current {
             get {
-               KeyValuePair<string, object> kvp = _enumerator.Current;
+               KeyValuePair<string, object?> kvp = _enumerator.Current;
                _tempData._initialKeys.Remove(kvp.Key);
                return kvp;
             }
@@ -192,8 +192,8 @@ namespace System.Web.Mvc {
 
    public interface ITempDataProvider {
 
-      IDictionary<string, object> LoadTempData(ControllerContext controllerContext);
-      void SaveTempData(ControllerContext controllerContext, IDictionary<string, object> values);
+      IDictionary<string, object?> LoadTempData(ControllerContext controllerContext);
+      void SaveTempData(ControllerContext controllerContext, IDictionary<string, object?> values);
    }
 
    /// <summary>
@@ -212,13 +212,13 @@ namespace System.Web.Mvc {
 
       internal const string TempDataSessionStateKey = "__ControllerTempData";
 
-      public virtual IDictionary<string, object> LoadTempData(ControllerContext controllerContext) {
+      public virtual IDictionary<string, object?> LoadTempData(ControllerContext controllerContext) {
 
          HttpSessionStateBase session = controllerContext.HttpContext.Session;
 
          if (session != null) {
 
-            if (session[TempDataSessionStateKey] is Dictionary<string, object> tempDataDictionary) {
+            if (session[TempDataSessionStateKey] is Dictionary<string, object?> tempDataDictionary) {
 
                // If we got it from Session, remove it so that no other request gets it
 
@@ -227,10 +227,10 @@ namespace System.Web.Mvc {
             }
          }
 
-         return new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+         return new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
       }
 
-      public virtual void SaveTempData(ControllerContext controllerContext, IDictionary<string, object> values) {
+      public virtual void SaveTempData(ControllerContext controllerContext, IDictionary<string, object?> values) {
 
          if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 

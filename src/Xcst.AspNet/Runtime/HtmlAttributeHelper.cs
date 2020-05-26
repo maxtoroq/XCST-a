@@ -23,7 +23,7 @@ namespace Xcst.Web.Runtime {
 
       internal static void WriteId(string name, XcstWriter output) {
 
-         string sanitizedId = TagBuilder.CreateSanitizedId(name);
+         string? sanitizedId = TagBuilder.CreateSanitizedId(name);
 
          if (!String.IsNullOrEmpty(sanitizedId)) {
             output.WriteAttributeString("id", sanitizedId);
@@ -37,7 +37,7 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      public static void WriteClass(string/*?*/ cssClass, IDictionary<string, object>/*?*/ htmlAttributes, XcstWriter output) {
+      public static void WriteClass(string? cssClass, IDictionary<string, object>? htmlAttributes, XcstWriter output) {
 
          // NOTE: For backcompat, the dictionary class must be a non-null string to be joined
          // with the library class, otherwise it's ignored. If there's no library class,
@@ -49,7 +49,7 @@ namespace Xcst.Web.Runtime {
          // See also HtmlAttributeDictionary.SetAttributes
 
          bool cssClassHasValue = !String.IsNullOrEmpty(cssClass);
-         object dictClass = null;
+         object? dictClass = null;
 
          bool dictHasClass = htmlAttributes != null
             && htmlAttributes.TryGetValue("class", out dictClass);
@@ -59,14 +59,14 @@ namespace Xcst.Web.Runtime {
 
             string joinedClass = (cssClassHasValue && dictClass is string s) ?
                s + " " + cssClass
-               : (cssClassHasValue) ? cssClass
+               : (cssClassHasValue) ? cssClass!
                : output.SimpleContent.Convert(dictClass);
 
             output.WriteAttributeString("class", joinedClass);
          }
       }
 
-      public static void WriteAttributes(IDictionary<string, object>/*?*/ htmlAttributes, XcstWriter output, Func<string, bool> excludeFn = null) {
+      public static void WriteAttributes(IDictionary<string, object>? htmlAttributes, XcstWriter output, Func<string, bool>? excludeFn = null) {
 
          if (htmlAttributes != null) {
 
@@ -81,7 +81,7 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      public static void WriteAttribute(string key, object/*?*/ value, XcstWriter output) =>
+      public static void WriteAttribute(string key, object? value, XcstWriter output) =>
          output.WriteAttributeString(key, output.SimpleContent.Convert(value));
    }
 }

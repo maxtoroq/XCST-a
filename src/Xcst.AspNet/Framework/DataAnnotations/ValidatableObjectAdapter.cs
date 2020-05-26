@@ -13,12 +13,12 @@ namespace System.Web.Mvc {
       public ValidatableObjectAdapter(ModelMetadata metadata, ControllerContext context)
          : base(metadata, context) { }
 
-      public override IEnumerable<ModelValidationResult> Validate(object container) {
+      public override IEnumerable<ModelValidationResult> Validate(object? container) {
 
          // NOTE: Container is never used here, because IValidatableObject doesn't give you
          // any way to get access to your container.
 
-         object model = this.Metadata.Model;
+         object? model = this.Metadata.Model;
 
          if (model is null) {
             return Enumerable.Empty<ModelValidationResult>();

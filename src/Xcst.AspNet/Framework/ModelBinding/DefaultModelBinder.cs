@@ -15,7 +15,7 @@ namespace System.Web.Mvc {
 
    public class DefaultModelBinder : IModelBinder {
 
-      ModelBinderDictionary _binders;
+      ModelBinderDictionary? _binders;
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Property is settable so that the dictionary can be provided for unit testing purposes.")]
       protected internal ModelBinderDictionary Binders {
@@ -23,7 +23,7 @@ namespace System.Web.Mvc {
          set => _binders = value;
       }
 
-      static void AddValueRequiredMessageToModelState(ControllerContext controllerContext, ModelStateDictionary modelState, string modelStateKey, Type elementType, object value) {
+      static void AddValueRequiredMessageToModelState(ControllerContext controllerContext, ModelStateDictionary modelState, string modelStateKey, Type elementType, object? value) {
 
          if (value is null
             && !TypeHelpers.TypeAllowsNullValue(elementType)
@@ -47,9 +47,9 @@ namespace System.Web.Mvc {
          }
       }
 
-      internal object BindComplexModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
+      internal object? BindComplexModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
-         object model = bindingContext.Model;
+         object? model = bindingContext.Model;
          Type modelType = bindingContext.ModelType;
 
          // if we're being asked to create an array, create a list instead, then coerce to an array after the list is created
@@ -68,7 +68,7 @@ namespace System.Web.Mvc {
                ValueProvider = bindingContext.ValueProvider
             };
 
-            IList list = (IList)UpdateCollection(controllerContext, arrayBindingContext, elementType);
+            IList? list = (IList?)UpdateCollection(controllerContext, arrayBindingContext, elementType);
 
             if (list is null) {
                return null;
@@ -85,7 +85,7 @@ namespace System.Web.Mvc {
 
          // special-case IDictionary<,> and ICollection<>
 
-         Type dictionaryType = TypeHelpers.ExtractGenericInterface(modelType, typeof(IDictionary<,>));
+         Type? dictionaryType = TypeHelpers.ExtractGenericInterface(modelType, typeof(IDictionary<,>));
 
          if (dictionaryType != null) {
 
@@ -106,7 +106,7 @@ namespace System.Web.Mvc {
             return dictionary;
          }
 
-         Type enumerableType = TypeHelpers.ExtractGenericInterface(modelType, typeof(IEnumerable<>));
+         Type? enumerableType = TypeHelpers.ExtractGenericInterface(modelType, typeof(IEnumerable<>));
 
          if (enumerableType != null) {
 
@@ -124,7 +124,7 @@ namespace System.Web.Mvc {
                   ValueProvider = bindingContext.ValueProvider
                };
 
-               object collection = UpdateCollection(controllerContext, collectionBindingContext, elementType);
+               object? collection = UpdateCollection(controllerContext, collectionBindingContext, elementType);
 
                return collection;
             }
@@ -137,7 +137,7 @@ namespace System.Web.Mvc {
          return model;
       }
 
-      public virtual object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
+      public virtual object? BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
          RuntimeHelpers.EnsureSufficientExecutionStack();
 
@@ -146,7 +146,7 @@ namespace System.Web.Mvc {
          bool performedFallback = false;
 
          if (!String.IsNullOrEmpty(bindingContext.ModelName)
-            && !bindingContext.ValueProvider.ContainsPrefix(bindingContext.ModelName)) {
+            && !bindingContext.ValueProvider.ContainsPrefix(bindingContext.ModelName!)) {
 
             // We couldn't find any entry that began with the prefix. If this is the top-level element, fall back
             // to the empty prefix.
@@ -173,7 +173,7 @@ namespace System.Web.Mvc {
 
          if (!performedFallback) {
 
-            ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
+            ValueProviderResult? valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
             if (valueProviderResult != null) {
                return BindSimpleModel(controllerContext, bindingContext, valueProviderResult);
@@ -228,7 +228,7 @@ namespace System.Web.Mvc {
             ValueProvider = bindingContext.ValueProvider
          };
 
-         object newPropertyValue = GetPropertyValue(controllerContext, innerBindingContext, propertyDescriptor, propertyBinder);
+         object? newPropertyValue = GetPropertyValue(controllerContext, innerBindingContext, propertyDescriptor, propertyBinder);
 
          propertyMetadata.Model = newPropertyValue;
 
@@ -252,14 +252,14 @@ namespace System.Web.Mvc {
 
             foreach (ModelError error in modelState.Errors.Where(err => String.IsNullOrEmpty(err.ErrorMessage) && err.Exception != null).ToList()) {
 
-               for (Exception exception = error.Exception; exception != null; exception = exception.InnerException) {
+               for (Exception? exception = error.Exception; exception != null; exception = exception.InnerException) {
 
                   // We only consider "known" type of exception and do not make too aggressive changes here
 
                   if (exception is FormatException || exception is OverflowException) {
                      string displayName = propertyMetadata.GetDisplayName();
                      string errorMessageTemplate = GetValueInvalidResource(controllerContext);
-                     string errorMessage = String.Format(CultureInfo.CurrentCulture, errorMessageTemplate, modelState.Value.AttemptedValue, displayName);
+                     string errorMessage = String.Format(CultureInfo.CurrentCulture, errorMessageTemplate, modelState.Value?.AttemptedValue, displayName);
                      modelState.Errors.Remove(error);
                      modelState.Errors.Add(errorMessage);
                      break;
@@ -269,7 +269,7 @@ namespace System.Web.Mvc {
          }
       }
 
-      internal object BindSimpleModel(ControllerContext controllerContext, ModelBindingContext bindingContext, ValueProviderResult valueProviderResult) {
+      internal object? BindSimpleModel(ControllerContext controllerContext, ModelBindingContext bindingContext, ValueProviderResult valueProviderResult) {
 
          bindingContext.ModelState.SetModelValue(bindingContext.ModelName, valueProviderResult);
 
@@ -291,11 +291,11 @@ namespace System.Web.Mvc {
                // case 1: user asked for an array
                // ValueProviderResult.ConvertTo() understands array types, so pass in the array type directly
 
-               object modelArray = ConvertProviderResult(bindingContext.ModelState, bindingContext.ModelName, valueProviderResult, bindingContext.ModelType);
+               object? modelArray = ConvertProviderResult(bindingContext.ModelState, bindingContext.ModelName, valueProviderResult, bindingContext.ModelType);
                return modelArray;
             }
 
-            Type enumerableType = TypeHelpers.ExtractGenericInterface(bindingContext.ModelType, typeof(IEnumerable<>));
+            Type? enumerableType = TypeHelpers.ExtractGenericInterface(bindingContext.ModelType, typeof(IEnumerable<>));
 
             if (enumerableType != null) {
 
@@ -305,7 +305,7 @@ namespace System.Web.Mvc {
                object modelCollection = CreateModel(controllerContext, bindingContext, bindingContext.ModelType);
                Type elementType = enumerableType.GetGenericArguments()[0];
                Type arrayType = elementType.MakeArrayType();
-               object modelArray = ConvertProviderResult(bindingContext.ModelState, bindingContext.ModelName, valueProviderResult, arrayType);
+               object? modelArray = ConvertProviderResult(bindingContext.ModelState, bindingContext.ModelName, valueProviderResult, arrayType);
 
                Type collectionType = typeof(ICollection<>).MakeGenericType(elementType);
 
@@ -319,7 +319,7 @@ namespace System.Web.Mvc {
 
          // case 3: user asked for an individual element
 
-         object model = ConvertProviderResult(bindingContext.ModelState, bindingContext.ModelName, valueProviderResult, bindingContext.ModelType);
+         object? model = ConvertProviderResult(bindingContext.ModelState, bindingContext.ModelName, valueProviderResult, bindingContext.ModelType);
          return model;
       }
 
@@ -350,10 +350,10 @@ namespace System.Web.Mvc {
 
       [SuppressMessage("Microsoft.Globalization", "CA1304:SpecifyCultureInfo", MessageId = "System.Web.Mvc.ValueProviderResult.ConvertTo(System.Type)", Justification = "The target object should make the correct culture determination, not this method.")]
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We're recording this exception so that we can act on it later.")]
-      static object ConvertProviderResult(ModelStateDictionary modelState, string modelStateKey, ValueProviderResult valueProviderResult, Type destinationType) {
+      static object? ConvertProviderResult(ModelStateDictionary modelState, string modelStateKey, ValueProviderResult valueProviderResult, Type destinationType) {
 
          try {
-            object convertedValue = valueProviderResult.ConvertTo(destinationType);
+            object? convertedValue = valueProviderResult.ConvertTo(destinationType);
             return convertedValue;
          } catch (Exception ex) {
             modelState.AddModelError(modelStateKey, ex);
@@ -363,9 +363,9 @@ namespace System.Web.Mvc {
 
       internal ModelBindingContext CreateComplexElementalModelBindingContext(ControllerContext controllerContext, ModelBindingContext bindingContext, object model) {
 
-         BindAttribute bindAttr = (BindAttribute)GetTypeDescriptor(controllerContext, bindingContext).GetAttributes()[typeof(BindAttribute)];
+         BindAttribute? bindAttr = (BindAttribute?)GetTypeDescriptor(controllerContext, bindingContext).GetAttributes()[typeof(BindAttribute)];
          Predicate<string> newPropertyFilter = (bindAttr != null) ?
-            propertyName => bindAttr.IsPropertyAllowed(propertyName) && bindingContext.PropertyFilter(propertyName)
+            propertyName => bindAttr!.IsPropertyAllowed(propertyName) && bindingContext.PropertyFilter(propertyName)
             : bindingContext.PropertyFilter;
 
          var newBindingContext = new ModelBindingContext {
@@ -404,7 +404,7 @@ namespace System.Web.Mvc {
 
             // Ensure thrown exception contains the type name.  Might be down a few levels.
 
-            MissingMethodException replacementException =
+            MissingMethodException? replacementException =
                TypeHelpers.EnsureDebuggableException(exception, typeToCreate.FullName);
 
             if (replacementException != null) {
@@ -421,12 +421,12 @@ namespace System.Web.Mvc {
       protected static string CreateSubIndexName(string prefix, string index) =>
          String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", prefix, index);
 
-      protected internal static string CreateSubPropertyName(string prefix, string propertyName) {
+      protected internal static string CreateSubPropertyName(string? prefix, string? propertyName) {
 
          if (String.IsNullOrEmpty(prefix)) {
-            return propertyName;
+            return propertyName!;
          } else if (String.IsNullOrEmpty(propertyName)) {
-            return prefix;
+            return prefix!;
          } else {
             return prefix + "." + propertyName;
          }
@@ -448,11 +448,11 @@ namespace System.Web.Mvc {
       static void GetIndexes(ModelBindingContext bindingContext, out bool stopOnIndexNotFound, out IEnumerable<string> indexes) {
 
          string indexKey = CreateSubPropertyName(bindingContext.ModelName, "index");
-         ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(indexKey);
+         ValueProviderResult? valueProviderResult = bindingContext.ValueProvider.GetValue(indexKey);
 
          if (valueProviderResult != null) {
 
-            string[] indexesArray = valueProviderResult.ConvertTo(typeof(string[])) as string[];
+            string[]? indexesArray = valueProviderResult.ConvertTo(typeof(string[])) as string[];
 
             if (indexesArray != null) {
                stopOnIndexNotFound = false;
@@ -470,9 +470,9 @@ namespace System.Web.Mvc {
       protected virtual PropertyDescriptorCollection GetModelProperties(ControllerContext controllerContext, ModelBindingContext bindingContext) =>
          GetTypeDescriptor(controllerContext, bindingContext).GetProperties();
 
-      protected virtual object GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder) {
+      protected virtual object? GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder) {
 
-         object value = propertyBinder.BindModel(controllerContext, bindingContext);
+         object? value = propertyBinder.BindModel(controllerContext, bindingContext);
 
          if (bindingContext.ModelMetadata.ConvertEmptyStringToNull && Equals(value, String.Empty)) {
             return null;
@@ -510,7 +510,7 @@ namespace System.Web.Mvc {
             return bindingContext.ModelState.IsValid;
          }
 
-         return bindingContext.ModelState.IsValidField(bindingContext.ModelName);
+         return bindingContext.ModelState.IsValidField(bindingContext.ModelName!);
       }
 
       protected virtual void OnModelUpdated(ControllerContext controllerContext, ModelBindingContext bindingContext) {
@@ -535,16 +535,16 @@ namespace System.Web.Mvc {
          // default implementation does nothing
          true;
 
-      protected virtual void OnPropertyValidated(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value) {
+      protected virtual void OnPropertyValidated(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object? value) {
          // default implementation does nothing
       }
 
-      protected virtual bool OnPropertyValidating(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value) =>
+      protected virtual bool OnPropertyValidating(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object? value) =>
          // default implementation does nothing
          true;
 
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We're recording this exception so that we can act on it later.")]
-      protected virtual void SetProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value) {
+      protected virtual void SetProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object? value) {
 
          ModelMetadata propertyMetadata = bindingContext.PropertyMetadata[propertyDescriptor.Name];
          propertyMetadata.Model = value;
@@ -619,7 +619,7 @@ namespace System.Web.Mvc {
          return true;
       }
 
-      internal object UpdateCollection(ControllerContext controllerContext, ModelBindingContext bindingContext, Type elementType) {
+      internal object? UpdateCollection(ControllerContext controllerContext, ModelBindingContext bindingContext, Type elementType) {
 
          bool stopOnIndexNotFound;
          IEnumerable<string> indexes;
@@ -628,7 +628,7 @@ namespace System.Web.Mvc {
 
          // build up a list of items from the request
 
-         var modelList = new List<object>();
+         var modelList = new List<object?>();
 
          foreach (string currentIndex in indexes) {
 
@@ -651,7 +651,7 @@ namespace System.Web.Mvc {
                ValueProvider = bindingContext.ValueProvider
             };
 
-            object thisElement = elementBinder.BindModel(controllerContext, innerContext);
+            object? thisElement = elementBinder.BindModel(controllerContext, innerContext);
 
             // we need to merge model errors up
 
@@ -667,7 +667,7 @@ namespace System.Web.Mvc {
 
          // replace the original collection
 
-         object collection = bindingContext.Model;
+         object collection = bindingContext.Model!;
          CollectionHelpers.ReplaceCollection(elementType, collection, modelList);
 
          return collection;
@@ -684,7 +684,7 @@ namespace System.Web.Mvc {
 
          // build up a list of items from the request
 
-         var modelList = new List<KeyValuePair<object, object>>();
+         var modelList = new List<KeyValuePair<object, object?>>();
 
          foreach (string currentIndex in indexes) {
 
@@ -710,7 +710,7 @@ namespace System.Web.Mvc {
                ValueProvider = bindingContext.ValueProvider
             };
 
-            object thisKey = keyBinder.BindModel(controllerContext, keyBindingContext);
+            object? thisKey = keyBinder.BindModel(controllerContext, keyBindingContext);
 
             // we need to merge model errors up
 
@@ -725,7 +725,7 @@ namespace System.Web.Mvc {
 
             // bind the value
 
-            modelList.Add(CreateEntryForModel(controllerContext, bindingContext, valueType, valueBinder, valueFieldKey, thisKey));
+            modelList.Add(CreateEntryForModel(controllerContext, bindingContext, valueType, valueBinder, valueFieldKey, thisKey!));
          }
 
          // Let's try another method
@@ -744,13 +744,13 @@ namespace System.Web.Mvc {
 
          // replace the original collection
 
-         object dictionary = bindingContext.Model;
+         object dictionary = bindingContext.Model!;
          CollectionHelpers.ReplaceDictionary(keyType, valueType, dictionary, modelList);
 
          return dictionary;
       }
 
-      static KeyValuePair<object, object> CreateEntryForModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type valueType, IModelBinder valueBinder, string modelName, object modelKey) {
+      static KeyValuePair<object, object?> CreateEntryForModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type valueType, IModelBinder valueBinder, string modelName, object modelKey) {
 
          var valueBindingContext = new ModelBindingContext {
             ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, valueType),
@@ -760,10 +760,10 @@ namespace System.Web.Mvc {
             ValueProvider = bindingContext.ValueProvider
          };
 
-         object thisValue = valueBinder.BindModel(controllerContext, valueBindingContext);
+         object? thisValue = valueBinder.BindModel(controllerContext, valueBindingContext);
          AddValueRequiredMessageToModelState(controllerContext, bindingContext.ModelState, modelName, valueType, thisValue);
 
-         return new KeyValuePair<object, object>(modelKey, thisValue);
+         return new KeyValuePair<object, object?>(modelKey, thisValue);
       }
 
       // This helper type is used because we're working with strongly-typed collections, but we don't know the Ts
@@ -777,13 +777,13 @@ namespace System.Web.Mvc {
          static readonly MethodInfo _replaceDictionaryMethod = typeof(CollectionHelpers).GetMethod(nameof(ReplaceDictionaryImpl), BindingFlags.Static | BindingFlags.NonPublic);
 
          [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-         public static void ReplaceCollection(Type collectionType, object collection, object newContents) {
+         public static void ReplaceCollection(Type collectionType, object collection, object? newContents) {
 
             MethodInfo targetMethod = _replaceCollectionMethod.MakeGenericMethod(collectionType);
-            targetMethod.Invoke(null, new object[] { collection, newContents });
+            targetMethod.Invoke(null, new object?[] { collection, newContents });
          }
 
-         static void ReplaceCollectionImpl<T>(ICollection<T> collection, IEnumerable newContents) {
+         static void ReplaceCollectionImpl<T>(ICollection<T> collection, IEnumerable? newContents) {
 
             collection.Clear();
 

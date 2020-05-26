@@ -10,7 +10,7 @@ using System.Web.Mvc.Properties;
 namespace System.Web.Mvc {
 
    public interface IModelBinder {
-      object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext);
+      object? BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext);
    }
 
    public class ModelBindingContext {
@@ -18,21 +18,21 @@ namespace System.Web.Mvc {
       static readonly Predicate<string> _defaultPropertyFilter = _ => true;
 
       string _modelName = String.Empty;
-      ModelStateDictionary _modelState;
-      Predicate<string> _propertyFilter;
-      Dictionary<string, ModelMetadata> _propertyMetadata;
+      ModelStateDictionary? _modelState;
+      Predicate<string>? _propertyFilter;
+      Dictionary<string, ModelMetadata>? _propertyMetadata;
 
       public bool FallbackToEmptyPrefix { get; set; }
 
       [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "value", Justification = "Cannot remove setter as that's a breaking change")]
-      public object Model {
+      public object? Model {
          get => ModelMetadata.Model;
          set => throw new InvalidOperationException(MvcResources.ModelMetadata_PropertyNotSettable);
       }
 
       public ModelMetadata ModelMetadata { get; set; }
 
-      public string ModelName {
+      public string? ModelName {
          get => _modelName;
          set => _modelName = value ?? String.Empty;
       }
@@ -57,7 +57,7 @@ namespace System.Web.Mvc {
       public IDictionary<string, ModelMetadata> PropertyMetadata =>
          _propertyMetadata
             ?? (_propertyMetadata = ModelMetadata.PropertiesAsArray
-               .ToDictionaryFast(m => m.PropertyName, StringComparer.OrdinalIgnoreCase));
+               .ToDictionaryFast(m => m.PropertyName!, StringComparer.OrdinalIgnoreCase));
 
       public IValueProvider ValueProvider { get; set; }
 
@@ -67,7 +67,7 @@ namespace System.Web.Mvc {
       // copies certain values that won't change between parent and child objects,
       // e.g. ValueProvider, ModelState
 
-      public ModelBindingContext(ModelBindingContext bindingContext) {
+      public ModelBindingContext(ModelBindingContext? bindingContext) {
 
          if (bindingContext != null) {
             this.ModelState = bindingContext.ModelState;
@@ -80,15 +80,15 @@ namespace System.Web.Mvc {
 
       public static ModelBinderDictionary Binders { get; } = CreateDefaultBinderDictionary();
 
-      internal static IModelBinder GetBinderFromAttributes(Type type, Action<Type> errorAction) {
+      internal static IModelBinder? GetBinderFromAttributes(Type type, Action<Type> errorAction) {
 
          AttributeList allAttrs = new AttributeList(TypeDescriptorHelper.Get(type).GetAttributes());
-         CustomModelBinderAttribute binder = allAttrs.SingleOfTypeDefaultOrError<Attribute, CustomModelBinderAttribute, Type>(errorAction, type);
+         CustomModelBinderAttribute? binder = allAttrs.SingleOfTypeDefaultOrError<Attribute, CustomModelBinderAttribute, Type>(errorAction, type);
 
          return binder?.GetBinder();
       }
 
-      internal static IModelBinder GetBinderFromAttributes(ICustomAttributeProvider element, Action<ICustomAttributeProvider> errorAction) {
+      internal static IModelBinder? GetBinderFromAttributes(ICustomAttributeProvider element, Action<ICustomAttributeProvider> errorAction) {
 
          CustomModelBinderAttribute[] attrs = (CustomModelBinderAttribute[])element.GetCustomAttributes(typeof(CustomModelBinderAttribute), inherit: true);
 
@@ -98,7 +98,7 @@ namespace System.Web.Mvc {
             return null;
          }
 
-         CustomModelBinderAttribute binder = attrs.SingleDefaultOrError(errorAction, element);
+         CustomModelBinderAttribute? binder = attrs.SingleDefaultOrError(errorAction, element);
 
          return binder?.GetBinder();
       }
@@ -120,7 +120,7 @@ namespace System.Web.Mvc {
    public class ModelBinderDictionary : IDictionary<Type, IModelBinder> {
 
       readonly Dictionary<Type, IModelBinder> _innerDictionary = new Dictionary<Type, IModelBinder>();
-      IModelBinder _defaultBinder;
+      IModelBinder? _defaultBinder;
       ModelBinderProviderCollection _modelBinderProviders;
 
       public int Count => _innerDictionary.Count;
@@ -172,16 +172,16 @@ namespace System.Web.Mvc {
          ((IDictionary<Type, IModelBinder>)_innerDictionary).CopyTo(array, arrayIndex);
 
       public IModelBinder GetBinder(Type modelType) =>
-         GetBinder(modelType, true /* fallbackToDefault */);
+         GetBinder(modelType, fallbackToDefault: true)!;
 
-      public virtual IModelBinder GetBinder(Type modelType, bool fallbackToDefault) {
+      public virtual IModelBinder? GetBinder(Type modelType, bool fallbackToDefault) {
 
          if (modelType is null) throw new ArgumentNullException(nameof(modelType));
 
          return GetBinder(modelType, (fallbackToDefault) ? this.DefaultBinder : null);
       }
 
-      private IModelBinder GetBinder(Type modelType, IModelBinder fallbackBinder) {
+      private IModelBinder? GetBinder(Type modelType, IModelBinder? fallbackBinder) {
 
          // Try to look up a binder for this type. We use this order of precedence:
          // 1. Binder returned from provider
@@ -189,7 +189,7 @@ namespace System.Web.Mvc {
          // 3. Binder attribute defined on the type
          // 4. Supplied fallback binder
 
-         IModelBinder binder = _modelBinderProviders.GetBinder(modelType);
+         IModelBinder? binder = _modelBinderProviders.GetBinder(modelType);
 
          if (binder != null) {
             return binder;

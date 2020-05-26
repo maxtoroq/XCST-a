@@ -13,7 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <CodeAnalysisRuleSet>..\XCST.ruleset</CodeAnalysisRuleSet>
     <TargetFrameworkProfile />
-    <LangVersion>7</LangVersion>
+    <LangVersion>8</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,6 +79,7 @@
     <Compile Include="Framework\Common\AttributeList.cs" />
     <Compile Include="Framework\Common\CollectionExtensions.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="Diagnostics.cs" />
     <Compile Include="Framework\Common\PrefixContainer.cs" />
     <Compile Include="Framework\Common\PropertyHelper.cs" />
     <Compile Include="Framework\Common\TypeDescriptorHelper.cs" />

@@ -7,9 +7,9 @@ namespace System.Web.Mvc {
    public class ModelClientValidationRule {
 
       readonly Dictionary<string, object> _validationParameters = new Dictionary<string, object>();
-      string _validationType;
+      string? _validationType;
 
-      public string ErrorMessage { get; set; }
+      public string? ErrorMessage { get; set; }
 
       public IDictionary<string, object> ValidationParameters => _validationParameters;
 

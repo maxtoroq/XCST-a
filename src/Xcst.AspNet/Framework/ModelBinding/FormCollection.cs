@@ -21,11 +21,11 @@ namespace System.Web.Mvc {
          Add(collection);
       }
 
-      public ValueProviderResult GetValue(string name) {
+      public ValueProviderResult? GetValue(string name) {
 
          if (name is null) throw new ArgumentNullException(nameof(name));
 
-         string[] rawValue = GetValues(name);
+         string[]? rawValue = GetValues(name);
 
          if (rawValue is null) {
             return null;
@@ -43,7 +43,7 @@ namespace System.Web.Mvc {
       bool IValueProvider.ContainsPrefix(string prefix) =>
          CollectionContainsPrefix(this.AllKeys, prefix);
 
-      ValueProviderResult IValueProvider.GetValue(string key) =>
+      ValueProviderResult? IValueProvider.GetValue(string key) =>
          GetValue(key);
 
       static bool CollectionContainsPrefix(IEnumerable<string> collection, string prefix) {

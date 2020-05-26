@@ -31,7 +31,7 @@ namespace System.Web.Mvc {
       public static ModelValidator GetModelValidator(ModelMetadata metadata, ControllerContext context) =>
          new CompositeModelValidator(metadata, context);
 
-      public abstract IEnumerable<ModelValidationResult> Validate(object container);
+      public abstract IEnumerable<ModelValidationResult> Validate(object? container);
 
       class CompositeModelValidator : ModelValidator {
 
@@ -44,18 +44,18 @@ namespace System.Web.Mvc {
                Message = propertyResult.Message
             };
 
-         static string CreateSubPropertyName(string prefix, string propertyName) {
+         static string CreateSubPropertyName(string? prefix, string propertyName) {
 
             if (String.IsNullOrEmpty(prefix)) {
                return propertyName;
             } else if (String.IsNullOrEmpty(propertyName)) {
-               return prefix;
+               return prefix!;
             } else {
                return prefix + "." + propertyName;
             }
          }
 
-         public override IEnumerable<ModelValidationResult> Validate(object container) {
+         public override IEnumerable<ModelValidationResult> Validate(object? container) {
 
             bool propertiesValid = true;
 
@@ -89,9 +89,10 @@ namespace System.Web.Mvc {
 
    class ModelValidationResult {
 
-      string _memberName;
-      string _message;
+      string? _memberName;
+      string? _message;
 
+      [AllowNull]
       public string MemberName {
          get => _memberName ?? String.Empty;
          set => _memberName = value;
@@ -115,12 +116,12 @@ namespace System.Web.Mvc {
 
    class ModelValidatorProviderCollection : Collection<ModelValidatorProvider> {
 
-      ModelValidatorProvider[] _combinedItems;
-      IDependencyResolver _dependencyResolver;
+      ModelValidatorProvider[]? _combinedItems;
+      IDependencyResolver? _dependencyResolver;
 
       internal ModelValidatorProvider[] CombinedItems {
          get {
-            ModelValidatorProvider[] combinedItems = _combinedItems;
+            ModelValidatorProvider[]? combinedItems = _combinedItems;
 
             if (combinedItems is null) {
                combinedItems = MultiServiceResolver.GetCombined<ModelValidatorProvider>(Items, _dependencyResolver);

@@ -14,8 +14,8 @@ namespace System.Web.Mvc {
 
       DisplayColumnAttribute _displayColumnAttribute;
 
-      internal DataAnnotationsModelMetadata(DataAnnotationsModelMetadataProvider provider, Type containerType,
-            Func<object> modelAccessor, Type modelType, string propertyName,
+      internal DataAnnotationsModelMetadata(DataAnnotationsModelMetadataProvider provider, Type? containerType,
+            Func<object?>? modelAccessor, Type modelType, string? propertyName,
             DisplayColumnAttribute displayColumnAttribute)
          : base(provider, containerType, modelAccessor, modelType, propertyName) {
 
@@ -67,7 +67,7 @@ namespace System.Web.Mvc {
 
    class DataAnnotationsModelMetadataProvider : AssociatedMetadataProvider {
 
-      protected override ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName) {
+      protected override ModelMetadata CreateMetadata(IEnumerable<Attribute> attributes, Type? containerType, Func<object?>? modelAccessor, Type modelType, string? propertyName) {
 
          var attributeList = new List<Attribute>(attributes);
          DisplayColumnAttribute displayColumnAttribute = attributeList.OfType<DisplayColumnAttribute>().FirstOrDefault();
@@ -117,7 +117,7 @@ namespace System.Web.Mvc {
 
          DisplayAttribute display = attributes.OfType<DisplayAttribute>().FirstOrDefault();
 
-         string name = null;
+         string? name = null;
 
          if (display != null) {
 

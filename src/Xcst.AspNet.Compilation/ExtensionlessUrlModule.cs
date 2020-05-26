@@ -50,14 +50,14 @@ namespace Xcst.Web {
 
          string requestPath = request.AppRelativeCurrentExecutionFilePath.Substring(2) + request.PathInfo;
 
-         if (MatchRequest(requestPath, out string pagePath, out string pathInfo)) {
+         if (MatchRequest(requestPath, out string? pagePath, out string? pathInfo)) {
 
             if (Path.GetFileName(pagePath).StartsWith("_", StringComparison.OrdinalIgnoreCase)) {
                throw new HttpException(404, "Files with leading underscores (\"_\") cannot be served.");
             }
 
             string virtualPath = "~/" + pagePath;
-            XcstPage page = CreateFromVirtualPath(virtualPath, pathInfo);
+            XcstPage? page = CreateFromVirtualPath(virtualPath, pathInfo);
 
             if (page != null) {
 
@@ -80,7 +80,7 @@ namespace Xcst.Web {
          }
       }
 
-      static XcstPage CreateFromVirtualPath(string virtualPath, string pathInfo) {
+      static XcstPage? CreateFromVirtualPath(string virtualPath, string? pathInfo) {
 
          if (virtualPath is null) throw new ArgumentNullException(nameof(virtualPath));
 
@@ -129,9 +129,9 @@ namespace Xcst.Web {
          return String.Empty;
       }
 
-      static bool MatchRequest(string requestPath, out string pagePath, out string pathInfo) {
+      static bool MatchRequest(string requestPath, out string? pagePath, out string? pathInfo) {
 
-         Debug.Assert(requestPath != null);
+         Assert.IsNotNull(requestPath);
          Debug.Assert(!requestPath.StartsWith("~/"));
 
          // We can skip the file exists check and normal lookup for empty paths, but we still need to look for default pages
@@ -159,7 +159,7 @@ namespace Xcst.Web {
 
                // Does the current route level patch any supported extension?
 
-               string routeLevelMatch = GetRouteLevelMatch(currentLevel);
+               string? routeLevelMatch = GetRouteLevelMatch(currentLevel);
 
                if (routeLevelMatch != null) {
 
@@ -204,7 +204,7 @@ namespace Xcst.Web {
          return false;
       }
 
-      static string GetRouteLevelMatch(string pathValue) {
+      static string? GetRouteLevelMatch(string pathValue) {
 
          // For performance, avoid multiple calls to String.Concat
          // Only add the extension if it's not already there
@@ -220,7 +220,7 @@ namespace Xcst.Web {
          return null;
       }
 
-      static bool MatchDefaultFile(string requestPath, out string pagePath) {
+      static bool MatchDefaultFile(string requestPath, out string? pagePath) {
 
          const string defaultDocument = "index";
 
@@ -240,7 +240,7 @@ namespace Xcst.Web {
 
          // Does the current route level match any supported extension?
 
-         string indexMatch = GetRouteLevelMatch(currentLevelIndex);
+         string? indexMatch = GetRouteLevelMatch(currentLevelIndex);
 
          if (indexMatch != null) {
 
@@ -261,8 +261,9 @@ namespace Xcst.Web {
 
       static bool PathEndsWithExtension(string path, string extension) {
 
-         Debug.Assert(path != null);
-         Debug.Assert(extension != null && extension.Length > 0);
+         Assert.IsNotNull(path);
+         Assert.IsNotNull(extension);
+         Debug.Assert(extension.Length > 0);
 
          if (path.EndsWith(extension, StringComparison.OrdinalIgnoreCase)) {
 

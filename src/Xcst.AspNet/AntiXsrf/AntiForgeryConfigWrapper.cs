@@ -4,7 +4,7 @@ namespace System.Web.Helpers.AntiXsrf {
 
    sealed class AntiForgeryConfigWrapper : IAntiForgeryConfig {
 
-      public IAntiForgeryAdditionalDataProvider AdditionalDataProvider => AntiForgeryConfig.AdditionalDataProvider;
+      public IAntiForgeryAdditionalDataProvider? AdditionalDataProvider => AntiForgeryConfig.AdditionalDataProvider;
 
       public string CookieName => AntiForgeryConfig.CookieName;
 

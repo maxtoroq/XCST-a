@@ -4,17 +4,17 @@ namespace System.Web.Mvc {
 
    public class HttpPostedFileBaseModelBinder : IModelBinder {
 
-      public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
+      public object? BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
          if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
          if (bindingContext is null) throw new ArgumentNullException(nameof(bindingContext));
 
-         HttpPostedFileBase theFile = controllerContext.HttpContext.Request.Files[bindingContext.ModelName];
+         HttpPostedFileBase? theFile = controllerContext.HttpContext.Request.Files[bindingContext.ModelName];
          return ChooseFileOrNull(theFile);
       }
 
       // helper that returns the original file if there was content uploaded, null if empty
-      internal static HttpPostedFileBase ChooseFileOrNull(HttpPostedFileBase rawFile) {
+      internal static HttpPostedFileBase? ChooseFileOrNull(HttpPostedFileBase? rawFile) {
 
          // case 1: there was no <input type="file" ... /> element in the post
          if (rawFile is null) {

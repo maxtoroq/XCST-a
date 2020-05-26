@@ -30,11 +30,13 @@ namespace System.Web.Mvc {
 
       IEnumerable<ModelValidator> GetValidatorsForProperty(ModelMetadata metadata, ControllerContext context) {
 
-         ICustomTypeDescriptor typeDescriptor = GetTypeDescriptor(metadata.ContainerType);
+         Type containerType = metadata.ContainerType!;
+
+         ICustomTypeDescriptor typeDescriptor = GetTypeDescriptor(containerType);
 
          PropertyDescriptor property = typeDescriptor.GetProperties().Find(metadata.PropertyName, ignoreCase: true)
             ?? throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, MvcResources.Common_PropertyNotFound,
-                  metadata.ContainerType.FullName, metadata.PropertyName), nameof(metadata));
+                  containerType.FullName, metadata.PropertyName), nameof(metadata));
 
          return GetValidators(metadata, context, new AttributeList(property.Attributes));
       }

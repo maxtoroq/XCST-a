@@ -13,34 +13,44 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace Xcst.Web.Mvc {
 
+   // Many of the properties of XcstViewPage can be null if ViewContext is not initialized.
+   // These are however not marked as nullable since, at runtime, ViewContext is always initialized.
+
    public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
-      ViewContext _ViewContext;
-      ViewDataDictionary _ViewData;
-      DynamicViewDataDictionary _ViewBag;
-      UrlHelper _Url;
-      HtmlHelper _Html;
-      TempDataDictionary _TempData;
+      ViewContext? _ViewContext;
+      ViewDataDictionary? _ViewData;
+      DynamicViewDataDictionary? _ViewBag;
+      UrlHelper? _Url;
+      HtmlHelper? _Html;
+      TempDataDictionary? _TempData;
 
       public virtual ViewContext ViewContext {
+#pragma warning disable CS8603
          get => _ViewContext;
+#pragma warning restore CS8603
          set {
             _ViewContext = value;
 
+#pragma warning disable CS8601
             Context = value?.HttpContext;
+#pragma warning restore CS8601
 
             if (value?.ViewData is ViewDataDictionary vd) {
                ViewData = vd;
             }
 
+#pragma warning disable CS8625
             Url = null;
             Html = null;
+#pragma warning restore CS8625
          }
       }
 
@@ -49,7 +59,7 @@ namespace Xcst.Web.Mvc {
             if (_ViewData is null) {
                SetViewData(new ViewDataDictionary());
             }
-            return _ViewData;
+            return _ViewData!;
          }
          set => SetViewData(value);
       }
@@ -57,7 +67,7 @@ namespace Xcst.Web.Mvc {
       public dynamic ViewBag => _ViewBag
          ?? (_ViewBag = new DynamicViewDataDictionary(() => ViewData));
 
-      public object Model => ViewData.Model;
+      public object? Model => ViewData.Model;
 
       public virtual UrlHelper Url {
          get {
@@ -71,7 +81,9 @@ namespace Xcst.Web.Mvc {
                   new UrlHelper(Context);
 #endif
             }
+#pragma warning disable CS8603
             return _Url;
+#pragma warning restore CS8603
          }
          set => _Url = value;
       }
@@ -82,7 +94,9 @@ namespace Xcst.Web.Mvc {
                && ViewContext != null) {
                _Html = new HtmlHelper(ViewContext, this);
             }
+#pragma warning disable CS8603
             return _Html;
+#pragma warning restore CS8603
          }
          set => _Html = value;
       }
@@ -118,7 +132,9 @@ namespace Xcst.Web.Mvc {
          this.Response.RedirectPermanent(this.Url.Content(url), endResponse: false);
       }
 
-      public bool TryBind(object value, Type type = null, string prefix = null, string[] includeProperties = null, string[] excludeProperties = null, IValueProvider valueProvider = null) {
+      public bool TryBind(
+            object value, Type? type = null, string? prefix = null, string[]? includeProperties = null,
+            string[]? excludeProperties = null, IValueProvider? valueProvider = null) {
 
          if (value is null) throw new ArgumentNullException(nameof(value));
 
@@ -145,7 +161,7 @@ namespace Xcst.Web.Mvc {
          return this.ModelState.IsValid;
       }
 
-      public bool TryValidate(object value, string prefix = null) {
+      public bool TryValidate(object value, string? prefix = null) {
 
          if (value is null) throw new ArgumentNullException(nameof(value));
 
@@ -158,7 +174,7 @@ namespace Xcst.Web.Mvc {
          return this.ModelState.IsValid;
       }
 
-      static bool IsPropertyAllowed(string propertyName, string[] includeProperties, string[] excludeProperties) {
+      static bool IsPropertyAllowed(string propertyName, string[]? includeProperties, string[]? excludeProperties) {
          // We allow a property to be bound if its both in the include list AND not in the exclude list.
          // An empty include list implies all properties are allowed.
          // An empty exclude list implies no properties are disallowed.
@@ -167,14 +183,14 @@ namespace Xcst.Web.Mvc {
          return includeProperty && !excludeProperty;
       }
 
-      static string CreateSubPropertyName(string prefix, string propertyName) {
+      static string CreateSubPropertyName(string? prefix, string propertyName) {
 
          if (String.IsNullOrEmpty(prefix)) {
             return propertyName;
          }
 
          if (String.IsNullOrEmpty(propertyName)) {
-            return prefix;
+            return prefix ?? String.Empty;
          }
 
          return (prefix + "." + propertyName);
@@ -203,19 +219,20 @@ namespace Xcst.Web.Mvc {
 
    public abstract class XcstViewPage<TModel> : XcstViewPage {
 
-      ViewDataDictionary<TModel> _ViewData;
-      HtmlHelper<TModel> _Html;
+      ViewDataDictionary<TModel>? _ViewData;
+      HtmlHelper<TModel>? _Html;
 
       public new ViewDataDictionary<TModel> ViewData {
          get {
             if (_ViewData is null) {
                SetViewData(new ViewDataDictionary<TModel>());
             }
-            return _ViewData;
+            return _ViewData!;
          }
          set => SetViewData(value);
       }
 
+      [MaybeNull]
       public new TModel Model => ViewData.Model;
 
       public new HtmlHelper<TModel> Html {
@@ -224,7 +241,9 @@ namespace Xcst.Web.Mvc {
                && ViewContext != null) {
                _Html = new HtmlHelper<TModel>(ViewContext, this);
             }
+#pragma warning disable CS8603
             return _Html;
+#pragma warning restore CS8603
          }
          set => _Html = value;
       }

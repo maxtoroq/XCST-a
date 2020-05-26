@@ -12,7 +12,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       public int CombinedHash => _combinedHash64.GetHashCode();
 
-      public void AddFingerprint(ExpressionFingerprint fingerprint) {
+      public void AddFingerprint(ExpressionFingerprint? fingerprint) {
 
          if (fingerprint != null) {
             fingerprint.AddToHashCodeCombiner(this);

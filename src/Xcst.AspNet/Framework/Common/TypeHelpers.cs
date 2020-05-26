@@ -10,58 +10,21 @@ using System.Web.Routing;
 
 namespace System.Web.Mvc {
 
-   delegate bool TryGetValueDelegate(object dictionary, string key, out object value);
+   delegate bool TryGetValueDelegate(object dictionary, string key, out object? value);
 
    static class TypeHelpers {
 
-      static readonly Dictionary<Type, TryGetValueDelegate> _tryGetValueDelegateCache =
-         new Dictionary<Type, TryGetValueDelegate>();
+      static readonly Dictionary<Type, TryGetValueDelegate?> _tryGetValueDelegateCache =
+         new Dictionary<Type, TryGetValueDelegate?>();
 
       static readonly ReaderWriterLockSlim _tryGetValueDelegateCacheLock = new ReaderWriterLockSlim();
 
       static readonly MethodInfo _strongTryGetValueImplInfo =
          typeof(TypeHelpers).GetMethod(nameof(StrongTryGetValueImpl), BindingFlags.NonPublic | BindingFlags.Static);
 
-      public static readonly Assembly MsCorLibAssembly = typeof(string).Assembly;
-      public static readonly Assembly MvcAssembly = typeof(ControllerContext).Assembly;
-      public static readonly Assembly SystemWebAssembly = typeof(HttpContext).Assembly;
+      public static TryGetValueDelegate? CreateTryGetValueDelegate(Type targetType) {
 
-      // method is used primarily for lighting up new .NET Framework features even if MVC targets the previous version
-      // thisParameter is the 'this' parameter if target method is instance method, should be null for static method
-
-      public static TDelegate CreateDelegate<TDelegate>(Assembly assembly, string typeName, string methodName, object thisParameter) where TDelegate : class {
-
-         // ensure target type exists
-
-         Type targetType = assembly.GetType(typeName, throwOnError: false);
-
-         if (targetType is null) {
-            return null;
-         }
-
-         return CreateDelegate<TDelegate>(targetType, methodName, thisParameter);
-      }
-
-      public static TDelegate CreateDelegate<TDelegate>(Type targetType, string methodName, object thisParameter) where TDelegate : class {
-
-         // ensure target method exists
-
-         ParameterInfo[] delegateParameters = typeof(TDelegate).GetMethod("Invoke").GetParameters();
-         Type[] argumentTypes = Array.ConvertAll(delegateParameters, pInfo => pInfo.ParameterType);
-         MethodInfo targetMethod = targetType.GetMethod(methodName, argumentTypes);
-
-         if (targetMethod is null) {
-            return null;
-         }
-
-         TDelegate d = Delegate.CreateDelegate(typeof(TDelegate), thisParameter, targetMethod, throwOnBindFailure: false) as TDelegate;
-
-         return d;
-      }
-
-      public static TryGetValueDelegate CreateTryGetValueDelegate(Type targetType) {
-
-         TryGetValueDelegate result;
+         TryGetValueDelegate? result;
 
          _tryGetValueDelegateCacheLock.EnterReadLock();
 
@@ -73,7 +36,7 @@ namespace System.Web.Mvc {
             _tryGetValueDelegateCacheLock.ExitReadLock();
          }
 
-         Type dictionaryType = ExtractGenericInterface(targetType, typeof(IDictionary<,>));
+         Type? dictionaryType = ExtractGenericInterface(targetType, typeof(IDictionary<,>));
 
          // just wrap a call to the underlying IDictionary<TKey, TValue>.TryGetValue() where string can be cast to TKey
 
@@ -106,7 +69,28 @@ namespace System.Web.Mvc {
          return result;
       }
 
-      public static Type ExtractGenericInterface(Type queryType, Type interfaceType) {
+      static bool StrongTryGetValueImpl<TKey, TValue>(object dictionary, string key, out object? value) {
+
+         var strongDict = (IDictionary<TKey, TValue>)dictionary;
+
+         TValue strongValue;
+         bool retVal = strongDict.TryGetValue((TKey)(object)key, out strongValue);
+         value = strongValue;
+
+         return retVal;
+      }
+
+      static bool TryGetValueFromNonGenericDictionary(object dictionary, string key, out object? value) {
+
+         var weakDict = (IDictionary)dictionary;
+
+         bool containsKey = weakDict.Contains(key);
+         value = (containsKey) ? weakDict[key] : null;
+
+         return containsKey;
+      }
+
+      public static Type? ExtractGenericInterface(Type queryType, Type interfaceType) {
 
          if (MatchesGenericType(queryType, interfaceType)) {
             return queryType;
@@ -116,10 +100,10 @@ namespace System.Web.Mvc {
          return MatchGenericTypeFirstOrDefault(queryTypeInterfaces, interfaceType);
       }
 
-      public static object GetDefaultValue(Type type) =>
+      public static object? GetDefaultValue(Type type) =>
          (TypeAllowsNullValue(type)) ? null : Activator.CreateInstance(type);
 
-      public static bool IsCompatibleObject<T>(object value) =>
+      public static bool IsCompatibleObject<T>(object? value) =>
          (value is T || (value is null && TypeAllowsNullValue(typeof(T))));
 
       public static bool IsNullableValueType(Type type) =>
@@ -131,9 +115,9 @@ namespace System.Web.Mvc {
       /// <param name="originalException"><see cref="MissingMethodException"/> to check.</param>
       /// <param name="fullTypeName">Full Type name which Message should contain.</param>
       /// <returns>New <see cref="MissingMethodException"/> if an update is required; null otherwise.</returns>
-      public static MissingMethodException EnsureDebuggableException(MissingMethodException originalException, string fullTypeName) {
+      public static MissingMethodException? EnsureDebuggableException(MissingMethodException originalException, string fullTypeName) {
 
-         MissingMethodException replacementException = null;
+         MissingMethodException? replacementException = null;
 
          if (!originalException.Message.Contains(fullTypeName)) {
 
@@ -152,7 +136,7 @@ namespace System.Web.Mvc {
       static bool MatchesGenericType(Type type, Type matchType) =>
          type.IsGenericType && type.GetGenericTypeDefinition() == matchType;
 
-      static Type MatchGenericTypeFirstOrDefault(Type[] types, Type matchType) {
+      static Type? MatchGenericTypeFirstOrDefault(Type[] types, Type matchType) {
 
          for (int i = 0; i < types.Length; i++) {
 
@@ -166,27 +150,6 @@ namespace System.Web.Mvc {
          return null;
       }
 
-      static bool StrongTryGetValueImpl<TKey, TValue>(object dictionary, string key, out object value) {
-
-         var strongDict = (IDictionary<TKey, TValue>)dictionary;
-
-         TValue strongValue;
-         bool retVal = strongDict.TryGetValue((TKey)(object)key, out strongValue);
-         value = strongValue;
-
-         return retVal;
-      }
-
-      static bool TryGetValueFromNonGenericDictionary(object dictionary, string key, out object value) {
-
-         var weakDict = (IDictionary)dictionary;
-
-         bool containsKey = weakDict.Contains(key);
-         value = (containsKey) ? weakDict[key] : null;
-
-         return containsKey;
-      }
-
       public static bool TypeAllowsNullValue(Type type) =>
          (!type.IsValueType || IsNullableValueType(type));
 
@@ -196,7 +159,7 @@ namespace System.Web.Mvc {
       /// This helper will cache accessors and types, and is intended when the anonymous object is accessed multiple
       /// times throughout the lifetime of the web application.
       /// </summary>
-      public static RouteValueDictionary ObjectToDictionary(object value) {
+      public static RouteValueDictionary ObjectToDictionary(object? value) {
 
          var dictionary = new RouteValueDictionary();
 
@@ -215,7 +178,7 @@ namespace System.Web.Mvc {
       /// This helper will not cache accessors and types, and is intended when the anonymous object is accessed once
       /// or very few times throughout the lifetime of the web application.
       /// </summary>
-      public static RouteValueDictionary ObjectToDictionaryUncached(object value) {
+      public static RouteValueDictionary ObjectToDictionaryUncached(object? value) {
 
          var dictionary = new RouteValueDictionary();
 

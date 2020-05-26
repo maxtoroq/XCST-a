@@ -12,14 +12,14 @@ namespace System.Web.Mvc {
 
    interface IDependencyResolver {
 
-      object GetService(Type serviceType);
+      object? GetService(Type serviceType);
       IEnumerable<object> GetServices(Type serviceType);
    }
 
    static class DependencyResolverExtensions {
 
-      public static TService GetService<TService>(this IDependencyResolver resolver) =>
-         (TService)resolver.GetService(typeof(TService));
+      public static TService? GetService<TService>(this IDependencyResolver resolver) where TService : class =>
+         (TService?)resolver.GetService(typeof(TService));
 
       public static IEnumerable<TService> GetServices<TService>(this IDependencyResolver resolver) =>
          resolver.GetServices(typeof(TService)).Cast<TService>();
@@ -27,7 +27,7 @@ namespace System.Web.Mvc {
 
    class DependencyResolver {
 
-      static DependencyResolver _instance = new DependencyResolver();
+      static readonly DependencyResolver _instance = new DependencyResolver();
 
       public static IDependencyResolver Current => _instance.InnerCurrent;
 
@@ -40,7 +40,9 @@ namespace System.Web.Mvc {
       /// </summary>
       internal IDependencyResolver InnerCurrentCache { get; private set; }
 
+#pragma warning disable CS8618
       public DependencyResolver() {
+#pragma warning restore CS8618
          InnerSetResolver(new DefaultDependencyResolver());
       }
 
@@ -51,7 +53,7 @@ namespace System.Web.Mvc {
          _instance.InnerSetResolver(commonServiceLocator);
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types.")]
-      public static void SetResolver(Func<Type, object> getService, Func<Type, IEnumerable<object>> getServices) =>
+      public static void SetResolver(Func<Type, object?> getService, Func<Type, IEnumerable<object>> getServices) =>
          _instance.InnerSetResolver(getService, getServices);
 
       public void InnerSetResolver(IDependencyResolver resolver) {
@@ -83,14 +85,14 @@ namespace System.Web.Mvc {
                nameof(commonServiceLocator));
          }
 
-         var getService = (Func<Type, object>)Delegate.CreateDelegate(typeof(Func<Type, object>), commonServiceLocator, getInstance);
+         var getService = (Func<Type, object?>)Delegate.CreateDelegate(typeof(Func<Type, object?>), commonServiceLocator, getInstance);
          var getServices = (Func<Type, IEnumerable<object>>)Delegate.CreateDelegate(typeof(Func<Type, IEnumerable<object>>), commonServiceLocator, getInstances);
 
          InnerSetResolver(new DelegateBasedDependencyResolver(getService, getServices));
       }
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types.")]
-      public void InnerSetResolver(Func<Type, object> getService, Func<Type, IEnumerable<object>> getServices) {
+      public void InnerSetResolver(Func<Type, object?> getService, Func<Type, IEnumerable<object>> getServices) {
 
          if (getService is null) throw new ArgumentNullException(nameof(getService));
          if (getServices is null) throw new ArgumentNullException(nameof(getServices));
@@ -107,9 +109,9 @@ namespace System.Web.Mvc {
       /// </remarks>
       sealed class CacheDependencyResolver : IDependencyResolver {
 
-         readonly ConcurrentDictionary<Type, object> _cache = new ConcurrentDictionary<Type, object>();
+         readonly ConcurrentDictionary<Type, object?> _cache = new ConcurrentDictionary<Type, object?>();
          readonly ConcurrentDictionary<Type, IEnumerable<object>> _cacheMultiple = new ConcurrentDictionary<Type, IEnumerable<object>>();
-         readonly Func<Type, object> _getServiceDelegate;
+         readonly Func<Type, object?> _getServiceDelegate;
          readonly Func<Type, IEnumerable<object>> _getServicesDelegate;
 
          readonly IDependencyResolver _resolver;
@@ -120,7 +122,7 @@ namespace System.Web.Mvc {
             _getServicesDelegate = _resolver.GetServices;
          }
 
-         public object GetService(Type serviceType) =>
+         public object? GetService(Type serviceType) =>
             // Use a saved delegate to prevent per-call delegate allocation
             _cache.GetOrAdd(serviceType, _getServiceDelegate);
 
@@ -132,7 +134,7 @@ namespace System.Web.Mvc {
       class DefaultDependencyResolver : IDependencyResolver {
 
          [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method might throw exceptions whose type we cannot strongly link against; namely, ActivationException from common service locator")]
-         public object GetService(Type serviceType) {
+         public object? GetService(Type serviceType) {
 
             // Since attempting to create an instance of an interface or an abstract type results in an exception, immediately return null
             // to improve performance and the debugging experience with first-chance exceptions enabled.
@@ -156,16 +158,16 @@ namespace System.Web.Mvc {
 
       class DelegateBasedDependencyResolver : IDependencyResolver {
 
-         readonly Func<Type, object> _getService;
+         readonly Func<Type, object?> _getService;
          readonly Func<Type, IEnumerable<object>> _getServices;
 
-         public DelegateBasedDependencyResolver(Func<Type, object> getService, Func<Type, IEnumerable<object>> getServices) {
+         public DelegateBasedDependencyResolver(Func<Type, object?> getService, Func<Type, IEnumerable<object>> getServices) {
             _getService = getService;
             _getServices = getServices;
          }
 
          [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method might throw exceptions whose type we cannot strongly link against; namely, ActivationException from common service locator")]
-         public object GetService(Type type) {
+         public object? GetService(Type type) {
 
             try {
                return _getService.Invoke(type);
@@ -181,7 +183,7 @@ namespace System.Web.Mvc {
 
    static class MultiServiceResolver {
 
-      internal static TService[] GetCombined<TService>(IList<TService> items, IDependencyResolver resolver = null)
+      internal static TService[] GetCombined<TService>(IList<TService> items, IDependencyResolver? resolver = null)
             where TService : class {
 
          if (resolver is null) {

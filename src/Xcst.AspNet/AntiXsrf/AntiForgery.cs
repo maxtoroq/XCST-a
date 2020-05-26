@@ -72,7 +72,7 @@ namespace System.Web.Helpers {
       [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "1#", Justification = "Method is intended for advanced audiences.")]
       [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "2#", Justification = "Method is intended for advanced audiences.")]
       [EditorBrowsable(EditorBrowsableState.Advanced)]
-      public static void GetTokens(string oldCookieToken, out string newCookieToken, out string formToken) {
+      public static void GetTokens(string oldCookieToken, out string? newCookieToken, out string formToken) {
 
          HttpContext context = HttpContext.Current;
 

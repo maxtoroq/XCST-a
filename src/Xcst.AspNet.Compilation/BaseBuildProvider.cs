@@ -27,13 +27,13 @@ namespace Xcst.Web.Compilation {
 
    public abstract class BaseBuildProvider : BuildProvider {
 
-      string _GeneratedTypeName, _GeneratedTypeNamespace, _GeneratedTypeFullName;
-      Uri _PhysicalPath;
-      string _AppRelativeVirtualPath;
+      string? _GeneratedTypeName, _GeneratedTypeNamespace, _GeneratedTypeFullName;
+      Uri? _PhysicalPath;
+      string? _AppRelativeVirtualPath;
       bool? _IsFileInCodeDir;
 
       bool parsed;
-      CompilerType _CodeCompilerType;
+      CompilerType? _CodeCompilerType;
 
       protected string AppRelativeVirtualPath =>
          _AppRelativeVirtualPath
@@ -63,7 +63,7 @@ namespace Xcst.Web.Compilation {
          }
       }
 
-      protected virtual string GeneratedTypeNamePrefix => null;
+      protected virtual string? GeneratedTypeNamePrefix => null;
 
       [SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "s")]
       protected string GeneratedTypeNamespace {
@@ -72,7 +72,7 @@ namespace Xcst.Web.Compilation {
                // getting GeneratedTypeName will initialize _GeneratedTypeNamespace
                string s = GeneratedTypeName;
             }
-            return _GeneratedTypeNamespace;
+            return _GeneratedTypeNamespace!;
          }
       }
 
@@ -100,7 +100,7 @@ namespace Xcst.Web.Compilation {
 
       protected virtual bool IgnoreFile => false;
 
-      public override CompilerType CodeCompilerType {
+      public override CompilerType? CodeCompilerType {
          get {
             if (IgnoreFile) {
                return null;
@@ -128,7 +128,7 @@ namespace Xcst.Web.Compilation {
 
          } catch (CompileException ex) {
 
-            string moduleUri = ex.ModuleUri;
+            string? moduleUri = ex.ModuleUri;
 
             if (moduleUri != null) {
 
@@ -158,7 +158,7 @@ namespace Xcst.Web.Compilation {
          }
       }
 
-      public override Type GetGeneratedType(CompilerResults results) {
+      public override Type? GetGeneratedType(CompilerResults results) {
 
          if (this.IgnoreFile) {
             return null;
@@ -167,7 +167,7 @@ namespace Xcst.Web.Compilation {
          return results.CompiledAssembly.GetType(this.GeneratedTypeFullName);
       }
 
-      protected Exception CreateParseException(string message, int line, string virtualPath = null, Exception innerException = null) =>
+      protected Exception CreateParseException(string message, int line, string? virtualPath = null, Exception? innerException = null) =>
          new HttpParseException(message, innerException, virtualPath ?? this.VirtualPath, null, line);
 
       string GetNamespaceAndTypeNameFromVirtualPath(int chunksToIgnore, out string typeName) {

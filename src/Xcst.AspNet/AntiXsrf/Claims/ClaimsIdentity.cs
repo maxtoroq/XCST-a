@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
@@ -24,7 +25,8 @@ namespace System.Web.Helpers.Claims {
       // where TClaimsCollection is assignable to IEnumerable<TClaim>,
       // and where TClaim is valid for Claim.Create<TClaim>.
 
-      static ClaimsIdentity TryConvert<TClaimsIdentity, TClaim>(IIdentity identity)
+      [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Invoked using reflection, see ClaimsIdentityConverter.")]
+      static ClaimsIdentity? TryConvert<TClaimsIdentity, TClaim>(IIdentity identity)
             where TClaimsIdentity : class, IIdentity =>
          (identity is TClaimsIdentity castClaimsIdentity) ?
             new ClaimsIdentityImpl<TClaimsIdentity, TClaim>(castClaimsIdentity)

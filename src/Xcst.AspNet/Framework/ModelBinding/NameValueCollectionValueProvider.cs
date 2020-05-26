@@ -12,12 +12,12 @@ namespace System.Web.Mvc {
    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Target = "jQueryToMvcRequestNormalizationRequired", Justification = "jQuery is usually spelled like this. Hence suppressing this message.")]
    public class NameValueCollectionValueProvider : IValueProvider, IEnumerableValueProvider {
 
-      PrefixContainer _prefixContainer;
+      PrefixContainer? _prefixContainer;
       NameValueCollection _collection;
       CultureInfo _culture;
       bool _jQueryToMvcRequestNormalizationRequired;
 
-      Dictionary<string, ValueProviderResultPlaceholder> _values = null;
+      Dictionary<string, ValueProviderResultPlaceholder>? _values = null;
 
       private Dictionary<string, ValueProviderResultPlaceholder> Values =>
          _values ?? (_values = InitializeCollectionValues());
@@ -55,7 +55,7 @@ namespace System.Web.Mvc {
       public virtual bool ContainsPrefix(string prefix) =>
          PrefixContainer.ContainsPrefix(prefix);
 
-      public virtual ValueProviderResult GetValue(string key) {
+      public virtual ValueProviderResult? GetValue(string key) {
 
          if (key is null) throw new ArgumentNullException(nameof(key));
 
@@ -114,7 +114,7 @@ namespace System.Web.Mvc {
             return String.Empty;
          }
 
-         StringBuilder sb = null;
+         StringBuilder? sb = null;
 
          int i = 0;
 
@@ -175,7 +175,7 @@ namespace System.Web.Mvc {
 
       sealed class ValueProviderResultPlaceholder {
 
-         ValueProviderResult _validatedResult;
+         ValueProviderResult? _validatedResult;
          string _key;
          NameValueCollection _validatedCollection;
          CultureInfo _culture;
@@ -192,7 +192,7 @@ namespace System.Web.Mvc {
 
          static ValueProviderResult GetResultFromCollection(string key, NameValueCollection collection, CultureInfo culture) {
 
-            string[] rawValue = collection.GetValues(key);
+            string[]? rawValue = collection.GetValues(key);
             string attemptedValue = collection[key];
 
             return new ValueProviderResult(rawValue, attemptedValue, culture);

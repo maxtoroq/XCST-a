@@ -12,15 +12,15 @@ namespace System.Web.Helpers {
 
       internal const string AntiForgeryTokenFieldName = "__RequestVerificationToken";
 
-      static string _cookieName;
-      static string _uniqueClaimTypeIdentifier;
+      static string? _cookieName;
+      static string? _uniqueClaimTypeIdentifier;
 
       /// <summary>
       /// Specifies an object that can provide additional data to put into all
       /// generated tokens and that can validate additional data in incoming
       /// tokens.
       /// </summary>
-      public static IAntiForgeryAdditionalDataProvider AdditionalDataProvider { get; set; }
+      public static IAntiForgeryAdditionalDataProvider? AdditionalDataProvider { get; set; }
 
       /// <summary>
       /// Specifies the name of the cookie that is used by the anti-forgery

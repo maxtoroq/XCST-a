@@ -12,22 +12,22 @@ namespace System.Web.Mvc {
    public class ValueProviderResult {
 
       static readonly CultureInfo _staticCulture = CultureInfo.InvariantCulture;
-      CultureInfo _instanceCulture;
+      CultureInfo? _instanceCulture;
 
-      public string AttemptedValue { get; protected set; }
+      public string? AttemptedValue { get; protected set; }
 
       public CultureInfo Culture {
          get => _instanceCulture ?? (_instanceCulture = _staticCulture);
          protected set => _instanceCulture = value;
       }
 
-      public object RawValue { get; protected set; }
+      public object? RawValue { get; protected set; }
 
       // default constructor so that subclassed types can set the properties themselves
 
       protected ValueProviderResult() { }
 
-      public ValueProviderResult(object rawValue, string attemptedValue, CultureInfo culture) {
+      public ValueProviderResult(object? rawValue, string? attemptedValue, CultureInfo culture) {
 
          this.RawValue = rawValue;
          this.AttemptedValue = attemptedValue;
@@ -35,7 +35,7 @@ namespace System.Web.Mvc {
       }
 
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Conversion failure is not fatal")]
-      static object ConvertSimpleType(CultureInfo culture, object value, Type destinationType) {
+      static object? ConvertSimpleType(CultureInfo culture, object? value, Type destinationType) {
 
          if (value is null || destinationType.IsInstanceOfType(value)) {
             return value;
@@ -43,7 +43,7 @@ namespace System.Web.Mvc {
 
          // if this is a user-input value but the user didn't type anything, return no value
 
-         string valueAsString = value as string;
+         string? valueAsString = value as string;
 
          if (valueAsString != null && String.IsNullOrWhiteSpace(valueAsString)) {
             return null;
@@ -110,10 +110,10 @@ namespace System.Web.Mvc {
          }
       }
 
-      public object ConvertTo(Type type) =>
-         ConvertTo(type, null /* culture */);
+      public object? ConvertTo(Type type) =>
+         ConvertTo(type, culture: null);
 
-      public virtual object ConvertTo(Type type, CultureInfo culture) {
+      public virtual object? ConvertTo(Type type, CultureInfo? culture) {
 
          if (type is null) throw new ArgumentNullException(nameof(type));
 
@@ -122,7 +122,7 @@ namespace System.Web.Mvc {
          return UnwrapPossibleArrayType(cultureToUse, this.RawValue, type);
       }
 
-      static object UnwrapPossibleArrayType(CultureInfo culture, object value, Type destinationType) {
+      static object? UnwrapPossibleArrayType(CultureInfo culture, object? value, Type destinationType) {
 
          if (value is null
             || destinationType.IsInstanceOfType(value)) {
@@ -132,7 +132,7 @@ namespace System.Web.Mvc {
 
          // array conversion results in four cases, as below
 
-         Array valueAsArray = value as Array;
+         Array? valueAsArray = value as Array;
 
          if (destinationType.IsArray) {
 
@@ -154,7 +154,7 @@ namespace System.Web.Mvc {
 
                // case 2: destination type is array but source is single element, so wrap element in array + convert
 
-               object element = ConvertSimpleType(culture, value, destinationElementType);
+               object? element = ConvertSimpleType(culture, value, destinationElementType);
                IList converted = Array.CreateInstance(destinationElementType, 1);
                converted[0] = element;
 

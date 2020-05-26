@@ -35,8 +35,8 @@ namespace Xcst.Web.Runtime {
 
       [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
       public static void ValidationMessage(
-            HtmlHelper htmlHelper, XcstWriter output, string modelName, string validationMessage = null, HtmlAttribs htmlAttributes = null,
-            string tag = null) {
+            HtmlHelper htmlHelper, XcstWriter output, string modelName, string? validationMessage = null, HtmlAttribs? htmlAttributes = null,
+            string? tag = null) {
 
          if (modelName is null) throw new ArgumentNullException(nameof(modelName));
 
@@ -47,8 +47,8 @@ namespace Xcst.Web.Runtime {
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void ValidationMessageFor<TModel, TProperty>(
-            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string validationMessage = null,
-            HtmlAttribs htmlAttributes = null, string tag = null) {
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string? validationMessage = null,
+            HtmlAttribs? htmlAttributes = null, string? tag = null) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
          string expressionString = ExpressionHelper.GetExpressionText(expression);
@@ -58,13 +58,13 @@ namespace Xcst.Web.Runtime {
 
       [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Normalization to lowercase is a common requirement for JavaScript and HTML values")]
       internal static void ValidationMessageHelper(
-            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata modelMetadata, string expression, string validationMessage,
-            HtmlAttribs htmlAttributes, string tag) {
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata modelMetadata, string expression, string? validationMessage,
+            HtmlAttribs? htmlAttributes, string? tag) {
 
          ViewDataDictionary viewData = htmlHelper.ViewData;
 
          string modelName = viewData.TemplateInfo.GetFullHtmlFieldName(expression);
-         FormContext formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
+         FormContext? formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
 
          if (!viewData.ModelState.ContainsKey(modelName)
             && formContext is null) {
@@ -73,9 +73,9 @@ namespace Xcst.Web.Runtime {
          }
 
          ModelState modelState = viewData.ModelState[modelName];
-         ModelErrorCollection modelErrors = modelState?.Errors;
+         ModelErrorCollection? modelErrors = modelState?.Errors;
 
-         ModelError modelError = (modelErrors is null || modelErrors.Count == 0) ? null
+         ModelError? modelError = (modelErrors is null || modelErrors.Count == 0) ? null
             : (modelErrors.FirstOrDefault(m => !String.IsNullOrEmpty(m.ErrorMessage)) ?? modelErrors[0]);
 
          if (modelError is null
@@ -92,7 +92,7 @@ namespace Xcst.Web.Runtime {
             HtmlHelper.ValidationMessageCssClassName
             : HtmlHelper.ValidationMessageValidCssClassName;
 
-         output.WriteStartElement(tag);
+         output.WriteStartElement(tag!);
          HtmlAttributeHelper.WriteClass(validationClass, htmlAttributes, output);
 
          if (formContext != null) {
@@ -123,7 +123,7 @@ namespace Xcst.Web.Runtime {
                   id = ident.ToString();
 
                } else {
-                  id = TagBuilder.CreateSanitizedId(modelName + "_validationMessage");
+                  id = TagBuilder.CreateSanitizedId(modelName + "_validationMessage")!;
                   output.WriteAttributeString("id", id);
                }
 
@@ -146,12 +146,12 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void ValidationSummary(
-            HtmlHelper htmlHelper, XcstWriter output, bool includePropertyErrors = false, string message = null, HtmlAttribs htmlAttributes = null,
-            string headingTag = null) {
+            HtmlHelper htmlHelper, XcstWriter output, bool includePropertyErrors = false, string? message = null, HtmlAttribs? htmlAttributes = null,
+            string? headingTag = null) {
 
          if (htmlHelper is null) throw new ArgumentNullException(nameof(htmlHelper));
 
-         FormContext formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
+         FormContext? formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
 
          if (htmlHelper.ViewData.ModelState.IsValid) {
 
@@ -211,7 +211,7 @@ namespace Xcst.Web.Runtime {
                headingTag = htmlHelper.ViewContext.ValidationSummaryMessageElement;
             }
 
-            output.WriteStartElement(headingTag);
+            output.WriteStartElement(headingTag!);
             output.WriteString(message);
             output.WriteEndElement();
          }
@@ -226,7 +226,7 @@ namespace Xcst.Web.Runtime {
 
             foreach (ModelError modelError in modelState.Errors) {
 
-               string errorText = GetUserErrorMessageOrDefault(htmlHelper.ViewContext.HttpContext, modelError, modelState: null);
+               string? errorText = GetUserErrorMessageOrDefault(htmlHelper.ViewContext.HttpContext, modelError, modelState: null);
 
                if (!String.IsNullOrEmpty(errorText)) {
 
@@ -276,7 +276,7 @@ namespace Xcst.Web.Runtime {
 
             if (metadata != null) {
                foreach (ModelMetadata m in metadata.Properties) {
-                  ordering[m.PropertyName] = m.Order;
+                  ordering[m.PropertyName!] = m.Order;
                }
             }
 
@@ -303,7 +303,7 @@ namespace Xcst.Web.Runtime {
          return fieldMetadata;
       }
 
-      static string GetUserErrorMessageOrDefault(HttpContextBase httpContext, ModelError error, ModelState modelState) {
+      static string? GetUserErrorMessageOrDefault(HttpContextBase httpContext, ModelError error, ModelState? modelState) {
 
          if (!String.IsNullOrEmpty(error.ErrorMessage)) {
             return error.ErrorMessage;
@@ -313,7 +313,7 @@ namespace Xcst.Web.Runtime {
             return null;
          }
 
-         string attemptedValue = modelState.Value?.AttemptedValue;
+         string? attemptedValue = modelState.Value?.AttemptedValue;
 
          string messageFormat = XcstWebConfiguration.Instance.EditorTemplates.DefaultValidationMessage?.Invoke()
             ?? "The value '{0}' is invalid.";

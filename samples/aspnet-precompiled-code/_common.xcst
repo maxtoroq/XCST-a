@@ -33,7 +33,7 @@
    <c:template name='scripts'/>
 
    <c:function name='layout'>
-      <c:param name='tunnelParams' value='null' as='object'/>
+      <c:param name='tunnelParams' value='null' as='object?'/>
 
       <c:result-document output='Response.Output'>
          <c:call-template name='layout' tunnel-params='tunnelParams'/>

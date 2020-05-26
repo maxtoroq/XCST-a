@@ -21,7 +21,7 @@ namespace System.Web.Mvc {
       /// </summary>
       /// <param name="key">The key of the value object to retrieve.</param>
       /// <returns>The value object for the specified key. If the exact key is not found, null.</returns>
-      ValueProviderResult GetValue(string key);
+      ValueProviderResult? GetValue(string key);
    }
 
    // Represents a special IValueProvider that has the ability to be enumerable.

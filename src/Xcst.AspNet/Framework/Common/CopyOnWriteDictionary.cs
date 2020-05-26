@@ -3,7 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 
 namespace System.Web.Mvc {
 
@@ -15,7 +15,7 @@ namespace System.Web.Mvc {
 
       readonly IDictionary<TKey, TValue> _sourceDictionary;
       readonly IEqualityComparer<TKey> _comparer;
-      IDictionary<TKey, TValue> _innerDictionary;
+      IDictionary<TKey, TValue>? _innerDictionary;
 
       private IDictionary<TKey, TValue> ReadDictionary =>
          _innerDictionary ?? _sourceDictionary;
@@ -38,8 +38,8 @@ namespace System.Web.Mvc {
 
       public CopyOnWriteDictionary(IDictionary<TKey, TValue> sourceDictionary, IEqualityComparer<TKey> comparer) {
 
-         Contract.Assert(sourceDictionary != null);
-         Contract.Assert(comparer != null);
+         Assert.IsNotNull(sourceDictionary);
+         Assert.IsNotNull(comparer);
 
          _sourceDictionary = sourceDictionary;
          _comparer = comparer;

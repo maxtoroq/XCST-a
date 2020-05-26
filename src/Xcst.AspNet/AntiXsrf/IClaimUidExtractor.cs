@@ -7,6 +7,6 @@ namespace System.Web.Helpers.AntiXsrf {
    // Can extract unique identifers for a claims-based identity
 
    interface IClaimUidExtractor {
-      BinaryBlob ExtractClaimUid(IIdentity identity);
+      BinaryBlob? ExtractClaimUid(IIdentity identity);
    }
 }

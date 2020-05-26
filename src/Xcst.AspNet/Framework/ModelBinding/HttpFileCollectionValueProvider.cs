@@ -34,7 +34,7 @@ namespace System.Web.Mvc {
             string key = allKeys[i];
 
             if (key != null) {
-               HttpPostedFileBase file = HttpPostedFileBaseModelBinder.ChooseFileOrNull(files[i]);
+               HttpPostedFileBase? file = HttpPostedFileBaseModelBinder.ChooseFileOrNull(files[i]);
                mapping.Add(new KeyValuePair<string, HttpPostedFileBase>(key, file));
             }
          }

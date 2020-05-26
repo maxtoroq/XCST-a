@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Globalization;
 using System.Security.Principal;
 using System.Web.Mvc;
@@ -24,9 +24,9 @@ namespace System.Web.Helpers.AntiXsrf {
             IsSessionToken = true
          };
 
-      public AntiForgeryToken GenerateFormToken(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken cookieToken) {
+      public AntiForgeryToken GenerateFormToken(HttpContextBase httpContext, IIdentity? identity, AntiForgeryToken cookieToken) {
 
-         Contract.Assert(IsCookieTokenValid(cookieToken));
+         Debug.Assert(IsCookieTokenValid(cookieToken));
 
          var formToken = new AntiForgeryToken {
             SecurityToken = cookieToken.SecurityToken,
@@ -67,32 +67,32 @@ namespace System.Web.Helpers.AntiXsrf {
 
             // Application says user is authenticated, but we have no identifier for the user.
 
-            throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, WebPageResources.TokenValidator_AuthenticatedUserWithoutUsername, identity.GetType()));
+            throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, WebPageResources.TokenValidator_AuthenticatedUserWithoutUsername, identity?.GetType()));
          }
 
          return formToken;
       }
 
-      public bool IsCookieTokenValid(AntiForgeryToken cookieToken) =>
+      public bool IsCookieTokenValid(AntiForgeryToken? cookieToken) =>
          cookieToken?.IsSessionToken == true;
 
-      public void ValidateTokens(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
+      public void ValidateTokens(HttpContextBase httpContext, IIdentity? identity, AntiForgeryToken? sessionToken, AntiForgeryToken? fieldToken) {
 
-         Exception ex = ValidateTokensImpl(httpContext, identity, sessionToken, fieldToken);
+         Exception? ex = ValidateTokensImpl(httpContext, identity, sessionToken, fieldToken);
 
          if (ex != null) {
             throw ex;
          }
       }
 
-      public bool TryValidateTokens(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
+      public bool TryValidateTokens(HttpContextBase httpContext, IIdentity? identity, AntiForgeryToken? sessionToken, AntiForgeryToken? fieldToken) {
 
-         Exception ex = ValidateTokensImpl(httpContext, identity, sessionToken, fieldToken);
+         Exception? ex = ValidateTokensImpl(httpContext, identity, sessionToken, fieldToken);
 
          return ex is null;
       }
 
-      Exception ValidateTokensImpl(HttpContextBase httpContext, IIdentity identity, AntiForgeryToken sessionToken, AntiForgeryToken fieldToken) {
+      Exception? ValidateTokensImpl(HttpContextBase httpContext, IIdentity? identity, AntiForgeryToken? sessionToken, AntiForgeryToken? fieldToken) {
 
          // Were the tokens even present at all?
 
@@ -114,7 +114,7 @@ namespace System.Web.Helpers.AntiXsrf {
          // Is the incoming token meant for the current user?
 
          string currentUsername = String.Empty;
-         BinaryBlob currentClaimUid = null;
+         BinaryBlob? currentClaimUid = null;
 
          if (identity?.IsAuthenticated == true) {
 

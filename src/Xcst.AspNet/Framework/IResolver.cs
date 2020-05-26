@@ -11,8 +11,8 @@ namespace System.Web.Mvc {
 
    class SingleServiceResolver<TService> : IResolver<TService> where TService : class {
 
-      Lazy<TService> _currentValueFromResolver;
-      Func<TService> _currentValueThunk;
+      Lazy<TService?> _currentValueFromResolver;
+      Func<TService?> _currentValueThunk;
       TService _defaultValue;
       Func<IDependencyResolver> _resolverThunk;
       string _callerMethodName;
@@ -21,13 +21,13 @@ namespace System.Web.Mvc {
          ?? _currentValueThunk()
          ?? _defaultValue;
 
-      public SingleServiceResolver(Func<TService> currentValueThunk, TService defaultValue, string callerMethodName) {
+      public SingleServiceResolver(Func<TService?> currentValueThunk, TService defaultValue, string callerMethodName) {
 
          if (currentValueThunk is null) throw new ArgumentNullException(nameof(currentValueThunk));
          if (defaultValue is null) throw new ArgumentNullException(nameof(defaultValue));
 
          _resolverThunk = () => DependencyResolver.Current;
-         _currentValueFromResolver = new Lazy<TService>(GetValueFromResolver);
+         _currentValueFromResolver = new Lazy<TService?>(GetValueFromResolver);
          _currentValueThunk = currentValueThunk;
          _defaultValue = defaultValue;
          _callerMethodName = callerMethodName;
@@ -41,9 +41,9 @@ namespace System.Web.Mvc {
          }
       }
 
-      private TService GetValueFromResolver() {
+      TService? GetValueFromResolver() {
 
-         TService result = _resolverThunk().GetService<TService>();
+         TService? result = _resolverThunk().GetService<TService>();
 
          if (result != null
             && _currentValueThunk() != null) {

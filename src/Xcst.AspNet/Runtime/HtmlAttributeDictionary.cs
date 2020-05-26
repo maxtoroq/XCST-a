@@ -21,16 +21,16 @@ namespace Xcst.Web.Runtime {
    /// <exclude/>
    public class HtmlAttributeDictionary : Dictionary<string, object> {
 
-      public HtmlAttributeDictionary SetClass(string/*?*/ cssClass) {
+      public HtmlAttributeDictionary SetClass(string? cssClass) {
 
          if (!String.IsNullOrEmpty(cssClass)) {
-            this["class"] = cssClass;
+            this["class"] = cssClass!;
          }
 
          return this;
       }
 
-      public HtmlAttributeDictionary SetAttribute(string key, object/*?*/ value) {
+      public HtmlAttributeDictionary SetAttribute(string key, object value) {
 
          if (String.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
 
@@ -48,7 +48,7 @@ namespace Xcst.Web.Runtime {
          return this;
       }
 
-      public HtmlAttributeDictionary SetAttributes(object/*?*/ attributes) {
+      public HtmlAttributeDictionary SetAttributes(object? attributes) {
 
          if (attributes != null) {
             SetAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
@@ -57,7 +57,7 @@ namespace Xcst.Web.Runtime {
          return this;
       }
 
-      public HtmlAttributeDictionary SetAttributes(IDictionary<string, object>/*?*/ attributes) {
+      public HtmlAttributeDictionary SetAttributes(IDictionary<string, object>? attributes) {
 
          // NOTE: For backcompat, the dictionary class must be a non-null string to be joined 
          // with the attribute (or library) class, otherwise it's ignored. If there's no attribute class,

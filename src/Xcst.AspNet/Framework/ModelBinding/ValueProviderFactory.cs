@@ -7,7 +7,7 @@ using System.Linq;
 namespace System.Web.Mvc {
 
    public abstract class ValueProviderFactory {
-      public abstract IValueProvider GetValueProvider(ControllerContext controllerContext);
+      public abstract IValueProvider? GetValueProvider(ControllerContext controllerContext);
    }
 
    public static class ValueProviderFactories {
@@ -24,12 +24,12 @@ namespace System.Web.Mvc {
 
    public class ValueProviderFactoryCollection : Collection<ValueProviderFactory> {
 
-      ValueProviderFactory[] _combinedItems;
-      IDependencyResolver _dependencyResolver;
+      ValueProviderFactory[]? _combinedItems;
+      IDependencyResolver? _dependencyResolver;
 
       internal ValueProviderFactory[] CombinedItems {
          get {
-            ValueProviderFactory[] combinedItems = _combinedItems;
+            ValueProviderFactory[]? combinedItems = _combinedItems;
             if (combinedItems is null) {
                combinedItems = MultiServiceResolver.GetCombined<ValueProviderFactory>(Items, _dependencyResolver);
                _combinedItems = combinedItems;
@@ -57,7 +57,7 @@ namespace System.Web.Mvc {
          for (int i = 0; i < current.Length; i++) {
 
             ValueProviderFactory factory = current[i];
-            IValueProvider provider = factory.GetValueProvider(controllerContext);
+            IValueProvider? provider = factory.GetValueProvider(controllerContext);
 
             if (provider != null) {
                providers.Add(provider);
@@ -117,7 +117,7 @@ namespace System.Web.Mvc {
          return false;
       }
 
-      public virtual ValueProviderResult GetValue(string key) {
+      public virtual ValueProviderResult? GetValue(string key) {
 
          // Performance sensitive.
          // Caching the count is faster for Collection<T>
@@ -126,7 +126,7 @@ namespace System.Web.Mvc {
 
          for (int i = 0; i < providerCount; i++) {
 
-            ValueProviderResult result = this[i].GetValue(key);
+            ValueProviderResult? result = this[i].GetValue(key);
 
             if (result != null) {
                return result;
@@ -145,7 +145,7 @@ namespace System.Web.Mvc {
             ?? new Dictionary<string, string>();
       }
 
-      internal static IDictionary<string, string> GetKeysFromPrefixFromProvider(IValueProvider provider, string prefix) {
+      internal static IDictionary<string, string>? GetKeysFromPrefixFromProvider(IValueProvider provider, string prefix) {
 
          var enumeratedProvider = provider as IEnumerableValueProvider;
 

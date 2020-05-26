@@ -21,7 +21,7 @@ Package                                            | Description
 
 System Requirements
 -------------------
-The codebase is written in C# 7 and requires .NET 4.6 or higher.
+The codebase is written in C# 8 and requires .NET 4.6 or higher.
 
 The [release script](build/release.ps1) (which creates the NuGet packages) and other utility scripts are written in PowerShell 3.
 

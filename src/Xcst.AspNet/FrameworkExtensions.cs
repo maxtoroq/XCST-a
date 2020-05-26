@@ -34,7 +34,7 @@ namespace Xcst.Web {
          (Action<TemplateInfo, HashSet<object>>)Delegate.CreateDelegate(typeof(Action<TemplateInfo, HashSet<object>>), typeof(TemplateInfo).GetProperty("VisitedObjects", BindingFlags.Instance | BindingFlags.NonPublic).GetSetMethod(nonPublic: true));
 #endif
 
-      public static string GroupName(this ModelMetadata metadata) =>
+      public static string? GroupName(this ModelMetadata metadata) =>
 #if ASPNETMVC
          null;
 #else
@@ -72,7 +72,7 @@ namespace Xcst.Web {
 #endif
 
 #if ASPNETMVC
-      public static object GetModelStateValue(this HtmlHelper htmlHelper, string key, Type destinationType) {
+      public static object? GetModelStateValue(this HtmlHelper htmlHelper, string key, Type destinationType) {
 
          if (htmlHelper.ViewData.ModelState.TryGetValue(key, out ModelState modelState)
             && modelState.Value != null) {
@@ -86,24 +86,24 @@ namespace Xcst.Web {
       public static string EvalString(this HtmlHelper htmlHelper, string key) =>
          Convert.ToString(htmlHelper.ViewData.Eval(key), CultureInfo.CurrentCulture);
 
-      public static string EvalString(this HtmlHelper htmlHelper, string key, string format) =>
+      public static string EvalString(this HtmlHelper htmlHelper, string key, string? format) =>
          Convert.ToString(htmlHelper.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
 
       public static bool EvalBoolean(this HtmlHelper htmlHelper, string key) =>
          Convert.ToBoolean(htmlHelper.ViewData.Eval(key), CultureInfo.InvariantCulture);
 
-      public static FormContext GetFormContextForClientValidation(this ViewContext viewContext) =>
+      public static FormContext? GetFormContextForClientValidation(this ViewContext viewContext) =>
          (viewContext.ClientValidationEnabled) ? viewContext.FormContext : null;
 #endif
 
       internal static ViewContext Clone(
             this ViewContext context,
 #if ASPNETMVC
-            IView view = null,
+            IView? view = null,
 #endif
-            ViewDataDictionary viewData = null,
-            TempDataDictionary tempData = null,
-            TextWriter writer = null) =>
+            ViewDataDictionary? viewData = null,
+            TempDataDictionary? tempData = null,
+            TextWriter? writer = null) =>
 
          new ViewContext(
             context,

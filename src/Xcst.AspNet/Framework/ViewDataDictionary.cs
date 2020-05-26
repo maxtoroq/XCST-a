@@ -11,13 +11,13 @@ namespace System.Web.Mvc {
 
    // TODO: Unit test ModelState interaction with VDD
 
-   public class ViewDataDictionary : IDictionary<string, object> {
+   public class ViewDataDictionary : IDictionary<string, object?> {
 
-      readonly IDictionary<string, object> _innerDictionary;
+      readonly IDictionary<string, object?> _innerDictionary;
       readonly ModelStateDictionary _modelState;
-      object _model;
-      ModelMetadata _modelMetadata;
-      TemplateInfo _templateMetadata;
+      object? _model;
+      ModelMetadata? _modelMetadata;
+      TemplateInfo? _templateMetadata;
 
       public int Count => _innerDictionary.Count;
 
@@ -25,7 +25,7 @@ namespace System.Web.Mvc {
 
       public ICollection<string> Keys => _innerDictionary.Keys;
 
-      public object Model {
+      public object? Model {
          get => _model;
          set {
             _modelMetadata = null;
@@ -38,7 +38,9 @@ namespace System.Web.Mvc {
             if (_modelMetadata is null && _model != null) {
                _modelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => _model, _model.GetType());
             }
+#pragma warning disable CS8603 // can be null, but most times when requested it's not
             return _modelMetadata;
+#pragma warning restore CS8603
          }
          set => _modelMetadata = value;
       }
@@ -51,11 +53,11 @@ namespace System.Web.Mvc {
          set => _templateMetadata = value;
       }
 
-      public ICollection<object> Values => _innerDictionary.Values;
+      public ICollection<object?> Values => _innerDictionary.Values;
 
-      public object this[string key] {
+      public object? this[string key] {
          get {
-            object value;
+            object? value;
             _innerDictionary.TryGetValue(key, out value);
             return value;
          }
@@ -64,16 +66,16 @@ namespace System.Web.Mvc {
 
       // For unit testing
 
-      internal IDictionary<string, object> InnerDictionary => _innerDictionary;
+      internal IDictionary<string, object?> InnerDictionary => _innerDictionary;
 
       public ViewDataDictionary()
-         : this((object)null) { }
+         : this(default(object)) { }
 
       [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "See note on SetModel() method.")]
-      public ViewDataDictionary(object model) {
+      public ViewDataDictionary(object? model) {
 
          this.Model = model;
-         _innerDictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+         _innerDictionary = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
          _modelState = new ModelStateDictionary();
       }
 
@@ -82,7 +84,7 @@ namespace System.Web.Mvc {
 
          if (dictionary is null) throw new ArgumentNullException(nameof(dictionary));
 
-         _innerDictionary = new CopyOnWriteDictionary<string, object>(dictionary, StringComparer.OrdinalIgnoreCase);
+         _innerDictionary = new CopyOnWriteDictionary<string, object?>(dictionary, StringComparer.OrdinalIgnoreCase);
          _modelState = new ModelStateDictionary(dictionary.ModelState);
 
          this.Model = dictionary.Model;
@@ -92,35 +94,35 @@ namespace System.Web.Mvc {
          _modelMetadata = dictionary._modelMetadata;
       }
 
-      public void Add(KeyValuePair<string, object> item) =>
+      public void Add(KeyValuePair<string, object?> item) =>
          _innerDictionary.Add(item);
 
-      public void Add(string key, object value) =>
+      public void Add(string key, object? value) =>
          _innerDictionary.Add(key, value);
 
       public void Clear() =>
          _innerDictionary.Clear();
 
-      public bool Contains(KeyValuePair<string, object> item) =>
+      public bool Contains(KeyValuePair<string, object?> item) =>
          _innerDictionary.Contains(item);
 
       public bool ContainsKey(string key) =>
          _innerDictionary.ContainsKey(key);
 
-      public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) =>
+      public void CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex) =>
          _innerDictionary.CopyTo(array, arrayIndex);
 
-      public object Eval(string expression) {
-         ViewDataInfo info = GetViewDataInfo(expression);
+      public object? Eval(string expression) {
+         ViewDataInfo? info = GetViewDataInfo(expression);
          return info?.Value;
       }
 
-      public string Eval(string expression, string format) {
-         object value = Eval(expression);
+      public string Eval(string expression, string? format) {
+         object? value = Eval(expression);
          return FormatValueInternal(value, format);
       }
 
-      internal static string FormatValueInternal(object value, string format) {
+      internal static string FormatValueInternal(object? value, string? format) {
 
          if (value is null) {
             return String.Empty;
@@ -133,17 +135,17 @@ namespace System.Web.Mvc {
          }
       }
 
-      public IEnumerator<KeyValuePair<string, object>> GetEnumerator() =>
+      public IEnumerator<KeyValuePair<string, object?>> GetEnumerator() =>
          _innerDictionary.GetEnumerator();
 
-      public ViewDataInfo GetViewDataInfo(string expression) {
+      public ViewDataInfo? GetViewDataInfo(string expression) {
 
          if (String.IsNullOrEmpty(expression)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(expression));
 
          return ViewDataEvaluator.Eval(this, expression);
       }
 
-      public bool Remove(KeyValuePair<string, object> item) =>
+      public bool Remove(KeyValuePair<string, object?> item) =>
          _innerDictionary.Remove(item);
 
       public bool Remove(string key) =>
@@ -153,15 +155,15 @@ namespace System.Web.Mvc {
       // be aware of this and should plan accordingly. For example, the logic in SetModel() should be simple
       // enough so as not to depend on the "this" pointer referencing a fully constructed object.
 
-      protected virtual void SetModel(object value) =>
+      protected virtual void SetModel(object? value) =>
          _model = value;
 
-      public bool TryGetValue(string key, out object value) =>
+      public bool TryGetValue(string key, out object? value) =>
          _innerDictionary.TryGetValue(key, out value);
 
       internal static class ViewDataEvaluator {
 
-         public static ViewDataInfo Eval(ViewDataDictionary vdd, string expression) {
+         public static ViewDataInfo? Eval(ViewDataDictionary vdd, string expression) {
 
             //Given an expression "foo.bar.baz" we look up the following (pseudocode):
             //  this["foo.bar.baz.quux"]
@@ -173,18 +175,18 @@ namespace System.Web.Mvc {
             //  this["foo"]["bar"]["baz.quux"]
             //  this["foo"]["bar"]["baz"]["quux"]
 
-            ViewDataInfo evaluated = EvalComplexExpression(vdd, expression);
+            ViewDataInfo? evaluated = EvalComplexExpression(vdd, expression);
             return evaluated;
          }
 
-         static ViewDataInfo EvalComplexExpression(object indexableObject, string expression) {
+         static ViewDataInfo? EvalComplexExpression(object indexableObject, string expression) {
 
             foreach (ExpressionPair expressionPair in GetRightToLeftExpressions(expression)) {
 
                string subExpression = expressionPair.Left;
                string postExpression = expressionPair.Right;
 
-               ViewDataInfo subTargetInfo = GetPropertyValue(indexableObject, subExpression);
+               ViewDataInfo? subTargetInfo = GetPropertyValue(indexableObject, subExpression);
 
                if (subTargetInfo != null) {
 
@@ -194,7 +196,7 @@ namespace System.Web.Mvc {
 
                   if (subTargetInfo.Value != null) {
 
-                     ViewDataInfo potential = EvalComplexExpression(subTargetInfo.Value, postExpression);
+                     ViewDataInfo? potential = EvalComplexExpression(subTargetInfo.Value, postExpression);
 
                      if (potential != null) {
                         return potential;
@@ -228,16 +230,16 @@ namespace System.Web.Mvc {
             }
          }
 
-         static ViewDataInfo GetIndexedPropertyValue(object indexableObject, string key) {
+         static ViewDataInfo? GetIndexedPropertyValue(object indexableObject, string key) {
 
-            object value = null;
+            object? value = null;
             bool success = false;
 
             if (indexableObject is IDictionary<string, object> dict) {
                success = dict.TryGetValue(key, out value);
             } else {
 
-               TryGetValueDelegate tgvDel = TypeHelpers.CreateTryGetValueDelegate(indexableObject.GetType());
+               TryGetValueDelegate? tgvDel = TypeHelpers.CreateTryGetValueDelegate(indexableObject.GetType());
 
                if (tgvDel != null) {
                   success = tgvDel(indexableObject, key, out value);
@@ -254,12 +256,12 @@ namespace System.Web.Mvc {
             return null;
          }
 
-         static ViewDataInfo GetPropertyValue(object container, string propertyName) {
+         static ViewDataInfo? GetPropertyValue(object container, string propertyName) {
 
             // This method handles one "segment" of a complex property expression
 
             // First, we try to evaluate the property based on its indexer
-            ViewDataInfo value = GetIndexedPropertyValue(container, propertyName);
+            ViewDataInfo? value = GetIndexedPropertyValue(container, propertyName);
 
             if (value != null) {
                return value;
@@ -271,7 +273,9 @@ namespace System.Web.Mvc {
             // as the container instead of the ViewDataDictionary itself.
 
             if (container is ViewDataDictionary vdd) {
+#pragma warning disable CS8600 // variable reuse
                container = vdd.Model;
+#pragma warning restore CS8600
             }
 
             // If the container is null, we're out of options
@@ -311,9 +315,9 @@ namespace System.Web.Mvc {
 
    public class TemplateInfo {
 
-      string _htmlFieldPrefix;
-      object _formattedModelValue;
-      HashSet<object> _visitedObjects;
+      string? _htmlFieldPrefix;
+      object? _formattedModelValue;
+      HashSet<object>? _visitedObjects;
 
       public object FormattedModelValue {
          get => _formattedModelValue ?? String.Empty;
@@ -335,10 +339,10 @@ namespace System.Web.Mvc {
          set => _visitedObjects = value;
       }
 
-      public string GetFullHtmlFieldId(string partialFieldName) =>
+      public string GetFullHtmlFieldId(string? partialFieldName) =>
          HtmlHelper.GenerateIdFromName(GetFullHtmlFieldName(partialFieldName));
 
-      public string GetFullHtmlFieldName(string partialFieldName) {
+      public string GetFullHtmlFieldName(string? partialFieldName) {
 
          if (partialFieldName?.StartsWith("[", StringComparison.Ordinal) == true) {
 
@@ -360,14 +364,14 @@ namespace System.Web.Mvc {
 
    public class ViewDataInfo {
 
-      object _value;
-      Func<object> _valueAccessor;
+      object? _value;
+      Func<object?>? _valueAccessor;
 
       public object Container { get; set; }
 
       public PropertyDescriptor PropertyDescriptor { get; set; }
 
-      public object Value {
+      public object? Value {
          get {
             if (_valueAccessor != null) {
                _value = _valueAccessor();
@@ -382,15 +386,18 @@ namespace System.Web.Mvc {
          }
       }
 
+#pragma warning disable CS8618
       public ViewDataInfo() { }
 
-      public ViewDataInfo(Func<object> valueAccessor) {
+      public ViewDataInfo(Func<object?> valueAccessor) {
          _valueAccessor = valueAccessor;
       }
+#pragma warning restore CS8618
    }
 
    public class ViewDataDictionary<TModel> : ViewDataDictionary {
 
+      [MaybeNull]
       public new TModel Model {
          get => (TModel)base.Model;
          set => SetModel(value);
@@ -418,7 +425,7 @@ namespace System.Web.Mvc {
       public ViewDataDictionary(ViewDataDictionary viewDataDictionary)
          : base(viewDataDictionary) { }
 
-      protected override void SetModel(object value) {
+      protected override void SetModel(object? value) {
 
          bool castWillSucceed = TypeHelpers.IsCompatibleObject<TModel>(value);
 

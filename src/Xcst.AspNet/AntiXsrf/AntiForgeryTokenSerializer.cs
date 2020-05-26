@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Web.Mvc;
 
@@ -17,13 +17,13 @@ namespace System.Web.Helpers.AntiXsrf {
       }
 
       public AntiForgeryToken Deserialize(string serializedToken) =>
-         Deserialize(serializedToken, throwOnError: true);
+         Deserialize(serializedToken, throwOnError: true)!;
 
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Failures are homogenized; caller handles appropriately.")]
       [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "MemoryStream is safe for multi-dispose.")]
-      public AntiForgeryToken Deserialize(string serializedToken, bool throwOnError) {
+      public AntiForgeryToken? Deserialize(string serializedToken, bool throwOnError) {
 
-         AntiForgeryToken token = DeserializeImpl(serializedToken);
+         AntiForgeryToken? token = DeserializeImpl(serializedToken);
 
          if (token is null
             && throwOnError) {
@@ -34,13 +34,13 @@ namespace System.Web.Helpers.AntiXsrf {
          return token;
       }
 
-      AntiForgeryToken DeserializeImpl(string serializedToken) {
+      AntiForgeryToken? DeserializeImpl(string serializedToken) {
 
          try {
             using (MemoryStream stream = new MemoryStream(_cryptoSystem.Unprotect(serializedToken))) {
                using (BinaryReader reader = new BinaryReader(stream)) {
 
-                  AntiForgeryToken token = DeserializeImpl(reader);
+                  AntiForgeryToken? token = DeserializeImpl(reader);
 
                   if (token != null) {
                      return token;
@@ -67,7 +67,7 @@ namespace System.Web.Helpers.AntiXsrf {
        *   `- AdditionalData: UTF-8 string with 7-bit integer length prefix
        */
 
-      static AntiForgeryToken DeserializeImpl(BinaryReader reader) {
+      static AntiForgeryToken? DeserializeImpl(BinaryReader reader) {
 
          // we can only consume tokens of the same serialized version that we generate
 
@@ -110,7 +110,7 @@ namespace System.Web.Helpers.AntiXsrf {
       [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "MemoryStream is safe for multi-dispose.")]
       public string Serialize(AntiForgeryToken token) {
 
-         Contract.Assert(token != null);
+         Assert.IsNotNull(token);
 
          using (MemoryStream stream = new MemoryStream()) {
             using (BinaryWriter writer = new BinaryWriter(stream)) {

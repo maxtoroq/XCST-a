@@ -22,7 +22,7 @@ namespace System.Web.Mvc.ExpressionUtil {
 
       static class Compiler<TIn, TOut> {
 
-         static Func<TIn, TOut> _identityFunc;
+         static Func<TIn, TOut>? _identityFunc;
 
          static readonly ConcurrentDictionary<MemberInfo, Func<TIn, TOut>> _simpleMemberAccessDict =
             new ConcurrentDictionary<MemberInfo, Func<TIn, TOut>>();
@@ -40,7 +40,7 @@ namespace System.Web.Mvc.ExpressionUtil {
                ?? CompileFromFingerprint(expr)
                ?? CompileSlow(expr);
 
-         static Func<TIn, TOut> CompileFromConstLookup(Expression<Func<TIn, TOut>> expr) {
+         static Func<TIn, TOut>? CompileFromConstLookup(Expression<Func<TIn, TOut>> expr) {
 
             if (expr.Body is ConstantExpression constExpr) {
 
@@ -53,7 +53,7 @@ namespace System.Web.Mvc.ExpressionUtil {
             return null;
          }
 
-         static Func<TIn, TOut> CompileFromIdentityFunc(Expression<Func<TIn, TOut>> expr) {
+         static Func<TIn, TOut>? CompileFromIdentityFunc(Expression<Func<TIn, TOut>> expr) {
 
             if (expr.Body == expr.Parameters[0]) {
 
@@ -71,10 +71,10 @@ namespace System.Web.Mvc.ExpressionUtil {
             return null;
          }
 
-         static Func<TIn, TOut> CompileFromFingerprint(Expression<Func<TIn, TOut>> expr) {
+         static Func<TIn, TOut>? CompileFromFingerprint(Expression<Func<TIn, TOut>> expr) {
 
-            List<object> capturedConstants;
-            ExpressionFingerprintChain fingerprint = FingerprintingExpressionVisitor.GetFingerprintChain(expr, out capturedConstants);
+            List<object>? capturedConstants;
+            ExpressionFingerprintChain? fingerprint = FingerprintingExpressionVisitor.GetFingerprintChain(expr, out capturedConstants);
 
             if (fingerprint != null) {
 
@@ -86,7 +86,7 @@ namespace System.Web.Mvc.ExpressionUtil {
                   return hoistedExpr.Compile();
                });
 
-               return model => del(model, capturedConstants);
+               return model => del(model, capturedConstants!);
             }
 
             // couldn't be fingerprinted
@@ -94,7 +94,7 @@ namespace System.Web.Mvc.ExpressionUtil {
             return null;
          }
 
-         static Func<TIn, TOut> CompileFromMemberAccess(Expression<Func<TIn, TOut>> expr) {
+         static Func<TIn, TOut>? CompileFromMemberAccess(Expression<Func<TIn, TOut>> expr) {
 
             // Performance tests show that on the x64 platform, special-casing static member and
             // captured local variable accesses is faster than letting the fingerprinting system

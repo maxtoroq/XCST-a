@@ -31,10 +31,10 @@ namespace Xcst.Web.Runtime {
    /// <exclude/>
    public static class UrlUtil {
 
-      public static string GenerateClientUrl(string basePath, string path, params object[] pathParts) =>
+      public static string GenerateClientUrl(string? basePath, string path, params object?[]? pathParts) =>
          GenerateClientUrl(HttpContext.Current, basePath, path, pathParts);
 
-      static string GenerateClientUrl(HttpContextBase httpContext, string basePath, string path, params object[] pathParts) {
+      static string GenerateClientUrl(HttpContextBase httpContext, string? basePath, string path, params object?[]? pathParts) {
 
          if (String.IsNullOrEmpty(path)) {
             return path;

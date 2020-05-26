@@ -20,18 +20,18 @@ namespace Xcst.Web {
 
    public class XcstPageHandlerFactory : IHttpHandlerFactory {
 
-      public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated) {
+      public IHttpHandler? GetHandler(HttpContext context, string requestType, string url, string pathTranslated) {
 
          if (url is null) throw new ArgumentNullException(nameof(url));
 
          string virtualPath = url;
-         var page = (XcstPage)BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(XcstPage));
+         var page = (XcstPage?)BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(XcstPage));
 
          if (page != null) {
             page.VirtualPath = virtualPath;
          }
 
-         return page.CreateHttpHandler();
+         return page?.CreateHttpHandler();
       }
 
       public void ReleaseHandler(IHttpHandler handler) { }

@@ -12,12 +12,12 @@ namespace System.Web.Mvc {
    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification = "This is a shipped API")]
    public class SelectList : MultiSelectList {
 
-      public object SelectedValue { get; private set; }
+      public object? SelectedValue { get; private set; }
 
       public SelectList(IEnumerable items)
          : this(items, selectedValue: null) { }
 
-      public SelectList(IEnumerable items, object selectedValue)
+      public SelectList(IEnumerable items, object? selectedValue)
          : this(items, dataValueField: null, dataTextField: null, selectedValue: selectedValue) { }
 
       /// <summary>
@@ -29,17 +29,17 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>
-      public SelectList(IEnumerable items, object selectedValue, IEnumerable disabledValues)
+      public SelectList(IEnumerable items, object? selectedValue, IEnumerable disabledValues)
          : this(items,
             dataValueField: null,
             dataTextField: null,
             selectedValue: selectedValue,
             disabledValues: disabledValues) { }
 
-      public SelectList(IEnumerable items, string dataValueField, string dataTextField)
+      public SelectList(IEnumerable items, string? dataValueField, string? dataTextField)
          : this(items, dataValueField, dataTextField, selectedValue: null) { }
 
-      public SelectList(IEnumerable items, string dataValueField, string dataTextField, object selectedValue)
+      public SelectList(IEnumerable items, string? dataValueField, string? dataTextField, object? selectedValue)
          : base(items, dataValueField, dataTextField, ToEnumerable(selectedValue)) {
 
          this.SelectedValue = selectedValue;
@@ -58,7 +58,7 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="selectedValue">The selected value. Used to match the Selected property of the corresponding
       /// <see cref="SelectListItem"/>.</param>
-      public SelectList(IEnumerable items, string dataValueField, string dataTextField, string dataGroupField, object selectedValue)
+      public SelectList(IEnumerable items, string? dataValueField, string? dataTextField, string? dataGroupField, object? selectedValue)
          : base(items, dataValueField, dataTextField, dataGroupField, ToEnumerable(selectedValue)) {
 
          this.SelectedValue = selectedValue;
@@ -77,7 +77,7 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>
-      public SelectList(IEnumerable items, string dataValueField, string dataTextField, object selectedValue, IEnumerable disabledValues)
+      public SelectList(IEnumerable items, string? dataValueField, string? dataTextField, object? selectedValue, IEnumerable? disabledValues)
          : base(items, dataValueField, dataTextField, ToEnumerable(selectedValue), disabledValues) {
 
          this.SelectedValue = selectedValue;
@@ -131,7 +131,7 @@ namespace System.Web.Mvc {
          this.SelectedValue = selectedValue;
       }
 
-      static IEnumerable ToEnumerable(object selectedValue) =>
+      static IEnumerable? ToEnumerable(object? selectedValue) =>
          (selectedValue != null) ? new object[] { selectedValue } : null;
    }
 
@@ -139,35 +139,35 @@ namespace System.Web.Mvc {
    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification = "This is a shipped API")]
    public class MultiSelectList : IEnumerable<SelectListItem> {
 
-      IList<SelectListGroup> _groups;
+      IList<SelectListGroup>? _groups;
 
       /// <summary>
       /// Gets the data group field.
       /// </summary>
-      public string DataGroupField { get; private set; }
+      public string? DataGroupField { get; private set; }
 
-      public string DataTextField { get; private set; }
+      public string? DataTextField { get; private set; }
 
-      public string DataValueField { get; private set; }
+      public string? DataValueField { get; private set; }
 
       /// <summary>
       /// Gets the disabled groups.
       /// </summary>
-      public IEnumerable DisabledGroups { get; private set; }
+      public IEnumerable? DisabledGroups { get; private set; }
 
       /// <summary>
       /// Gets the disabled values.
       /// </summary>
-      public IEnumerable DisabledValues { get; private set; }
+      public IEnumerable? DisabledValues { get; private set; }
 
       public IEnumerable Items { get; private set; }
 
-      public IEnumerable SelectedValues { get; private set; }
+      public IEnumerable? SelectedValues { get; private set; }
 
       public MultiSelectList(IEnumerable items)
          : this(items, selectedValues: null) { }
 
-      public MultiSelectList(IEnumerable items, IEnumerable selectedValues)
+      public MultiSelectList(IEnumerable items, IEnumerable? selectedValues)
          : this(items, dataValueField: null, dataTextField: null, selectedValues: selectedValues) { }
 
       /// <summary>
@@ -179,17 +179,17 @@ namespace System.Web.Mvc {
       /// corresponding <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>>
-      public MultiSelectList(IEnumerable items, IEnumerable selectedValues, IEnumerable disabledValues)
+      public MultiSelectList(IEnumerable items, IEnumerable? selectedValues, IEnumerable? disabledValues)
          : this(items,
             dataValueField: null,
             dataTextField: null,
             selectedValues: selectedValues,
             disabledValues: disabledValues) { }
 
-      public MultiSelectList(IEnumerable items, string dataValueField, string dataTextField)
+      public MultiSelectList(IEnumerable items, string? dataValueField, string? dataTextField)
          : this(items, dataValueField, dataTextField, selectedValues: null) { }
 
-      public MultiSelectList(IEnumerable items, string dataValueField, string dataTextField, IEnumerable selectedValues)
+      public MultiSelectList(IEnumerable items, string? dataValueField, string? dataTextField, IEnumerable? selectedValues)
          : this(items, dataValueField, dataTextField, dataGroupField: null, selectedValues: selectedValues) { }
 
       /// <summary>
@@ -203,7 +203,7 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="dataGroupField">The data group field. Used to match the Group property of the corresponding 
       /// <see cref="SelectListItem"/>.</param>
-      public MultiSelectList(IEnumerable items, string dataValueField, string dataTextField, string dataGroupField)
+      public MultiSelectList(IEnumerable items, string? dataValueField, string? dataTextField, string? dataGroupField)
          : this(items, dataValueField, dataTextField, dataGroupField: dataGroupField, selectedValues: null) { }
 
       /// <summary>
@@ -219,7 +219,7 @@ namespace System.Web.Mvc {
       /// corresponding <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>>
-      public MultiSelectList(IEnumerable items, string dataValueField, string dataTextField, IEnumerable selectedValues, IEnumerable disabledValues)
+      public MultiSelectList(IEnumerable items, string? dataValueField, string? dataTextField, IEnumerable? selectedValues, IEnumerable? disabledValues)
          : this(items,
             dataValueField,
             dataTextField,
@@ -240,7 +240,7 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="selectedValues">The selected values field. Used to match the Selected property of the 
       /// corresponding <see cref="SelectListItem"/>.</param>
-      public MultiSelectList(IEnumerable items, string dataValueField, string dataTextField, string dataGroupField, IEnumerable selectedValues)
+      public MultiSelectList(IEnumerable items, string? dataValueField, string? dataTextField, string? dataGroupField, IEnumerable? selectedValues)
          : this(items, dataValueField, dataTextField, dataGroupField, selectedValues, disabledValues: null) { }
 
       /// <summary>
@@ -259,8 +259,8 @@ namespace System.Web.Mvc {
       /// corresponding <see cref="SelectListItem"/>.</param>
       /// <param name="disabledValues">The disabled values. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListItem"/>.</param>
-      public MultiSelectList(IEnumerable items, string dataValueField, string dataTextField, string dataGroupField, IEnumerable selectedValues,
-            IEnumerable disabledValues)
+      public MultiSelectList(IEnumerable items, string? dataValueField, string? dataTextField, string? dataGroupField, IEnumerable? selectedValues,
+            IEnumerable? disabledValues)
          : this(items,
             dataValueField,
             dataTextField,
@@ -287,8 +287,8 @@ namespace System.Web.Mvc {
       /// <see cref="SelectListItem"/>.</param>
       /// <param name="disabledGroups">The disabled groups. Used to match the Disabled property of the corresponding
       /// <see cref="SelectListGroup"/>.</param>
-      public MultiSelectList(IEnumerable items, string dataValueField, string dataTextField, string dataGroupField, IEnumerable selectedValues,
-            IEnumerable disabledValues, IEnumerable disabledGroups) {
+      public MultiSelectList(IEnumerable items, string? dataValueField, string? dataTextField, string? dataGroupField, IEnumerable? selectedValues,
+            IEnumerable? disabledValues, IEnumerable? disabledGroups) {
 
          if (items is null) throw new ArgumentNullException(nameof(items));
 
@@ -351,7 +351,7 @@ namespace System.Web.Mvc {
          return listItems.ToList();
       }
 
-      static string Eval(object container, string expression) {
+      static string Eval(object container, string? expression) {
 
          object value = container;
 
@@ -362,7 +362,7 @@ namespace System.Web.Mvc {
          return Convert.ToString(value, CultureInfo.CurrentCulture);
       }
 
-      SelectListGroup GetGroup(object container, HashSet<string> disabledGroups) {
+      SelectListGroup? GetGroup(object container, HashSet<string> disabledGroups) {
 
          if (_groups is null) {
             return null;
@@ -392,7 +392,7 @@ namespace System.Web.Mvc {
          return group;
       }
 
-      static HashSet<string> GetStringHashSet(IEnumerable values) {
+      static HashSet<string> GetStringHashSet(IEnumerable? values) {
 
          var hashSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -404,7 +404,7 @@ namespace System.Web.Mvc {
          return hashSet;
       }
 
-      static HashSet<object> GetObjectHashSet(IEnumerable values) {
+      static HashSet<object> GetObjectHashSet(IEnumerable? values) {
 
          var hashSet = new HashSet<object>();
 
@@ -431,13 +431,13 @@ namespace System.Web.Mvc {
       /// In a select list, multiple groups with the same name are supported.
       /// They are compared with reference equality.
       /// </summary>
-      public SelectListGroup Group { get; set; }
+      public SelectListGroup? Group { get; set; }
 
       public bool Selected { get; set; }
 
-      public string Text { get; set; }
+      public string? Text { get; set; }
 
-      public string Value { get; set; }
+      public string? Value { get; set; }
    }
 
    /// <summary>
@@ -455,6 +455,6 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Represents the value of the optgroup's label.
       /// </summary>
-      public string Name { get; set; }
+      public string? Name { get; set; }
    }
 }

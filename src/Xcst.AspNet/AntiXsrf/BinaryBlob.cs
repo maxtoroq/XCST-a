@@ -2,7 +2,6 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
@@ -47,16 +46,16 @@ namespace System.Web.Helpers.AntiXsrf {
          _data = data;
       }
 
-      public override bool Equals(object obj) =>
+      public override bool Equals(object? obj) =>
          Equals(obj as BinaryBlob);
 
-      public bool Equals(BinaryBlob other) {
+      public bool Equals(BinaryBlob? other) {
 
          if (other is null) {
             return false;
          }
 
-         Contract.Assert(this._data.Length == other._data.Length);
+         Debug.Assert(this._data.Length == other._data.Length);
          return CryptoUtil.AreByteArraysEqual(this._data, other._data);
       }
 
@@ -67,7 +66,7 @@ namespace System.Web.Helpers.AntiXsrf {
          // Since data should contain uniformly-distributed entropy, the
          // first 32 bits can serve as the hash code.
 
-         Contract.Assert(_data != null && _data.Length >= (32 / 8));
+         Debug.Assert(_data != null && _data.Length >= (32 / 8));
          return BitConverter.ToInt32(_data, 0);
       }
 

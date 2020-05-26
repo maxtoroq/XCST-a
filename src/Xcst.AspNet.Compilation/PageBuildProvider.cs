@@ -30,7 +30,7 @@ namespace Xcst.Web.Compilation {
    public class PageBuildProvider : BaseBuildProvider {
 
       readonly Uri applicationUri = new Uri(HostingEnvironment.ApplicationPhysicalPath, UriKind.Absolute);
-      CompileResult result;
+      CompileResult? result;
       bool? _IgnoreFile;
 
       public static XcstCompilerFactory CompilerFactory { get; } = new XcstCompilerFactory {
@@ -122,7 +122,7 @@ namespace Xcst.Web.Compilation {
             yield return FileDependentPartial();
          }
 
-         foreach (string unit in this.result.CompilationUnits) {
+         foreach (string unit in this.result!.CompilationUnits) {
             yield return new CodeSnippetCompileUnit(unit);
          }
       }
@@ -132,7 +132,7 @@ namespace Xcst.Web.Compilation {
          var fileArray = new CodeArrayCreateExpression(typeof(string));
          fileArray.Initializers.Add(new CodePrimitiveExpression(this.PhysicalPath.LocalPath));
 
-         foreach (Uri uri in this.result.Dependencies.Where(u => u.IsFile)) {
+         foreach (Uri uri in this.result!.Dependencies.Where(u => u.IsFile)) {
             fileArray.Initializers.Add(new CodePrimitiveExpression(uri.LocalPath));
          }
 

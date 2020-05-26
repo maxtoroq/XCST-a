@@ -18,13 +18,6 @@ namespace System.Web.Mvc {
          typeof(float), typeof(double), typeof(decimal)
       });
 
-      static string _resourceClassKey;
-
-      public static string ResourceClassKey {
-         get => _resourceClassKey ?? String.Empty;
-         set => _resourceClassKey = value;
-      }
-
       public override IEnumerable<ModelValidator> GetValidators(ModelMetadata metadata, ControllerContext context) {
 
          if (metadata is null) throw new ArgumentNullException(nameof(metadata));
@@ -106,7 +99,7 @@ namespace System.Web.Mvc {
             // use CurrentCulture since this message is intended for the site visitor
             String.Format(CultureInfo.CurrentCulture, _errorMessage, displayName);
 
-         public sealed override IEnumerable<ModelValidationResult> Validate(object container) =>
+         public sealed override IEnumerable<ModelValidationResult> Validate(object? container) =>
             // this is not a server-side validator
             Enumerable.Empty<ModelValidationResult>();
       }

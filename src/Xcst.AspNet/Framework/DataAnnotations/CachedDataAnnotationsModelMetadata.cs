@@ -14,10 +14,10 @@ namespace System.Web.Mvc {
 
       bool _isEditFormatStringFromCache;
 
-      public CachedDataAnnotationsModelMetadata(CachedDataAnnotationsModelMetadata prototype, Func<object> modelAccessor)
+      public CachedDataAnnotationsModelMetadata(CachedDataAnnotationsModelMetadata prototype, Func<object?>? modelAccessor)
          : base(prototype, modelAccessor) { }
 
-      public CachedDataAnnotationsModelMetadata(CachedDataAnnotationsModelMetadataProvider provider, Type containerType, Type modelType, string propertyName, IEnumerable<Attribute> attributes)
+      public CachedDataAnnotationsModelMetadata(CachedDataAnnotationsModelMetadataProvider provider, Type? containerType, Type modelType, string? propertyName, IEnumerable<Attribute> attributes)
          : base(provider, containerType, modelType, propertyName, new CachedDataAnnotationsMetadataAttributes(attributes.ToArray())) { }
 
       protected override bool ComputeConvertEmptyStringToNull() =>
@@ -25,7 +25,7 @@ namespace System.Web.Mvc {
             this.PrototypeCache.DisplayFormat.ConvertEmptyStringToNull
             : base.ComputeConvertEmptyStringToNull();
 
-      protected override string ComputeDataTypeName() {
+      protected override string? ComputeDataTypeName() {
 
          if (this.PrototypeCache.DataType != null) {
             return this.PrototypeCache.DataType.ToDataTypeName();
@@ -40,22 +40,22 @@ namespace System.Web.Mvc {
          return base.ComputeDataTypeName();
       }
 
-      protected override string ComputeDescription() =>
+      protected override string? ComputeDescription() =>
          (this.PrototypeCache.Display != null) ?
             this.PrototypeCache.Display.GetDescription()
             : base.ComputeDescription();
 
-      protected override string ComputeDisplayFormatString() =>
+      protected override string? ComputeDisplayFormatString() =>
          (this.PrototypeCache.DisplayFormat != null) ?
             this.PrototypeCache.DisplayFormat.DataFormatString
             : base.ComputeDisplayFormatString();
 
-      protected override string ComputeDisplayName() =>
+      protected override string? ComputeDisplayName() =>
          this.PrototypeCache.Display?.GetName()
             ?? this.PrototypeCache.DisplayName?.DisplayName
             ?? base.ComputeDisplayName();
 
-      protected override string ComputeEditFormatString() {
+      protected override string? ComputeEditFormatString() {
 
          if (this.PrototypeCache.DisplayFormat != null
             && this.PrototypeCache.DisplayFormat.ApplyFormatInEditMode) {
@@ -122,7 +122,7 @@ namespace System.Web.Mvc {
       protected override bool ComputeIsRequired() =>
          (this.PrototypeCache.Required != null) ? true : base.ComputeIsRequired();
 
-      protected override string ComputeNullDisplayText() =>
+      protected override string? ComputeNullDisplayText() =>
          (this.PrototypeCache.DisplayFormat != null) ?
             this.PrototypeCache.DisplayFormat.NullDisplayText
             : base.ComputeNullDisplayText();
@@ -131,7 +131,7 @@ namespace System.Web.Mvc {
          this.PrototypeCache.Display?.GetOrder()
             ?? base.ComputeOrder();
 
-      protected override string ComputeShortDisplayName() =>
+      protected override string? ComputeShortDisplayName() =>
          (this.PrototypeCache.Display != null) ?
             this.PrototypeCache.Display.GetShortName()
             : base.ComputeShortDisplayName();
@@ -167,7 +167,7 @@ namespace System.Web.Mvc {
          return base.ComputeSimpleDisplayText();
       }
 
-      protected override string ComputeTemplateHint() {
+      protected override string? ComputeTemplateHint() {
 
          if (this.PrototypeCache.UIHint != null) {
             return this.PrototypeCache.UIHint.UIHint;
@@ -180,12 +180,12 @@ namespace System.Web.Mvc {
          return base.ComputeTemplateHint();
       }
 
-      protected override string ComputeWatermark() =>
+      protected override string? ComputeWatermark() =>
          (this.PrototypeCache.Display != null) ?
             this.PrototypeCache.Display.GetPrompt()
             : base.ComputeWatermark();
 
-      protected override string ComputeGroupName() =>
+      protected override string? ComputeGroupName() =>
          (this.PrototypeCache.Display != null) ?
             this.PrototypeCache.Display.GetGroupName()
             : base.ComputeGroupName();
@@ -264,10 +264,10 @@ namespace System.Web.Mvc {
 
    class CachedDataAnnotationsModelMetadataProvider : CachedAssociatedMetadataProvider<CachedDataAnnotationsModelMetadata> {
 
-      protected override CachedDataAnnotationsModelMetadata CreateMetadataPrototype(IEnumerable<Attribute> attributes, Type containerType, Type modelType, string propertyName) =>
+      protected override CachedDataAnnotationsModelMetadata CreateMetadataPrototype(IEnumerable<Attribute> attributes, Type? containerType, Type modelType, string? propertyName) =>
          new CachedDataAnnotationsModelMetadata(this, containerType, modelType, propertyName, attributes);
 
-      protected override CachedDataAnnotationsModelMetadata CreateMetadataFromPrototype(CachedDataAnnotationsModelMetadata prototype, Func<object> modelAccessor) =>
+      protected override CachedDataAnnotationsModelMetadata CreateMetadataFromPrototype(CachedDataAnnotationsModelMetadata prototype, Func<object?>? modelAccessor) =>
          new CachedDataAnnotationsModelMetadata(prototype, modelAccessor);
    }
 }

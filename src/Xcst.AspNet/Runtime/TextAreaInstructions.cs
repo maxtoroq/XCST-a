@@ -61,7 +61,7 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void TextArea(
-            HtmlHelper htmlHelper, XcstWriter output, string name, object value = null, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null, HtmlAttribs? htmlAttributes = null) {
 
          ModelMetadata metadata = ModelMetadata.FromStringExpression(name, htmlHelper.ViewData);
 
@@ -73,7 +73,7 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void TextArea(
-            HtmlHelper htmlHelper, XcstWriter output, string name, object value, int rows, int columns, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper htmlHelper, XcstWriter output, string name, object? value, int rows, int columns, HtmlAttribs? htmlAttributes = null) {
 
          ModelMetadata metadata = ModelMetadata.FromStringExpression(name, htmlHelper.ViewData);
 
@@ -88,7 +88,7 @@ namespace Xcst.Web.Runtime {
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void TextAreaFor<TModel, TProperty>(
-            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, HtmlAttribs? htmlAttributes = null) {
 
          if (expression is null) throw new ArgumentNullException(nameof(expression));
 
@@ -100,7 +100,7 @@ namespace Xcst.Web.Runtime {
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void TextAreaFor<TModel, TProperty>(
-            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, int rows, int columns, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, int rows, int columns, HtmlAttribs? htmlAttributes = null) {
 
          if (expression is null) throw new ArgumentNullException(nameof(expression));
 
@@ -114,7 +114,7 @@ namespace Xcst.Web.Runtime {
       [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "If this fails, it is because the string-based version had an empty 'name' parameter")]
       internal static void TextAreaHelper(
             HtmlHelper htmlHelper, XcstWriter output, ModelMetadata metadata, string name, IDictionary<string, object> rowsAndColumns,
-            HtmlAttribs htmlAttributes, string innerHtmlPrefix = null) {
+            HtmlAttribs? htmlAttributes, string? innerHtmlPrefix = null) {
 
          string fullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
 
@@ -131,7 +131,7 @@ namespace Xcst.Web.Runtime {
 
          // If there are any errors for a named field, we add the css attribute.
 
-         string cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
+         string? cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelState modelState)
             && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
          HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
@@ -145,7 +145,7 @@ namespace Xcst.Web.Runtime {
             output,
             excludeFn: n => n == "name" || n == "class" || (explicitRowsAndCols && (n == "rows" || n == "cols")));
 
-         string value;
+         string? value;
 
          if (modelState?.Value != null) {
             value = modelState.Value.AttemptedValue;

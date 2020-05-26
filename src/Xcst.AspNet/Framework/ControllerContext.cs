@@ -1,8 +1,5 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-using System.Diagnostics.CodeAnalysis;
-using System.Web.Routing;
-
 namespace System.Web.Mvc {
 
    // Though many of the properties on ControllerContext and its subclassed types are virtual, there are still sealed
@@ -13,9 +10,9 @@ namespace System.Web.Mvc {
 
    public class ControllerContext {
 
-      HttpContextBase _httpContext;
-      IDependencyResolver _resolver;
-      ITempDataProvider _tempDataProvider;
+      HttpContextBase? _httpContext;
+      IDependencyResolver? _resolver;
+      ITempDataProvider? _tempDataProvider;
 
       public HttpContextBase HttpContext {
          get => _httpContext ?? (_httpContext = new EmptyHttpContext());
@@ -61,7 +58,7 @@ namespace System.Web.Mvc {
 
          // The factory can be customized in order to create an ITempDataProvider for the controller.
 
-         ITempDataProviderFactory tempDataProviderFactory = this.Resolver.GetService<ITempDataProviderFactory>();
+         ITempDataProviderFactory? tempDataProviderFactory = this.Resolver.GetService<ITempDataProviderFactory>();
 
          if (tempDataProviderFactory != null) {
             return tempDataProviderFactory.CreateInstance();

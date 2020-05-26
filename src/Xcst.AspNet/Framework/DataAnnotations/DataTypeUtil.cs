@@ -29,7 +29,7 @@ namespace System.Web.Mvc {
       // This is a faster version of GetDataTypeName(). It internally calls ToString() on the enum
       // value, which can be quite slow because of value verification.
 
-      internal static string ToDataTypeName(this DataTypeAttribute attribute, Func<DataTypeAttribute, Boolean> isDataType = null) {
+      internal static string ToDataTypeName(this DataTypeAttribute attribute, Func<DataTypeAttribute, Boolean>? isDataType = null) {
 
          if (isDataType is null) {
             isDataType = t => t.GetType().Equals(typeof(DataTypeAttribute));
@@ -43,7 +43,7 @@ namespace System.Web.Mvc {
 
             // Statically known dataTypes are handled separately for performance
 
-            string name = KnownDataTypeToString(attribute.DataType);
+            string? name = KnownDataTypeToString(attribute.DataType);
 
             if (name is null) {
                // Unknown types fallback to a dictionary lookup.
@@ -60,7 +60,7 @@ namespace System.Web.Mvc {
          return attribute.GetDataTypeName();
       }
 
-      static string KnownDataTypeToString(DataType dataType) {
+      static string? KnownDataTypeToString(DataType dataType) {
 
          switch (dataType) {
             case DataType.CreditCard:

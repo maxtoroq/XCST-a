@@ -49,14 +49,14 @@ namespace Xcst.Web.Runtime {
 
             XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
-            string className = GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
+            string? className = GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
             var htmlAttributes = CreateHtmlAttributes(html, className);
 
             SelectInstructions.Select(html, output, String.Empty, TriStateValues(value), htmlAttributes: htmlAttributes);
 
          } else {
 
-            string className = GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
+            string? className = GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
             var htmlAttributes = CreateHtmlAttributes(html, className);
 
             InputInstructions.CheckBox(html, package, seqOutput, String.Empty, value.GetValueOrDefault(), htmlAttributes: htmlAttributes);
@@ -69,7 +69,7 @@ namespace Xcst.Web.Runtime {
       internal static void CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
          ViewDataDictionary viewData = html.ViewData;
-         object model = viewData.ModelMetadata.Model;
+         object? model = viewData.ModelMetadata.Model;
 
          if (model is null) {
             return;
@@ -79,7 +79,7 @@ namespace Xcst.Web.Runtime {
             ?? throw new InvalidOperationException($"The Collection template was used with an object of type '{model.GetType().FullName}', which does not implement System.IEnumerable.");
 
          Type typeInCollection = typeof(string);
-         Type genericEnumerableType = TypeHelpers.ExtractGenericInterface(collection.GetType(), typeof(IEnumerable<>));
+         Type? genericEnumerableType = TypeHelpers.ExtractGenericInterface(collection.GetType(), typeof(IEnumerable<>));
 
          if (genericEnumerableType != null) {
             typeInCollection = genericEnumerableType.GetGenericArguments()[0];
@@ -140,9 +140,9 @@ namespace Xcst.Web.Runtime {
 
          XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
-         object model = viewData.Model;
+         object? model = viewData.Model;
 
-         string className = GetEditorCssClass(new EditorInfo("HiddenInput", "input", InputType.Hidden), null);
+         string? className = GetEditorCssClass(new EditorInfo("HiddenInput", "input", InputType.Hidden), null);
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
          InputInstructions.Input(html, output, String.Empty, model, type: "hidden", htmlAttributes: htmlAttributes);
@@ -153,14 +153,14 @@ namespace Xcst.Web.Runtime {
          XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          object value = html.ViewData.TemplateInfo.FormattedModelValue;
-         string className = GetEditorCssClass(new EditorInfo("MultilineText", "textarea"), "text-box multi-line");
+         string? className = GetEditorCssClass(new EditorInfo("MultilineText", "textarea"), "text-box multi-line");
          var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
          TextAreaInstructions.TextArea(html, output, String.Empty, value, 0, 0, htmlAttributes);
       }
 
       static IDictionary<string, object> CreateHtmlAttributes(
-            HtmlHelper html, string className, string inputType = null, bool addMetadataAttributes = false) {
+            HtmlHelper html, string? className, string? inputType = null, bool addMetadataAttributes = false) {
 
          var htmlAttributes = new HtmlAttributeDictionary();
 
@@ -175,13 +175,13 @@ namespace Xcst.Web.Runtime {
             ModelMetadata metadata = html.ViewData.ModelMetadata;
 
             if (!String.IsNullOrEmpty(metadata.Watermark)) {
-               htmlAttributes["placeholder"] = metadata.Watermark;
+               htmlAttributes["placeholder"] = metadata.Watermark!;
             }
 
             htmlAttributes.SetBoolean("readonly", metadata.IsReadOnly);
          }
 
-         object userAttribs = html.ViewData["htmlAttributes"];
+         object? userAttribs = html.ViewData["htmlAttributes"];
 
          if (userAttribs is IDictionary<string, object> dict) {
             htmlAttributes.SetAttributes(dict);
@@ -215,7 +215,7 @@ namespace Xcst.Web.Runtime {
 
          foreach (var group in groupedProperties) {
 
-            XcstWriter fieldsetWriter = null;
+            XcstWriter? fieldsetWriter = null;
 
             if (createFieldset) {
 
@@ -229,15 +229,15 @@ namespace Xcst.Web.Runtime {
 
             foreach (ModelMetadata propertyMeta in group) {
 
-               XcstWriter fieldWriter = null;
+               XcstWriter? fieldWriter = null;
 
                if (!propertyMeta.HideSurroundingHtml) {
 
-                  XcstDelegate<object> memberTemplate =
+                  XcstDelegate<object>? memberTemplate =
                      EditorInstructions.MemberTemplate(html, propertyMeta);
 
                   if (memberTemplate != null) {
-                     memberTemplate(null, fieldsetWriter ?? seqOutput);
+                     memberTemplate(null!/* argument is not used */, fieldsetWriter ?? seqOutput);
                      continue;
                   }
 
@@ -246,7 +246,7 @@ namespace Xcst.Web.Runtime {
 
                   labelWriter.WriteStartElement("div");
                   labelWriter.WriteAttributeString("class", "editor-label");
-                  LabelInstructions.LabelHelper(html, labelWriter, propertyMeta, propertyMeta.PropertyName);
+                  LabelInstructions.LabelHelper(html, labelWriter, propertyMeta, propertyMeta.PropertyName!);
                   labelWriter.WriteEndElement();
 
                   fieldWriter = fieldsetWriter
@@ -259,14 +259,14 @@ namespace Xcst.Web.Runtime {
                templateHelper(html, package, fieldWriter ?? fieldsetWriter ?? seqOutput, propertyMeta, propertyMeta.PropertyName, null, DataBoundControlMode.Edit, additionalViewData: null);
 
                if (!propertyMeta.HideSurroundingHtml) {
-                  fieldWriter.WriteString(" ");
-                  ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyMeta, propertyMeta.PropertyName, null, null, null);
+                  fieldWriter!.WriteString(" ");
+                  ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyMeta, propertyMeta.PropertyName!, null, null, null);
                   fieldWriter.WriteEndElement(); // </div>
                }
             }
 
             if (createFieldset) {
-               fieldsetWriter.WriteEndElement(); // </fieldset>
+               fieldsetWriter!.WriteEndElement(); // </fieldset>
             }
          }
       }
@@ -275,7 +275,7 @@ namespace Xcst.Web.Runtime {
 
          XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
-         string className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
+         string? className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
          var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
          InputInstructions.Input(html, output, String.Empty, value: null, type: "password", htmlAttributes: htmlAttributes);
@@ -366,14 +366,14 @@ namespace Xcst.Web.Runtime {
 
          XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
-         string className = GetEditorCssClass(new EditorInfo("DropDownList", "select"), null);
+         string? className = GetEditorCssClass(new EditorInfo("DropDownList", "select"), null);
          var htmlAttributes = CreateHtmlAttributes(html, className);
          ViewDataDictionary viewData = html.ViewData;
 
-         string optionLabel = null;
+         string? optionLabel = null;
 
-         IEnumerable<SelectListItem> options = Options(viewData);
-         OptionList optionList = options as OptionList;
+         IEnumerable<SelectListItem>? options = Options(viewData);
+         OptionList? optionList = options as OptionList;
 
          if (optionList?.AddBlankOption == true) {
             optionLabel = viewData.ModelMetadata.Watermark ?? String.Empty;
@@ -386,11 +386,11 @@ namespace Xcst.Web.Runtime {
 
          XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
-         string className = GetEditorCssClass(new EditorInfo("ListBox", "select"), null);
+         string? className = GetEditorCssClass(new EditorInfo("ListBox", "select"), null);
          var htmlAttributes = CreateHtmlAttributes(html, className);
          ViewDataDictionary viewData = html.ViewData;
 
-         IEnumerable<SelectListItem> options = Options(viewData);
+         IEnumerable<SelectListItem>? options = Options(viewData);
 
          SelectInstructions.SelectHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel: null, multiple: true, htmlAttributes: htmlAttributes);
       }
@@ -399,7 +399,7 @@ namespace Xcst.Web.Runtime {
 
          XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
-         string className = GetEditorCssClass(new EditorInfo("Enum", "select"), null);
+         string? className = GetEditorCssClass(new EditorInfo("Enum", "select"), null);
          var htmlAttributes = CreateHtmlAttributes(html, className);
          ViewDataDictionary viewData = html.ViewData;
 
@@ -410,7 +410,7 @@ namespace Xcst.Web.Runtime {
             throw new InvalidOperationException("Enum template can only be used on Enum members.");
          }
 
-         string formatString = viewData.ModelMetadata.EditFormatString
+         string? formatString = viewData.ModelMetadata.EditFormatString
             ?? viewData.ModelMetadata.DisplayFormatString;
 
          bool applyFormatInEdit = viewData.ModelMetadata.EditFormatString != null;
@@ -430,7 +430,7 @@ namespace Xcst.Web.Runtime {
          ViewDataDictionary viewData = html.ViewData;
          ModelMetadata metadata = viewData.ModelMetadata;
 
-         object value = metadata.Model;
+         object? value = metadata.Model;
 
          if (viewData.TemplateInfo.FormattedModelValue != value
             && metadata.HasNonDefaultEditFormat()) {
@@ -445,22 +445,21 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      static void HtmlInputTemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, string templateName, string inputType = null) {
+      static void HtmlInputTemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
 
          XcstWriter output = DocumentWriter.CastElement(package, seqOutput);
 
          object value = html.ViewData.TemplateInfo.FormattedModelValue;
 
-         string className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
+         string? className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
          var htmlAttributes = CreateHtmlAttributes(html, className, inputType: inputType, addMetadataAttributes: true);
 
          InputInstructions.Input(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes);
       }
 
-      internal static string GetEditorCssClass(EditorInfo editorInfo, string defaultCssClass) {
+      internal static string? GetEditorCssClass(EditorInfo editorInfo, string? defaultCssClass) {
 
-         Func<EditorInfo, string, string> customFn =
-            XcstWebConfiguration.Instance.EditorTemplates.EditorCssClass;
+         var customFn = XcstWebConfiguration.Instance.EditorTemplates.EditorCssClass;
 
          if (customFn != null) {
             return customFn(editorInfo, defaultCssClass);
@@ -478,18 +477,18 @@ namespace Xcst.Web.Runtime {
          };
       }
 
-      internal static IEnumerable<SelectListItem> Options(ViewDataDictionary viewData) {
+      internal static IEnumerable<SelectListItem>? Options(ViewDataDictionary viewData) {
 
          string key = "__xcst_options:" + viewData.TemplateInfo.HtmlFieldPrefix;
 
-         if (viewData.TryGetValue(key, out IEnumerable<SelectListItem> options)) {
+         if (viewData.TryGetValue(key, out IEnumerable<SelectListItem>? options)) {
             return options;
          }
 
          return null;
       }
 
-      internal static IList<SelectListItem> EnumOptions(Type enumType, XcstWriter output, string formatString = null, bool applyFormatInEdit = false) {
+      internal static IList<SelectListItem> EnumOptions(Type enumType, XcstWriter output, string? formatString = null, bool applyFormatInEdit = false) {
 
          Debug.Assert(enumType.IsEnum);
 

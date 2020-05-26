@@ -13,7 +13,7 @@ namespace System.Web.Mvc {
       private ViewDataDictionary ViewData {
          get {
             ViewDataDictionary viewData = _viewDataThunk();
-            Debug.Assert(viewData != null);
+            Assert.IsNotNull(viewData);
             return viewData;
          }
       }
@@ -28,7 +28,7 @@ namespace System.Web.Mvc {
       public override IEnumerable<string> GetDynamicMemberNames() =>
          this.ViewData.Keys;
 
-      public override bool TryGetMember(GetMemberBinder binder, out object result) {
+      public override bool TryGetMember(GetMemberBinder binder, out object? result) {
 
          result = this.ViewData[binder.Name];
 
@@ -37,7 +37,7 @@ namespace System.Web.Mvc {
          return true;
       }
 
-      public override bool TrySetMember(SetMemberBinder binder, object value) {
+      public override bool TrySetMember(SetMemberBinder binder, object? value) {
 
          this.ViewData[binder.Name] = value;
 

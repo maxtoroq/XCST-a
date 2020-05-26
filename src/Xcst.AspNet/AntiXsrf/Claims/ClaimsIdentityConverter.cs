@@ -11,19 +11,19 @@ namespace System.Web.Helpers.Claims {
 
    sealed class ClaimsIdentityConverter {
 
-      static readonly MethodInfo _claimsIdentityTryConvertOpenMethod = typeof(ClaimsIdentity).GetMethod("TryConvert", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
-      static readonly ClaimsIdentityConverter _default = new ClaimsIdentityConverter(GetDefaultConverters());
+      static readonly MethodInfo _claimsIdentityTryConvertOpenMethod =
+         typeof(ClaimsIdentity).GetMethod("TryConvert", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
 
-      readonly Func<IIdentity, ClaimsIdentity>[] _converters;
+      readonly Func<IIdentity, ClaimsIdentity?>[] _converters;
 
       // By default, we understand the ClaimsIdentity / Claim types included
       // with the WIF SDK and FX 4.5.
 
-      public static ClaimsIdentityConverter Default => _default;
+      public static ClaimsIdentityConverter Default { get; } = new ClaimsIdentityConverter(GetDefaultConverters());
 
       // Internal for unit testing; nobody should ever be calling this in production.
 
-      internal ClaimsIdentityConverter(Func<IIdentity, ClaimsIdentity>[] converters) {
+      internal ClaimsIdentityConverter(Func<IIdentity, ClaimsIdentity?>[] converters) {
          _converters = converters;
       }
 
@@ -39,7 +39,7 @@ namespace System.Web.Helpers.Claims {
             || claimsIdentity is WindowsIdentity
             || claimsIdentity is GenericIdentity;
 
-      public ClaimsIdentity TryConvert(IIdentity identity) {
+      public ClaimsIdentity? TryConvert(IIdentity identity) {
 
          if (IsGrandfatheredIdentityType(identity)) {
             return null;
@@ -49,7 +49,7 @@ namespace System.Web.Helpers.Claims {
 
          for (int i = 0; i < _converters.Length; i++) {
 
-            ClaimsIdentity retVal = _converters[i](identity);
+            ClaimsIdentity? retVal = _converters[i](identity);
 
             if (retVal != null) {
                return retVal;
@@ -59,20 +59,20 @@ namespace System.Web.Helpers.Claims {
          return null;
       }
 
-      static void AddToList(IList<Func<IIdentity, ClaimsIdentity>> converters, Type claimsIdentityType, Type claimType) {
+      static void AddToList(IList<Func<IIdentity, ClaimsIdentity?>> converters, Type claimsIdentityType, Type claimType) {
 
          if (claimsIdentityType != null
             && claimType != null) {
 
             MethodInfo tryConvertClosedMethod = _claimsIdentityTryConvertOpenMethod.MakeGenericMethod(claimsIdentityType, claimType);
-            Func<IIdentity, ClaimsIdentity> converter = (Func<IIdentity, ClaimsIdentity>)Delegate.CreateDelegate(typeof(Func<IIdentity, ClaimsIdentity>), tryConvertClosedMethod);
+            var converter = (Func<IIdentity, ClaimsIdentity?>)Delegate.CreateDelegate(typeof(Func<IIdentity, ClaimsIdentity?>), tryConvertClosedMethod);
             converters.Add(converter);
          }
       }
 
-      static Func<IIdentity, ClaimsIdentity>[] GetDefaultConverters() {
+      static Func<IIdentity, ClaimsIdentity?>[] GetDefaultConverters() {
 
-         var converters = new List<Func<IIdentity, ClaimsIdentity>>();
+         var converters = new List<Func<IIdentity, ClaimsIdentity?>>();
 
          // WIF SDK is only available in full trust scenarios
 

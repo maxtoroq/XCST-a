@@ -14,7 +14,7 @@ namespace System.Web.Mvc {
       readonly HttpContextBase _httpContext;
 
       // The default constructor is intended for use by unit testing only.
-      public UrlHelper() { }
+      //public UrlHelper() { }
 
       public UrlHelper(HttpContextBase httpContext) {
 
@@ -87,7 +87,7 @@ namespace System.Web.Mvc {
          // many of the methods we call internally can't handle query strings properly, so just strip it out for
          // the time being
 
-         string query;
+         string? query;
          contentPath = StripQuery(contentPath, out query);
 
          // many of the methods we call internally can't handle query strings properly, so tack it on after processing
@@ -118,7 +118,7 @@ namespace System.Web.Mvc {
          return UrlRewrite.GenerateClientUrlInternal(httpContext, contentPath);
       }
 
-      static string StripQuery(string path, out string query) {
+      static string StripQuery(string path, out string? query) {
 
          int queryIndex = path.IndexOf('?');
 
@@ -133,7 +133,7 @@ namespace System.Web.Mvc {
 
       internal static class UrlBuilder {
 
-         internal static string BuildUrl(string path, out string query, params object[] pathParts) {
+         internal static string BuildUrl(string path, out string query, params object?[]? pathParts) {
 
             // Performance senstive
             // 
@@ -151,7 +151,7 @@ namespace System.Web.Mvc {
 
             } else if (pathParts.Length == 1) {
 
-               object pathPart = pathParts[0];
+               object? pathPart = pathParts[0];
 
                if (pathPart is null) {
                   query = String.Empty;
@@ -180,7 +180,7 @@ namespace System.Web.Mvc {
 
                for (int i = 0; i < pathParts.Length; i++) {
 
-                  object pathPart = pathParts[i];
+                  object? pathPart = pathParts[i];
 
                   if (pathPart is null) {
                      continue;
@@ -292,8 +292,7 @@ namespace System.Web.Mvc {
 
             // The Combine() method can't handle query strings on the base path, so we trim it off.
 
-            string query;
-            basePath = StripQuery(basePath, out query);
+            basePath = StripQuery(basePath, out _);
 
             return VirtualPathUtility.Combine(basePath, relativePath);
          }

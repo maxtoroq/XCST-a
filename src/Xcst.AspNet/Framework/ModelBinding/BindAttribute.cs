@@ -9,9 +9,9 @@ namespace System.Web.Mvc {
    public sealed class BindAttribute : Attribute {
 
       static readonly char[] _splitParameter = new[] { ',' };
-      string _exclude;
+      string? _exclude;
       string[] _excludeSplit = new string[0];
-      string _include;
+      string? _include;
       string[] _includeSplit = new string[0];
 
       public string Exclude {
@@ -30,7 +30,7 @@ namespace System.Web.Mvc {
          }
       }
 
-      public string Prefix { get; set; }
+      public string? Prefix { get; set; }
 
       internal static bool IsPropertyAllowed(string propertyName, ICollection<string> includeProperties, ICollection<string> excludeProperties) {
 

@@ -76,9 +76,9 @@ namespace AspNetPrecompiled.Infrastructure {
 
          string requestPath = request.AppRelativeCurrentExecutionFilePath.Substring(2) + request.PathInfo;
 
-         if (MatchRequest(requestPath, out string pagePath, out string pathInfo)) {
+         if (MatchRequest(requestPath, out string? pagePath, out string? pathInfo)) {
 
-            var page = (XcstPage)Activator.CreateInstance(PageType(pagePath));
+            var page = (XcstPage)Activator.CreateInstance(PageType(pagePath!));
             page.VirtualPath = "~/" + pagePath;
             page.PathInfo = pathInfo;
 
@@ -95,9 +95,9 @@ namespace AspNetPrecompiled.Infrastructure {
          }
       }
 
-      static bool MatchRequest(string requestPath, out string pagePath, out string pathInfo) {
+      static bool MatchRequest(string requestPath, out string? pagePath, out string? pathInfo) {
 
-         Debug.Assert(requestPath != null);
+         //Debug.Assert(requestPath != null);
          Debug.Assert(!requestPath.StartsWith("~/"));
 
          // We can skip the file exists check and normal lookup for empty paths, but we still need to look for default pages
@@ -157,7 +157,7 @@ namespace AspNetPrecompiled.Infrastructure {
          return false;
       }
 
-      static bool MatchDefaultFile(string requestPath, out string pagePath) {
+      static bool MatchDefaultFile(string requestPath, out string? pagePath) {
 
          const string defaultDocument = "index";
 
@@ -188,10 +188,10 @@ namespace AspNetPrecompiled.Infrastructure {
 
    public static class LinkToHelper {
 
-      public static string LinkTo(string path, params object[] pathParts) =>
+      public static string LinkTo(string path, params object?[]? pathParts) =>
          UrlUtil.GenerateClientUrl(null, path, pathParts);
 
-      public static string LinkToDefault(string path, string defaultPath, params object[] pathParts) {
+      public static string LinkToDefault(string path, string defaultPath, params object?[]? pathParts) {
 
          if (pathParts is null
             || pathParts.Length == 0

@@ -35,15 +35,15 @@ namespace Xcst.Web.Runtime {
       // Select
 
       public static void Select(
-            HtmlHelper htmlHelper, XcstWriter output, string name, IEnumerable<SelectListItem> selectList = null,
-            bool multiple = false, HtmlAttribs htmlAttributes = null) =>
+            HtmlHelper htmlHelper, XcstWriter output, string name, IEnumerable<SelectListItem>? selectList = null,
+            bool multiple = false, HtmlAttribs? htmlAttributes = null) =>
          SelectHelper(htmlHelper, output, default(ModelMetadata), name, selectList, default(string), multiple, htmlAttributes);
 
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void SelectFor<TModel, TProperty>(
-            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, IEnumerable<SelectListItem> selectList = null,
-            bool multiple = false, HtmlAttribs htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, IEnumerable<SelectListItem>? selectList = null,
+            bool multiple = false, HtmlAttribs? htmlAttributes = null) {
 
          if (expression is null) throw new ArgumentNullException(nameof(expression));
 
@@ -54,14 +54,14 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void SelectForModel(
-            HtmlHelper htmlHelper, XcstWriter output, IEnumerable<SelectListItem> selectList = null,
-            bool multiple = false, HtmlAttribs htmlAttributes = null) =>
+            HtmlHelper htmlHelper, XcstWriter output, IEnumerable<SelectListItem>? selectList = null,
+            bool multiple = false, HtmlAttribs? htmlAttributes = null) =>
 
          SelectHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, String.Empty, selectList, default(string), multiple, htmlAttributes);
 
       internal static void SelectHelper(
-            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata metadata, string expression, IEnumerable<SelectListItem> selectList,
-            string optionLabel, bool multiple, HtmlAttribs htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata? metadata, string expression, IEnumerable<SelectListItem>? selectList,
+            string? optionLabel, bool multiple, HtmlAttribs? htmlAttributes) {
 
          if (!multiple
             && optionLabel is null
@@ -132,8 +132,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void SelectInternal(
-            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata metadata, string optionLabel, string name, IEnumerable<SelectListItem> selectList,
-            bool allowMultiple, HtmlAttribs htmlAttributes) {
+            HtmlHelper htmlHelper, XcstWriter output, ModelMetadata? metadata, string? optionLabel, string name, IEnumerable<SelectListItem>? selectList,
+            bool allowMultiple, HtmlAttribs? htmlAttributes) {
 
          ViewDataDictionary viewData = htmlHelper.ViewData;
 
@@ -152,7 +152,7 @@ namespace Xcst.Web.Runtime {
             usedViewData = true;
          }
 
-         object defaultValue = (allowMultiple) ?
+         object? defaultValue = (allowMultiple) ?
             htmlHelper.GetModelStateValue(fullName, typeof(string[]))
             : htmlHelper.GetModelStateValue(fullName, typeof(string));
 
@@ -185,7 +185,7 @@ namespace Xcst.Web.Runtime {
 
          // If there are any errors for a named field, we add the css attribute.
 
-         string cssClass = (viewData.ModelState.TryGetValue(fullName, out ModelState modelState)
+         string? cssClass = (viewData.ModelState.TryGetValue(fullName, out ModelState modelState)
             && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
          HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
@@ -200,7 +200,7 @@ namespace Xcst.Web.Runtime {
          output.WriteEndElement(); // </select>
       }
 
-      static void WriteOptions(string optionLabel, IEnumerable<SelectListItem> selectList, XcstWriter output) {
+      static void WriteOptions(string? optionLabel, IEnumerable<SelectListItem> selectList, XcstWriter output) {
 
          // Make optionLabel the first item that gets rendered.
 
@@ -221,7 +221,7 @@ namespace Xcst.Web.Runtime {
 
          foreach (var group in groupedSelectList) {
 
-            SelectListGroup optGroup = group.First().Group;
+            SelectListGroup? optGroup = group.First().Group;
 
             if (optGroup != null) {
 

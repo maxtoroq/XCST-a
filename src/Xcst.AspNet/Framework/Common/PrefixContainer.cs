@@ -101,8 +101,8 @@ namespace System.Web.Mvc {
 
       static void GetKeyFromNonEmptyPrefix(string prefix, string entry, IDictionary<string, string> results) {
 
-         string key = null;
-         string fullName = null;
+         string? key = null;
+         string? fullName = null;
          int keyPosition = prefix.Length + 1;
 
          switch (entry[prefix.Length]) {

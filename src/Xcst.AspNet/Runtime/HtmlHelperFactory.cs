@@ -23,7 +23,7 @@ namespace Xcst.Web.Runtime {
       public static HtmlHelper<TModel> ForModel<TModel>(
             HtmlHelper currentHtml,
             TModel model,
-            string htmlFieldPrefix = null) {
+            string? htmlFieldPrefix = null) {
 
          if (currentHtml is null) throw new ArgumentNullException(nameof(currentHtml));
 
@@ -80,7 +80,9 @@ namespace Xcst.Web.Runtime {
 
       class ViewDataContainer : IViewDataContainer {
 
+#pragma warning disable CS8618
          public ViewDataDictionary ViewData { get; set; }
+#pragma warning restore CS8618
       }
    }
 }

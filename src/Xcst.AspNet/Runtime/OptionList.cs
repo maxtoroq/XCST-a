@@ -29,7 +29,7 @@ namespace Xcst.Web.Runtime {
       readonly HashSet<string> selectedValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
       bool useSelectedValues;
-      List<SelectListItem> dynamicList;
+      List<SelectListItem>? dynamicList;
 
       public bool AddBlankOption =>
          staticList.Count == 0
@@ -69,7 +69,7 @@ namespace Xcst.Web.Runtime {
          return this;
       }
 
-      static string ValueString(object value) =>
+      static string ValueString(object? value) =>
          Convert.ToString(value, CultureInfo.CurrentCulture);
 
       bool IsSelected(SelectListItem item) {
@@ -81,7 +81,7 @@ namespace Xcst.Web.Runtime {
          return item.Selected;
       }
 
-      public OptionList AddStaticOption(object value = null, string text = null, bool selected = false, bool disabled = false) {
+      public OptionList AddStaticOption(object? value = null, string? text = null, bool selected = false, bool disabled = false) {
 
          var item = new SelectListItem {
             Text = text,
@@ -211,7 +211,7 @@ namespace Xcst.Web.Runtime {
 
          item.Selected = IsSelected(item);
 
-         this.dynamicList.Add(item);
+         this.dynamicList!.Add(item);
       }
 
       public IEnumerator<SelectListItem> GetEnumerator() {
