@@ -31,7 +31,7 @@ namespace System.Web.Helpers {
       /// generate a name.
       /// </remarks>
       public static string CookieName {
-         get => _cookieName ?? (_cookieName = GetAntiForgeryCookieName());
+         get => _cookieName ??= GetAntiForgeryCookieName();
          set => _cookieName = value;
       }
 
