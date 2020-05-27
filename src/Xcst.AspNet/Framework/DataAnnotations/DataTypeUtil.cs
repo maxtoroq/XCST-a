@@ -60,45 +60,26 @@ namespace System.Web.Mvc {
          return attribute.GetDataTypeName();
       }
 
-      static string? KnownDataTypeToString(DataType dataType) {
-
-         switch (dataType) {
-            case DataType.CreditCard:
-               return CreditCardTypeName;
-            case DataType.Currency:
-               return CurrencyTypeName;
-            case DataType.Date:
-               return DateTypeName;
-            case DataType.DateTime:
-               return DateTimeTypeName;
-            case DataType.Duration:
-               return DurationTypeName;
-            case DataType.EmailAddress:
-               return EmailAddressTypeName;
-            case DataType.Html:
-               return HtmlTypeName;
-            case DataType.ImageUrl:
-               return ImageUrlTypeName;
-            case DataType.MultilineText:
-               return MultiLineTextTypeName;
-            case DataType.Password:
-               return PasswordTypeName;
-            case DataType.PhoneNumber:
-               return PhoneNumberTypeName;
-            case DataType.PostalCode:
-               return PostalCodeTypeName;
-            case DataType.Text:
-               return TextTypeName;
-            case DataType.Time:
-               return TimeTypeName;
-            case DataType.Upload:
-               return UploadTypeName;
-            case DataType.Url:
-               return UrlTypeName;
-         }
-
-         return null;
-      }
+      static string? KnownDataTypeToString(DataType dataType) =>
+         dataType switch {
+            DataType.CreditCard => CreditCardTypeName,
+            DataType.Currency => CurrencyTypeName,
+            DataType.Date => DateTypeName,
+            DataType.DateTime => DateTimeTypeName,
+            DataType.Duration => DurationTypeName,
+            DataType.EmailAddress => EmailAddressTypeName,
+            DataType.Html => HtmlTypeName,
+            DataType.ImageUrl => ImageUrlTypeName,
+            DataType.MultilineText => MultiLineTextTypeName,
+            DataType.Password => PasswordTypeName,
+            DataType.PhoneNumber => PhoneNumberTypeName,
+            DataType.PostalCode => PostalCodeTypeName,
+            DataType.Text => TextTypeName,
+            DataType.Time => TimeTypeName,
+            DataType.Upload => UploadTypeName,
+            DataType.Url => UrlTypeName,
+            _ => null,
+         };
 
       static Dictionary<object, string> CreateDataTypeToName() {
 

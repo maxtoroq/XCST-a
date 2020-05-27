@@ -109,23 +109,15 @@ namespace System.Web.Mvc {
 #pragma warning restore CS8603
       }
 
-      public static string GetInputTypeString(InputType inputType) {
-
-         switch (inputType) {
-            case InputType.CheckBox:
-               return "checkbox";
-            case InputType.Hidden:
-               return "hidden";
-            case InputType.Password:
-               return "password";
-            case InputType.Radio:
-               return "radio";
-            case InputType.Text:
-               return "text";
-            default:
-               return "text";
-         }
-      }
+      public static string GetInputTypeString(InputType inputType) =>
+         inputType switch {
+            InputType.CheckBox => "checkbox",
+            InputType.Hidden => "hidden",
+            InputType.Password => "password",
+            InputType.Radio => "radio",
+            InputType.Text => "text",
+            _ => "text",
+         };
 
       /// <summary>
       /// Creates a dictionary from an object, by adding each public instance property as a key with its associated 

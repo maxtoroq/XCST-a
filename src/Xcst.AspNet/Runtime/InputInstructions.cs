@@ -337,23 +337,15 @@ namespace Xcst.Web.Runtime {
             htmlAttributes: htmlAttributes);
       }
 
-      static InputType? GetInputType(string? type) {
-
-         switch (type) {
-            case "checkbox":
-               return InputType.CheckBox;
-            case "hidden":
-               return InputType.Hidden;
-            case "password":
-               return InputType.Password;
-            case "radio":
-               return InputType.Radio;
-            case "text":
-               return InputType.Text;
-            default:
-               return null;
-         }
-      }
+      static InputType? GetInputType(string? type) =>
+         type switch {
+            "checkbox" => InputType.CheckBox,
+            "hidden" => InputType.Hidden,
+            "password" => InputType.Password,
+            "radio" => InputType.Radio,
+            "text" => InputType.Text,
+            _ => null,
+         };
 
       static void InputHelper(
             HtmlHelper htmlHelper, XcstWriter output, InputType inputType, ModelMetadata? metadata, string name, object? value,
