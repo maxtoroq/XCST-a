@@ -103,31 +103,6 @@ namespace Xcst.Web.Runtime {
 
                output.WriteAttributeString("data-valmsg-for", modelName);
                output.WriteAttributeString("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
-
-            } else {
-
-               FieldValidationMetadata fieldMetadata = ApplyFieldValidationMetadata(htmlHelper, modelMetadata, modelName);
-
-               // rules will already have been written to the metadata object
-               // only replace contents if no explicit message was specified
-
-               fieldMetadata.ReplaceValidationMessageContents = replaceValidationMessageContents;
-
-               // client validation always requires an ID
-
-               string id;
-
-               if (htmlAttributes != null
-                  && htmlAttributes.TryGetValue("id", out var ident)) {
-
-                  id = ident.ToString();
-
-               } else {
-                  id = TagBuilder.CreateSanitizedId(modelName + "_validationMessage")!;
-                  output.WriteAttributeString("id", id);
-               }
-
-               fieldMetadata.ValidationMessageId = id;
             }
          }
 
@@ -189,14 +164,6 @@ namespace Xcst.Web.Runtime {
                   // Only put errors in the validation summary if they're supposed to be included there
 
                   output.WriteAttributeString("data-valmsg-summary", "true");
-               }
-
-            } else {
-
-               // client val summaries need an ID
-
-               if (htmlAttributes?.ContainsKey("id") ?? false) {
-                  HtmlAttributeHelper.WriteId("validationSummary", output);
                }
             }
          }
@@ -285,22 +252,6 @@ namespace Xcst.Web.Runtime {
                    orderby ordering.GetOrDefault(name, ModelMetadata.DefaultOrder)
                    select kv.Value;
          }
-      }
-
-      static FieldValidationMetadata ApplyFieldValidationMetadata(HtmlHelper htmlHelper, ModelMetadata modelMetadata, string modelName) {
-
-         FormContext formContext = htmlHelper.ViewContext.FormContext;
-         FieldValidationMetadata fieldMetadata = formContext.GetValidationMetadataForField(modelName, createIfNotFound: true);
-
-         // write rules to context object
-
-         IEnumerable<ModelValidator> validators = ModelValidatorProviders.Providers.GetValidators(modelMetadata, htmlHelper.ViewContext);
-
-         foreach (ModelClientValidationRule rule in validators.SelectMany(v => v.GetClientValidationRules())) {
-            fieldMetadata.ValidationRules.Add(rule);
-         }
-
-         return fieldMetadata;
       }
 
       static string? GetUserErrorMessageOrDefault(HttpContextBase httpContext, ModelError error, ModelState? modelState) {

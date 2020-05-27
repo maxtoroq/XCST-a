@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Web.Mvc.Properties;
 
 namespace System.Web.Mvc {
 
@@ -72,34 +70,7 @@ namespace System.Web.Mvc {
 
    public class FormContext {
 
-      readonly Dictionary<string, FieldValidationMetadata> _fieldValidators = new Dictionary<string, FieldValidationMetadata>();
       readonly Dictionary<string, bool> _renderedFields = new Dictionary<string, bool>();
-
-      public IDictionary<string, FieldValidationMetadata> FieldValidators => _fieldValidators;
-
-      public FieldValidationMetadata GetValidationMetadataForField(string fieldName) =>
-         GetValidationMetadataForField(fieldName, createIfNotFound: false);
-
-      public FieldValidationMetadata GetValidationMetadataForField(string fieldName, bool createIfNotFound) {
-
-         if (String.IsNullOrEmpty(fieldName)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(fieldName));
-
-         FieldValidationMetadata metadata;
-
-         if (!this.FieldValidators.TryGetValue(fieldName, out metadata)) {
-
-            if (createIfNotFound) {
-
-               metadata = new FieldValidationMetadata {
-                  FieldName = fieldName
-               };
-
-               this.FieldValidators[fieldName] = metadata;
-            }
-         }
-
-         return metadata;
-      }
 
       public bool RenderedField(string fieldName) {
          bool result;
@@ -109,22 +80,5 @@ namespace System.Web.Mvc {
 
       public void RenderedField(string fieldName, bool value) =>
          _renderedFields[fieldName] = value;
-   }
-
-   public class FieldValidationMetadata {
-
-      readonly Collection<ModelClientValidationRule> _validationRules = new Collection<ModelClientValidationRule>();
-      string? _fieldName;
-
-      public string FieldName {
-         get => _fieldName ?? String.Empty;
-         set => _fieldName = value;
-      }
-
-      public bool ReplaceValidationMessageContents { get; set; }
-
-      public string ValidationMessageId { get; set; }
-
-      public ICollection<ModelClientValidationRule> ValidationRules => _validationRules;
    }
 }
