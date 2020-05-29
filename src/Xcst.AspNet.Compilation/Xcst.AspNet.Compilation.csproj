@@ -48,10 +48,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.109.0\lib\net46\Xcst.Compiler.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Compiler.0.111.0\lib\net46\Xcst.Compiler.dll</HintPath>
     </Reference>
     <Reference Include="Xcst.Runtime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Runtime.0.109.0\lib\net46\Xcst.Runtime.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Runtime.0.111.0\lib\net46\Xcst.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +68,7 @@
     <Compile Include="ExtensionlessUrlModule.cs" />
     <Compile Include="PageBuildProvider.cs" />
     <Compile Include="PreApplicationStartCode.cs" />
+    <Compile Include="Visibility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XcstPageHandlerFactory.cs" />
   </ItemGroup>

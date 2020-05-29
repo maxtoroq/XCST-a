@@ -5,22 +5,21 @@
    extension-element-prefixes='a'>
 
    <c:import-namespace ns='System'/>
-   <c:import-namespace ns='System.Xml'/>
 
    <c:type name='Foo'>
       <c:member name='Bar' as='EnumWithDisplayName' format='{0:d}' apply-format-in-edit-mode='yes'/>
    </c:type>
 
    <c:template name='c:initial-template'>
-      <c:variable name='doc' as='XmlDocument'>
+      <c:variable name='doc'>
          <c:document>
             <a:model as='Foo'>
                <a:editor for='Bar'/>
             </a:model>
          </c:document>
       </c:variable>
-      <c:void value='doc.DocumentElement.RemoveAllAttributes()'/>
-      <c:copy-of value='doc.DocumentElement'/>
+      <c:void value='doc.Root.RemoveAttributes()'/>
+      <c:copy-of value='doc.Root'/>
    </c:template>
 
    <c:template name='expected'>

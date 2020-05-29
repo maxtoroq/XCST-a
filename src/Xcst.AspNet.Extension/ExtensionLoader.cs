@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xcst.Compiler;
 using Xcst.Web;
@@ -21,10 +22,11 @@ using Xcst.Web;
 
 namespace Xcst.Web.Extension {
 
-#if !ASPNETMVC
-   public
-#endif
-   class ExtensionLoader : XcstExtensionLoader {
+   partial class ExtensionLoader : XcstExtensionLoader {
+
+      public Uri? ApplicationUri { get; set; }
+
+      public bool DefaultModelDynamic { get; set; }
 
       public override Stream LoadSource() {
 
@@ -33,5 +35,27 @@ namespace Xcst.Web.Extension {
          return thisType.Assembly
             .GetManifestResourceStream($"{thisType.Namespace}.xcst-app.xsl");
       }
+
+      public override IEnumerable<KeyValuePair<string, object?>> GetParameters() {
+
+#if ASPNETMVC
+         yield return Param("aspnetmvc", true);
+#endif
+         yield return Param("make-relative-uri", new Func<Uri, Uri, Uri>(MakeRelativeUri));
+
+         if (this.ApplicationUri != null) {
+            yield return Param("application-uri", this.ApplicationUri);
+         }
+
+         if (this.DefaultModelDynamic != default) {
+            yield return Param("default-model-dynamic", this.DefaultModelDynamic);
+         }
+      }
+
+      static KeyValuePair<string, object?> Param(string name, object? value) =>
+         new KeyValuePair<string, object?>(name, value);
+
+      static Uri MakeRelativeUri(Uri current, Uri compare) =>
+         current.MakeRelativeUri(compare);
    }
 }

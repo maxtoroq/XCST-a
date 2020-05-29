@@ -31,15 +31,14 @@
    <param name="a:default-model" as="element(code:type-reference)?"/>
    <param name="a:default-model-dynamic" select="false()" as="xs:boolean"/>
    <param name="a:aspnetmvc" select="false()" as="xs:boolean"/>
+   <param name="a:make-relative-uri" as="item()?"/>
 
    <variable name="a:html-attributes" select="'class', 'attributes'"/>
    <variable name="a:input-attributes" select="'for', 'name', 'value', 'disabled', 'autofocus', $a:html-attributes"/>
    <variable name="a:text-box-attributes" select="'readonly', 'placeholder', $a:input-attributes"/>
-   <variable name="a:href-fn" select="not($a:aspnetmvc) and not($src:named-package) and $a:application-uri"/>
+   <variable name="a:href-fn" select="exists($a:make-relative-uri) and not($a:aspnetmvc) and not($src:named-package) and $a:application-uri"/>
 
-   <!--
-      ## Forms
-   -->
+   <!-- ## Forms -->
 
    <template match="a:input | a:hidden" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
@@ -822,9 +821,8 @@
       </code:method-call>
    </template>
 
-   <!--
-      ## Templates
-   -->
+
+   <!-- ## Templates -->
 
    <template match="a:editor | a:display" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
@@ -1079,9 +1077,8 @@
       </code:collection-initializer>
    </template>
 
-   <!--
-      ## Metadata
-   -->
+
+   <!-- ## Metadata -->
 
    <template match="c:type | c:member" mode="src:type-attribute-extra">
       <next-match/>
@@ -1287,9 +1284,8 @@
       </xcst:instruction>
    </template>
 
-   <!--
-      ## Models
-   -->
+
+   <!-- ## Models -->
 
    <template match="a:form" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
@@ -1486,9 +1482,8 @@
       </call-template>
    </template>
 
-   <!--
-      ## Infrastructure
-   -->
+
+   <!-- ## Infrastructure -->
 
    <template match="/" mode="src:main">
       <next-match>
@@ -1552,7 +1547,7 @@
             First condition is always true for pages.
             Second condition can be true for packages in App_Code.
          -->
-         <when test="exists($src:base-types) or (exists($a:page-type) and $a:directives/model)">
+         <when test="exists($src:base-types) or ($a:page-type and $a:directives/model)">
             <choose>
                <!--
                   Second condition is always false for packages in App_Code.
@@ -1566,7 +1561,7 @@
                               <code:type-reference name="{$a:directives/model}"/>
                            </when>
                            <when test="$a:default-model">
-                              <code:type-reference name="{$a:default-model}"/>
+                              <sequence select="$a:default-model"/>
                            </when>
                            <when test="$a:default-model-dynamic">
                               <code:type-reference name="Object" namespace="System" dynamic="true"/>
@@ -1688,13 +1683,12 @@
       <param name="module" as="element()"/>
 
       <variable name="module-uri" select="document-uri(root($module))"/>
-      <variable name="relative-uri" select="src:make-relative-uri($a:application-uri, $module-uri)"/>
+      <variable name="relative-uri" select="src:invoke-external-function($a:make-relative-uri, ($a:application-uri, $module-uri))"/>
       <sequence select="$relative-uri[not(starts-with(., '..'))]"/>
    </function>
 
-   <!--
-      ## Helpers
-   -->
+
+   <!-- ## Helpers -->
 
    <template name="a:validate-for">
       <param name="attribs" select="@name" as="attribute()*"/>

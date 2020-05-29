@@ -106,10 +106,6 @@ namespace Xcst.Web.Compilation {
          }
 
          compiler.SetParameter(XmlNamespaces.XcstApplication, "application-uri", this.applicationUri);
-
-#if ASPNETMVC
-         compiler.SetParameter(XmlNamespaces.XcstApplication, "aspnetmvc", true);
-#endif
       }
 
       protected override IEnumerable<CodeCompileUnit> BuildCompileUnits() {

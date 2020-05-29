@@ -21,10 +21,7 @@ namespace Xcst.Web.Compilation {
 
    /// <exclude/>
    [EditorBrowsable(EditorBrowsableState.Never)]
-#if !ASPNETMVC
-   public
-#endif
-   static class PreApplicationStartCode {
+   static partial class PreApplicationStartCode {
 
       static bool startWasCalled;
 

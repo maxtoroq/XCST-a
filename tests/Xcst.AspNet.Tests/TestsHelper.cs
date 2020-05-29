@@ -14,7 +14,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using Moq;
 using Xcst.Compiler;
-using Xcst.Web.Extension;
 using Xcst.Web.Mvc;
 using CSharpVersion = Microsoft.CodeAnalysis.CSharp.LanguageVersion;
 using TestAssert = NUnit.Framework.Assert;
@@ -33,7 +32,9 @@ namespace Xcst.Web.Tests {
 
       static TestsHelper() {
          CompilerFactory.EnableExtensions = true;
-         CompilerFactory.RegisterExtensionsForAssembly(typeof(ExtensionLoader).Assembly);
+         CompilerFactory.RegisterExtension(new Xcst.Web.Extension.ExtensionLoader {
+            DefaultModelDynamic = true
+         });
       }
 
       public static void RunXcstTest(string packageFile, string testName, string testNamespace, bool correct, bool fail) {
@@ -159,8 +160,6 @@ namespace Xcst.Web.Tests {
          compiler.TargetClass = testName;
          compiler.UsePackageBase = testNamespace;
          compiler.SetTargetBaseTypes(typeof(TestBase));
-
-         compiler.SetParameter(XmlNamespaces.XcstApplication, "default-model-dynamic", true);
 
          CompileResult result = compiler.Compile(packageUri);
 

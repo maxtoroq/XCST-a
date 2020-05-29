@@ -60,12 +60,16 @@ namespace XcstCodeGen {
 
       void Run(TextWriter output) {
 
+         var startUri = new Uri(ProjectUri, ".");
+
          var compilerFact = new XcstCompilerFactory {
             EnableExtensions = true
          };
 
          // Enable "application" extension
-         compilerFact.RegisterExtensionsForAssembly(typeof(Xcst.Web.Extension.ExtensionLoader).Assembly);
+         compilerFact.RegisterExtension(new Xcst.Web.Extension.ExtensionLoader {
+            //ApplicationUri = startUri // used to generate Href() functions for each module
+         });
 
          XDocument projectDoc = XDocument.Load(ProjectUri.LocalPath);
          XNamespace xmlns = projectDoc.Root.Name.Namespace;
@@ -93,8 +97,6 @@ namespace XcstCodeGen {
             output.WriteLine();
             output.WriteLine($"[assembly: {RuntimeNamespace}.PrecompiledModule]");
          }
-
-         var startUri = new Uri(ProjectUri, ".");
 
          string rootNamespace = projectDoc.Root
             .Elements(xmlns + "PropertyGroup")
@@ -148,9 +150,6 @@ namespace XcstCodeGen {
                compiler.TargetNamespace = ns;
                compiler.TargetBaseTypes = new[] { "global::AspNetPrecompiled.AppPage" };
                compiler.TargetVisibility = "internal";
-
-               // Sets a:application-uri, used to generate Href() functions for each module
-               //compiler.SetParameter("http://maxtoroq.github.io/XCST/application", "application-uri", startUri);
 
             } else {
                compiler.NamedPackage = true;
