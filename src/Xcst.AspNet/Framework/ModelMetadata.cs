@@ -135,7 +135,9 @@ namespace System.Web.Mvc {
          }
       }
 
-      public string? PropertyName => _propertyName;
+#pragma warning disable CS8603
+      public string PropertyName => _propertyName;
+#pragma warning restore CS8603
 
       internal ModelMetadataProvider Provider { get; set; }
 

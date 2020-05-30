@@ -246,7 +246,7 @@ namespace Xcst.Web.Runtime {
 
                   labelWriter.WriteStartElement("div");
                   labelWriter.WriteAttributeString("class", "editor-label");
-                  LabelInstructions.LabelHelper(html, labelWriter, propertyMeta, propertyMeta.PropertyName!);
+                  LabelInstructions.LabelHelper(html, labelWriter, propertyMeta, propertyMeta.PropertyName);
                   labelWriter.WriteEndElement();
 
                   fieldWriter = fieldsetWriter
@@ -260,7 +260,7 @@ namespace Xcst.Web.Runtime {
 
                if (!propertyMeta.HideSurroundingHtml) {
                   fieldWriter!.WriteString(" ");
-                  ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyMeta, propertyMeta.PropertyName!, null, null, null);
+                  ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyMeta, propertyMeta.PropertyName, null, null, null);
                   fieldWriter.WriteEndElement(); // </div>
                }
             }

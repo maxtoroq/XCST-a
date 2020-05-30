@@ -243,7 +243,7 @@ namespace Xcst.Web.Runtime {
 
             if (metadata != null) {
                foreach (ModelMetadata m in metadata.Properties) {
-                  ordering[m.PropertyName!] = m.Order;
+                  ordering[m.PropertyName] = m.Order;
                }
             }
 

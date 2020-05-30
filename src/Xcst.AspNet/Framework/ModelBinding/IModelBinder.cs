@@ -56,7 +56,7 @@ namespace System.Web.Mvc {
 
       public IDictionary<string, ModelMetadata> PropertyMetadata =>
          _propertyMetadata ??= ModelMetadata.PropertiesAsArray
-            .ToDictionaryFast(m => m.PropertyName!, StringComparer.OrdinalIgnoreCase);
+            .ToDictionaryFast(m => m.PropertyName, StringComparer.OrdinalIgnoreCase);
 
       public IValueProvider ValueProvider { get; set; }
 
