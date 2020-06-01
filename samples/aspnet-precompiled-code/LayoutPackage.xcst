@@ -30,7 +30,7 @@
                               <a href='/' class='nav-link'>Home</a>
                            </li>
                            <li class='nav-item'>
-                              <a href='/contact' class='nav-link'>Contact</a>
+                              <a href='{_Page_contact.LinkTo()}' class='nav-link'>Contact</a>
                            </li>
                         </ul>
                      </div>

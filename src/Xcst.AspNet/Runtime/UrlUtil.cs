@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Web;
 
 // Code generation uses static method for Href function,
@@ -73,6 +74,25 @@ namespace Xcst.Web.Runtime {
          }
 
          return UrlRewrite.GenerateClientUrlInternal(httpContext, contentPath);
+      }
+   }
+
+   /// <exclude/>
+   public static class LinkToHelper {
+
+      public static string LinkTo(string path, params object?[]? pathParts) =>
+         UrlUtil.GenerateClientUrl(null, path, pathParts);
+
+      public static string LinkToDefault(string path, string defaultPath, params object?[]? pathParts) {
+
+         if (pathParts is null
+            || pathParts.Length == 0
+            || pathParts.All(p => p is null || !UrlBuilder.IsDisplayableType(p.GetType()))) {
+
+            return LinkTo(defaultPath, pathParts);
+         }
+
+         return LinkTo(path, pathParts);
       }
    }
 }

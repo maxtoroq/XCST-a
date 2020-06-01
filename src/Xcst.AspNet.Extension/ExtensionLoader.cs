@@ -24,9 +24,13 @@ namespace Xcst.Web.Extension {
 
    partial class ExtensionLoader : XcstExtensionLoader {
 
+      public bool DefaultModelDynamic { get; set; }
+
       public Uri? ApplicationUri { get; set; }
 
-      public bool DefaultModelDynamic { get; set; }
+      public bool GenerateHref { get; set; }
+
+      public bool GenerateLinkTo { get; set; }
 
       public override Stream LoadSource() {
 
@@ -42,6 +46,7 @@ namespace Xcst.Web.Extension {
          yield return Param("aspnetmvc", true);
 #endif
          yield return Param("make-relative-uri", new Func<Uri, Uri, Uri>(MakeRelativeUri));
+         yield return Param("remove-extension", new Func<string, string>(RemoveExtension));
 
          if (this.ApplicationUri != null) {
             yield return Param("application-uri", this.ApplicationUri);
@@ -50,6 +55,14 @@ namespace Xcst.Web.Extension {
          if (this.DefaultModelDynamic != default) {
             yield return Param("default-model-dynamic", this.DefaultModelDynamic);
          }
+
+         if (this.GenerateHref != default) {
+            yield return Param("generate-href", this.GenerateHref);
+         }
+
+         if (this.GenerateLinkTo != default) {
+            yield return Param("generate-linkto", this.GenerateLinkTo);
+         }
       }
 
       static KeyValuePair<string, object?> Param(string name, object? value) =>
@@ -57,5 +70,8 @@ namespace Xcst.Web.Extension {
 
       static Uri MakeRelativeUri(Uri current, Uri compare) =>
          current.MakeRelativeUri(compare);
+
+      static string RemoveExtension(string path) =>
+         Path.ChangeExtension(path, null);
    }
 }

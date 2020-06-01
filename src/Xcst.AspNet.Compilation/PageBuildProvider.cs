@@ -106,6 +106,7 @@ namespace Xcst.Web.Compilation {
          }
 
          compiler.SetParameter(XmlNamespaces.XcstApplication, "application-uri", this.applicationUri);
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "generate-href", true);
       }
 
       protected override IEnumerable<CodeCompileUnit> BuildCompileUnits() {

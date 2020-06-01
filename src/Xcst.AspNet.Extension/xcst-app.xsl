@@ -26,17 +26,35 @@
    <import href="../../../XCST/src/Xcst.Compiler/CodeGeneration/xcst-metadata.xsl" use-when="false()"/>
    <import href="../../../XCST/src/Xcst.Compiler/CodeGeneration/xcst-core.xsl" use-when="false()"/>
 
-   <param name="a:application-uri" as="xs:anyURI?"/>
    <param name="a:page-type" as="element(code:type-reference)?"/>
    <param name="a:default-model" as="element(code:type-reference)?"/>
    <param name="a:default-model-dynamic" select="false()" as="xs:boolean"/>
    <param name="a:aspnetmvc" select="false()" as="xs:boolean"/>
+
+   <param name="a:application-uri" as="xs:anyURI?"/>
+   <param name="a:generate-href" select="false()" as="xs:boolean"/>
+   <param name="a:generate-linkto" select="false()" as="xs:boolean"/>
    <param name="a:make-relative-uri" as="item()?"/>
+   <param name="a:remove-extension" as="item()?"/>
 
    <variable name="a:html-attributes" select="'class', 'attributes'"/>
    <variable name="a:input-attributes" select="'for', 'name', 'value', 'disabled', 'autofocus', $a:html-attributes"/>
    <variable name="a:text-box-attributes" select="'readonly', 'placeholder', $a:input-attributes"/>
-   <variable name="a:href-fn" select="exists($a:make-relative-uri) and not($a:aspnetmvc) and not($src:named-package) and $a:application-uri"/>
+
+   <variable name="a:href-gen" select="
+      $a:generate-href
+      and not($a:aspnetmvc)
+      and $a:make-relative-uri
+      and $a:application-uri
+      and not($src:named-package)"/>
+
+   <variable name="a:linkto-gen" select="
+      $a:generate-linkto
+      and not($a:aspnetmvc)
+      and $a:make-relative-uri
+      and $a:remove-extension
+      and $a:application-uri
+      and not($src:named-package)"/>
 
    <!-- ## Forms -->
 
@@ -1523,7 +1541,7 @@
       <param name="package-manifest" required="yes" tunnel="yes"/>
 
       <next-match/>
-      <if test="$a:href-fn and a:href-function-base(.)">
+      <if test="$a:href-gen and a:href-function-base(.)">
          <code:import static="true">
             <code:type-reference name="{a:functions-type-name(.)}">
                <sequence select="$package-manifest/code:type-reference"/>
@@ -1584,7 +1602,6 @@
 
    <template match="c:module | c:package" mode="src:infrastructure-extra">
       <param name="modules" tunnel="yes"/>
-      <param name="a:directives" as="node()?" tunnel="yes"/>
 
       <next-match/>
 
@@ -1593,10 +1610,32 @@
          return if ($modules[$pos] is current()) then $pos else ()"/>
       <variable name="principal-module" select="$module-pos eq count($modules)"/>
 
-      <if test="not($a:aspnetmvc)
-         and $a:directives/sessionstate
-         and $principal-module">
+      <if test="not($a:aspnetmvc) and $principal-module">
+         <call-template name="a:session-state-behavior"/>
+      </if>
 
+      <if test="$a:href-gen or $a:linkto-gen">
+         <variable name="relative-uri" select="a:href-function-base(.)"/>
+
+         <if test="$relative-uri">
+            <if test="$a:href-gen">
+               <call-template name="a:functions-type">
+                  <with-param name="relative-uri" select="$relative-uri"/>
+               </call-template>
+            </if>
+            <if test="$a:linkto-gen and $principal-module">
+               <call-template name="a:link-to">
+                  <with-param name="relative-uri" select="$relative-uri"/>
+               </call-template>
+            </if>
+         </if>
+      </if>
+   </template>
+
+   <template name="a:session-state-behavior">
+      <param name="a:directives" as="node()?" tunnel="yes"/>
+
+      <if test="$a:directives/sessionstate">
          <code:property name="SessionStateBehavior">
             <code:type-reference name="SessionStateBehavior" namespace="System.Web.SessionState"/>
             <code:implements-interface>
@@ -1613,64 +1652,62 @@
             </code:getter>
          </code:property>
       </if>
+   </template>
 
-      <if test="$a:href-fn">
-         <variable name="relative-uri" select="a:href-function-base(.)"/>
+   <template name="a:functions-type">
+      <param name="relative-uri" as="xs:anyURI"/>
 
-         <if test="$relative-uri">
-            <variable name="functions-type" select="a:functions-type-name(.)"/>
+      <variable name="functions-type" select="a:functions-type-name(.)"/>
 
-            <code:type name="{$functions-type}" extensibility="static" visibility="internal">
-               <code:members>
-                  <code:field name="BasePath" readonly="true" extensibility="static">
+      <code:type name="{$functions-type}" extensibility="static" visibility="internal">
+         <code:members>
+            <code:field name="BasePath" readonly="true" extensibility="static">
+               <code:type-reference name="String" namespace="System"/>
+               <code:expression>
+                  <code:method-call name="ToAbsolute">
+                     <code:type-reference name="VirtualPathUtility" namespace="System.Web"/>
+                     <code:arguments>
+                        <code:string verbatim="true">
+                           <value-of select="concat('~/', $relative-uri)"/>
+                        </code:string>
+                     </code:arguments>
+                  </code:method-call>
+               </code:expression>
+            </code:field>
+            <code:method name="Href" extensibility="static" visibility="public">
+               <code:type-reference name="String" namespace="System"/>
+               <variable name="path-ref" as="element()">
+                  <code:variable-reference name="path"/>
+               </variable>
+               <variable name="pathParts-ref" as="element()">
+                  <code:variable-reference name="pathParts"/>
+               </variable>
+               <code:parameters>
+                  <code:parameter name="{$path-ref/@name}">
                      <code:type-reference name="String" namespace="System"/>
-                     <code:expression>
-                        <code:method-call name="ToAbsolute">
-                           <code:type-reference name="VirtualPathUtility" namespace="System.Web"/>
-                           <code:arguments>
-                              <code:string verbatim="true">
-                                 <value-of select="concat('~/', $relative-uri)"/>
-                              </code:string>
-                           </code:arguments>
-                        </code:method-call>
-                     </code:expression>
-                  </code:field>
-                  <code:method name="Href" extensibility="static" visibility="public">
-                     <code:type-reference name="String" namespace="System"/>
-                     <variable name="path-ref" as="element()">
-                        <code:variable-reference name="path"/>
-                     </variable>
-                     <variable name="pathParts-ref" as="element()">
-                        <code:variable-reference name="pathParts"/>
-                     </variable>
-                     <code:parameters>
-                        <code:parameter name="{$path-ref/@name}">
-                           <code:type-reference name="String" namespace="System"/>
-                        </code:parameter>
-                        <code:parameter name="{$pathParts-ref/@name}" params="true">
-                           <code:type-reference array-dimensions="1">
-                              <sequence select="$src:object-type"/>
-                           </code:type-reference>
-                        </code:parameter>
-                     </code:parameters>
-                     <code:block>
-                        <code:return>
-                           <code:method-call name="GenerateClientUrl">
-                              <sequence select="a:helper-type('UrlUtil')"/>
-                              <code:arguments>
-                                 <code:field-reference name="BasePath">
-                                    <code:type-reference name="{$functions-type}"/>
-                                 </code:field-reference>
-                                 <sequence select="$path-ref, $pathParts-ref"/>
-                              </code:arguments>
-                           </code:method-call>
-                        </code:return>
-                     </code:block>
-                  </code:method>
-               </code:members>
-            </code:type>
-         </if>
-      </if>
+                  </code:parameter>
+                  <code:parameter name="{$pathParts-ref/@name}" params="true">
+                     <code:type-reference array-dimensions="1" nullable="true">
+                        <sequence select="$src:nullable-object-type"/>
+                     </code:type-reference>
+                  </code:parameter>
+               </code:parameters>
+               <code:block>
+                  <code:return>
+                     <code:method-call name="GenerateClientUrl">
+                        <sequence select="a:helper-type('UrlUtil')"/>
+                        <code:arguments>
+                           <code:field-reference name="BasePath">
+                              <code:type-reference name="{$functions-type}"/>
+                           </code:field-reference>
+                           <sequence select="$path-ref, $pathParts-ref"/>
+                        </code:arguments>
+                     </code:method-call>
+                  </code:return>
+               </code:block>
+            </code:method>
+         </code:members>
+      </code:type>
    </template>
 
    <function name="a:functions-type-name">
@@ -1686,6 +1723,63 @@
       <variable name="relative-uri" select="src:invoke-external-function($a:make-relative-uri, ($a:application-uri, $module-uri))"/>
       <sequence select="$relative-uri[not(starts-with(., '..'))]"/>
    </function>
+
+   <template name="a:link-to">
+      <param name="relative-uri" as="xs:anyURI"/>
+
+      <variable name="page-path" select="src:invoke-external-function($a:remove-extension, string($relative-uri))"/>
+      <variable name="page-name" select="tokenize($page-path, '/')[last()]"/>
+      <variable name="linkto-helper" select="a:helper-type('LinkToHelper')"/>
+
+      <code:method name="LinkTo" extensibility="static" visibility="public">
+         <code:type-reference name="String" namespace="System"/>
+         <variable name="pathParts-ref" as="element()">
+            <code:variable-reference name="pathParts"/>
+         </variable>
+         <code:parameters>
+            <code:parameter name="{$pathParts-ref/@name}" params="true">
+               <code:type-reference array-dimensions="1" nullable="true">
+                  <sequence select="$src:nullable-object-type"/>
+               </code:type-reference>
+            </code:parameter>
+         </code:parameters>
+         <code:block>
+            <code:return>
+               <choose>
+                  <when test="$page-name eq 'index'">
+                     <variable name="default-path" select="replace($page-path, '/?index$', '')"/>
+                     <code:method-call name="LinkToDefault">
+                        <sequence select="$linkto-helper"/>
+                        <code:arguments>
+                           <code:string>
+                              <text>/</text>
+                              <value-of select="$page-path"/>
+                           </code:string>
+                           <code:string>
+                              <text>/</text>
+                              <value-of select="$default-path"/>
+                           </code:string>
+                           <sequence select="$pathParts-ref"/>
+                        </code:arguments>
+                     </code:method-call>
+                  </when>
+                  <otherwise>
+                     <code:method-call name="LinkTo">
+                        <sequence select="$linkto-helper"/>
+                        <code:arguments>
+                           <code:string>
+                              <text>/</text>
+                              <value-of select="$page-path"/>
+                           </code:string>
+                           <sequence select="$pathParts-ref"/>
+                        </code:arguments>
+                     </code:method-call>
+                  </otherwise>
+               </choose>
+            </code:return>
+         </code:block>
+      </code:method>
+   </template>
 
 
    <!-- ## Helpers -->

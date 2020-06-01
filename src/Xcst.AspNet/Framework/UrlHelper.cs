@@ -217,7 +217,7 @@ namespace System.Web.Mvc {
          /// Primarily we do this check to allow anonymous types to represent key-value pairs (anonymous types don't 
          /// implement any interfaces).
          /// </remarks>
-         static bool IsDisplayableType(Type t) =>
+         internal static bool IsDisplayableType(Type t) =>
             t.GetInterfaces().Length > 0;
 
          static void AppendToQueryString(StringBuilder queryString, object obj) {

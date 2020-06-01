@@ -68,7 +68,8 @@ namespace XcstCodeGen {
 
          // Enable "application" extension
          compilerFact.RegisterExtension(new Xcst.Web.Extension.ExtensionLoader {
-            //ApplicationUri = startUri // used to generate Href() functions for each module
+            ApplicationUri = startUri,
+            GenerateLinkTo = true
          });
 
          XDocument projectDoc = XDocument.Load(ProjectUri.LocalPath);
@@ -174,16 +175,6 @@ namespace XcstCodeGen {
                output.WriteLine($"namespace {compiler.TargetNamespace} {{");
                output.WriteLine(compiler.IndentChars + $"[global::{RuntimeNamespace}.VirtualPath(\"{pagePath}\")]");
                output.WriteLine(compiler.IndentChars + $"partial class {compiler.TargetClass} {{");
-               output.WriteLine(compiler.IndentChars + compiler.IndentChars + "public static string LinkTo(params object[] pathParts) {");
-
-               if (fileBaseName == "index") {
-                  string defaultPagePath = pagePath.Substring(0, pagePath.Length - "index".Length).TrimEnd('/');
-                  output.WriteLine($"{compiler.IndentChars + compiler.IndentChars + compiler.IndentChars}return global::{RuntimeNamespace}.LinkToHelper.LinkToDefault(\"/{pagePath}\", \"/{defaultPagePath}\", pathParts);");
-               } else {
-                  output.WriteLine($"{compiler.IndentChars + compiler.IndentChars + compiler.IndentChars}return global::{RuntimeNamespace}.LinkToHelper.LinkTo(\"/{pagePath}\", pathParts);");
-               }
-
-               output.WriteLine(compiler.IndentChars + compiler.IndentChars + "}");
                output.WriteLine(compiler.IndentChars + "}");
                output.Write("}");
             }
