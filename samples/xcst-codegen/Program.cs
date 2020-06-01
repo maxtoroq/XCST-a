@@ -12,6 +12,7 @@ namespace XcstCodeGen {
 
       const string FileExt = "xcst";
       const string RuntimeNamespace = "AspNetPrecompiled.Infrastructure";
+      const string PageBaseType = "global::AspNetPrecompiled.AppPage";
 
       private Uri ProjectUri { get; }
 
@@ -89,11 +90,6 @@ namespace XcstCodeGen {
          output.WriteLine("// </auto-generated>");
          output.WriteLine("//------------------------------------------------------------------------------");
 
-         if (nullable != null) {
-            output.WriteLine();
-            output.WriteLine("#nullable " + nullable);
-         }
-
          if (LibsAndPages) {
             output.WriteLine();
             output.WriteLine($"[assembly: {RuntimeNamespace}.PrecompiledModule]");
@@ -124,6 +120,7 @@ namespace XcstCodeGen {
 
             if (nullable != null) {
                compiler.NullableAnnotate = true;
+               compiler.NullableContext = nullable;
             }
 
             string relativePath = startUri.MakeRelativeUri(fileUri).OriginalString;
@@ -149,8 +146,8 @@ namespace XcstCodeGen {
 
                compiler.TargetClass = "_Page_" + CleanIdentifier(fileBaseName);
                compiler.TargetNamespace = ns;
-               compiler.TargetBaseTypes = new[] { "global::AspNetPrecompiled.AppPage" };
-               compiler.TargetVisibility = "internal";
+               compiler.TargetBaseTypes = new[] { PageBaseType };
+               compiler.TargetVisibility = CodeVisibility.Internal;
 
             } else {
                compiler.NamedPackage = true;
