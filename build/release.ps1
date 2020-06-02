@@ -160,7 +160,7 @@ function Release {
    [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
    $notice = $noticeDoc.notice
 
-   $projects = "Xcst.AspNet", "Xcst.AspNet.Extension", "Xcst.AspNet.Compilation", "Xcst.Web.Mvc"
+   $projects = "Xcst.AspNet", "Xcst.AspNet.Extension", "Xcst.AspNet.Compilation", "Xcst.AspNet.Precompilation", "Xcst.Web.Mvc"
    $solution = @{ }
 
    foreach ($projName in $projects) {

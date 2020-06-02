@@ -34,6 +34,7 @@
    <param name="a:application-uri" as="xs:anyURI?"/>
    <param name="a:generate-href" select="false()" as="xs:boolean"/>
    <param name="a:generate-linkto" select="false()" as="xs:boolean"/>
+   <param name="a:annotate-virtual-path" select="false()" as="xs:boolean"/>
    <param name="a:make-relative-uri" as="item()?"/>
    <param name="a:remove-extension" as="item()?"/>
 
@@ -50,6 +51,14 @@
 
    <variable name="a:linkto-gen" select="
       $a:generate-linkto
+      and not($a:aspnetmvc)
+      and $a:make-relative-uri
+      and $a:remove-extension
+      and $a:application-uri
+      and not($src:named-package)"/>
+
+   <variable name="a:virtual-path-annotate" select="
+      $a:annotate-virtual-path
       and not($a:aspnetmvc)
       and $a:make-relative-uri
       and $a:remove-extension
@@ -1541,7 +1550,7 @@
       <param name="package-manifest" required="yes" tunnel="yes"/>
 
       <next-match/>
-      <if test="$a:href-gen and a:href-function-base(.)">
+      <if test="$a:href-gen and a:module-relative-uri(.)">
          <code:import static="true">
             <code:type-reference name="{a:functions-type-name(.)}">
                <sequence select="$package-manifest/code:type-reference"/>
@@ -1600,6 +1609,32 @@
       </if>
    </template>
 
+   <template match="c:module | c:package" mode="src:package-attribute-extra">
+      <param name="modules" tunnel="yes"/>
+
+      <next-match/>
+
+      <variable name="module-pos" select="
+         for $pos in (1 to count($modules))
+         return if ($modules[$pos] is current()) then $pos else ()"/>
+      <variable name="principal-module" select="$module-pos eq count($modules)"/>
+
+      <if test="$a:virtual-path-annotate and $principal-module">
+         <variable name="relative-uri" select="a:module-relative-uri(.)"/>
+         <if test="$relative-uri">
+            <variable name="page-path" select="a:page-path($relative-uri)"/>
+            <code:attribute>
+               <code:type-reference name="PageVirtualPath" namespace="Xcst.Web.Precompilation"/>
+               <code:arguments>
+                  <code:string>
+                     <value-of select="$page-path"/>
+                  </code:string>
+               </code:arguments>
+            </code:attribute>
+         </if>
+      </if>
+   </template>
+
    <template match="c:module | c:package" mode="src:infrastructure-extra">
       <param name="modules" tunnel="yes"/>
 
@@ -1615,7 +1650,7 @@
       </if>
 
       <if test="$a:href-gen or $a:linkto-gen">
-         <variable name="relative-uri" select="a:href-function-base(.)"/>
+         <variable name="relative-uri" select="a:module-relative-uri(.)"/>
 
          <if test="$relative-uri">
             <if test="$a:href-gen">
@@ -1716,12 +1751,18 @@
       <sequence select="concat('__xcst_functions_', generate-id($module))"/>
    </function>
 
-   <function name="a:href-function-base" as="xs:anyURI?">
+   <function name="a:module-relative-uri" as="xs:anyURI?">
       <param name="module" as="element()"/>
 
       <variable name="module-uri" select="document-uri(root($module))"/>
       <variable name="relative-uri" select="src:invoke-external-function($a:make-relative-uri, ($a:application-uri, $module-uri))"/>
       <sequence select="$relative-uri[not(starts-with(., '..'))]"/>
+   </function>
+
+   <function name="a:page-path" as="xs:string">
+      <param name="relative-uri" as="xs:anyURI"/>
+
+      <sequence select="src:invoke-external-function($a:remove-extension, string($relative-uri))"/>
    </function>
 
    <template name="a:link-to">

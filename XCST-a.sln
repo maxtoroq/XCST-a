@@ -103,7 +103,7 @@ EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-precompiled-site", "samples\aspnet-precompiled-site\", "{526FF9FB-17E3-4235-9DCA-B0F2986A6251}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
-		ProjectReferences = "{85105e77-c24a-4006-b523-99c94e418219}|AspNetPrecompiled.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;"
+		ProjectReferences = "{85105e77-c24a-4006-b523-99c94e418219}|AspNetPrecompiled.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;{d70b8cb0-6475-41b1-9c61-d6ab8f9ab276}|Xcst.AspNet.Precompilation.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_56269"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet-precompiled-site\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56269\"
@@ -123,6 +123,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-precompiled-site", "
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xcst-codegen", "samples\xcst-codegen\xcst-codegen.csproj", "{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet.Precompilation", "src\Xcst.AspNet.Precompilation\Xcst.AspNet.Precompilation.csproj", "{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -197,6 +199,12 @@ Global
 		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
+		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
+		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -213,6 +221,7 @@ Global
 		{85105E77-C24A-4006-B523-99C94E418219} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{526FF9FB-17E3-4235-9DCA-B0F2986A6251} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
+		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9D68F6E0-43F6-4AF7-8617-714A04B12736}

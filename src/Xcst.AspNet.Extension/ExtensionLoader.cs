@@ -32,6 +32,8 @@ namespace Xcst.Web.Extension {
 
       public bool GenerateLinkTo { get; set; }
 
+      public bool AnnotateVirtualPath { get; set; }
+
       public override Stream LoadSource() {
 
          Type thisType = GetType();
@@ -62,6 +64,10 @@ namespace Xcst.Web.Extension {
 
          if (this.GenerateLinkTo != default) {
             yield return Param("generate-linkto", this.GenerateLinkTo);
+         }
+
+         if (this.AnnotateVirtualPath != default) {
+            yield return Param("annotate-virtual-path", this.AnnotateVirtualPath);
          }
       }
 

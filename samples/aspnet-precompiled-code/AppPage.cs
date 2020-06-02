@@ -15,13 +15,13 @@ namespace AspNetPrecompiled {
             : base(page) { }
 
          protected override void RenderViewPage(XcstViewPage page, HttpContextBase context) {
-            
+
             if (page is IPageInit pInit) {
 
                XcstEvaluator.Using(pInit)
                   .CallFunction(p => p.Init())
                   .Run();
-            
+
             } else {
                base.RenderViewPage(page, context);
             }

@@ -11,7 +11,6 @@ namespace XcstCodeGen {
    class Program {
 
       const string FileExt = "xcst";
-      const string RuntimeNamespace = "AspNetPrecompiled.Infrastructure";
       const string PageBaseType = "global::AspNetPrecompiled.AppPage";
 
       private Uri ProjectUri { get; }
@@ -70,7 +69,8 @@ namespace XcstCodeGen {
          // Enable "application" extension
          compilerFact.RegisterExtension(new Xcst.Web.Extension.ExtensionLoader {
             ApplicationUri = startUri,
-            GenerateLinkTo = true
+            GenerateLinkTo = true,
+            AnnotateVirtualPath = true
          });
 
          XDocument projectDoc = XDocument.Load(ProjectUri.LocalPath);
@@ -92,7 +92,7 @@ namespace XcstCodeGen {
 
          if (LibsAndPages) {
             output.WriteLine();
-            output.WriteLine($"[assembly: {RuntimeNamespace}.PrecompiledModule]");
+            output.WriteLine($"[assembly: global::Xcst.Web.Precompilation.PrecompiledModule]");
          }
 
          string rootNamespace = projectDoc.Root
@@ -161,19 +161,6 @@ namespace XcstCodeGen {
             } catch (CompileException ex) {
                VisualStudioErrorLog(ex);
                throw;
-            }
-
-            if (isPage) {
-
-               string pagePath = Path.ChangeExtension(relativePath, null);
-
-               output.WriteLine();
-               output.WriteLine();
-               output.WriteLine($"namespace {compiler.TargetNamespace} {{");
-               output.WriteLine(compiler.IndentChars + $"[global::{RuntimeNamespace}.VirtualPath(\"{pagePath}\")]");
-               output.WriteLine(compiler.IndentChars + $"partial class {compiler.TargetClass} {{");
-               output.WriteLine(compiler.IndentChars + "}");
-               output.Write("}");
             }
          }
       }

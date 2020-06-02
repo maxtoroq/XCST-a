@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" xmlns:nux="http://maxtoroq.github.io/XCST/nuspec">
+   <metadata>
+      <description>HTTP module that maps requests to precompiled XCST pages</description>
+      <dependencies>
+         <dependency id="Xcst.AspNet" nux:local-dependency="yes"/>
+      </dependencies>
+      <frameworkAssemblies>
+         <frameworkAssembly assemblyName="System"/>
+         <frameworkAssembly assemblyName="System.Web"/>
+      </frameworkAssemblies>
+   </metadata>
+   <files>
+      <file src="Web.config.transform" target="content"/>
+   </files>
+</package>

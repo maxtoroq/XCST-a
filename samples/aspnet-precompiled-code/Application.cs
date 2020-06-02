@@ -3,15 +3,12 @@ using System.Web;
 using System.Web.Mvc;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
-using AspNetPrecompiled.Infrastructure;
 
 namespace AspNetPrecompiled {
 
    public class Application : HttpApplication {
 
       void Application_Start(object sender, EventArgs e) {
-
-         ExtensionlessUrlModule.InitializePageMap();
 
          var config = XcstWebConfiguration.Instance;
 

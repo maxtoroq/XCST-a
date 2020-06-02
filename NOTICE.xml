@@ -35,6 +35,7 @@ and limitations under the License.]]></license>
       </notice>
       <used-by-source path="src/Xcst.AspNet/"/>
       <used-by-source path="src/Xcst.AspNet.Compilation/"/>
+      <used-by-source path="src/Xcst.AspNet.Precompilation/"/>
       <used-by-source path="src/Xcst.Web.Mvc/"/>
    </foreign-work>
    <foreign-work type="source">

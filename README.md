@@ -13,6 +13,7 @@ Package                                            | Description
 [![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.svg?label=Xcst.AspNet)][Xcst.AspNet] | XCST web pages core components for ASP.NET.
 [![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.Extension.svg?label=Xcst.AspNet.Extension)][Xcst.AspNet.Extension] | Extension instructions for XCST web pages.
 [![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.Compilation.svg?label=Xcst.AspNet.Compilation)][Xcst.AspNet.Compilation] | ASP.NET build providers for run-time compilation.
+[![NuGet](https://img.shields.io/nuget/v/Xcst.AspNet.Precompilation.svg?label=Xcst.AspNet.Precompilation)][Xcst.AspNet.Precompilation] | HTTP module that maps requests to precompiled XCST pages.
 [![NuGet](https://img.shields.io/nuget/v/Xcst.Web.Mvc.svg?label=Xcst.Web.Mvc)][Xcst.Web.Mvc] | View engine for ASP.NET MVC 5.
 
 ### Related Repositories
@@ -47,5 +48,6 @@ MSBuild
 [Xcst.AspNet]: https://www.nuget.org/packages/Xcst.AspNet
 [Xcst.AspNet.Extension]: https://www.nuget.org/packages/Xcst.AspNet.Extension
 [Xcst.AspNet.Compilation]: https://www.nuget.org/packages/Xcst.AspNet.Compilation
+[Xcst.AspNet.Precompilation]: https://www.nuget.org/packages/Xcst.AspNet.Precompilation
 [Xcst.Web.Mvc]: https://www.nuget.org/packages/Xcst.Web.Mvc
 [Trang]: https://github.com/relaxng/jing-trang

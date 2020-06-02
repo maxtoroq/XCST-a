@@ -1,60 +1,67 @@
-﻿using System;
+﻿// Copyright 2020 Max Toro Q.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region PrecompiledPageModule is based on code from ASP.NET Web Stack
+// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Compilation;
-using Xcst.Web;
 
-namespace AspNetPrecompiled.Infrastructure {
+namespace Xcst.Web.Precompilation {
 
-   [AttributeUsage(AttributeTargets.Assembly)]
-   public sealed class PrecompiledModuleAttribute : Attribute { }
-
-   [AttributeUsage(AttributeTargets.Class)]
-   public sealed class VirtualPathAttribute : Attribute {
-
-      public string VirtualPath { get; }
-
-      public VirtualPathAttribute(string virtualPath) {
-         this.VirtualPath = virtualPath;
-      }
-   }
-
-   public class ExtensionlessUrlModule : IHttpModule {
+   public class PrecompiledPageModule : IHttpModule {
 
       static readonly object _hasBeenRegisteredKey = new object();
-      static readonly Dictionary<string, Type> _pageMap = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+      static readonly Lazy<Dictionary<string, Type>> _pageMap = new Lazy<Dictionary<string, Type>>(InitializePageMap);
 
-      public static void InitializePageMap() {
+      static Dictionary<string, Type> InitializePageMap() {
 
-         var pairs = FindPages();
+         var map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
 
-         foreach (KeyValuePair<string, Type> item in pairs) {
+         var pairs =
+            from a in BuildManager.GetReferencedAssemblies().Cast<Assembly>()
+            where a.IsDefined(typeof(PrecompiledModuleAttribute))
+            from t in a.GetTypes()
+            where t.IsDefined(typeof(PageVirtualPathAttribute))
+            select new KeyValuePair<string, Type>(
+               t.GetCustomAttribute<PageVirtualPathAttribute>().VirtualPath,
+               t);
 
-            if (_pageMap.ContainsKey(item.Key)) {
-               throw new InvalidOperationException($"Ambiguous path '{item.Key}', is used by '{_pageMap[item.Key].AssemblyQualifiedName}' and '{item.Value.AssemblyQualifiedName}'.");
+         foreach (var item in pairs) {
+
+            if (map.ContainsKey(item.Key)) {
+               throw new InvalidOperationException($"Ambiguous path '{item.Key}', is used by '{map[item.Key].AssemblyQualifiedName}' and '{item.Value.AssemblyQualifiedName}'.");
             }
 
-            _pageMap.Add(item.Key, item.Value);
+            map.Add(item.Key, item.Value);
          }
+
+         return map;
       }
 
-      static IEnumerable<KeyValuePair<string, Type>> FindPages() =>
-         from a in BuildManager.GetReferencedAssemblies().Cast<Assembly>()
-         where a.IsDefined(typeof(PrecompiledModuleAttribute))
-         from t in a.GetTypes()
-         where t.IsDefined(typeof(VirtualPathAttribute))
-         select new KeyValuePair<string, Type>(
-            t.GetCustomAttribute<VirtualPathAttribute>().VirtualPath,
-            t);
-
       static bool PageExists(string pagePath) =>
-         _pageMap.ContainsKey(pagePath);
+         _pageMap.Value.ContainsKey(pagePath);
 
       static Type PageType(string pagePath) =>
-         _pageMap[pagePath];
+         _pageMap.Value[pagePath];
 
       public void Dispose() { }
 
@@ -77,7 +84,7 @@ namespace AspNetPrecompiled.Infrastructure {
 
          if (MatchRequest(requestPath, out string? pagePath, out string? pathInfo)) {
 
-            var page = (XcstPage)Activator.CreateInstance(PageType(pagePath!));
+            var page = (XcstPage)Activator.CreateInstance(PageType(pagePath));
             page.VirtualPath = "~/" + pagePath;
             page.PathInfo = pathInfo;
 
@@ -94,9 +101,9 @@ namespace AspNetPrecompiled.Infrastructure {
          }
       }
 
-      static bool MatchRequest(string requestPath, out string? pagePath, out string? pathInfo) {
+      static bool MatchRequest(string requestPath, [NotNullWhen(true)]out string? pagePath, out string? pathInfo) {
 
-         //Debug.Assert(requestPath != null);
+         Assert.IsNotNull(requestPath);
          Debug.Assert(!requestPath.StartsWith("~/"));
 
          // We can skip the file exists check and normal lookup for empty paths, but we still need to look for default pages
@@ -156,7 +163,7 @@ namespace AspNetPrecompiled.Infrastructure {
          return false;
       }
 
-      static bool MatchDefaultFile(string requestPath, out string? pagePath) {
+      static bool MatchDefaultFile(string requestPath, [NotNullWhen(true)]out string? pagePath) {
 
          const string defaultDocument = "index";
 
