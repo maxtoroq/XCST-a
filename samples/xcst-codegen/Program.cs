@@ -78,7 +78,8 @@ namespace XcstCodeGen {
 
          LoadProjectDependencies(projectDoc);
 
-         string nullable = projectDoc.Root.Element(xmlns + "PropertyGroup")
+         string nullable = projectDoc.Root
+            .Element(xmlns + "PropertyGroup")
             .Element(xmlns + "Nullable")?.Value;
 
          output.WriteLine("//------------------------------------------------------------------------------");
@@ -96,8 +97,7 @@ namespace XcstCodeGen {
          }
 
          string rootNamespace = projectDoc.Root
-            .Elements(xmlns + "PropertyGroup")
-            .First()
+            .Element(xmlns + "PropertyGroup")
             .Element(xmlns + "RootNamespace")
             .Value;
 
