@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Globalization'/>
+   <c:import-namespace ns='System.Web.Mvc'/>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='this.ViewContext.ClientValidationEnabled' value='false'/>
+      <c:void value='this.ModelState.SetModelValue("foo", new ValueProviderResult("xxx", "", CultureInfo.CurrentCulture))'/>
+      <div>
+         <a:check-box name='foo'/>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <input type='checkbox' id='foo' name='foo' value='true'/>
+         <input type='hidden' name='foo' value='false'/>
+      </div>
+   </c:template>
+
+</c:module>

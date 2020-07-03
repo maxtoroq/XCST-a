@@ -183,6 +183,7 @@
     <None Include="Extension\Attributes\member.file-extensions.type.c.xcst" />
     <None Include="Extension\CheckBox\check-box.autofocus.type.i.xcst" />
     <None Include="Extension\CheckBox\check-box.disabled.type.i.xcst" />
+    <None Include="Extension\CheckBox\ModelStateInvalidValue.c.xcst" />
     <None Include="Extension\CheckBox\Checked.c.xcst" />
     <None Include="Extension\CheckBox\TypeInference.c.xcst" />
     <None Include="Extension\Directives\InheritsImported.c.xcst" />

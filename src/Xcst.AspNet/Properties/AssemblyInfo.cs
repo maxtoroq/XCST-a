@@ -9,6 +9,6 @@ namespace Xcst.Web {
 
    partial class AssemblyInfo {
 
-      public const string XcstPatch = "0";
+      public const string XcstPatch = "1";
    }
 }

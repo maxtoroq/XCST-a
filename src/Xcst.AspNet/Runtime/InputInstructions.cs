@@ -375,7 +375,13 @@ namespace Xcst.Web.Runtime {
          switch (inputType) {
             case InputType.CheckBox:
 
-               bool? modelStateWasChecked = htmlHelper.GetModelStateValue(fullName, typeof(bool)) as bool?;
+               bool? modelStateWasChecked;
+
+               try {
+                  modelStateWasChecked = htmlHelper.GetModelStateValue(fullName, typeof(bool)) as bool?;
+               } catch (InvalidOperationException) {
+                  modelStateWasChecked = null;
+               }
 
                if (modelStateWasChecked.HasValue) {
                   isChecked = modelStateWasChecked.Value;
