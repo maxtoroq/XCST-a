@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:check-box attributes=''/>
+      <a:radio for='a' value='1' name='a'/>
    </c:template>
 
 </c:module>

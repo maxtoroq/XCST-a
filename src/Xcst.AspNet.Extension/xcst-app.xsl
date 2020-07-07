@@ -274,7 +274,7 @@
       <call-template name="a:element-instruction"/>
    </template>
 
-   <template match="a:check-box" mode="src:extension-instruction">
+   <template match="a:checkbox" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
@@ -329,7 +329,7 @@
       </code:method-call>
    </template>
 
-   <template match="a:check-box" mode="xcst:extension-instruction">
+   <template match="a:checkbox" mode="xcst:extension-instruction">
       <variable name="instruction" as="element()">
          <call-template name="a:element-instruction"/>
       </variable>
@@ -340,7 +340,7 @@
       </xcst:instruction>
    </template>
 
-   <template match="a:radio-button" mode="src:extension-instruction">
+   <template match="a:radio" mode="src:extension-instruction">
       <param name="output" tunnel="yes"/>
 
       <call-template name="xcst:validate-attribs">
@@ -409,7 +409,7 @@
       </code:method-call>
    </template>
 
-   <template match="a:radio-button" mode="xcst:extension-instruction">
+   <template match="a:radio" mode="xcst:extension-instruction">
       <call-template name="a:element-instruction"/>
    </template>
 

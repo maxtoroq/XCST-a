@@ -6,7 +6,7 @@
 
    <c:template name='c:initial-template'>
       <c:variable name='el'>
-         <a:check-box name='foo'/>
+         <a:checkbox name='foo'/>
       </c:variable>
       <c:void value='Assert.AreEqual(typeof(System.Xml.Linq.XElement[]), CompileType(el))'/>
    </c:template>

@@ -11,7 +11,7 @@
       <c:set ref='this.ViewContext.ClientValidationEnabled' value='false'/>
       <c:void value='this.ModelState.SetModelValue("foo", new ValueProviderResult("xxx", "", CultureInfo.CurrentCulture))'/>
       <div>
-         <a:check-box name='foo'/>
+         <a:checkbox name='foo'/>
       </div>
    </c:template>
 

@@ -12,20 +12,20 @@
       <c:set ref='this.ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { p = true }'>
-            <a:check-box for='p' class='a'/>
-            <a:check-box name='p' class='b'/>
-            <a:check-box name='p' checked='false' class='c'/>
-            <a:check-box name='p' checked='false' attributes='new { @checked = "checked" }' class='d'/>
+            <a:checkbox for='p' class='a'/>
+            <a:checkbox name='p' class='b'/>
+            <a:checkbox name='p' checked='false' class='c'/>
+            <a:checkbox name='p' checked='false' attributes='new { @checked = "checked" }' class='d'/>
          </a:model>
          <a:model value='true' field-prefix='p'>
-            <a:check-box class='e'/>
-            <a:check-box checked='false' class='f'/>
-            <a:check-box checked='false' attributes='new { @checked = "checked" }' class='g'/>
+            <a:checkbox class='e'/>
+            <a:checkbox checked='false' class='f'/>
+            <a:checkbox checked='false' attributes='new { @checked = "checked" }' class='g'/>
          </a:model>
          <a:model value='new Foo { p = true }' field-prefix='x'>
-            <a:check-box for='p' class='h'/>
+            <a:checkbox for='p' class='h'/>
             <!--
-            <a:check-box name='p' class='i'/>
+            <a:checkbox name='p' class='i'/>
             -->
          </a:model>
       </div>

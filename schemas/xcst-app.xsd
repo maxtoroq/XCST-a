@@ -63,7 +63,7 @@
          <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="check-box" substitutionGroup="a:extension-instruction">
+   <xs:element name="checkbox" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
@@ -76,7 +76,7 @@
          <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="radio-button" substitutionGroup="a:extension-instruction">
+   <xs:element name="radio" substitutionGroup="a:extension-instruction">
       <xs:complexType>
          <xs:attribute name="value" use="required" type="a:expression"/>
          <xs:attribute name="for" type="a:expression"/>

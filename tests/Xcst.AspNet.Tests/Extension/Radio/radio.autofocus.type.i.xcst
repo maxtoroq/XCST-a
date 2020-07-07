@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:radio-button value=''/>
+      <a:radio value='1' autofocus=''/>
    </c:template>
 
 </c:module>

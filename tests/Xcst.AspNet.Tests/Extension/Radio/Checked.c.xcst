@@ -12,40 +12,40 @@
       <div>
          <a:model value='new Foo { p = "property" }'>
             <!-- different value -->
-            <a:radio-button for='p' value='"foo"' class='a'/>
-            <a:radio-button name='p' value='"foo"' class='b'/>
+            <a:radio for='p' value='"foo"' class='a'/>
+            <a:radio name='p' value='"foo"' class='b'/>
 
             <!-- same value -->
-            <a:radio-button for='p' value='"property"' class='c'/>
-            <a:radio-button name='p' value='"property"' class='d'/>
+            <a:radio for='p' value='"property"' class='c'/>
+            <a:radio name='p' value='"property"' class='d'/>
 
             <!-- explicit checked -->
-            <a:radio-button name='p' value='"foo"' checked='yes' class='e'/>
-            <a:radio-button name='p' value='"property"' checked='no' class='f'/>
-            <a:radio-button name='p' value='"property"' checked='no' attributes='new { @checked = "checked" }' class='g'/>
+            <a:radio name='p' value='"foo"' checked='yes' class='e'/>
+            <a:radio name='p' value='"property"' checked='no' class='f'/>
+            <a:radio name='p' value='"property"' checked='no' attributes='new { @checked = "checked" }' class='g'/>
 
             <!-- checked attribute -->
-            <a:radio-button for='p' value='"foo"' attributes='new { @checked = "checked" }' class='h'/>
-            <a:radio-button name='p' value='"foo"' attributes='new { @checked = "checked" }' class='i'/>
+            <a:radio for='p' value='"foo"' attributes='new { @checked = "checked" }' class='h'/>
+            <a:radio name='p' value='"foo"' attributes='new { @checked = "checked" }' class='i'/>
          </a:model>
          <a:model value='"model"' field-prefix='p'>
             <!-- different value -->
-            <a:radio-button value='"foo"' class='j'/>
+            <a:radio value='"foo"' class='j'/>
 
             <!-- same value -->
-            <a:radio-button value='"model"' class='k'/>
+            <a:radio value='"model"' class='k'/>
 
             <!-- explicit checked -->
-            <a:radio-button value='"foo"' checked='yes' class='l'/>
-            <a:radio-button value='"model"' checked='no' class='m'/>
-            <a:radio-button value='"model"' checked='no' attributes='new { @checked = "checked" }' class='n'/>
+            <a:radio value='"foo"' checked='yes' class='l'/>
+            <a:radio value='"model"' checked='no' class='m'/>
+            <a:radio value='"model"' checked='no' attributes='new { @checked = "checked" }' class='n'/>
 
             <!-- checked attribute -->
-            <a:radio-button value='"foo"' attributes='new { @checked = "checked" }' class='o'/>
+            <a:radio value='"foo"' attributes='new { @checked = "checked" }' class='o'/>
          </a:model>
          <a:model value='new Foo { p = "property" }' field-prefix='x'>
-            <a:radio-button for='p' value='"property"' class='p'/>
-            <a:radio-button name='p' value='"property"' class='q'/>
+            <a:radio for='p' value='"property"' class='p'/>
+            <a:radio name='p' value='"property"' class='q'/>
          </a:model>
       </div>
    </c:template>

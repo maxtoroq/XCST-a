@@ -10,7 +10,7 @@ namespace Xcst.Web {
 
    partial class AssemblyInfo {
 
-      public const string XcstMajorMinor = "0.72";
+      public const string XcstMajorMinor = "0.73";
       public const string XcstAssemblyVersion = "1.0.0";
       public const string XcstAssemblyFileVersion = XcstMajorMinor + "." + XcstPatch;
       public const string XcstAssemblyInformationalVersion = XcstAssemblyFileVersion;

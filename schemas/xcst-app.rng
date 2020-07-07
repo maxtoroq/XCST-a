@@ -28,7 +28,7 @@
       <define name="extension-instruction" docs:display-type="true">
          <choice>
             <ref name="anti-forgery-token"/>
-            <ref name="check-box"/>
+            <ref name="checkbox"/>
             <ref name="display"/>
             <ref name="display-name"/>
             <ref name="display-text"/>
@@ -38,7 +38,7 @@
             <ref name="input"/>
             <ref name="label"/>
             <ref name="model"/>
-            <ref name="radio-button"/>
+            <ref name="radio"/>
             <ref name="select"/>
             <ref name="textarea"/>
             <ref name="validation-summary"/>
@@ -144,8 +144,8 @@
          </element>
       </define>
 
-      <define name="check-box">
-         <element name="check-box">
+      <define name="checkbox">
+         <element name="checkbox">
             <choice>
                <attribute name="for">
                   <ref name="expression"/>
@@ -169,8 +169,8 @@
          </element>
       </define>
 
-      <define name="radio-button">
-         <element name="radio-button">
+      <define name="radio">
+         <element name="radio">
             <attribute name="value">
                <ref name="expression"/>
             </attribute>

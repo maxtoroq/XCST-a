@@ -24,7 +24,7 @@
          <c:otherwise>
             <div class='form-check'>
                <label class='form-check-label'>
-                  <a:check-box checked='{modelValue.GetValueOrDefault()}' class='form-check-input' attributes='this.htmlAttributes'/>
+                  <a:checkbox checked='{modelValue.GetValueOrDefault()}' class='form-check-input' attributes='this.htmlAttributes'/>
                </label>
             </div>
          </c:otherwise>
