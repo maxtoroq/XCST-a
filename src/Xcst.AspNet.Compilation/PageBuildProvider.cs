@@ -18,9 +18,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Compilation;
 using System.Web.Hosting;
+using System.Xml;
 using Xcst.Compiler;
 using Xcst.Web.Mvc;
 
@@ -31,6 +34,7 @@ namespace Xcst.Web.Compilation {
 
       readonly Uri applicationUri = new Uri(HostingEnvironment.ApplicationPhysicalPath, UriKind.Absolute);
       CompileResult? result;
+      LoggingResolver? moduleResolver;
       bool? _IgnoreFile;
 
       public static XcstCompilerFactory CompilerFactory { get; } = new XcstCompilerFactory {
@@ -42,10 +46,10 @@ namespace Xcst.Web.Compilation {
       public override ICollection VirtualPathDependencies {
          get {
 
-            if (result != null) {
+            if (moduleResolver != null) {
                return
                   new[] { VirtualPath }.Concat(
-                     from u in result.Dependencies
+                     from u in moduleResolver.ResolvedUris
                      let rel = applicationUri.MakeRelativeUri(u)
                      where !rel.IsAbsoluteUri
                         && !rel.OriginalString.StartsWith("..")
@@ -100,9 +104,12 @@ namespace Xcst.Web.Compilation {
          if (this.IsFileInCodeDir) {
             compiler.NamedPackage = true;
          } else {
+
             compiler.SetTargetBaseTypes(this.PageType);
             compiler.TargetNamespace = this.GeneratedTypeNamespace;
             compiler.TargetClass = this.GeneratedTypeName;
+
+            compiler.ModuleResolver = (this.moduleResolver = new LoggingResolver(new XmlUrlResolver()));
          }
 
          compiler.SetParameter(XmlNamespaces.XcstApplication, "application-uri", this.applicationUri);
@@ -128,7 +135,7 @@ namespace Xcst.Web.Compilation {
          var fileArray = new CodeArrayCreateExpression(typeof(string));
          fileArray.Initializers.Add(new CodePrimitiveExpression(this.PhysicalPath.LocalPath));
 
-         foreach (Uri uri in this.result!.Dependencies.Where(u => u.IsFile)) {
+         foreach (Uri uri in this.moduleResolver!.ResolvedUris.Where(u => u.IsFile)) {
             fileArray.Initializers.Add(new CodePrimitiveExpression(uri.LocalPath));
          }
 
@@ -173,6 +180,48 @@ namespace Xcst.Web.Compilation {
             assemblyBuilder.AddAssemblyReference(this.PageType.Assembly);
             assemblyBuilder.GenerateTypeFactory(this.GeneratedTypeFullName);
          }
+      }
+
+      class LoggingResolver : XmlResolver {
+
+         readonly XmlResolver wrappedResolver;
+
+         public HashSet<Uri> ResolvedUris { get; } = new HashSet<Uri>();
+
+         public override ICredentials Credentials {
+            set => wrappedResolver.Credentials = value;
+         }
+
+         public LoggingResolver(XmlResolver wrappedResolver) {
+
+            if (wrappedResolver is null) throw new ArgumentNullException(nameof(wrappedResolver));
+
+            this.wrappedResolver = wrappedResolver;
+         }
+
+         public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn) {
+
+            object entity = this.wrappedResolver.GetEntity(absoluteUri, role, ofObjectToReturn);
+
+            this.ResolvedUris.Add(absoluteUri);
+
+            return entity;
+         }
+
+         public override Task<object> GetEntityAsync(Uri absoluteUri, string role, Type ofObjectToReturn) {
+
+            var task = this.wrappedResolver.GetEntityAsync(absoluteUri, role, ofObjectToReturn);
+
+            this.ResolvedUris.Add(absoluteUri);
+
+            return task;
+         }
+
+         public override bool SupportsType(Uri absoluteUri, Type type) =>
+            this.wrappedResolver.SupportsType(absoluteUri, type);
+
+         public override Uri ResolveUri(Uri baseUri, string relativeUri) =>
+            this.wrappedResolver.ResolveUri(baseUri, relativeUri);
       }
    }
 
