@@ -194,6 +194,10 @@ namespace Xcst.Web.Runtime {
 
          if (list != null) {
 
+            if (list is IEnumerable<SelectListItem> sList) {
+               return ConcatDynamicList(sList);
+            }
+
             this.dynamicList = new List<SelectListItem>();
 
             foreach (object item in list) {

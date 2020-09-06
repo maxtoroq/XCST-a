@@ -4,8 +4,10 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <c:import-namespace ns='System.Collections'/>
+
    <c:template name='c:initial-template'>
-      <a:select name='color' options='new[] { "red", "blue" }'/>
+      <a:select name='color' options='(IEnumerable)new[] { "red", "blue" }'/>
    </c:template>
 
    <c:template name='expected'>

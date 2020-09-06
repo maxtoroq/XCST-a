@@ -4,18 +4,30 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <c:import-namespace ns='System.Collections'/>
    <c:import-namespace ns='System.Web.Mvc'/>
 
    <c:template name='c:initial-template'>
-      <a:select name='color' options='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue" } }'/>
+      <c:variable name='list' value='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue" } }'/>
+      <div>
+         <a:select name='color' options='list'/>
+         <a:select name='color' options='(IEnumerable)list'/>
+      </div>
    </c:template>
 
    <c:template name='expected'>
+      <div>
+         <c:call-template name='expect'/>
+         <c:call-template name='expect'/>
+      </div>
+   </c:template>
+
+   <c:template name='expect'>
       <select name="color" id="color">
          <option value=""/>
          <option>red</option>
          <option>blue</option>
-      </select>      
+      </select>
    </c:template>
 
 </c:module>
