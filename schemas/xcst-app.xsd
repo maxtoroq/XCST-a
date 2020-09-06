@@ -90,7 +90,7 @@
          <xs:attributeGroup ref="a:html-attribs"/>
       </xs:complexType>
    </xs:element>
-   <xs:element name="anti-forgery-token" substitutionGroup="a:extension-instruction">
+   <xs:element name="antiforgery" substitutionGroup="a:extension-instruction">
       <xs:complexType/>
    </xs:element>
    <xs:element name="select" substitutionGroup="a:extension-instruction">

@@ -168,7 +168,7 @@
     <Compile Include="Tests.generated.cs" />
     <Compile Include="TestsHelper.cs" />
     <None Include="app.config" />
-    <None Include="Extension\AntiForgeryToken\TypeInference.c.xcst" />
+    <None Include="Extension\Antiforgery\TypeInference.c.xcst" />
     <None Include="Extension\Attributes\SkipBinding.c.xcst" />
     <None Include="Extension\Attributes\member.skip-binding.type.c.xcst" />
     <None Include="Extension\Attributes\member.skip-binding.type.i.xcst" />
@@ -286,7 +286,7 @@
     <None Include="generate-tests.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Extension\AntiForgeryToken\anti-forgery-token.foo.i.xcst" />
+    <None Include="Extension\Antiforgery\antiforgery.foo.i.xcst" />
     <None Include="Extension\Hidden\ByteArray.c.xcst" />
     <None Include="Extension\Hidden\hidden.attributes.type.i.xcst" />
     <None Include="Extension\Hidden\hidden.foo.i.xcst" />

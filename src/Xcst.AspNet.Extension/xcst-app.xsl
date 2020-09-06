@@ -413,20 +413,20 @@
       <call-template name="a:element-instruction"/>
    </template>
 
-   <template match="a:anti-forgery-token" mode="src:extension-instruction">
+   <template match="a:antiforgery" mode="src:extension-instruction">
 
       <call-template name="xcst:validate-attribs">
          <with-param name="extension" select="true()"/>
       </call-template>
 
-      <call-template name="a:anti-forgery-token"/>
+      <call-template name="a:antiforgery"/>
    </template>
 
-   <template match="a:anti-forgery-token" mode="xcst:extension-instruction">
+   <template match="a:antiforgery" mode="xcst:extension-instruction">
       <call-template name="a:element-instruction"/>
    </template>
 
-   <template name="a:anti-forgery-token">
+   <template name="a:antiforgery">
       <param name="output" tunnel="yes"/>
 
       <choose>
@@ -1405,7 +1405,7 @@
                <variable name="antiforgery" select="xcst:boolean(@antiforgery, true())"/>
                <choose>
                   <when test="$antiforgery">
-                     <call-template name="a:anti-forgery-token">
+                     <call-template name="a:antiforgery">
                         <with-param name="output" select="$doc-output" tunnel="yes"/>
                      </call-template>
                   </when>
@@ -1417,7 +1417,7 @@
                            <with-param name="avt" select="@antiforgery"/>
                         </call-template>
                         <code:block>
-                           <call-template name="a:anti-forgery-token">
+                           <call-template name="a:antiforgery">
                               <with-param name="output" select="$doc-output" tunnel="yes"/>
                            </call-template>
                         </code:block>

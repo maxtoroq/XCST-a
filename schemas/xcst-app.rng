@@ -27,7 +27,7 @@
 
       <define name="extension-instruction" docs:display-type="true">
          <choice>
-            <ref name="anti-forgery-token"/>
+            <ref name="antiforgery"/>
             <ref name="checkbox"/>
             <ref name="display"/>
             <ref name="display-name"/>
@@ -197,8 +197,8 @@
          </element>
       </define>
 
-      <define name="anti-forgery-token">
-         <element name="anti-forgery-token">
+      <define name="antiforgery">
+         <element name="antiforgery">
             <empty/>
          </element>
       </define>
