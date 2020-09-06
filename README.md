@@ -24,7 +24,7 @@ System Requirements
 -------------------
 The codebase is written in C# 8 and requires .NET 4.6 or higher.
 
-The [release script](build/release.ps1) (which creates the NuGet packages) and other utility scripts are written in PowerShell 3.
+The [release script](build/release.ps1) (which creates the NuGet packages) and other utility scripts are written in PowerShell 5.1.
 
 The [application extension schema](schemas/xcst-app.rng) is written in Relax NG and converted to XSD using [Trang], which requires Java.
 
