@@ -5,7 +5,6 @@
 $ErrorActionPreference = "Stop"
 Push-Location (Split-Path $script:MyInvocation.MyCommand.Path)
 
-$nuget = "..\.nuget\nuget.exe"
 $solutionPath = Resolve-Path ..
 $configuration = "Release"
 
@@ -267,7 +266,7 @@ function Prompt-Choices($Choices=("&Yes", "&No"), [string]$Title="Confirm", [str
 
 try {
 
-   .\ensure-nuget.ps1
+   $nuget = .\ensure-nuget.ps1
    .\restore-packages.ps1
    Release
    
