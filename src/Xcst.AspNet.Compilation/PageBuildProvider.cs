@@ -97,7 +97,7 @@ namespace Xcst.Web.Compilation {
       protected virtual void ConfigureCompiler(XcstCompiler compiler) {
 
          compiler.PackageTypeResolver = typeName => BuildManager.GetType(typeName, throwOnError: false);
-         compiler.PackagesLocation = HostingEnvironment.MapPath("~/App_Code");
+         compiler.PackageFileDirectory = HostingEnvironment.MapPath("~/App_Code");
          compiler.PackageFileExtension = FileExtension;
          compiler.UseLineDirective = true;
 

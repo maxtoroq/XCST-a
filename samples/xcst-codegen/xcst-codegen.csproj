@@ -39,12 +39,18 @@
       <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\saxon9he-api.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard1.3\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reflection.Metadata.1.6.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.114.0\lib\net46\Xcst.Compiler.dll</HintPath>
+      <HintPath>..\..\packages\Xcst.Compiler.0.120.0\lib\net46\Xcst.Compiler.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
