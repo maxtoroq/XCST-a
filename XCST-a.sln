@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A359
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet", "samples\aspnet\", "{69E11991-F3B6-41D9-B8B6-D5AADEA54EAD}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
 		ProjectReferences = "{30e0cb99-1953-476b-a994-7bc15d903b25}|Xcst.AspNet.Compilation.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;{5039E116-8B5F-406D-A7FD-550F309A7178}|Xcst.AspNet.Extension.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_49439"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet\"
@@ -51,7 +51,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet", "src\Xcst.Asp
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-mvc", "samples\aspnet-mvc\", "{48FFDBDC-4AE8-4739-9AD1-C361927CAE3D}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
 		ProjectReferences = "{4201bbcb-dbbb-47db-8cd6-e62f697dea64}|Xcst.Web.Mvc.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_52517"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet-mvc\"
@@ -73,7 +73,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-mvc", "samples\aspne
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-todo", "samples\aspnet-todo\", "{5C9BDC47-2C36-4CFF-AC98-D6F6198E43FA}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
 		ProjectReferences = "{30e0cb99-1953-476b-a994-7bc15d903b25}|Xcst.AspNet.Compilation.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;{5039E116-8B5F-406D-A7FD-550F309A7178}|Xcst.AspNet.Extension.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51437"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet-todo\"
@@ -102,7 +102,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aspnet-precompiled-code", "
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-precompiled-site", "samples\aspnet-precompiled-site\", "{526FF9FB-17E3-4235-9DCA-B0F2986A6251}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
 		ProjectReferences = "{85105e77-c24a-4006-b523-99c94e418219}|AspNetPrecompiled.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;{d70b8cb0-6475-41b1-9c61-d6ab8f9ab276}|Xcst.AspNet.Precompilation.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_56269"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet-precompiled-site\"

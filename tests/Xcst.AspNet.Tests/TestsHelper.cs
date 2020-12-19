@@ -23,16 +23,16 @@ namespace Xcst.Web.Tests {
 
    static class TestsHelper {
 
-      const bool PrintCode = false;
+      const bool _printCode = false;
 
-      static readonly XcstCompilerFactory CompilerFactory = new XcstCompilerFactory();
+      static readonly XcstCompilerFactory _compilerFactory = new XcstCompilerFactory();
 
-      static readonly string InitialName = $"Q{{{XmlNamespaces.Xcst}}}initial-template";
-      static readonly string ExpectedName = "expected";
+      static readonly string _initialName = $"Q{{{XmlNamespaces.Xcst}}}initial-template";
+      static readonly string _expectedName = "expected";
 
       static TestsHelper() {
-         CompilerFactory.EnableExtensions = true;
-         CompilerFactory.RegisterExtension(new Xcst.Web.Extension.ExtensionLoader {
+         _compilerFactory.EnableExtensions = true;
+         _compilerFactory.RegisterExtension(new Xcst.Web.Extension.ExtensionLoader {
             DefaultModelDynamic = true
          });
       }
@@ -49,35 +49,32 @@ namespace Xcst.Web.Tests {
             xcstResult = codegenResult.Item1;
             packageName = codegenResult.Item2;
 
-         } catch (CompileException ex) {
+         } catch (CompileException ex) when (correct || _printCode) {
 
-            if (correct) {
-               Console.WriteLine($"// {ex.Message}");
-               Console.WriteLine($"// Module URI: {ex.ModuleUri}");
-               Console.WriteLine($"// Line number: {ex.LineNumber}");
-            }
-
+            Console.WriteLine($"// {ex.Message}");
+            Console.WriteLine($"// Module URI: {ex.ModuleUri}");
+            Console.WriteLine($"// Line number: {ex.LineNumber}");
             throw;
          }
 
          if (fail) {
 
-            if (!xcstResult.Templates.Contains(InitialName)) {
+            if (!xcstResult.Templates.Contains(_initialName)) {
                TestAssert.Fail("A failing package should define an initial template.");
-            } else if (xcstResult.Templates.Contains(ExpectedName)) {
+            } else if (xcstResult.Templates.Contains(_expectedName)) {
                TestAssert.Fail("A failing package should not define an 'expected' template.");
             }
 
          } else {
 
-            if (xcstResult.Templates.Contains(ExpectedName)
-               && !xcstResult.Templates.Contains(InitialName)) {
+            if (xcstResult.Templates.Contains(_expectedName)
+               && !xcstResult.Templates.Contains(_initialName)) {
 
                TestAssert.Fail("A package that defines an 'expected' template without an initial template makes no sense.");
             }
          }
 
-         bool printCode = PrintCode;
+         bool printCode = _printCode;
 
          try {
 
@@ -92,12 +89,9 @@ namespace Xcst.Web.Tests {
                   return;
                }
 
-            } catch (CompileException) {
+            } catch (CompileException) when (correct) {
 
-               if (correct) {
-                  printCode = true;
-               }
-
+               printCode = true;
                throw;
             }
 
@@ -110,22 +104,19 @@ namespace Xcst.Web.Tests {
                   // did not fail, print code
                   printCode = true;
 
-               } else if (xcstResult.Templates.Contains(InitialName)) {
+               } else if (xcstResult.Templates.Contains(_initialName)) {
 
-                  if (xcstResult.Templates.Contains(ExpectedName)) {
+                  if (xcstResult.Templates.Contains(_expectedName)) {
                      TestAssert.IsTrue(OutputEqualsToExpected(packageType, packageUri));
                   } else {
                      SimplyRun(packageType, packageUri);
                   }
                }
 
-            } catch (RuntimeException ex) {
+            } catch (RuntimeException ex) when (!fail) {
 
-               if (!fail) {
-                  Console.WriteLine($"// {ex.Message}");
-                  printCode = true;
-               }
-
+               Console.WriteLine($"// {ex.Message}");
+               printCode = true;
                throw;
 
             } catch (TestAssertException) {
@@ -146,7 +137,7 @@ namespace Xcst.Web.Tests {
 
       public static XcstCompiler CreateCompiler() {
 
-         XcstCompiler compiler = CompilerFactory.CreateCompiler();
+         XcstCompiler compiler = _compilerFactory.CreateCompiler();
          compiler.UseLineDirective = true;
          compiler.PackageTypeResolver = n => Assembly.GetExecutingAssembly().GetType(n);
 
@@ -271,7 +262,7 @@ namespace Xcst.Web.Tests {
 
          using (XmlWriter expectedWriter = expectedDoc.CreateWriter()) {
 
-            evaluator.CallTemplate(ExpectedName)
+            evaluator.CallTemplate(_expectedName)
                .OutputTo(expectedWriter)
                .Run();
          }

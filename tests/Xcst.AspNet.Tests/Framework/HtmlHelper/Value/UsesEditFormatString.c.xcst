@@ -4,6 +4,8 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <c:import-namespace ns='System.Globalization'/>
+
    <c:type name='Foo'>
       <c:member name='bar' as='decimal' format='{0:#.#}' apply-format-in-edit-mode='yes'/>
    </c:type>
@@ -17,10 +19,11 @@
       </a:model>
    </c:template>
 
-   <c:template name='expected'>
+   <c:template name='expected' expand-text='yes'>
+      <c:variable name='sep' value='CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator'/>
       <ul>
-         <li>.1</li>
-         <li>.1</li>
+         <li>{sep}1</li>
+         <li>{sep}1</li>
       </ul>
    </c:template>
 
