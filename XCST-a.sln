@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A359
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet", "samples\aspnet\", "{69E11991-F3B6-41D9-B8B6-D5AADEA54EAD}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.2"
 		ProjectReferences = "{30e0cb99-1953-476b-a994-7bc15d903b25}|Xcst.AspNet.Compilation.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;{5039E116-8B5F-406D-A7FD-550F309A7178}|Xcst.AspNet.Extension.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_49439"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet\"
@@ -41,8 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{A081
 		schemas\README.md = schemas\README.md
 		schemas\xcst-app.rng = schemas\xcst-app.rng
 		schemas\xcst-app.xsd = schemas\xcst-app.xsd
-		packages\Xcst.Compiler.0.120.0\schemas\xcst.rng = packages\Xcst.Compiler.0.120.0\schemas\xcst.rng
-		packages\Xcst.Compiler.0.120.0\schemas\xcst.xsd = packages\Xcst.Compiler.0.120.0\schemas\xcst.xsd
+		packages\Xcst.Compiler.0.122.0\schemas\xcst.rng = packages\Xcst.Compiler.0.122.0\schemas\xcst.rng
+		packages\Xcst.Compiler.0.122.0\schemas\xcst.xsd = packages\Xcst.Compiler.0.122.0\schemas\xcst.xsd
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet.Tests", "tests\Xcst.AspNet.Tests\Xcst.AspNet.Tests.csproj", "{9C2C8E13-E69D-4656-8554-11CD69147448}"
@@ -51,7 +51,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet", "src\Xcst.Asp
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-mvc", "samples\aspnet-mvc\", "{48FFDBDC-4AE8-4739-9AD1-C361927CAE3D}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.2"
 		ProjectReferences = "{4201bbcb-dbbb-47db-8cd6-e62f697dea64}|Xcst.Web.Mvc.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_52517"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet-mvc\"
@@ -73,7 +73,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-mvc", "samples\aspne
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-todo", "samples\aspnet-todo\", "{5C9BDC47-2C36-4CFF-AC98-D6F6198E43FA}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.2"
 		ProjectReferences = "{30e0cb99-1953-476b-a994-7bc15d903b25}|Xcst.AspNet.Compilation.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;{5039E116-8B5F-406D-A7FD-550F309A7178}|Xcst.AspNet.Extension.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51437"
 		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet-todo\"
