@@ -130,7 +130,7 @@ namespace System.Web.Mvc {
       /// </example>
       /// <param name="value">The object to be converted.</param>
       /// <returns>The created dictionary of property names and property values.</returns>
-      public static IDictionary<string, object> ObjectToDictionary(object value) =>
+      public static IDictionary<string, object?> ObjectToDictionary(object value) =>
          TypeHelpers.ObjectToDictionary(value);
 
       internal string EvalString(string key) =>
