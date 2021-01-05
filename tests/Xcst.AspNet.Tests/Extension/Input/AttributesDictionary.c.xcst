@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Collections.Generic'/>
+
+   <c:template name='c:initial-template'>
+      <c:variable name='attribs' value='new Dictionary&lt;string, object> { { "class", "bar" } }'/>
+      <div>
+         <a:input name='n' attributes='attribs'/>
+         <a:input name='n' attributes='(object)attribs'/>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <input type='text' id='n' name='n' value='' class='bar'/>
+         <input type='text' id='n' name='n' value='' class='bar'/>
+      </div>
+   </c:template>
+
+</c:module>

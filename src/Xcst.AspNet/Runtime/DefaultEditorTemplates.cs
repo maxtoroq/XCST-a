@@ -182,13 +182,7 @@ namespace Xcst.Web.Runtime {
          }
 
          object? userAttribs = html.ViewData["htmlAttributes"];
-
-         if (userAttribs is IDictionary<string, object> dict) {
-            htmlAttributes.SetAttributes(dict);
-
-         } else if (userAttribs is object) {
-            htmlAttributes.SetAttributes(userAttribs);
-         }
+         htmlAttributes.SetAttributes(userAttribs);
 
          return htmlAttributes;
       }

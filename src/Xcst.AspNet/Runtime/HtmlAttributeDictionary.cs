@@ -51,7 +51,11 @@ namespace Xcst.Web.Runtime {
       public HtmlAttributeDictionary SetAttributes(object? attributes) {
 
          if (attributes != null) {
-            SetAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
+
+            var dict = attributes as IDictionary<string, object>
+               ?? HtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
+
+            SetAttributes(dict);
          }
 
          return this;

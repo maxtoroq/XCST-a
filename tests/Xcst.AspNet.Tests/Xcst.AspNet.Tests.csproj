@@ -257,6 +257,7 @@
     <None Include="Extension\Form\TypeInference.c.xcst" />
     <None Include="Extension\Hidden\TypeInference.c.xcst" />
     <None Include="Extension\Hidden\Value.c.xcst" />
+    <None Include="Extension\Input\AttributesDictionary.c.xcst" />
     <None Include="Extension\Input\Attributes.c.xcst" />
     <None Include="Extension\Input\FileOmitValue.c.xcst" />
     <None Include="Extension\Input\NoCheckBox.c.xcst" />
