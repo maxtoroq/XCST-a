@@ -98,7 +98,7 @@ namespace XcstCodeGen {
 
       // Transforms invalid identifier (class, namespace, variable) characters
       string CleanIdentifier(string identifier) =>
-         Regex.Replace(identifier, "[^a-z0-9_.]", "_", RegexOptions.IgnoreCase);
+         Regex.Replace(identifier, "[^a-z0-9_]", "_", RegexOptions.IgnoreCase);
 
       // Show compilation errors on Visual Studio's Error List
       // Also makes the error on the Output window clickable
@@ -193,7 +193,10 @@ namespace XcstCodeGen {
                   string relativeDir = startUri.MakeRelativeUri(new Uri(Path.GetDirectoryName(file), UriKind.Absolute))
                      .OriginalString;
 
-                  ns = ns + "." + CleanIdentifier(relativeDir.Replace("/", "."));
+                  ns = String.Join(".", new[] { ns }.Concat(
+                     relativeDir
+                        .Split('/')
+                        .Select(n => CleanIdentifier(n))));
                }
 
                compiler.TargetClass = "_Page_" + CleanIdentifier(fileBaseName);
