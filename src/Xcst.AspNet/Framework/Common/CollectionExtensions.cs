@@ -38,7 +38,7 @@ namespace System.Web.Mvc {
 
          switch (list.Count) {
             case 0:
-               return default(T);
+               return default;
 
             case 1:
                T value = list[0];
@@ -46,7 +46,7 @@ namespace System.Web.Mvc {
 
             default:
                errorAction(errorArg1);
-               return default(T);
+               return default;
          }
       }
 
@@ -54,7 +54,8 @@ namespace System.Web.Mvc {
       /// Returns a single value in list matching type TMatch if there is only one, null if there are none of type TMatch or calls the
       /// errorAction with errorArg1 if there is more than one.
       /// </summary>
-      public static TMatch? SingleOfTypeDefaultOrError<TInput, TMatch, TArg1>(this IList<TInput> list, Action<TArg1> errorAction, TArg1 errorArg1) where TMatch : class {
+      public static TMatch? SingleOfTypeDefaultOrError<TInput, TMatch, TArg1>(this IList<TInput> list, Action<TArg1> errorAction, TArg1 errorArg1)
+            where TMatch : class {
 
          Assert.IsNotNull(list);
          Assert.IsNotNull(errorAction);
@@ -81,7 +82,8 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Convert an ICollection to an array, removing null values. Fast path for case where there are no null values.
       /// </summary>
-      public static T[] ToArrayWithoutNulls<T>(this ICollection<T> collection) where T : class {
+      public static T[] ToArrayWithoutNulls<T>(this ICollection<T> collection)
+            where T : class {
 
          Assert.IsNotNull(collection);
 
@@ -107,7 +109,8 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Convert the array to a Dictionary using the keySelector to extract keys from values and the specified comparer. Optimized for array input.
       /// </summary>
-      public static Dictionary<TKey, TValue> ToDictionaryFast<TKey, TValue>(this TValue[] array, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer) {
+      public static Dictionary<TKey, TValue> ToDictionaryFast<TKey, TValue>(this TValue[] array, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer)
+            where TKey : notnull {
 
          Assert.IsNotNull(array);
          Assert.IsNotNull(keySelector);
@@ -125,7 +128,8 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Convert the list to a Dictionary using the keySelector to extract keys from values and the specified comparer. Optimized for IList of T input with fast path for array.
       /// </summary>
-      public static Dictionary<TKey, TValue> ToDictionaryFast<TKey, TValue>(this IList<TValue> list, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer) {
+      public static Dictionary<TKey, TValue> ToDictionaryFast<TKey, TValue>(this IList<TValue> list, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer)
+            where TKey : notnull {
 
          Assert.IsNotNull(list);
          Assert.IsNotNull(keySelector);
@@ -140,7 +144,8 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Convert the enumerable to a Dictionary using the keySelector to extract keys from values and the specified comparer. Fast paths for array and IList of T.
       /// </summary>
-      public static Dictionary<TKey, TValue> ToDictionaryFast<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer) {
+      public static Dictionary<TKey, TValue> ToDictionaryFast<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer)
+            where TKey : notnull {
 
          Assert.IsNotNull(enumerable);
          Assert.IsNotNull(keySelector);
@@ -165,7 +170,8 @@ namespace System.Web.Mvc {
       /// <summary>
       /// Convert the list to a Dictionary using the keySelector to extract keys from values and the specified comparer. Optimized for IList of T input. No checking for other types.
       /// </summary>
-      private static Dictionary<TKey, TValue> ToDictionaryFastNoCheck<TKey, TValue>(IList<TValue> list, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer) {
+      static Dictionary<TKey, TValue> ToDictionaryFastNoCheck<TKey, TValue>(IList<TValue> list, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer)
+            where TKey : notnull {
 
          Assert.IsNotNull(list);
          Assert.IsNotNull(keySelector);

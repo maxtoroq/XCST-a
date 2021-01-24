@@ -130,7 +130,7 @@ namespace Xcst.Web {
          return String.Empty;
       }
 
-      static bool MatchRequest(string requestPath, [NotNullWhen(true)]out string? pagePath, out string? pathInfo) {
+      static bool MatchRequest(string requestPath, [NotNullWhen(true)] out string? pagePath, out string? pathInfo) {
 
          Assert.IsNotNull(requestPath);
          Debug.Assert(!requestPath.StartsWith("~/"));
@@ -221,7 +221,7 @@ namespace Xcst.Web {
          return null;
       }
 
-      static bool MatchDefaultFile(string requestPath, [NotNullWhen(true)]out string? pagePath) {
+      static bool MatchDefaultFile(string requestPath, [NotNullWhen(true)] out string? pagePath) {
 
          const string defaultDocument = "index";
 

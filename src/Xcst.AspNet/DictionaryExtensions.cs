@@ -16,7 +16,6 @@
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -39,7 +38,7 @@ namespace Xcst.Web {
       /// <param name="key">The key whose value to get.</param>
       /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter.</param>
       /// <returns><c>true</c> if key was found, value is non-null, and value is of type <typeparamref name="T"/>; otherwise false.</returns>
-      public static bool TryGetValue<T>(this IDictionary<string, object?> collection, string key, [MaybeNull]out T value) {
+      public static bool TryGetValue<T>(this IDictionary<string, object?> collection, string key, [MaybeNull] out T value) {
 
          Assert.IsNotNull(collection);
 
@@ -50,7 +49,7 @@ namespace Xcst.Web {
             }
          }
 
-         value = default(T);
+         value = default;
          return false;
       }
 
@@ -65,7 +64,7 @@ namespace Xcst.Web {
          return @default;
       }
 
-      public static Dictionary<TKey, TValue> Clone<TKey, TValue>(this IDictionary<TKey, TValue> dict) {
+      public static Dictionary<TKey, TValue> Clone<TKey, TValue>(this IDictionary<TKey, TValue> dict) where TKey : notnull {
 
          Assert.IsNotNull(dict);
 

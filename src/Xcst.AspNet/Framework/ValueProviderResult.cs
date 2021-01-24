@@ -51,9 +51,7 @@ namespace System.Web.Mvc {
 
          // In case of a Nullable object, we extract the underlying type and try to convert it.
 
-         Type underlyingType = Nullable.GetUnderlyingType(destinationType);
-
-         if (underlyingType != null) {
+         if (Nullable.GetUnderlyingType(destinationType) is Type underlyingType) {
             destinationType = underlyingType;
          }
 
@@ -136,7 +134,7 @@ namespace System.Web.Mvc {
 
          if (destinationType.IsArray) {
 
-            Type destinationElementType = destinationType.GetElementType();
+            Type destinationElementType = destinationType.GetElementType()!;
 
             if (valueAsArray != null) {
 

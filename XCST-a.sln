@@ -126,6 +126,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xcst-codegen", "samples\xcs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet.Precompilation", "src\Xcst.AspNet.Precompilation\Xcst.AspNet.Precompilation.csproj", "{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcst.AspNetCore", "src\Xcst.AspNetCore\Xcst.AspNetCore.csproj", "{76A90B3D-3008-45BE-9D30-DAE368945FC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aspnetcore", "samples\aspnetcore\aspnetcore.csproj", "{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CodeAnalysis|Any CPU = CodeAnalysis|Any CPU
@@ -205,6 +209,18 @@ Global
 		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76A90B3D-3008-45BE-9D30-DAE368945FC8}.CodeAnalysis|Any CPU.ActiveCfg = Debug|Any CPU
+		{76A90B3D-3008-45BE-9D30-DAE368945FC8}.CodeAnalysis|Any CPU.Build.0 = Debug|Any CPU
+		{76A90B3D-3008-45BE-9D30-DAE368945FC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76A90B3D-3008-45BE-9D30-DAE368945FC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76A90B3D-3008-45BE-9D30-DAE368945FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76A90B3D-3008-45BE-9D30-DAE368945FC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}.CodeAnalysis|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}.CodeAnalysis|Any CPU.Build.0 = Debug|Any CPU
+		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -222,6 +238,8 @@ Global
 		{526FF9FB-17E3-4235-9DCA-B0F2986A6251} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
+		{76A90B3D-3008-45BE-9D30-DAE368945FC8} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
+		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9D68F6E0-43F6-4AF7-8617-714A04B12736}

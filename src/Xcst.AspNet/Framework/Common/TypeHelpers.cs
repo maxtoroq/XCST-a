@@ -6,7 +6,11 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Web.Routing;
+#if NETCOREAPP
+using RouteValueDictionary = Microsoft.AspNetCore.Routing.RouteValueDictionary;
+#else
+using RouteValueDictionary = System.Web.Routing.RouteValueDictionary;
+#endif
 
 namespace System.Web.Mvc {
 
@@ -20,7 +24,7 @@ namespace System.Web.Mvc {
       static readonly ReaderWriterLockSlim _tryGetValueDelegateCacheLock = new ReaderWriterLockSlim();
 
       static readonly MethodInfo _strongTryGetValueImplInfo =
-         typeof(TypeHelpers).GetMethod(nameof(StrongTryGetValueImpl), BindingFlags.NonPublic | BindingFlags.Static);
+         typeof(TypeHelpers).GetMethod(nameof(StrongTryGetValueImpl), BindingFlags.NonPublic | BindingFlags.Static)!;
 
       public static TryGetValueDelegate? CreateTryGetValueDelegate(Type targetType) {
 

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Web.Mvc {
 
@@ -11,7 +11,7 @@ namespace System.Web.Mvc {
    /// A <see cref="IDictionary{TKey, TValue}"/> that defers creating a shallow copy of the source dictionary until
    /// a mutative operation has been performed on it.
    /// </summary>
-   class CopyOnWriteDictionary<TKey, TValue> : IDictionary<TKey, TValue> {
+   class CopyOnWriteDictionary<TKey, TValue> : IDictionary<TKey, TValue> where TKey : notnull {
 
       readonly IDictionary<TKey, TValue> _sourceDictionary;
       readonly IEqualityComparer<TKey> _comparer;
@@ -54,7 +54,7 @@ namespace System.Web.Mvc {
       public virtual bool Remove(TKey key) =>
          this.WriteDictionary.Remove(key);
 
-      public virtual bool TryGetValue(TKey key, out TValue value) =>
+      public virtual bool TryGetValue(TKey key, [MaybeNullWhen(returnValue: false)] out TValue value) =>
          this.ReadDictionary.TryGetValue(key, out value);
 
       public virtual void Add(KeyValuePair<TKey, TValue> item) =>

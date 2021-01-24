@@ -22,14 +22,17 @@ namespace System.Web.Mvc {
 
       public ICollection<ModelState> Values => _innerDictionary.Values;
 
-      public ModelState this[string key] {
+#pragma warning disable CS8766
+      public ModelState? this[string key] {
          get {
-            ModelState value;
+            ModelState? value;
             _innerDictionary.TryGetValue(key, out value);
             return value;
          }
+#pragma warning disable CS8601
          set => _innerDictionary[key] = value;
       }
+#pragma warning restore CS8766, CS8601
 
       // For unit testing
       internal IDictionary<string, ModelState> InnerDictionary => _innerDictionary;
@@ -153,9 +156,8 @@ namespace System.Web.Mvc {
       public bool TryGetValue(string key, out ModelState value) =>
          _innerDictionary.TryGetValue(key, out value);
 
-      IEnumerator IEnumerable.GetEnumerator() {
-         return GetEnumerator();
-      }
+      IEnumerator IEnumerable.GetEnumerator() =>
+         GetEnumerator();
    }
 
    [Serializable]

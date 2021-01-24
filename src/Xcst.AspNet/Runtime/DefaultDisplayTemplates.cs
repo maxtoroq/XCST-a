@@ -289,7 +289,7 @@ namespace Xcst.Web.Runtime {
 
                if (enumType.IsEnum) {
 
-                  FieldInfo enumField = enumType.GetField(modelMetadata.Model.ToString());
+                  FieldInfo? enumField = enumType.GetField(modelMetadata.Model.ToString());
 
                   if (enumField != null) {
 

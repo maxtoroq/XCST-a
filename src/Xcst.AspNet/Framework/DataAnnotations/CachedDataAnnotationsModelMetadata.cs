@@ -153,10 +153,10 @@ namespace System.Web.Mvc {
             if (this.PrototypeCache.DisplayColumn != null
                && !String.IsNullOrEmpty(this.PrototypeCache.DisplayColumn.DisplayColumn)) {
 
-               PropertyInfo displayColumnProperty = this.ModelType.GetProperty(this.PrototypeCache.DisplayColumn.DisplayColumn, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
+               PropertyInfo? displayColumnProperty = this.ModelType.GetProperty(this.PrototypeCache.DisplayColumn.DisplayColumn, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
                ValidateDisplayColumnAttribute(this.PrototypeCache.DisplayColumn, displayColumnProperty, this.ModelType);
 
-               object simpleDisplayTextValue = displayColumnProperty.GetValue(this.Model, new object[0]);
+               object? simpleDisplayTextValue = displayColumnProperty!.GetValue(this.Model, new object[0]);
 
                if (simpleDisplayTextValue != null) {
                   return simpleDisplayTextValue.ToString();
@@ -190,7 +190,7 @@ namespace System.Web.Mvc {
             this.PrototypeCache.Display.GetGroupName()
             : base.ComputeGroupName();
 
-      static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo displayColumnProperty, Type modelType) {
+      static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo? displayColumnProperty, Type modelType) {
 
          if (displayColumnProperty is null) {
 
@@ -214,27 +214,27 @@ namespace System.Web.Mvc {
 
    class CachedDataAnnotationsMetadataAttributes {
 
-      public DataTypeAttribute DataType { get; protected set; }
+      public DataTypeAttribute? DataType { get; protected set; }
 
-      public DisplayAttribute Display { get; protected set; }
+      public DisplayAttribute? Display { get; protected set; }
 
-      public DisplayColumnAttribute DisplayColumn { get; protected set; }
+      public DisplayColumnAttribute? DisplayColumn { get; protected set; }
 
-      public DisplayFormatAttribute DisplayFormat { get; protected set; }
+      public DisplayFormatAttribute? DisplayFormat { get; protected set; }
 
-      public DisplayNameAttribute DisplayName { get; protected set; }
+      public DisplayNameAttribute? DisplayName { get; protected set; }
 
-      public EditableAttribute Editable { get; protected set; }
+      public EditableAttribute? Editable { get; protected set; }
 
-      public HiddenInputAttribute HiddenInput { get; protected set; }
+      public HiddenInputAttribute? HiddenInput { get; protected set; }
 
-      public ReadOnlyAttribute ReadOnly { get; protected set; }
+      public ReadOnlyAttribute? ReadOnly { get; protected set; }
 
-      public RequiredAttribute Required { get; protected set; }
+      public RequiredAttribute? Required { get; protected set; }
 
-      public ScaffoldColumnAttribute ScaffoldColumn { get; protected set; }
+      public ScaffoldColumnAttribute? ScaffoldColumn { get; protected set; }
 
-      public UIHintAttribute UIHint { get; protected set; }
+      public UIHintAttribute? UIHint { get; protected set; }
 
       public CachedDataAnnotationsMetadataAttributes(Attribute[] attributes) {
 

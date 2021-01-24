@@ -10,9 +10,9 @@ namespace System.Web.Mvc {
 
       static readonly char[] _splitParameter = new[] { ',' };
       string? _exclude;
-      string[] _excludeSplit = new string[0];
+      string[] _excludeSplit = Array.Empty<string>();
       string? _include;
-      string[] _includeSplit = new string[0];
+      string[] _includeSplit = Array.Empty<string>();
 
       public string Exclude {
          get => _exclude ?? String.Empty;
@@ -50,7 +50,7 @@ namespace System.Web.Mvc {
       static string[] SplitString(string original) {
 
          if (String.IsNullOrEmpty(original)) {
-            return new string[0];
+            return Array.Empty<string>();
          }
 
          var split = from piece in original.Split(_splitParameter)

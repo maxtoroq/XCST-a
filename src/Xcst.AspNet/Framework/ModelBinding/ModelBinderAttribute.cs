@@ -28,7 +28,7 @@ namespace System.Web.Mvc {
       public override IModelBinder GetBinder() {
 
          try {
-            return (IModelBinder)Activator.CreateInstance(this.BinderType);
+            return (IModelBinder)Activator.CreateInstance(this.BinderType)!;
 
          } catch (Exception ex) {
 

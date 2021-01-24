@@ -8,7 +8,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Web.Mvc.Properties;
+#if !NETCOREAPP
 using System.Web.Security;
+#endif
 using DataAnnotationsCompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 
 namespace System.Web.Mvc {
@@ -39,14 +41,16 @@ namespace System.Web.Mvc {
       internal static DataAnnotationsModelValidationFactory DefaultAttributeFactory =
          (metadata, context, attribute) => new DataAnnotationsModelValidator(metadata, context, attribute);
 
-      internal static Dictionary<Type, DataAnnotationsModelValidationFactory> AttributeFactories = BuildAttributeFactoriesDictionary();
+      internal static Dictionary<Type, DataAnnotationsModelValidationFactory> AttributeFactories =
+         BuildAttributeFactoriesDictionary();
 
       // Factories for IValidatableObject models
 
       internal static DataAnnotationsValidatableObjectAdapterFactory DefaultValidatableFactory =
          (metadata, context) => new ValidatableObjectAdapter(metadata, context);
 
-      internal static Dictionary<Type, DataAnnotationsValidatableObjectAdapterFactory> ValidatableFactories = new Dictionary<Type, DataAnnotationsValidatableObjectAdapterFactory>();
+      internal static Dictionary<Type, DataAnnotationsValidatableObjectAdapterFactory> ValidatableFactories =
+         new Dictionary<Type, DataAnnotationsValidatableObjectAdapterFactory>();
 
       public static bool AddImplicitRequiredAttributeForValueTypes { get; set; }
 
@@ -337,8 +341,10 @@ namespace System.Web.Mvc {
          AddValidationAttributeAdapter(dict, typeof(MinLengthAttribute),
             (metadata, context, attribute) => new MinLengthAttributeAdapter(metadata, context, (MinLengthAttribute)attribute));
 
+#if !NETCOREAPP
          AddValidationAttributeAdapter(dict, typeof(MembershipPasswordAttribute),
             (metadata, context, attribute) => new MembershipPasswordAttributeAdapter(metadata, context, (MembershipPasswordAttribute)attribute));
+#endif
 
          AddValidationAttributeAdapter(dict, typeof(DataAnnotationsCompareAttribute),
             (metadata, context, attribute) => new CompareAttributeAdapter(metadata, context, (DataAnnotationsCompareAttribute)attribute));

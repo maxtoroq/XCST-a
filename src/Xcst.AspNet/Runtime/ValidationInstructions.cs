@@ -22,7 +22,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
 using Xcst.Web.Configuration;
 
@@ -72,7 +71,7 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         ModelState modelState = viewData.ModelState[modelName];
+         ModelState? modelState = viewData.ModelState[modelName];
          ModelErrorCollection? modelErrors = modelState?.Errors;
 
          ModelError? modelError = (modelErrors is null || modelErrors.Count == 0) ? null
@@ -114,7 +113,7 @@ namespace Xcst.Web.Runtime {
             output.WriteString(validationMessage);
 
          } else if (modelError != null) {
-            output.WriteString(GetUserErrorMessageOrDefault(htmlHelper.ViewContext.HttpContext, modelError, modelState));
+            output.WriteString(GetUserErrorMessageOrDefault(modelError, modelState));
          }
 
          output.WriteEndElement();
@@ -193,7 +192,7 @@ namespace Xcst.Web.Runtime {
 
             foreach (ModelError modelError in modelState.Errors) {
 
-               string? errorText = GetUserErrorMessageOrDefault(htmlHelper.ViewContext.HttpContext, modelError, modelState: null);
+               string? errorText = GetUserErrorMessageOrDefault(modelError, modelState: null);
 
                if (!String.IsNullOrEmpty(errorText)) {
 
@@ -254,7 +253,7 @@ namespace Xcst.Web.Runtime {
          }
       }
 
-      static string? GetUserErrorMessageOrDefault(HttpContextBase httpContext, ModelError error, ModelState? modelState) {
+      static string? GetUserErrorMessageOrDefault(ModelError error, ModelState? modelState) {
 
          if (!String.IsNullOrEmpty(error.ErrorMessage)) {
             return error.ErrorMessage;

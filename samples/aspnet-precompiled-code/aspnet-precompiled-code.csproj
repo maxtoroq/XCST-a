@@ -78,6 +78,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEventDependsOn>ResolveReferences</PreBuildEventDependsOn>
-    <PreBuildEvent>$(ProjectDir)\..\xcst-codegen\bin\$(ConfigurationName)\xcst-codegen.exe $(ProjectPath) $(ConfigurationName) -LibsAndPages</PreBuildEvent>
+    <PreBuildEvent>$(ProjectDir)\..\xcst-codegen\bin\$(ConfigurationName)\xcst-codegen.exe $(ProjectPath) $(ConfigurationName) -LibsAndPages -PageBaseType global::AspNetPrecompiled.AppPage</PreBuildEvent>
   </PropertyGroup>
 </Project>

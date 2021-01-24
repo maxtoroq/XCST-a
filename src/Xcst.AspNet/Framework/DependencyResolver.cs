@@ -29,9 +29,11 @@ namespace System.Web.Mvc {
 
       static readonly DependencyResolver _instance = new DependencyResolver();
 
-      public static IDependencyResolver Current => _instance.InnerCurrent;
+      public static IDependencyResolver Current =>
+         _instance.InnerCurrent;
 
-      internal static IDependencyResolver CurrentCache => _instance.InnerCurrentCache;
+      internal static IDependencyResolver CurrentCache =>
+         _instance.InnerCurrentCache;
 
       public IDependencyResolver InnerCurrent { get; private set; }
 
@@ -69,8 +71,8 @@ namespace System.Web.Mvc {
          if (commonServiceLocator is null) throw new ArgumentNullException(nameof(commonServiceLocator));
 
          Type locatorType = commonServiceLocator.GetType();
-         MethodInfo getInstance = locatorType.GetMethod("GetInstance", new[] { typeof(Type) });
-         MethodInfo getInstances = locatorType.GetMethod("GetAllInstances", new[] { typeof(Type) });
+         MethodInfo? getInstance = locatorType.GetMethod("GetInstance", new[] { typeof(Type) });
+         MethodInfo? getInstances = locatorType.GetMethod("GetAllInstances", new[] { typeof(Type) });
 
          if (getInstance is null
             || getInstance.ReturnType != typeof(object)

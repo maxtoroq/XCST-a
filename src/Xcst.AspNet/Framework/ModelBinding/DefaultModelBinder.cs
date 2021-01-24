@@ -234,7 +234,7 @@ namespace System.Web.Mvc {
 
          // validation
 
-         ModelState modelState = bindingContext.ModelState[fullPropertyKey];
+         ModelState? modelState = bindingContext.ModelState[fullPropertyKey];
 
          if (modelState is null
             || modelState.Errors.Count == 0) {
@@ -562,7 +562,10 @@ namespace System.Web.Mvc {
          if (value is null
             && bindingContext.ModelState.IsValidField(modelStateKey)) {
 
-            ModelValidator requiredValidator = ModelValidatorProviders.Providers.GetValidators(propertyMetadata, controllerContext).Where(v => v.IsRequired).FirstOrDefault();
+            ModelValidator requiredValidator = ModelValidatorProviders.Providers
+               .GetValidators(propertyMetadata, controllerContext)
+               .Where(v => v.IsRequired)
+               .FirstOrDefault();
 
             if (requiredValidator != null) {
                foreach (ModelValidationResult validationResult in requiredValidator.Validate(bindingContext.Model)) {
@@ -773,8 +776,11 @@ namespace System.Web.Mvc {
 
       static class CollectionHelpers {
 
-         static readonly MethodInfo _replaceCollectionMethod = typeof(CollectionHelpers).GetMethod(nameof(ReplaceCollectionImpl), BindingFlags.Static | BindingFlags.NonPublic);
-         static readonly MethodInfo _replaceDictionaryMethod = typeof(CollectionHelpers).GetMethod(nameof(ReplaceDictionaryImpl), BindingFlags.Static | BindingFlags.NonPublic);
+         static readonly MethodInfo _replaceCollectionMethod =
+            typeof(CollectionHelpers).GetMethod(nameof(ReplaceCollectionImpl), BindingFlags.Static | BindingFlags.NonPublic)!;
+
+         static readonly MethodInfo _replaceDictionaryMethod =
+            typeof(CollectionHelpers).GetMethod(nameof(ReplaceDictionaryImpl), BindingFlags.Static | BindingFlags.NonPublic)!;
 
          [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
          public static void ReplaceCollection(Type collectionType, object collection, object? newContents) {

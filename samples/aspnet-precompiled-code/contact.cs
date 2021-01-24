@@ -36,7 +36,7 @@ namespace AspNetPrecompiled {
          bool sent = false;
 
          if (IsPost
-            && AntiForgery.TryValidate()
+            && AntiForgery.TryValidate(Context)
             && TryBind(contact)
             && SendMail(contact)) {
 

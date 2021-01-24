@@ -22,10 +22,14 @@ using System.Data;
 #endif
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
 using Xcst.PackageModel;
 using Xcst.Runtime;
+#if NETCOREAPP
+using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
+#else
+using IFormFile = System.Web.HttpPostedFileBase;
+#endif
 
 namespace Xcst.Web.Runtime {
 
@@ -69,7 +73,7 @@ namespace Xcst.Web.Runtime {
          }
 #endif
 
-         if (propertyMetadata.ModelType == typeof(HttpPostedFileBase)) {
+         if (propertyMetadata.ModelType == typeof(IFormFile)) {
             return true;
          }
 

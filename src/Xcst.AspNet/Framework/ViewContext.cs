@@ -39,18 +39,29 @@ namespace System.Web.Mvc {
          set => HttpContext.Items[_formContextKey] = value;
       }
 
+#if !NETCOREAPP
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The property setter is only here to support mocking this type and should not be called at runtime.")]
       public virtual ViewDataDictionary? ViewData { get; set; }
 
       [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "The property setter is only here to support mocking this type and should not be called at runtime.")]
       public virtual TempDataDictionary? TempData { get; set; }
+#endif
 
       // parameterless constructor used for mocking
       public ViewContext() { }
 
-      public ViewContext(HttpContextBase httpContext)
-         : base(httpContext) { }
+      public ViewContext(
+#if NETCOREAPP
+         Microsoft.AspNetCore.Http.HttpContext httpContext
+#else
+         HttpContextBase httpContext
+#endif
+         ) : base(httpContext) { }
 
+#if NETCOREAPP
+      public ViewContext(ControllerContext controllerContext)
+         : base(controllerContext) { }
+#else
       [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "The virtual property setters are only to support mocking frameworks, in which case this constructor shouldn't be called anyway.")]
       public ViewContext(ControllerContext controllerContext, ViewDataDictionary? viewData, TempDataDictionary? tempData)
          : base(controllerContext) {
@@ -63,6 +74,7 @@ namespace System.Web.Mvc {
          this.ViewData = viewData;
          this.TempData = tempData;
       }
+#endif
 
       internal FormContext? GetFormContextForClientValidation() =>
          (this.ClientValidationEnabled) ? this.FormContext : null;

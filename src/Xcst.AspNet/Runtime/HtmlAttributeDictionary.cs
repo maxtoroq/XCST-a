@@ -53,7 +53,9 @@ namespace Xcst.Web.Runtime {
          if (attributes != null) {
 
             var dict = attributes as IDictionary<string, object>
+#pragma warning disable CS8619
                ?? HtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
+#pragma warning restore CS8619
 
             SetAttributes(dict);
          }

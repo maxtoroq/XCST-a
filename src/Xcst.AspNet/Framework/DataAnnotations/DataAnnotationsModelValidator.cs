@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc.Properties;
+#if !NETCOREAPP
 using System.Web.Security;
+#endif
 using DataAnnotationsCompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 
 namespace System.Web.Mvc {
@@ -84,7 +86,7 @@ namespace System.Web.Mvc {
    }
 
    class DataAnnotationsModelValidator<TAttribute> : DataAnnotationsModelValidator
-      where TAttribute : ValidationAttribute {
+         where TAttribute : ValidationAttribute {
 
       protected new TAttribute Attribute => (TAttribute)base.Attribute;
 
@@ -205,6 +207,7 @@ namespace System.Web.Mvc {
       }
    }
 
+#if !NETCOREAPP
    class MembershipPasswordAttributeAdapter : DataAnnotationsModelValidator<MembershipPasswordAttribute> {
 
       public MembershipPasswordAttributeAdapter(ModelMetadata metadata, ControllerContext context, MembershipPasswordAttribute attribute)
@@ -214,6 +217,7 @@ namespace System.Web.Mvc {
          yield return new ModelClientValidationMembershipPasswordRule(this.ErrorMessage, this.Attribute.MinRequiredPasswordLength, this.Attribute.MinRequiredNonAlphanumericCharacters, this.Attribute.PasswordStrengthRegularExpression);
       }
    }
+#endif
 
    class MinLengthAttributeAdapter : DataAnnotationsModelValidator<MinLengthAttribute> {
 

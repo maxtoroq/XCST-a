@@ -21,15 +21,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+#if ASPNETMVC
 using System.Drawing;
+#endif
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
-using System.Web.Routing;
 using Xcst.PackageModel;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
+#if NETCOREAPP
+using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
+#else
+using HttpPostedFileBase = System.Web.HttpPostedFileBase;
+#endif
 
 namespace Xcst.Web.Runtime {
 
@@ -353,8 +359,16 @@ namespace Xcst.Web.Runtime {
       public static void UploadTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
          HtmlInputTemplateHelper(html, package, seqOutput, "Upload", inputType: "file");
 
-      public static void HttpPostedFileBaseTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-         HtmlInputTemplateHelper(html, package, seqOutput, "HttpPostedFileBase", inputType: "file");
+      public static void HttpPostedFileBaseTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+#if NETCOREAPP
+         const string templateName = nameof(IFormFile);
+#else
+         const string templateName = nameof(HttpPostedFileBase);
+#endif
+
+         HtmlInputTemplateHelper(html, package, seqOutput, templateName, inputType: "file");
+      }
 
       public static void DropDownListTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
@@ -516,11 +530,11 @@ namespace Xcst.Web.Runtime {
 
       internal static string GetDisplayName(FieldInfo field) {
 
-         DisplayAttribute display = field.GetCustomAttribute<DisplayAttribute>(inherit: false);
+         DisplayAttribute? display = field.GetCustomAttribute<DisplayAttribute>(inherit: false);
 
          if (display != null) {
 
-            string name = display.GetName();
+            string? name = display.GetName();
 
             if (!String.IsNullOrEmpty(name)) {
                return name;

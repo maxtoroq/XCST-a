@@ -97,11 +97,14 @@ namespace Xcst.Web.Runtime {
 
          if (allowMultiple) {
 
-            defaultValues = defaultValue as IEnumerable;
+            IEnumerable? defaultEnumerable = defaultValue as IEnumerable;
 
-            if (defaultValues is null || defaultValues is string) {
+            if (defaultEnumerable is null || defaultEnumerable is string) {
                throw new InvalidOperationException("The parameter 'expression' must evaluate to an IEnumerable when multiple selection is allowed.");
             }
+
+            defaultValues = defaultEnumerable;
+
          } else {
             defaultValues = new[] { defaultValue };
          }

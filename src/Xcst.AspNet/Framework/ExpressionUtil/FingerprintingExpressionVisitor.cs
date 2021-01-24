@@ -131,7 +131,7 @@ namespace System.Web.Mvc.ExpressionUtil {
       protected override Expression VisitLabel(LabelExpression node) =>
          GiveUp(node);
 
-      protected override LabelTarget VisitLabelTarget(LabelTarget node) =>
+      protected override LabelTarget VisitLabelTarget(LabelTarget? node) =>
          GiveUp(node);
 
       protected override Expression VisitLambda<T>(Expression<T> node) {

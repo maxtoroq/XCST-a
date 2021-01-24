@@ -119,6 +119,9 @@
     <Compile Include="..\Xcst.AspNet.Extension\ExtensionLoader.cs">
       <Link>Extension\ExtensionLoader.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Diagnostics.CodeAnalysis.cs">
+      <Link>Diagnostics.CodeAnalysis.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Diagnostics.cs">
       <Link>Diagnostics.cs</Link>
     </Compile>

@@ -106,12 +106,14 @@ namespace Xcst.Web {
             TextWriter? writer = null) =>
 
          new ViewContext(
-            context,
+            context
 #if ASPNETMVC
-            view ?? context.View,
+            , view ?? context.View
 #endif
-            viewData ?? context.ViewData,
-            tempData ?? context.TempData
+#if !NETCOREAPP
+            , viewData ?? context.ViewData
+            , tempData ?? context.TempData
+#endif
 #if ASPNETMVC
             , writer ?? context.Writer
 #endif

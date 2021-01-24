@@ -53,7 +53,7 @@ namespace Xcst.Web.Runtime {
          }
 
          // new ViewContext resets FormContext
-         var newViewContext = currentHtml.ViewContext.Clone(viewData: container.ViewData);
+         ViewContext newViewContext = currentHtml.ViewContext.Clone(viewData: container.ViewData);
 
          return currentHtml.Clone<TModel>(newViewContext, container);
       }

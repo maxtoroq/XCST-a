@@ -98,6 +98,7 @@ namespace System.Web.Mvc {
          set => _memberName = value;
       }
 
+      [AllowNull]
       public string Message {
          get => _message ?? String.Empty;
          set => _message = value;

@@ -16,7 +16,7 @@ namespace System.Web.Mvc {
 
          if (metadata is null) throw new ArgumentNullException(nameof(metadata));
          if (context is null) throw new ArgumentNullException(nameof(context));
-         
+
          if (metadata.ContainerType != null
             && !String.IsNullOrEmpty(metadata.PropertyName)) {
 

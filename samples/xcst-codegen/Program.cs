@@ -10,17 +10,19 @@ namespace XcstCodeGen {
    class Program {
 
       const string _fileExt = "xcst";
-      const string _pageBaseType = "global::AspNetPrecompiled.AppPage";
+      const string _defaultPageBaseType = null;
 
       readonly Uri _projectUri;
       readonly string _configuration;
       readonly bool _libsAndPages;
+      readonly string _pageBaseType;
 
-      public Program(Uri projectUri, string configuration, bool libsAndPages) {
+      public Program(Uri projectUri, string configuration, bool libsAndPages, string pageBaseType) {
 
          _projectUri = projectUri;
          _configuration = configuration;
          _libsAndPages = libsAndPages;
+         _pageBaseType = pageBaseType;
       }
 
       static bool IsSdkStyle(XDocument projectDoc) =>
@@ -201,8 +203,11 @@ namespace XcstCodeGen {
 
                compiler.TargetClass = "_Page_" + CleanIdentifier(fileBaseName);
                compiler.TargetNamespace = ns;
-               compiler.TargetBaseTypes = new[] { _pageBaseType };
                compiler.TargetVisibility = CodeVisibility.Internal;
+
+               if (_pageBaseType != null) {
+                  compiler.TargetBaseTypes = new[] { _pageBaseType };
+               }
 
             } else {
 
@@ -236,9 +241,27 @@ namespace XcstCodeGen {
          var projectUri = new Uri(callerBaseUri, args[0]);
          string config = args[1];
 
-         bool libsAndPages = (args.Length > 2) ?
-            args[2] == "-LibsAndPages"
-            : false;
+         bool libsAndPages = false;
+         string pageBaseType = _defaultPageBaseType;
+
+         for (int i = 2; i < args.Length; i++) {
+
+            string name = args[i].Substring(1);
+
+            switch (name) {
+               case "LibsAndPages":
+                  libsAndPages = true;
+                  break;
+
+               case "PageBaseType":
+                  i++;
+                  pageBaseType = args[i];
+                  break;
+
+               default:
+                  throw new ArgumentException($"Unknown parameter '{name}'.", nameof(args));
+            }
+         }
 
          var outputUri = new Uri(projectUri, "xcst.generated.cs");
 
@@ -248,7 +271,7 @@ namespace XcstCodeGen {
             // we want to be consistent with the additional content we create
             output.NewLine = "\n";
 
-            new Program(projectUri, config, libsAndPages)
+            new Program(projectUri, config, libsAndPages, pageBaseType)
                .Run(output);
          }
       }

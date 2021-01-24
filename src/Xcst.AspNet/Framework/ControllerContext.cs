@@ -1,5 +1,9 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+#if NETCOREAPP
+using HttpContextBase = Microsoft.AspNetCore.Http.HttpContext;
+#endif
+
 namespace System.Web.Mvc {
 
    // Though many of the properties on ControllerContext and its subclassed types are virtual, there are still sealed
@@ -69,7 +73,5 @@ namespace System.Web.Mvc {
          return this.Resolver.GetService<ITempDataProvider>()
             ?? new SessionStateTempDataProvider();
       }
-
-      sealed class EmptyHttpContext : HttpContextBase { }
    }
 }

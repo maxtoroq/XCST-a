@@ -136,7 +136,7 @@ namespace System.Web.Mvc {
          }
       }
 
-      internal static bool IsPrefixMatch(string prefix, string testString) {
+      internal static bool IsPrefixMatch(string prefix, string? testString) {
 
          if (testString is null) {
             return false;
@@ -177,9 +177,9 @@ namespace System.Web.Mvc {
             _prefix = prefix;
          }
 
-         public int Compare(string x, string y) {
+         public int Compare(string? x, string? y) {
 
-            string testString = Object.ReferenceEquals(x, _prefix) ? y : x;
+            string? testString = Object.ReferenceEquals(x, _prefix) ? y : x;
 
             if (IsPrefixMatch(_prefix, testString)) {
                return 0;

@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?inherits Xcst.Web.Mvc.XcstViewPage?>
+<c:package name='aspnetcore.EditorTemplates.ObjectPackage' version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System'/>
+   <c:import-namespace ns='System.Linq'/>
+   <c:import-namespace ns='System.Web.Mvc'/>
+
+   <c:param name='labelColumnClass'>col-md-3</c:param>
+   <c:param name='fieldColumnClass'>col-md-9</c:param>
+
+   <c:template name='c:initial-template' visibility='public' expand-text='yes'>
+      <c:choose>
+         <c:when test='ViewData.TemplateInfo.TemplateDepth > 1'>
+            <a:display-text/>
+         </c:when>
+         <c:otherwise>
+            <c:variable name='filteredProperties' value='ViewData.ModelMetadata.Properties.Where(x => Html.ShowForEdit(x))'/>
+            <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => p.GroupName)'/>
+            <c:variable name='createFieldset' value='groupedProperties.Any(g => g.Key != null)'/>
+            <c:choose>
+               <c:when test='createFieldset'>
+                  <c:for-each name='group' in='groupedProperties'>
+                     <fieldset>
+                        <legend>{group.Key}</legend>
+                        <c:for-each name='propertyMeta' in='group'>
+                           <c:call-template name='property-template'>
+                              <c:with-param name='propertyMeta' value='propertyMeta'/>
+                           </c:call-template>
+                        </c:for-each>
+                     </fieldset>
+                  </c:for-each>
+               </c:when>
+               <c:otherwise>
+                  <c:for-each name='propertyMeta' in='filteredProperties'>
+                     <c:call-template name='property-template'>
+                        <c:with-param name='propertyMeta' value='propertyMeta'/>
+                     </c:call-template>
+                  </c:for-each>
+               </c:otherwise>
+            </c:choose>
+         </c:otherwise>
+      </c:choose>
+   </c:template>
+
+   <c:template name='property-template'>
+      <c:param name='propertyMeta' as='ModelMetadata' required='yes'/>
+
+      <c:variable name='propertyName' value='propertyMeta.PropertyName'/>
+      <c:variable name='editorTemplate' value='propertyMeta.TemplateHint ?? propertyMeta.DataTypeName'/>
+      <c:choose>
+         <c:when test='propertyMeta.HideSurroundingHtml'>
+            <a:editor name='{propertyName}' template='{editorTemplate}'/>
+         </c:when>
+         <c:otherwise>
+            <c:variable name='memberTemplate' value='Html.MemberTemplate(propertyMeta)'/>
+            <c:choose>
+               <c:when test='memberTemplate != null'>
+                  <c:evaluate-delegate delegate='memberTemplate'/>
+               </c:when>
+               <c:otherwise>
+                  <div class='form-group row'>
+                     <a:label name='{propertyName}' class='col-form-label {this.labelColumnClass}'/>
+                     <div class='{this.fieldColumnClass}'>
+                        <a:editor name='{propertyName}' template='{editorTemplate}'/>
+                        <c:text> </c:text>
+                        <a:validation-message name='{propertyName}'/>
+                     </div>
+                  </div>
+               </c:otherwise>
+            </c:choose>
+         </c:otherwise>
+      </c:choose>
+   </c:template>
+
+</c:package>

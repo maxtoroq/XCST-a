@@ -6,6 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Web.Mvc.Properties;
+#if NETCOREAPP
+using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
+#else
+using IFormFile = System.Web.HttpPostedFileBase;
+#endif
 
 namespace System.Web.Mvc {
 
@@ -108,7 +113,7 @@ namespace System.Web.Mvc {
          // prepopulate the dictionary as a convenience to users.
 
          var binders = new ModelBinderDictionary() {
-            { typeof(HttpPostedFileBase), new HttpPostedFileBaseModelBinder() },
+            { typeof(IFormFile), new HttpPostedFileBaseModelBinder() },
             { typeof(byte[]), new ByteArrayModelBinder() },
          };
 
@@ -217,7 +222,7 @@ namespace System.Web.Mvc {
       public bool Remove(Type key) =>
          _innerDictionary.Remove(key);
 
-      public bool TryGetValue(Type key, out IModelBinder value) =>
+      public bool TryGetValue(Type key, [MaybeNullWhen(returnValue: false)] out IModelBinder value) =>
          _innerDictionary.TryGetValue(key, out value);
 
       IEnumerator IEnumerable.GetEnumerator() =>

@@ -8,10 +8,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Web.Routing;
 using System.Web.Mvc.Properties;
 using Xcst;
 using Xcst.Web.Runtime;
+#if NETCOREAPP
+using RouteValueDictionary = Microsoft.AspNetCore.Routing.RouteValueDictionary;
+#else
+using RouteValueDictionary = System.Web.Routing.RouteValueDictionary;
+#endif
 
 namespace System.Web.Mvc {
 
@@ -26,7 +30,7 @@ namespace System.Web.Mvc {
 
       static string? _idAttributeDotReplacement;
 
-      DynamicViewDataDictionary? _ViewBag;
+      DynamicViewDataDictionary? _viewBag;
 
       public static string IdAttributeDotReplacement {
          get {
@@ -39,7 +43,7 @@ namespace System.Web.Mvc {
       }
 
       public dynamic ViewBag =>
-         _ViewBag ??= new DynamicViewDataDictionary(() => ViewData);
+         _viewBag ??= new DynamicViewDataDictionary(() => ViewData);
 
       public ViewContext ViewContext { get; private set; }
 
@@ -516,7 +520,8 @@ namespace System.Web.Mvc {
 
    class HtmlAttributePropertyHelper : PropertyHelper {
 
-      static ConcurrentDictionary<Type, PropertyHelper[]> _reflectionCache = new ConcurrentDictionary<Type, PropertyHelper[]>();
+      static ConcurrentDictionary<Type, PropertyHelper[]> _reflectionCache =
+         new ConcurrentDictionary<Type, PropertyHelper[]>();
 
       [AllowNull]
       public override string Name {

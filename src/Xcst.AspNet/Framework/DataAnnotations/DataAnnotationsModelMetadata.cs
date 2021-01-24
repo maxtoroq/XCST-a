@@ -29,10 +29,10 @@ namespace System.Web.Mvc {
             if (_displayColumnAttribute != null
                && !String.IsNullOrEmpty(_displayColumnAttribute.DisplayColumn)) {
 
-               PropertyInfo displayColumnProperty = this.ModelType.GetProperty(_displayColumnAttribute.DisplayColumn, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
+               PropertyInfo? displayColumnProperty = this.ModelType.GetProperty(_displayColumnAttribute.DisplayColumn, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
                ValidateDisplayColumnAttribute(_displayColumnAttribute, displayColumnProperty, this.ModelType);
 
-               object simpleDisplayTextValue = displayColumnProperty.GetValue(this.Model, new object[0]);
+               object? simpleDisplayTextValue = displayColumnProperty!.GetValue(this.Model, new object[0]);
 
                if (simpleDisplayTextValue != null) {
                   return simpleDisplayTextValue.ToString();
@@ -43,7 +43,7 @@ namespace System.Web.Mvc {
          return base.GetSimpleDisplayText();
       }
 
-      static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo displayColumnProperty, Type modelType) {
+      static void ValidateDisplayColumnAttribute(DisplayColumnAttribute displayColumnAttribute, PropertyInfo? displayColumnProperty, Type modelType) {
 
          if (displayColumnProperty is null) {
 

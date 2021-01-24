@@ -8,7 +8,9 @@ namespace System.Web.Mvc {
    public class DictionaryValueProvider<TValue> : IValueProvider, IEnumerableValueProvider {
 
       PrefixContainer? _prefixContainer;
-      readonly Dictionary<string, ValueProviderResult> _values = new Dictionary<string, ValueProviderResult>(StringComparer.OrdinalIgnoreCase);
+
+      readonly Dictionary<string, ValueProviderResult> _values =
+         new Dictionary<string, ValueProviderResult>(StringComparer.OrdinalIgnoreCase);
 
       private PrefixContainer PrefixContainer =>
          // Race condition on initialization has no side effects
@@ -21,7 +23,7 @@ namespace System.Web.Mvc {
          foreach (KeyValuePair<string, TValue> entry in dictionary) {
 
             object? rawValue = entry.Value;
-            string attemptedValue = Convert.ToString(rawValue, culture);
+            string? attemptedValue = Convert.ToString(rawValue, culture);
             _values[entry.Key] = new ValueProviderResult(rawValue, attemptedValue, culture);
          }
       }
@@ -29,11 +31,11 @@ namespace System.Web.Mvc {
       public virtual bool ContainsPrefix(string prefix) =>
          PrefixContainer.ContainsPrefix(prefix);
 
-      public virtual ValueProviderResult GetValue(string key) {
+      public virtual ValueProviderResult? GetValue(string key) {
 
          if (key is null) throw new ArgumentNullException(nameof(key));
 
-         ValueProviderResult valueProviderResult;
+         ValueProviderResult? valueProviderResult;
          _values.TryGetValue(key, out valueProviderResult);
 
          return valueProviderResult;

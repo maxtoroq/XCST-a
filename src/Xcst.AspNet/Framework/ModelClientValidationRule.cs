@@ -39,6 +39,7 @@ namespace System.Web.Mvc {
       }
    }
 
+#if !NETCOREAPP
    class ModelClientValidationMembershipPasswordRule : ModelClientValidationRule {
 
       public ModelClientValidationMembershipPasswordRule(string errorMessage, int minRequiredPasswordLength, int minRequiredNonAlphanumericCharacters, string passwordStrengthRegularExpression) {
@@ -59,6 +60,7 @@ namespace System.Web.Mvc {
          }
       }
    }
+#endif
 
    public class ModelClientValidationMinLengthRule : ModelClientValidationRule {
 

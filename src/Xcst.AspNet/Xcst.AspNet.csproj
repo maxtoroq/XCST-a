@@ -101,6 +101,7 @@
     <Compile Include="Framework\Common\CopyOnWriteDictionary.cs" />
     <Compile Include="Framework\DependencyResolver.cs" />
     <Compile Include="Framework\DynamicViewDataDictionary.cs" />
+    <Compile Include="Framework\EmptyHttpContext.cs" />
     <Compile Include="Framework\ExpressionHelper.cs" />
     <Compile Include="Framework\ExpressionUtil\CachedExpressionCompiler.cs" />
     <Compile Include="Framework\ExpressionUtil\ExpressionFingerprint.cs" />
@@ -140,8 +141,11 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Framework\SelectList.cs" />
+    <Compile Include="Framework\SelectListItem.cs" />
+    <Compile Include="Framework\SessionStateTempDataProvider.cs" />
     <Compile Include="Framework\TempDataDictionary.cs" />
     <Compile Include="Framework\UrlHelper.cs" />
+    <Compile Include="Framework\UrlHelperImpl.cs" />
     <Compile Include="Framework\AssociatedValidatorProvider.cs" />
     <Compile Include="Framework\ClientDataTypeModelValidatorProvider.cs" />
     <Compile Include="Framework\DataErrorInfoModelValidatorProvider.cs" />
@@ -171,6 +175,7 @@
     <Compile Include="Runtime\InputInstructions.cs" />
     <Compile Include="Runtime\LabelInstructions.cs" />
     <Compile Include="FrameworkExtensions.cs" />
+    <Compile Include="Runtime\LinkToHelper.cs" />
     <Compile Include="Runtime\MetadataInstructions.cs" />
     <Compile Include="Runtime\SelectInstructions.cs" />
     <Compile Include="Runtime\TemplateHelpers.cs" />
@@ -201,6 +206,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Diagnostics.CodeAnalysis.cs" />
     <None Include="packages.config" />
     <None Include="Xcst.AspNet.nuspec" />
   </ItemGroup>

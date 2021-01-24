@@ -19,17 +19,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if ASPNETMVC
 using System.Drawing;
+#endif
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
 using Xcst.PackageModel;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
+#if NETCOREAPP
+using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
+#else
+using HttpPostedFileBase = System.Web.HttpPostedFileBase;
+#endif
 
 namespace Xcst.Web.Runtime {
 
@@ -90,7 +96,11 @@ namespace Xcst.Web.Runtime {
             { nameof(Decimal), DefaultEditorTemplates.DecimalTemplate },
             { nameof(String), DefaultEditorTemplates.StringTemplate },
             { nameof(Object), DefaultEditorTemplates.ObjectTemplate },
+#if NETCOREAPP
+            { nameof(IFormFile), DefaultEditorTemplates.HttpPostedFileBaseTemplate }
+#else
             { nameof(HttpPostedFileBase), DefaultEditorTemplates.HttpPostedFileBaseTemplate }
+#endif
          };
 
       static string CacheItemId = Guid.NewGuid().ToString();
@@ -108,7 +118,8 @@ namespace Xcst.Web.Runtime {
             string? templateName, DataBoundControlMode mode, object? additionalViewData);
 
       public static void Template(
-            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? templateName, string? htmlFieldName, DataBoundControlMode mode, object? additionalViewData) =>
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? templateName, string? htmlFieldName,
+            DataBoundControlMode mode, object? additionalViewData) =>
          Template(html, package, output, expression, templateName, htmlFieldName, mode, additionalViewData, TemplateHelper);
 
       internal static void Template(
@@ -125,12 +136,12 @@ namespace Xcst.Web.Runtime {
       }
 
       public static void TemplateFor<TContainer, TValue>(
-            this HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
+            HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
             string? templateName, string? htmlFieldName, DataBoundControlMode mode, object? additionalViewData) =>
          TemplateFor(html, package, output, expression, templateName, htmlFieldName, mode, additionalViewData, TemplateHelper);
 
       internal static void TemplateFor<TContainer, TValue>(
-            this HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
+            HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
             string? templateName, string? htmlFieldName, DataBoundControlMode mode, object? additionalViewData, TemplateHelperDelegate templateHelper) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
@@ -201,7 +212,7 @@ namespace Xcst.Web.Runtime {
 
          if (additionalViewData != null) {
 
-            var additionalParams = additionalViewData as IDictionary<string, object>
+            var additionalParams = additionalViewData as IDictionary<string, object?>
                ?? TypeHelpers.ObjectToDictionary(additionalViewData);
 
             foreach (var kvp in additionalParams) {
@@ -215,8 +226,8 @@ namespace Xcst.Web.Runtime {
       }
 
       static void ExecuteTemplate(
-            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output,
-            ViewDataDictionary viewData, string? templateName, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData,
+            string? templateName, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
 
          var actionCache = GetActionCache(html);
          var defaultActions = getDefaultActions(mode);
@@ -294,15 +305,24 @@ namespace Xcst.Web.Runtime {
 
       static Dictionary<string, ActionCacheItem?> GetActionCache(HtmlHelper html) {
 
-         HttpContextBase context = html.ViewContext.HttpContext;
+         var context = html.ViewContext.HttpContext;
          Dictionary<string, ActionCacheItem?> result;
 
+#if NETCOREAPP
+         if (context.Items.TryGetValue(CacheItemId, out object? item)) {
+            result = (Dictionary<string, ActionCacheItem?>)item!;
+         } else {
+            result = new Dictionary<string, ActionCacheItem?>();
+            context.Items[CacheItemId] = result;
+         }
+#else
          if (!context.Items.Contains(CacheItemId)) {
             result = new Dictionary<string, ActionCacheItem?>();
             context.Items[CacheItemId] = result;
          } else {
             result = (Dictionary<string, ActionCacheItem?>)context.Items[CacheItemId];
          }
+#endif
 
          return result;
       }
@@ -405,6 +425,7 @@ namespace Xcst.Web.Runtime {
       static void RenderViewPage(HtmlHelper html, ISequenceWriter<object> output, ViewDataDictionary viewData, XcstViewPage viewPage) {
 
          viewPage.ViewContext = html.ViewContext.Clone(viewData: viewData);
+         viewPage.ViewData = viewData;
 
          XcstEvaluator evaluator = XcstEvaluator.Using((object)viewPage);
 
@@ -449,11 +470,11 @@ namespace Xcst.Web.Runtime {
 
       class ViewDataContainer : IViewDataContainer {
 
-         public ViewDataContainer(ViewDataDictionary viewData) {
-            ViewData = viewData;
-         }
-
          public ViewDataDictionary ViewData { get; set; }
+
+         public ViewDataContainer(ViewDataDictionary viewData) {
+            this.ViewData = viewData;
+         }
       }
    }
 

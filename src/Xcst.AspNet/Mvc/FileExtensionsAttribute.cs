@@ -22,10 +22,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using System.Web;
 using System.Web.Mvc;
 using System.ComponentModel;
 using System.Reflection;
+#if NETCOREAPP
+using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
+#else
+using IFormFile = System.Web.HttpPostedFileBase;
+#endif
 
 namespace Xcst.Web.Mvc {
 
@@ -52,14 +56,15 @@ namespace Xcst.Web.Mvc {
 
          this.Extensions = extensions;
 
-         base.GetType().GetProperty("DefaultErrorMessage", BindingFlags.Instance | BindingFlags.NonPublic)
+         base.GetType()
+            .GetProperty("DefaultErrorMessage", BindingFlags.Instance | BindingFlags.NonPublic)!
             .SetValue(this, "The {0} field only accepts files with the following extensions: {1}");
       }
 
       public override string FormatErrorMessage(string name) =>
          String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, this.ExtensionsFormatted);
 
-      public override bool IsValid(object value) {
+      public override bool IsValid(object? value) {
 
          if (value is null) {
             return true;
@@ -73,7 +78,7 @@ namespace Xcst.Web.Mvc {
             return ValidateExtension(valueAsUri.OriginalString);
          }
 
-         if (value is HttpPostedFileBase valueAsFile) {
+         if (value is IFormFile valueAsFile) {
             return ValidateExtension(valueAsFile.FileName);
          }
 

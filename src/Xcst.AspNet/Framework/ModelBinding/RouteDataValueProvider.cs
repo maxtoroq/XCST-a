@@ -4,13 +4,19 @@ using System.Globalization;
 
 namespace System.Web.Mvc {
 
-   public sealed class RouteDataValueProvider : DictionaryValueProvider<object> {
+   public sealed class RouteDataValueProvider : DictionaryValueProvider<object?> {
 
       // RouteData should use the invariant culture since it's part of the URL, and the URL should be
       // interpreted in a uniform fashion regardless of the origin of a particular request.
 
       public RouteDataValueProvider(ControllerContext controllerContext)
-         : base(controllerContext.HttpContext.Request.RequestContext.RouteData.Values, CultureInfo.InvariantCulture) { }
+         : base(
+#if NETCOREAPP
+            controllerContext.HttpContext.Request.RouteValues
+#else
+            controllerContext.HttpContext.Request.RequestContext.RouteData.Values
+#endif
+            , CultureInfo.InvariantCulture) { }
    }
 
    public sealed class RouteDataValueProviderFactory : ValueProviderFactory {

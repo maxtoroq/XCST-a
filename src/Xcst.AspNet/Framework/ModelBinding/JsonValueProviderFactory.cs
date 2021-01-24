@@ -20,7 +20,7 @@ namespace System.Web.Mvc {
          Converters = { new ExpandoObjectConverter() }
       };
 
-      static void AddToBackingStore(EntryLimitedDictionary backingStore, string prefix, object value) {
+      static void AddToBackingStore(EntryLimitedDictionary backingStore, string prefix, object? value) {
 
          if (value is IDictionary<string, object> d) {
 
@@ -47,7 +47,7 @@ namespace System.Web.Mvc {
 
       static object? GetDeserializedObject(ControllerContext controllerContext) {
 
-         HttpRequestBase request = controllerContext.HttpContext.Request;
+         var request = controllerContext.HttpContext.Request;
 
          if (!request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)) {
 
@@ -56,7 +56,13 @@ namespace System.Web.Mvc {
             return null;
          }
 
-         var textReader = new StreamReader(request.InputStream);
+#if NETCOREAPP
+         Stream inputStream = request.Body;
+#else
+         Stream inputStream = request.InputStream;
+#endif
+
+         var textReader = new StreamReader(inputStream);
          var jsonReader = new JsonTextReader(textReader);
 
          if (!jsonReader.Read()) {
@@ -86,11 +92,11 @@ namespace System.Web.Mvc {
             return null;
          }
 
-         var backingStore = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+         var backingStore = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
          var backingStoreWrapper = new EntryLimitedDictionary(backingStore);
          AddToBackingStore(backingStoreWrapper, String.Empty, jsonData);
 
-         return new DictionaryValueProvider<object>(backingStore, CultureInfo.CurrentCulture);
+         return new DictionaryValueProvider<object?>(backingStore, CultureInfo.CurrentCulture);
       }
 
       static string MakeArrayKey(string prefix, int index) =>
@@ -102,14 +108,14 @@ namespace System.Web.Mvc {
       class EntryLimitedDictionary {
 
          static int _maximumDepth = GetMaximumDepth();
-         readonly IDictionary<string, object> _innerDictionary;
+         readonly IDictionary<string, object?> _innerDictionary;
          int _itemCount = 0;
 
-         public EntryLimitedDictionary(IDictionary<string, object> innerDictionary) {
+         public EntryLimitedDictionary(IDictionary<string, object?> innerDictionary) {
             _innerDictionary = innerDictionary;
          }
 
-         public void Add(string key, object value) {
+         public void Add(string key, object? value) {
 
             if (++_itemCount > _maximumDepth) {
                throw new InvalidOperationException(MvcResources.JsonValueProviderFactory_RequestTooLarge);

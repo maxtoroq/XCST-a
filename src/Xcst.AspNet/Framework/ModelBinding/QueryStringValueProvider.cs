@@ -10,7 +10,13 @@ namespace System.Web.Mvc {
       // interpreted in a uniform fashion regardless of the origin of a particular request.
 
       public QueryStringValueProvider(ControllerContext controllerContext)
-         : base(controllerContext.HttpContext.Request.QueryString, CultureInfo.InvariantCulture) { }
+         : base(
+#if NETCOREAPP
+            controllerContext.HttpContext.Request.Query
+#else
+            controllerContext.HttpContext.Request.QueryString
+#endif
+            , CultureInfo.InvariantCulture) { }
    }
 
    public sealed class QueryStringValueProviderFactory : ValueProviderFactory {

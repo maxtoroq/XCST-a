@@ -71,6 +71,9 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Xcst.AspNet\Diagnostics.CodeAnalysis.cs">
+      <Link>Diagnostics.CodeAnalysis.cs</Link>
+    </Compile>
     <Compile Include="..\Xcst.AspNet\Diagnostics.cs">
       <Link>Diagnostics.cs</Link>
     </Compile>

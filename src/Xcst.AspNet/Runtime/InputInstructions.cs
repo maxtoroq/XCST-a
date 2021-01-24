@@ -50,7 +50,8 @@ namespace Xcst.Web.Runtime {
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void CheckBoxFor<TModel>(
-            HtmlHelper<TModel> htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression, HtmlAttribs? htmlAttributes = null) {
+            HtmlHelper<TModel> htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output,
+            Expression<Func<TModel, bool>> expression, HtmlAttribs? htmlAttributes = null) {
 
          if (expression is null) throw new ArgumentNullException(nameof(expression));
 
