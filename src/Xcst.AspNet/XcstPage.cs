@@ -28,15 +28,15 @@ namespace Xcst.Web {
 
    public abstract class XcstPage {
 
-      HttpContextBase? _Context;
-      HttpRequestBase? _Request;
-      HttpResponseBase? _Response;
-      HttpSessionStateBase? _Session;
+      HttpContextBase? _context;
+      HttpRequestBase? _request;
+      HttpResponseBase? _response;
+      HttpSessionStateBase? _session;
 
 #if !ASPNETMVC
-      IList<string>? _UrlData;
+      IList<string>? _urlData;
 #endif
-      IPrincipal? _User;
+      IPrincipal? _user;
 
 #pragma warning disable CS8618
       public virtual string VirtualPath { get; set; }
@@ -51,42 +51,42 @@ namespace Xcst.Web {
 
       public virtual HttpContextBase Context {
 #pragma warning disable CS8603
-         get => _Context;
+         get => _context;
 #pragma warning restore CS8603
          set {
-            _Context = value;
-            _Request = null;
-            _Response = null;
-            _Session = null;
+            _context = value;
+            _request = null;
+            _response = null;
+            _session = null;
 #if !ASPNETMVC
-            _UrlData = null;
+            _urlData = null;
 #endif
          }
       }
 
 #pragma warning disable CS8603
       public HttpRequestBase Request =>
-         _Request ??= Context?.Request;
+         _request ??= Context?.Request;
 
       public HttpResponseBase Response =>
-         _Response ??= Context?.Response;
+         _response ??= Context?.Response;
 
       public HttpSessionStateBase Session =>
-         _Session ??= Context?.Session;
+         _session ??= Context?.Session;
 #pragma warning restore CS8603
 
 #if !ASPNETMVC
       public virtual IList<string> UrlData {
-         get => _UrlData ??= new UrlDataList(PathInfo ?? Request?.PathInfo?.TrimStart('/'));
-         set => _UrlData = value;
+         get => _urlData ??= new UrlDataList(PathInfo ?? Request?.PathInfo?.TrimStart('/'));
+         set => _urlData = value;
       }
 #endif
 
       public virtual IPrincipal User {
 #pragma warning disable CS8603
-         get => _User ??= Context?.User;
+         get => _user ??= Context?.User;
 #pragma warning restore CS8603
-         set => _User = value;
+         set => _user = value;
       }
 
       public virtual bool IsPost => Request?.HttpMethod == "POST";

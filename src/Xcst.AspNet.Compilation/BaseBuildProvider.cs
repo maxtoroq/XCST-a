@@ -27,36 +27,36 @@ namespace Xcst.Web.Compilation {
 
    public abstract class BaseBuildProvider : BuildProvider {
 
-      string? _GeneratedTypeName, _GeneratedTypeNamespace, _GeneratedTypeFullName;
-      Uri? _PhysicalPath;
-      string? _AppRelativeVirtualPath;
-      bool? _IsFileInCodeDir;
+      string? _generatedTypeName, _generatedTypeNamespace, _generatedTypeFullName;
+      Uri? _physicalPath;
+      string? _appRelativeVirtualPath;
+      bool? _isFileInCodeDir;
 
-      bool parsed;
-      CompilerType? _CodeCompilerType;
+      bool _parsed;
+      CompilerType? _codeCompilerType;
 
       protected string AppRelativeVirtualPath =>
-         _AppRelativeVirtualPath ??= VirtualPathUtility.ToAppRelative(VirtualPath);
+         _appRelativeVirtualPath ??= VirtualPathUtility.ToAppRelative(VirtualPath);
 
       protected Uri PhysicalPath =>
-         _PhysicalPath ??= new Uri(HostingEnvironment.MapPath(VirtualPath), UriKind.Absolute);
+         _physicalPath ??= new Uri(HostingEnvironment.MapPath(VirtualPath), UriKind.Absolute);
 
       protected bool IsFileInCodeDir =>
-         _IsFileInCodeDir ??= AppRelativeVirtualPath
+         _isFileInCodeDir ??= AppRelativeVirtualPath
             .Remove(0, 2)
             .Split('/')[0]
             .Equals("App_Code", StringComparison.OrdinalIgnoreCase);
 
       protected string GeneratedTypeName {
          get {
-            if (_GeneratedTypeName is null) {
+            if (_generatedTypeName is null) {
 
                string typeName;
 
-               _GeneratedTypeNamespace = GetNamespaceAndTypeNameFromVirtualPath((IsFileInCodeDir) ? 1 : 0, out typeName);
-               _GeneratedTypeName = GeneratedTypeNamePrefix + typeName;
+               _generatedTypeNamespace = GetNamespaceAndTypeNameFromVirtualPath((IsFileInCodeDir) ? 1 : 0, out typeName);
+               _generatedTypeName = GeneratedTypeNamePrefix + typeName;
             }
-            return _GeneratedTypeName;
+            return _generatedTypeName;
          }
       }
 
@@ -65,16 +65,16 @@ namespace Xcst.Web.Compilation {
       [SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "s")]
       protected string GeneratedTypeNamespace {
          get {
-            if (_GeneratedTypeNamespace is null) {
+            if (_generatedTypeNamespace is null) {
                // getting GeneratedTypeName will initialize _GeneratedTypeNamespace
                string s = GeneratedTypeName;
             }
-            return _GeneratedTypeNamespace!;
+            return _generatedTypeNamespace!;
          }
       }
 
       protected string GeneratedTypeFullName {
-         get => _GeneratedTypeFullName ??= (GeneratedTypeNamespace.Length == 0) ?
+         get => _generatedTypeFullName ??= (GeneratedTypeNamespace.Length == 0) ?
             GeneratedTypeName
             : String.Concat(GeneratedTypeNamespace, ".", GeneratedTypeName);
          set {
@@ -82,15 +82,15 @@ namespace Xcst.Web.Compilation {
                throw new ArgumentException("value cannot be null or empty", nameof(value));
             }
 
-            _GeneratedTypeName = _GeneratedTypeNamespace = _GeneratedTypeFullName = null;
+            _generatedTypeName = _generatedTypeNamespace = _generatedTypeFullName = null;
 
             if (value.Contains(".")) {
                string[] segments = value.Split('.');
-               _GeneratedTypeName = segments[segments.Length - 1];
-               _GeneratedTypeNamespace = String.Join(".", segments, 0, segments.Length - 1);
+               _generatedTypeName = segments[segments.Length - 1];
+               _generatedTypeNamespace = String.Join(".", segments, 0, segments.Length - 1);
             } else {
-               _GeneratedTypeName = value;
-               _GeneratedTypeNamespace = String.Empty;
+               _generatedTypeName = value;
+               _generatedTypeNamespace = String.Empty;
             }
          }
       }
@@ -103,18 +103,18 @@ namespace Xcst.Web.Compilation {
                return null;
             }
 
-            if (!parsed) {
+            if (!_parsed) {
 
                string language = Parse();
 
-               _CodeCompilerType = (!String.IsNullOrEmpty(language)) ?
+               _codeCompilerType = (!String.IsNullOrEmpty(language)) ?
                   GetDefaultCompilerTypeForLanguage(language)
                   : null;
 
-               parsed = true;
+               _parsed = true;
             }
 
-            return _CodeCompilerType;
+            return _codeCompilerType;
          }
       }
 

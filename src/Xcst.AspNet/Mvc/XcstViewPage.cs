@@ -25,19 +25,19 @@ namespace Xcst.Web.Mvc {
 
    public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
-      ViewContext? _ViewContext;
-      ViewDataDictionary? _ViewData;
-      DynamicViewDataDictionary? _ViewBag;
-      UrlHelper? _Url;
-      HtmlHelper? _Html;
-      TempDataDictionary? _TempData;
+      ViewContext? _viewContext;
+      ViewDataDictionary? _viewData;
+      DynamicViewDataDictionary? _viewBag;
+      UrlHelper? _url;
+      HtmlHelper? _html;
+      TempDataDictionary? _tempData;
 
       public virtual ViewContext ViewContext {
 #pragma warning disable CS8603
-         get => _ViewContext;
+         get => _viewContext;
 #pragma warning restore CS8603
          set {
-            _ViewContext = value;
+            _viewContext = value;
 
 #pragma warning disable CS8601
             Context = value?.HttpContext;
@@ -56,24 +56,24 @@ namespace Xcst.Web.Mvc {
 
       public ViewDataDictionary ViewData {
          get {
-            if (_ViewData is null) {
+            if (_viewData is null) {
                SetViewData(new ViewDataDictionary());
             }
-            return _ViewData!;
+            return _viewData!;
          }
          set => SetViewData(value);
       }
 
       public dynamic ViewBag =>
-         _ViewBag ??= new DynamicViewDataDictionary(() => ViewData);
+         _viewBag ??= new DynamicViewDataDictionary(() => ViewData);
 
       public object? Model => ViewData.Model;
 
       public virtual UrlHelper Url {
          get {
-            if (_Url is null
+            if (_url is null
                && ViewContext != null) {
-               _Url =
+               _url =
 #if ASPNETMVC
                   (ViewContext.Controller as Controller)?.Url
                      ?? new UrlHelper(ViewContext.RequestContext);
@@ -82,34 +82,34 @@ namespace Xcst.Web.Mvc {
 #endif
             }
 #pragma warning disable CS8603
-            return _Url;
+            return _url;
 #pragma warning restore CS8603
          }
-         set => _Url = value;
+         set => _url = value;
       }
 
       public HtmlHelper Html {
          get {
-            if (_Html is null
+            if (_html is null
                && ViewContext != null) {
-               _Html = new HtmlHelper(ViewContext, this);
+               _html = new HtmlHelper(ViewContext, this);
             }
 #pragma warning disable CS8603
-            return _Html;
+            return _html;
 #pragma warning restore CS8603
          }
-         set => _Html = value;
+         set => _html = value;
       }
 
       public ModelStateDictionary ModelState => ViewData.ModelState;
 
       public virtual TempDataDictionary TempData {
-         get => _TempData ??= ViewContext?.TempData ?? new TempDataDictionary();
-         set => _TempData = value;
+         get => _tempData ??= ViewContext?.TempData ?? new TempDataDictionary();
+         set => _tempData = value;
       }
 
       internal virtual void SetViewData(ViewDataDictionary viewData) {
-         _ViewData = viewData;
+         _viewData = viewData;
       }
 
 #if !ASPNETMVC
@@ -205,11 +205,11 @@ namespace Xcst.Web.Mvc {
 #if ASPNETMVC
                view: new XcstView(this.ViewContext, viewPage.VirtualPath),
 #endif
-               viewData: (_ViewData != null) ? new ViewDataDictionary(_ViewData)
+               viewData: (_viewData != null) ? new ViewDataDictionary(_viewData)
                   // Never use this.ViewContext.ViewData
                   : (this.ViewContext.ViewData != null) ? new ViewDataDictionary()
                   : null,
-               tempData: _TempData
+               tempData: _tempData
             );
          }
       }
@@ -217,15 +217,15 @@ namespace Xcst.Web.Mvc {
 
    public abstract class XcstViewPage<TModel> : XcstViewPage {
 
-      ViewDataDictionary<TModel>? _ViewData;
-      HtmlHelper<TModel>? _Html;
+      ViewDataDictionary<TModel>? _viewData;
+      HtmlHelper<TModel>? _html;
 
       public new ViewDataDictionary<TModel> ViewData {
          get {
-            if (_ViewData is null) {
+            if (_viewData is null) {
                SetViewData(new ViewDataDictionary<TModel>());
             }
-            return _ViewData!;
+            return _viewData!;
          }
          set => SetViewData(value);
       }
@@ -235,23 +235,23 @@ namespace Xcst.Web.Mvc {
 
       public new HtmlHelper<TModel> Html {
          get {
-            if (_Html is null
+            if (_html is null
                && ViewContext != null) {
-               _Html = new HtmlHelper<TModel>(ViewContext, this);
+               _html = new HtmlHelper<TModel>(ViewContext, this);
             }
 #pragma warning disable CS8603
-            return _Html;
+            return _html;
 #pragma warning restore CS8603
          }
-         set => _Html = value;
+         set => _html = value;
       }
 
       internal override void SetViewData(ViewDataDictionary viewData) {
 
-         _ViewData = viewData as ViewDataDictionary<TModel>
+         _viewData = viewData as ViewDataDictionary<TModel>
             ?? new ViewDataDictionary<TModel>(viewData);
 
-         base.SetViewData(_ViewData);
+         base.SetViewData(_viewData);
       }
    }
 }

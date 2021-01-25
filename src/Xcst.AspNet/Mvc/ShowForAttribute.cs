@@ -23,25 +23,25 @@ namespace Xcst.Web.Mvc {
    [AttributeUsage(AttributeTargets.Property)]
    public class ShowForAttribute : Attribute, IMetadataAware {
 
-      bool displaySet;
-      bool display;
+      bool _displaySet;
+      bool _display;
 
-      bool editSet;
-      bool edit;
+      bool _editSet;
+      bool _edit;
 
       public bool Display {
-         get => display;
+         get => _display;
          set {
-            display = value;
-            displaySet = true;
+            _display = value;
+            _displaySet = true;
          }
       }
 
       public bool Edit {
-         get => edit;
+         get => _edit;
          set {
-            edit = value;
-            editSet = true;
+            _edit = value;
+            _editSet = true;
          }
       }
 
@@ -52,14 +52,14 @@ namespace Xcst.Web.Mvc {
          // because the framework uses true as default, we need a way to 
          // tell if a value is explicitly specified, hence the use of AdditionalValues
 
-         if (this.displaySet) {
-            metadata.ShowForDisplay = this.display;
-            metadata.AdditionalValues[nameof(ModelMetadata.ShowForDisplay)] = this.display;
+         if (_displaySet) {
+            metadata.ShowForDisplay = _display;
+            metadata.AdditionalValues[nameof(ModelMetadata.ShowForDisplay)] = _display;
          }
 
-         if (this.editSet) {
-            metadata.ShowForEdit = this.edit;
-            metadata.AdditionalValues[nameof(ModelMetadata.ShowForEdit)] = this.edit;
+         if (_editSet) {
+            metadata.ShowForEdit = _edit;
+            metadata.AdditionalValues[nameof(ModelMetadata.ShowForEdit)] = _edit;
          }
       }
    }

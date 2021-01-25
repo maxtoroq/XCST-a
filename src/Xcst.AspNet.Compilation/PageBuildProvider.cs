@@ -32,10 +32,10 @@ namespace Xcst.Web.Compilation {
    [BuildProviderAppliesTo(BuildProviderAppliesTo.Web | BuildProviderAppliesTo.Code)]
    public class PageBuildProvider : BaseBuildProvider {
 
-      readonly Uri applicationUri = new Uri(HostingEnvironment.ApplicationPhysicalPath, UriKind.Absolute);
-      CompileResult? result;
-      LoggingResolver? moduleResolver;
-      bool? _IgnoreFile;
+      readonly Uri _applicationUri = new Uri(HostingEnvironment.ApplicationPhysicalPath, UriKind.Absolute);
+      CompileResult? _result;
+      LoggingResolver? _moduleResolver;
+      bool? _ignoreFile;
 
       public static XcstCompilerFactory CompilerFactory { get; } = new XcstCompilerFactory {
          EnableExtensions = true
@@ -46,11 +46,11 @@ namespace Xcst.Web.Compilation {
       public override ICollection VirtualPathDependencies {
          get {
 
-            if (moduleResolver != null) {
+            if (_moduleResolver != null) {
                return
                   new[] { VirtualPath }.Concat(
-                     from u in moduleResolver.ResolvedUris
-                     let rel = applicationUri.MakeRelativeUri(u)
+                     from u in _moduleResolver.ResolvedUris
+                     let rel = _applicationUri.MakeRelativeUri(u)
                      where !rel.IsAbsoluteUri
                         && !rel.OriginalString.StartsWith("..")
                      let vp = VirtualPathUtility.ToAbsolute("~/" + rel.OriginalString)
@@ -65,7 +65,7 @@ namespace Xcst.Web.Compilation {
       protected override string GeneratedTypeNamePrefix => "_Page_";
 
       protected override bool IgnoreFile =>
-         _IgnoreFile ??= VirtualPath.Split('/').Last()[0] == '_';
+         _ignoreFile ??= VirtualPath.Split('/').Last()[0] == '_';
 
       protected Type PageType { get; }
 
@@ -88,9 +88,9 @@ namespace Xcst.Web.Compilation {
 
             ConfigureCompiler(compiler);
 
-            this.result = compiler.Compile(source, baseUri: this.PhysicalPath);
+            _result = compiler.Compile(source, baseUri: this.PhysicalPath);
 
-            return this.result.Language;
+            return _result.Language;
          }
       }
 
@@ -109,10 +109,10 @@ namespace Xcst.Web.Compilation {
             compiler.TargetNamespace = this.GeneratedTypeNamespace;
             compiler.TargetClass = this.GeneratedTypeName;
 
-            compiler.ModuleResolver = (this.moduleResolver = new LoggingResolver(new XmlUrlResolver()));
+            compiler.ModuleResolver = (_moduleResolver = new LoggingResolver(new XmlUrlResolver()));
          }
 
-         compiler.SetParameter(XmlNamespaces.XcstApplication, "application-uri", this.applicationUri);
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "application-uri", _applicationUri);
          compiler.SetParameter(XmlNamespaces.XcstApplication, "generate-href", true);
       }
 
@@ -125,7 +125,7 @@ namespace Xcst.Web.Compilation {
             yield return FileDependentPartial();
          }
 
-         foreach (string unit in this.result!.CompilationUnits) {
+         foreach (string unit in _result!.CompilationUnits) {
             yield return new CodeSnippetCompileUnit(unit);
          }
       }
@@ -135,7 +135,7 @@ namespace Xcst.Web.Compilation {
          var fileArray = new CodeArrayCreateExpression(typeof(string));
          fileArray.Initializers.Add(new CodePrimitiveExpression(this.PhysicalPath.LocalPath));
 
-         foreach (Uri uri in this.moduleResolver!.ResolvedUris.Where(u => u.IsFile)) {
+         foreach (Uri uri in _moduleResolver!.ResolvedUris.Where(u => u.IsFile)) {
             fileArray.Initializers.Add(new CodePrimitiveExpression(uri.LocalPath));
          }
 

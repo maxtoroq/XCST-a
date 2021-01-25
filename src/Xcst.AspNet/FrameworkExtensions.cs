@@ -24,13 +24,13 @@ namespace Xcst.Web {
    static class FrameworkExtensions {
 
 #if ASPNETMVC
-      static readonly Func<ModelMetadata, Type> getRealModelType =
+      static readonly Func<ModelMetadata, Type> _getRealModelType =
          (Func<ModelMetadata, Type>)Delegate.CreateDelegate(typeof(Func<ModelMetadata, Type>), typeof(ModelMetadata).GetProperty("RealModelType", BindingFlags.Instance | BindingFlags.NonPublic).GetGetMethod(nonPublic: true));
 
-      static readonly Func<TemplateInfo, HashSet<object>> getVisitedObjects =
+      static readonly Func<TemplateInfo, HashSet<object>> _getVisitedObjects =
          (Func<TemplateInfo, HashSet<object>>)Delegate.CreateDelegate(typeof(Func<TemplateInfo, HashSet<object>>), typeof(TemplateInfo).GetProperty("VisitedObjects", BindingFlags.Instance | BindingFlags.NonPublic).GetGetMethod(nonPublic: true));
 
-      static readonly Action<TemplateInfo, HashSet<object>> setVisitedObjects =
+      static readonly Action<TemplateInfo, HashSet<object>> _setVisitedObjects =
          (Action<TemplateInfo, HashSet<object>>)Delegate.CreateDelegate(typeof(Action<TemplateInfo, HashSet<object>>), typeof(TemplateInfo).GetProperty("VisitedObjects", BindingFlags.Instance | BindingFlags.NonPublic).GetSetMethod(nonPublic: true));
 #endif
 
@@ -43,21 +43,21 @@ namespace Xcst.Web {
 
       public static Type RealModelType(this ModelMetadata metadata) =>
 #if ASPNETMVC
-         getRealModelType(metadata);
+         _getRealModelType(metadata);
 #else
          metadata.RealModelType;
 #endif
 
       public static HashSet<object> VisitedObjects(this TemplateInfo templateInfo) =>
 #if ASPNETMVC
-         getVisitedObjects(templateInfo);
+         _getVisitedObjects(templateInfo);
 #else
          templateInfo.VisitedObjects;
 #endif
 
       public static void VisitedObjects(this TemplateInfo templateInfo, HashSet<object> value) =>
 #if ASPNETMVC
-         setVisitedObjects(templateInfo, value);
+         _setVisitedObjects(templateInfo, value);
 #else
          templateInfo.VisitedObjects = value;
 #endif

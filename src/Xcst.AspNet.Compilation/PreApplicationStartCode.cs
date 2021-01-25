@@ -23,13 +23,13 @@ namespace Xcst.Web.Compilation {
    [EditorBrowsable(EditorBrowsableState.Never)]
    static partial class PreApplicationStartCode {
 
-      static bool startWasCalled;
+      static bool _startWasCalled;
 
       public static void Start() {
 
-         if (!startWasCalled) {
+         if (!_startWasCalled) {
 
-            startWasCalled = true;
+            _startWasCalled = true;
 
             PageBuildProvider.CompilerFactory
                .RegisterExtensionsForAssembly(typeof(ExtensionLoader).Assembly);

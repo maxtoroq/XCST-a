@@ -25,15 +25,15 @@ namespace Xcst.Web.Runtime {
    /// <exclude/>
    public class OptionList : IEnumerable<SelectListItem> {
 
-      readonly List<SelectListItem> staticList;
-      readonly HashSet<string> selectedValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+      readonly List<SelectListItem> _staticList;
+      readonly HashSet<string> _selectedValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-      bool useSelectedValues;
-      List<SelectListItem>? dynamicList;
+      bool _useSelectedValues;
+      List<SelectListItem>? _dynamicList;
 
       public bool AddBlankOption =>
-         staticList.Count == 0
-            && dynamicList != null;
+         _staticList.Count == 0
+            && _dynamicList != null;
 
       public static OptionList FromStaticList(int staticOptionsCount) {
 
@@ -46,7 +46,7 @@ namespace Xcst.Web.Runtime {
          new OptionList(0);
 
       private OptionList(int staticOptionsCount) {
-         this.staticList = new List<SelectListItem>(staticOptionsCount);
+         _staticList = new List<SelectListItem>(staticOptionsCount);
       }
 
       public OptionList WithSelectedValue(object selectedValue, bool multiple = false) {
@@ -55,16 +55,16 @@ namespace Xcst.Web.Runtime {
 
             if (multiple) {
 
-               this.selectedValues.UnionWith(
+               _selectedValues.UnionWith(
                   ((IEnumerable)selectedValue).Cast<object>()
                      .Select(ValueString));
 
             } else {
-               this.selectedValues.Add(ValueString(selectedValue));
+               _selectedValues.Add(ValueString(selectedValue));
             }
          }
 
-         this.useSelectedValues = true;
+         _useSelectedValues = true;
 
          return this;
       }
@@ -74,8 +74,8 @@ namespace Xcst.Web.Runtime {
 
       bool IsSelected(SelectListItem item) {
 
-         if (this.useSelectedValues) {
-            return this.selectedValues.Contains(item.Value ?? item.Text ?? String.Empty);
+         if (_useSelectedValues) {
+            return _selectedValues.Contains(item.Value ?? item.Text ?? String.Empty);
          }
 
          return item.Selected;
@@ -95,7 +95,7 @@ namespace Xcst.Web.Runtime {
 
          item.Selected = IsSelected(item);
 
-         this.staticList.Add(item);
+         _staticList.Add(item);
 
          return this;
       }
@@ -104,7 +104,7 @@ namespace Xcst.Web.Runtime {
 
          if (list != null) {
 
-            this.dynamicList = new List<SelectListItem>();
+            _dynamicList = new List<SelectListItem>();
 
             foreach (SelectListItem item in list) {
 
@@ -125,7 +125,7 @@ namespace Xcst.Web.Runtime {
 
          if (list != null) {
 
-            this.dynamicList = new List<SelectListItem>();
+            _dynamicList = new List<SelectListItem>();
 
             foreach (var pair in list) {
 
@@ -143,7 +143,7 @@ namespace Xcst.Web.Runtime {
 
          if (list != null) {
 
-            this.dynamicList = new List<SelectListItem>();
+            _dynamicList = new List<SelectListItem>();
 
             foreach (var group in list) {
 
@@ -169,7 +169,7 @@ namespace Xcst.Web.Runtime {
 
          if (list != null) {
 
-            this.dynamicList = new List<SelectListItem>();
+            _dynamicList = new List<SelectListItem>();
 
             foreach (IGrouping<TKey, TElement> group in list) {
 
@@ -198,7 +198,7 @@ namespace Xcst.Web.Runtime {
                return ConcatDynamicList(sList);
             }
 
-            this.dynamicList = new List<SelectListItem>();
+            _dynamicList = new List<SelectListItem>();
 
             foreach (object item in list) {
 
@@ -215,17 +215,17 @@ namespace Xcst.Web.Runtime {
 
          item.Selected = IsSelected(item);
 
-         this.dynamicList!.Add(item);
+         _dynamicList!.Add(item);
       }
 
       public IEnumerator<SelectListItem> GetEnumerator() {
 
-         if (this.dynamicList is null) {
-            return this.staticList.GetEnumerator();
+         if (_dynamicList is null) {
+            return _staticList.GetEnumerator();
          }
 
-         return this.staticList
-            .Concat(this.dynamicList)
+         return _staticList
+            .Concat(_dynamicList)
             .GetEnumerator();
       }
 

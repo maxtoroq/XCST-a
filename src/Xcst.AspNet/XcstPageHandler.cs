@@ -20,7 +20,7 @@ namespace Xcst.Web {
 
    public class XcstPageHandler : IHttpHandler, IRequiresSessionState {
 
-      readonly XcstPage page;
+      readonly XcstPage _page;
 
       public bool IsReusable => false;
 
@@ -28,14 +28,14 @@ namespace Xcst.Web {
 
          if (page is null) throw new ArgumentNullException(nameof(page));
 
-         this.page = page;
+         _page = page;
       }
 
       public virtual void ProcessRequest(HttpContext context) {
 
-         InitializePage(this.page, new HttpContextWrapper(context));
-         AddFileDependencies(this.page, this.page.Response);
-         RenderPage(this.page, this.page.Context);
+         InitializePage(_page, new HttpContextWrapper(context));
+         AddFileDependencies(_page, _page.Response);
+         RenderPage(_page, _page.Context);
       }
 
       protected virtual void InitializePage(XcstPage page, HttpContextBase context) =>

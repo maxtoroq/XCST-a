@@ -312,7 +312,8 @@ namespace System.Web.Mvc {
 
    public class HtmlHelper<TModel> : HtmlHelper {
 
-      public new ViewDataDictionary<TModel> ViewData => (ViewDataDictionary<TModel>)ViewDataContainer.ViewData;
+      public new ViewDataDictionary<TModel> ViewData =>
+         (ViewDataDictionary<TModel>)ViewDataContainer.ViewData;
 
       public HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
          : base(viewContext, viewDataContainer) {

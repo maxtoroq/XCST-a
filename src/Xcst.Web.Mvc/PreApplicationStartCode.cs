@@ -22,13 +22,13 @@ namespace Xcst.Web.Mvc {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public static class PreApplicationStartCode {
 
-      static bool startWasCalled;
+      static bool _startWasCalled;
 
       public static void Start() {
 
-         if (!startWasCalled) {
+         if (!_startWasCalled) {
 
-            startWasCalled = true;
+            _startWasCalled = true;
 
             System.Web.Mvc.PreApplicationStartCode.Start();
             Xcst.Web.Compilation.PreApplicationStartCode.Start();

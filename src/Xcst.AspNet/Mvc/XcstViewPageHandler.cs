@@ -20,31 +20,31 @@ namespace Xcst.Web.Mvc {
 
    public class XcstViewPageHandler : XcstPageHandler {
 
-      readonly XcstViewPage page;
+      readonly XcstViewPage _page;
 
-      private ViewContext ViewContext => page.ViewContext;
+      private ViewContext ViewContext => _page.ViewContext;
 
       public XcstViewPageHandler(XcstViewPage page)
          : base(page) {
 
-         this.page = page;
+         _page = page;
       }
 
       protected override void InitializePage(XcstPage page, HttpContextBase context) {
 
          base.InitializePage(page, context);
 
-         this.page.ViewContext = new ViewContext(context);
+         _page.ViewContext = new ViewContext(context);
       }
 
       protected override void RenderPage(XcstPage page, HttpContextBase context) {
 
-         this.page.TempData.Load(this.ViewContext, this.ViewContext.TempDataProvider);
+         _page.TempData.Load(this.ViewContext, this.ViewContext.TempDataProvider);
 
          try {
             RenderViewPage((XcstViewPage)page, context);
          } finally {
-            this.page.TempData.Save(this.ViewContext, this.ViewContext.TempDataProvider);
+            _page.TempData.Save(this.ViewContext, this.ViewContext.TempDataProvider);
          }
       }
 

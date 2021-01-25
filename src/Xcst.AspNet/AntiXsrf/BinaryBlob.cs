@@ -55,8 +55,8 @@ namespace System.Web.Helpers.AntiXsrf {
             return false;
          }
 
-         Debug.Assert(this._data.Length == other._data.Length);
-         return CryptoUtil.AreByteArraysEqual(this._data, other._data);
+         Debug.Assert(_data.Length == other._data.Length);
+         return CryptoUtil.AreByteArraysEqual(_data, other._data);
       }
 
       public byte[] GetData() => _data;
