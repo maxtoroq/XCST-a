@@ -26,6 +26,7 @@
    <import href="../../../XCST/src/Xcst.Compiler/CodeGeneration/xcst-metadata.xsl" use-when="false()"/>
    <import href="../../../XCST/src/Xcst.Compiler/CodeGeneration/xcst-core.xsl" use-when="false()"/>
 
+   <param name="a:page" select="false()" as="xs:boolean"/>
    <param name="a:page-type" as="element(code:type-reference)?"/>
    <param name="a:default-model" as="element(code:type-reference)?"/>
    <param name="a:default-model-dynamic" select="false()" as="xs:boolean"/>
@@ -45,25 +46,25 @@
    <variable name="a:href-gen" select="
       $a:generate-href
       and not($a:aspnetmvc)
+      and $a:page
       and $a:make-relative-uri
-      and $a:application-uri
-      and not($src:named-package)"/>
+      and $a:application-uri"/>
 
    <variable name="a:linkto-gen" select="
       $a:generate-linkto
       and not($a:aspnetmvc)
+      and $a:page
       and $a:make-relative-uri
       and $a:remove-extension
-      and $a:application-uri
-      and not($src:named-package)"/>
+      and $a:application-uri"/>
 
    <variable name="a:virtual-path-annotate" select="
       $a:annotate-virtual-path
       and not($a:aspnetmvc)
+      and $a:page
       and $a:make-relative-uri
       and $a:remove-extension
-      and $a:application-uri
-      and not($src:named-package)"/>
+      and $a:application-uri"/>
 
    <!-- ## Forms -->
 
@@ -1576,9 +1577,6 @@
          -->
          <when test="exists($src:base-types) or ($a:page-type and $a:directives/model)">
             <choose>
-               <!--
-                  Second condition is always false for packages in App_Code.
-               -->
                <when test="$a:directives/model or $a:default-model or $a:default-model-dynamic">
                   <code:type-reference>
                      <sequence select="$base-types[1]/@*"/>

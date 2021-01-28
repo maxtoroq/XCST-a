@@ -41,8 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{A081
 		schemas\README.md = schemas\README.md
 		schemas\xcst-app.rng = schemas\xcst-app.rng
 		schemas\xcst-app.xsd = schemas\xcst-app.xsd
-		packages\Xcst.Compiler.0.122.0\schemas\xcst.rng = packages\Xcst.Compiler.0.122.0\schemas\xcst.rng
-		packages\Xcst.Compiler.0.122.0\schemas\xcst.xsd = packages\Xcst.Compiler.0.122.0\schemas\xcst.xsd
+		packages\Xcst.Compiler.0.123.0\schemas\xcst.rng = packages\Xcst.Compiler.0.123.0\schemas\xcst.rng
+		packages\Xcst.Compiler.0.123.0\schemas\xcst.xsd = packages\Xcst.Compiler.0.123.0\schemas\xcst.xsd
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet.Tests", "tests\Xcst.AspNet.Tests\Xcst.AspNet.Tests.csproj", "{9C2C8E13-E69D-4656-8554-11CD69147448}"

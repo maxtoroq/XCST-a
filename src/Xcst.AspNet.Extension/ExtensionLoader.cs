@@ -50,7 +50,7 @@ namespace Xcst.Web.Extension {
          yield return Param("make-relative-uri", new Func<Uri, Uri, Uri>(MakeRelativeUri));
          yield return Param("remove-extension", new Func<string, string>(RemoveExtension));
 
-         if (this.ApplicationUri != null) {
+         if (this.ApplicationUri != default) {
             yield return Param("application-uri", this.ApplicationUri);
          }
 
@@ -69,6 +69,48 @@ namespace Xcst.Web.Extension {
          if (this.AnnotateVirtualPath != default) {
             yield return Param("annotate-virtual-path", this.AnnotateVirtualPath);
          }
+      }
+
+      public static void SetPage(XcstCompiler compiler, bool page) {
+
+         if (compiler is null) throw new ArgumentNullException(nameof(compiler));
+
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "page", page);
+      }
+
+      public static void SetDefaultModelDynamic(XcstCompiler compiler, bool defaultModelDynamic) {
+
+         if (compiler is null) throw new ArgumentNullException(nameof(compiler));
+
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "default-model-dynamic", defaultModelDynamic);
+      }
+
+      public static void SetApplicationUri(XcstCompiler compiler, Uri? applicationUri) {
+
+         if (compiler is null) throw new ArgumentNullException(nameof(compiler));
+
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "application-uri", applicationUri);
+      }
+
+      public static void SetGenerateHref(XcstCompiler compiler, bool generateHref) {
+
+         if (compiler is null) throw new ArgumentNullException(nameof(compiler));
+
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "generate-href", generateHref);
+      }
+
+      public static void SetGenerateLinkTo(XcstCompiler compiler, bool generateLinkTo) {
+
+         if (compiler is null) throw new ArgumentNullException(nameof(compiler));
+
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "generate-linkto", generateLinkTo);
+      }
+
+      public static void SetAnnotateVirtualPath(XcstCompiler compiler, bool annotateVirtualPath) {
+
+         if (compiler is null) throw new ArgumentNullException(nameof(compiler));
+
+         compiler.SetParameter(XmlNamespaces.XcstApplication, "annotate-virtual-path", annotateVirtualPath);
       }
 
       static KeyValuePair<string, object?> Param(string name, object? value) =>

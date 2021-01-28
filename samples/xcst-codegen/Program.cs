@@ -98,13 +98,33 @@ namespace XcstCodeGen {
          }
       }
 
+      static string FileNamespace(Uri fileUri, Uri startUri, string rootNamespace) {
+
+         string ns = rootNamespace;
+
+         string relativePath = startUri.MakeRelativeUri(fileUri).OriginalString;
+
+         if (relativePath.Contains("/")) {
+
+            string relativeDir = startUri.MakeRelativeUri(new Uri(Path.GetDirectoryName(fileUri.LocalPath), UriKind.Absolute))
+               .OriginalString;
+
+            ns = String.Join(".", new[] { ns }.Concat(
+               relativeDir
+                  .Split('/')
+                  .Select(n => CleanIdentifier(n))));
+         }
+
+         return ns;
+      }
+
       // Transforms invalid identifier (class, namespace, variable) characters
-      string CleanIdentifier(string identifier) =>
+      static string CleanIdentifier(string identifier) =>
          Regex.Replace(identifier, "[^a-z0-9_]", "_", RegexOptions.IgnoreCase);
 
       // Show compilation errors on Visual Studio's Error List
       // Also makes the error on the Output window clickable
-      void VisualStudioErrorLog(CompileException ex) {
+      static void VisualStudioErrorLog(CompileException ex) {
 
          string uriString = ex.ModuleUri;
          var uri = new Uri(uriString);
@@ -175,8 +195,6 @@ namespace XcstCodeGen {
                continue;
             }
 
-            string relativePath = startUri.MakeRelativeUri(fileUri).OriginalString;
-
             // Treat files ending with 'Package' as library packages; other files as pages
             // Library packages must be rooted at <c:package> and have a name
             // Pages must NOT be named
@@ -184,26 +202,11 @@ namespace XcstCodeGen {
             bool isPage = _libsAndPages
                && !fileBaseName.EndsWith("Package");
 
-            compiler.NamedPackage = !isPage;
+            compiler.TargetNamespace = FileNamespace(fileUri, startUri, rootNamespace);
 
             if (isPage) {
 
-               string ns = rootNamespace;
-
-               if (relativePath.Contains("/")) {
-
-                  string relativeDir = startUri.MakeRelativeUri(new Uri(Path.GetDirectoryName(file), UriKind.Absolute))
-                     .OriginalString;
-
-                  ns = String.Join(".", new[] { ns }.Concat(
-                     relativeDir
-                        .Split('/')
-                        .Select(n => CleanIdentifier(n))));
-               }
-
                compiler.TargetClass = "_Page_" + CleanIdentifier(fileBaseName);
-               compiler.TargetNamespace = ns;
-               compiler.TargetVisibility = CodeVisibility.Internal;
 
                if (_pageBaseType != null) {
                   compiler.TargetBaseTypes = new[] { _pageBaseType };
@@ -211,11 +214,11 @@ namespace XcstCodeGen {
 
             } else {
 
-               compiler.TargetClass = null;
-               compiler.TargetNamespace = null;
+               compiler.TargetClass = CleanIdentifier(fileBaseName);
                compiler.TargetBaseTypes = null;
-               compiler.TargetVisibility = CodeVisibility.Public;
             }
+
+            Xcst.Web.Extension.ExtensionLoader.SetPage(compiler, isPage);
 
             CompileResult xcstResult;
 

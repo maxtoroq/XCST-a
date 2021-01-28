@@ -22,29 +22,17 @@ namespace AspNetPrecompiled {
                : null;
       }
 
-      static XcstViewPage? LoadDisplayTemplate(string templateName, ViewContext context) {
+      static XcstViewPage? LoadDisplayTemplate(string templateName, ViewContext context) =>
+         templateName switch {
+            nameof(Object) => new DisplayTemplates.ObjectPackage(),
+            _ => null,
+         };
 
-         switch (templateName) {
-            case nameof(Object):
-               return new DisplayTemplates.ObjectPackage();
-
-            default:
-               return null;
-         }
-      }
-
-      static XcstViewPage? LoadEditorTemplate(string templateName, ViewContext context) {
-
-         switch (templateName) {
-            case nameof(Boolean):
-               return new EditorTemplates.BooleanPackage();
-
-            case nameof(Object):
-               return new EditorTemplates.ObjectPackage();
-
-            default:
-               return null;
-         }
-      }
+      static XcstViewPage? LoadEditorTemplate(string templateName, ViewContext context) =>
+         templateName switch {
+            nameof(Boolean) => new EditorTemplates.BooleanPackage(),
+            nameof(Object) => new EditorTemplates.ObjectPackage(),
+            _ => null,
+         };
    }
 }

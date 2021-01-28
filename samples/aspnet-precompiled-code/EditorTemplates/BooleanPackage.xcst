@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?inherits Xcst.Web.Mvc.XcstViewPage<dynamic>?>
-<c:package name='AspNetPrecompiled.EditorTemplates.BooleanPackage' version='1.0' language='C#'
+<c:package version='1.0' language='C#'
    xmlns:c='http://maxtoroq.github.io/XCST'
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>

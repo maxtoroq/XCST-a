@@ -100,6 +100,7 @@ namespace Xcst.Web.Compilation {
          compiler.PackageFileDirectory = HostingEnvironment.MapPath("~/App_Code");
          compiler.PackageFileExtension = FileExtension;
          compiler.UseLineDirective = true;
+         compiler.TargetVisibility = CodeVisibility.Public;
 
          if (this.IsFileInCodeDir) {
             compiler.NamedPackage = true;
@@ -110,10 +111,12 @@ namespace Xcst.Web.Compilation {
             compiler.TargetClass = this.GeneratedTypeName;
 
             compiler.ModuleResolver = (_moduleResolver = new LoggingResolver(new XmlUrlResolver()));
+
+            Xcst.Web.Extension.ExtensionLoader.SetPage(compiler, true);
          }
 
-         compiler.SetParameter(XmlNamespaces.XcstApplication, "application-uri", _applicationUri);
-         compiler.SetParameter(XmlNamespaces.XcstApplication, "generate-href", true);
+         Xcst.Web.Extension.ExtensionLoader.SetApplicationUri(compiler, _applicationUri);
+         Xcst.Web.Extension.ExtensionLoader.SetGenerateHref(compiler, true);
       }
 
       protected override IEnumerable<CodeCompileUnit> BuildCompileUnits() {
@@ -240,7 +243,7 @@ namespace Xcst.Web.Compilation {
          if (this.IsFileInCodeDir) {
             compiler.SetParameter(XmlNamespaces.XcstApplication, "page-type", this.PageType);
          } else {
-            compiler.SetParameter(XmlNamespaces.XcstApplication, "default-model-dynamic", true);
+            Xcst.Web.Extension.ExtensionLoader.SetDefaultModelDynamic(compiler, true);
          }
       }
    }

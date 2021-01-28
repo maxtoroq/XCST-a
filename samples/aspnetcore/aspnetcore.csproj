@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xcst.Runtime" Version="0.122.0" />
+    <PackageReference Include="Xcst.Runtime" Version="0.123.0" />
   </ItemGroup>
 
   <ItemGroup>

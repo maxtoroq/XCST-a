@@ -16,7 +16,7 @@ using System;
 
 namespace Xcst.Web.Precompilation {
 
-   [AttributeUsage(AttributeTargets.Class)]
+   [AttributeUsage(AttributeTargets.Class, Inherited = false)]
    public sealed class PageVirtualPathAttribute : Attribute {
 
       public string VirtualPath { get; }
