@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 #if ASPNETMVC
 using System.Data;
 #endif
@@ -38,28 +39,68 @@ namespace Xcst.Web.Runtime {
 
       public static void Editor(
             HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression,
-            string? templateName = null, string? htmlFieldName = null, object? additionalViewData = null) =>
-         TemplateHelpers.Template(html, package, output, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
+            string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
+         TemplateHelpers.Template(
+            html,
+            package,
+            output,
+            expression: expression,
+            htmlFieldName: htmlFieldName,
+            templateName: templateName,
+            membersNames,
+            DataBoundControlMode.Edit,
+            additionalViewData
+         );
 
       [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
       public static void EditorFor<TModel, TValue>(
             HtmlHelper<TModel> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TModel, TValue>> expression,
-            string? templateName = null, string? htmlFieldName = null, object? additionalViewData = null) =>
-         TemplateHelpers.TemplateFor(html, package, output, expression, templateName, htmlFieldName, DataBoundControlMode.Edit, additionalViewData);
+            string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
+         TemplateHelpers.TemplateFor(
+            html,
+            package,
+            output,
+            expression: expression,
+            htmlFieldName: htmlFieldName,
+            templateName: templateName,
+            membersNames,
+            DataBoundControlMode.Edit,
+            additionalViewData
+         );
 
       public static void EditorForModel(
             HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output,
-            string? templateName = null, string? htmlFieldName = null, object? additionalViewData = null) =>
-         TemplateHelpers.TemplateHelper(html, package, output, html.ViewData.ModelMetadata, htmlFieldName, templateName, DataBoundControlMode.Edit, additionalViewData);
+            string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
+         TemplateHelpers.TemplateHelper(
+            html,
+            package,
+            output,
+            html.ViewData.ModelMetadata,
+            htmlFieldName: htmlFieldName,
+            templateName: templateName,
+            membersNames,
+            DataBoundControlMode.Edit,
+            additionalViewData
+         );
 
       public static bool ShowForEdit(HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (html is null) throw new ArgumentNullException(nameof(html));
          if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
 
-         if (!propertyMetadata.ShowForEdit
-            || html.ViewData.TemplateInfo.Visited(propertyMetadata)) {
+         TemplateInfo templateInfo = html.ViewData.TemplateInfo;
 
+         if (templateInfo.Visited(propertyMetadata)) {
+            return false;
+         }
+
+#if !ASPNETMVC
+         if (templateInfo.MembersNames.Count > 0) {
+            return templateInfo.MembersNames.Contains(propertyMetadata.PropertyName);
+         }
+#endif
+
+         if (!propertyMetadata.ShowForEdit) {
             return false;
          }
 

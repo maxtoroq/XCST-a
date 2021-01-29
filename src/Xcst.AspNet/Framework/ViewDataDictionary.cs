@@ -316,16 +316,25 @@ namespace System.Web.Mvc {
 
       string? _htmlFieldPrefix;
       object? _formattedModelValue;
+      IList<string>? _membersNames;
       HashSet<object>? _visitedObjects;
 
+      [AllowNull]
       public object FormattedModelValue {
          get => _formattedModelValue ?? String.Empty;
          set => _formattedModelValue = value;
       }
 
+      [AllowNull]
       public string HtmlFieldPrefix {
          get => _htmlFieldPrefix ?? String.Empty;
          set => _htmlFieldPrefix = value;
+      }
+
+      [AllowNull]
+      internal IList<string> MembersNames {
+         get => _membersNames ?? Array.Empty<string>();
+         set => _membersNames = value;
       }
 
       public int TemplateDepth => VisitedObjects.Count;

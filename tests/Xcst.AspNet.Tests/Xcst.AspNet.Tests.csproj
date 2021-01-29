@@ -207,6 +207,7 @@
     <None Include="Extension\DisplayName\MemberName.c.xcst" />
     <None Include="Extension\DisplayName\TypeInference.c.xcst" />
     <None Include="Extension\DisplayText\TypeInference.c.xcst" />
+    <None Include="Extension\Display\display.members_members-names.mutex.i.xcst" />
     <None Include="Extension\Display\Templates\Enum\FormatStringEditAndDisplayName.c.xcst" />
     <None Include="Extension\Display\Templates\Enum\FormatStringEdit.c.xcst" />
     <None Include="Extension\Display\Templates\Enum\FormatStringAndDisplayName.c.xcst" />
@@ -214,6 +215,8 @@
     <None Include="Extension\Display\Templates\Enum\FormatString.c.xcst" />
     <None Include="Extension\Display\Templates\Enum\Null.c.xcst" />
     <None Include="Extension\Display\Templates\Enum\Enum.c.xcst" />
+    <None Include="Extension\Display\Templates\Object\MembersNames.c.xcst" />
+    <None Include="Extension\Display\Templates\Object\Members.c.xcst" />
     <None Include="Extension\Display\Templates\Object\ObjectGrouped.c.xcst" />
     <None Include="Extension\Display\Templates\Object\Object.c.xcst" />
     <None Include="Extension\Display\Templates\Object\ObjectRaw.c.xcst" />
@@ -221,10 +224,13 @@
     <None Include="Extension\Editor\editor.autofocus.type.c.xcst" />
     <None Include="Extension\Editor\editor.disabled.type.c.xcst" />
     <None Include="Extension\Editor\editor.disabled.type.i.xcst" />
+    <None Include="Extension\Editor\editor.members_members-names.mutex.i.xcst" />
     <None Include="Extension\Editor\editor.readonly.type.c.xcst" />
     <None Include="Extension\Editor\editor.readonly.type.i.xcst" />
     <None Include="Extension\Editor\editor.autofocus.type.i.xcst" />
     <None Include="Extension\Editor\MemberTemplate\CopyViewData.c.xcst" />
+    <None Include="Extension\Editor\Templates\Object\MembersNames.c.xcst" />
+    <None Include="Extension\Editor\Templates\Object\Members.c.xcst" />
     <None Include="Extension\Editor\Templates\Object\HttpPostedFileBase.c.xcst" />
     <None Include="Extension\Editor\Templates\Object\ObjectRaw.c.xcst" />
     <None Include="Extension\Editor\Templates\Object\ObjectGrouped.c.xcst" />

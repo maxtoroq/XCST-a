@@ -115,7 +115,17 @@ namespace Xcst.Web.Runtime {
                ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => item, itemType);
                string fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-               templateHelper(html, package, seqOutput, metadata, fieldName, null, DataBoundControlMode.Edit, additionalViewData: null);
+               templateHelper(
+                  html,
+                  package,
+                  seqOutput,
+                  metadata,
+                  htmlFieldName: fieldName,
+                  templateName: null,
+                  membersNames: null,
+                  DataBoundControlMode.Edit,
+                  additionalViewData: null
+               );
             }
 
          } finally {
@@ -256,7 +266,17 @@ namespace Xcst.Web.Runtime {
                   fieldWriter.WriteAttributeString("class", "editor-field");
                }
 
-               templateHelper(html, package, fieldWriter ?? fieldsetWriter ?? seqOutput, propertyMeta, propertyMeta.PropertyName, null, DataBoundControlMode.Edit, additionalViewData: null);
+               templateHelper(
+                  html,
+                  package,
+                  fieldWriter ?? fieldsetWriter ?? seqOutput,
+                  propertyMeta,
+                  htmlFieldName: propertyMeta.PropertyName,
+                  templateName: null,
+                  membersNames: null,
+                  DataBoundControlMode.Edit,
+                  additionalViewData: null
+               );
 
                if (!propertyMeta.HideSurroundingHtml) {
                   fieldWriter!.WriteString(" ");

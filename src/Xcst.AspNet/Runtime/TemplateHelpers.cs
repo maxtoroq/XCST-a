@@ -107,24 +107,35 @@ namespace Xcst.Web.Runtime {
 
       internal delegate void ExecuteTemplateDelegate(
             HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData, string? templateName,
-            DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions);
+            IList<string>? membersNames, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions);
 
       internal delegate Dictionary<string, TemplateAction> GetDefaultActionsDelegate(DataBoundControlMode mode);
 
       internal delegate IEnumerable<string> GetViewNamesDelegate(ModelMetadata metadata, params string?[] templateHints);
 
       internal delegate void TemplateHelperDelegate(
-            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string? htmlFieldName,
-            string? templateName, DataBoundControlMode mode, object? additionalViewData);
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string? htmlFieldName, string? templateName,
+            IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData);
 
       public static void Template(
-            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? templateName, string? htmlFieldName,
-            DataBoundControlMode mode, object? additionalViewData) =>
-         Template(html, package, output, expression, templateName, htmlFieldName, mode, additionalViewData, TemplateHelper);
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? htmlFieldName, string? templateName,
+            IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData) =>
+         Template(
+            html,
+            package,
+            output,
+            expression: expression,
+            htmlFieldName: htmlFieldName,
+            templateName: templateName,
+            membersNames,
+            mode,
+            additionalViewData,
+            TemplateHelper
+         );
 
       internal static void Template(
-            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? templateName, string? htmlFieldName,
-            DataBoundControlMode mode, object? additionalViewData, TemplateHelperDelegate templateHelper) {
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? htmlFieldName, string? templateName,
+            IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData, TemplateHelperDelegate templateHelper) {
 
          ModelMetadata metadata = ModelMetadata.FromStringExpression(expression, html.ViewData);
 
@@ -132,17 +143,38 @@ namespace Xcst.Web.Runtime {
             htmlFieldName = ExpressionHelper.GetExpressionText(expression);
          }
 
-         templateHelper(html, package, output, metadata, htmlFieldName, templateName, mode, additionalViewData);
+         templateHelper(
+            html,
+            package,
+            output,
+            metadata,
+            htmlFieldName: htmlFieldName,
+            templateName: templateName,
+            membersNames,
+            mode,
+            additionalViewData
+         );
       }
 
       public static void TemplateFor<TContainer, TValue>(
             HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
-            string? templateName, string? htmlFieldName, DataBoundControlMode mode, object? additionalViewData) =>
-         TemplateFor(html, package, output, expression, templateName, htmlFieldName, mode, additionalViewData, TemplateHelper);
+            string? htmlFieldName, string? templateName, IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData) =>
+         TemplateFor(
+            html,
+            package,
+            output,
+            expression: expression,
+            htmlFieldName: htmlFieldName,
+            templateName: templateName,
+            membersNames,
+            mode,
+            additionalViewData,
+            TemplateHelper
+         );
 
       internal static void TemplateFor<TContainer, TValue>(
             HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
-            string? templateName, string? htmlFieldName, DataBoundControlMode mode, object? additionalViewData, TemplateHelperDelegate templateHelper) {
+            string? htmlFieldName, string? templateName, IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData, TemplateHelperDelegate templateHelper) {
 
          ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
 
@@ -150,15 +182,38 @@ namespace Xcst.Web.Runtime {
             htmlFieldName = ExpressionHelper.GetExpressionText(expression);
          }
 
-         templateHelper(html, package, output, metadata, htmlFieldName, templateName, mode, additionalViewData);
+         templateHelper(
+            html,
+            package,
+            output,
+            metadata,
+            htmlFieldName: htmlFieldName,
+            templateName: templateName,
+            membersNames,
+            mode,
+            additionalViewData
+         );
       }
 
       public static void TemplateHelper(
-            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string? htmlFieldName, string? templateName, DataBoundControlMode mode, object? additionalViewData) =>
-         TemplateHelper(html, package, output, metadata, htmlFieldName, templateName, mode, additionalViewData, ExecuteTemplate);
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string? htmlFieldName, string? templateName,
+            IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData) =>
+         TemplateHelper(
+            html,
+            package,
+            output,
+            metadata,
+            htmlFieldName: htmlFieldName,
+            templateName: templateName,
+            membersNames,
+            mode,
+            additionalViewData,
+            ExecuteTemplate
+         );
 
       internal static void TemplateHelper(
-            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string? htmlFieldName, string? templateName, DataBoundControlMode mode, object? additionalViewData, ExecuteTemplateDelegate executeTemplate) {
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string? htmlFieldName, string? templateName,
+            IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData, ExecuteTemplateDelegate executeTemplate) {
 
          bool displayMode = mode == DataBoundControlMode.ReadOnly;
 
@@ -203,8 +258,11 @@ namespace Xcst.Web.Runtime {
             Model = metadata.Model,
             ModelMetadata = metadata,
             TemplateInfo = new TemplateInfo {
-               FormattedModelValue = formattedModelValue!, // setter accepts null
-               HtmlFieldPrefix = html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName)
+               FormattedModelValue = formattedModelValue,
+               HtmlFieldPrefix = html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
+#if !ASPNETMVC
+               MembersNames = membersNames
+#endif
             }
          };
 
@@ -222,12 +280,12 @@ namespace Xcst.Web.Runtime {
 
          viewData.TemplateInfo.VisitedObjects().Add(visitedObjectsKey); // DDB #224750
 
-         executeTemplate(html, package, output, viewData, templateName, mode, GetViewNames, GetDefaultActions);
+         executeTemplate(html, package, output, viewData, templateName, membersNames, mode, GetViewNames, GetDefaultActions);
       }
 
       static void ExecuteTemplate(
-            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData,
-            string? templateName, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
+            HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData, string? templateName,
+            IList<string>? membersNames, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
 
          var actionCache = GetActionCache(html);
          var defaultActions = getDefaultActions(mode);

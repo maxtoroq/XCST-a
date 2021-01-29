@@ -127,8 +127,9 @@ namespace XcstCodeGen {
       static void VisualStudioErrorLog(CompileException ex) {
 
          string uriString = ex.ModuleUri;
-         var uri = new Uri(uriString);
-         string path = (uri.IsFile) ? uri.LocalPath : uriString;
+         string path = (Uri.TryCreate(uriString, UriKind.Absolute, out Uri uri) && uri.IsFile) ?
+            uri.LocalPath
+            : uriString;
 
          Console.WriteLine($"{path}({ex.LineNumber}): XCST error {ex.ErrorCode}: {ex.Message}");
       }

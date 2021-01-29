@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='SomeField' as='string'/>
+      <c:member name='DontDisplay' as='string' display='no'/>
+      <c:member name='Complex' auto-initialize='yes'>
+         <c:member name='ComplexField' as='string'/>
+      </c:member>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <section>
+            <a:model value='new Foo()'>
+               <a:display members='SomeField DontDisplay'/>
+            </a:model>
+         </section>
+         <section>
+            <a:model value='new Foo()'>
+               <a:display members=''/>
+            </a:model>
+         </section>
+         <section>
+            <a:model value='new Foo()'>
+               <a:display for='Complex' members='ComplexField'/>
+            </a:model>
+         </section>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <section>
+            <div class='display-label'>SomeField</div>
+            <div class='display-field'/>
+            <div class='display-label'>DontDisplay</div>
+            <div class='display-field'/>
+         </section>
+         <section>
+            <div class='display-label'>SomeField</div>
+            <div class='display-field'/>
+         </section>
+         <section>
+            <div class='display-label'>ComplexField</div>
+            <div class='display-field'/>
+         </section>
+      </div>
+   </c:template>
+
+</c:module>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='SomeField' as='string'/>
+      <c:member name='DontDisplay' as='string' display='no'/>
+      <c:member name='Complex'>
+         <c:member name='ComplexField' as='string'/>
+      </c:member>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <section>
+            <a:model as='Foo'>
+               <a:editor members='SomeField DontDisplay'/>
+            </a:model>
+         </section>
+         <section>
+            <a:model as='Foo'>
+               <a:editor members=''/>
+            </a:model>
+         </section>
+         <section>
+            <a:model as='Foo'>
+               <a:editor for='Complex' members='ComplexField'/>
+            </a:model>
+         </section>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <section>
+            <div class='editor-label'>
+               <label for='SomeField'>SomeField</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='SomeField' name='SomeField' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='SomeField' data-valmsg-replace='true'/>
+            </div>
+            <div class='editor-label'>
+               <label for='DontDisplay'>DontDisplay</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='DontDisplay' name='DontDisplay' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='DontDisplay' data-valmsg-replace='true'/>
+            </div>
+         </section>
+         <section>
+            <div class='editor-label'>
+               <label for='SomeField'>SomeField</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='SomeField' name='SomeField' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='SomeField' data-valmsg-replace='true'/>
+            </div>
+         </section>
+         <section>
+            <div class='editor-label'>
+               <label for='Complex_ComplexField'>ComplexField</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='Complex_ComplexField' name='Complex.ComplexField' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='Complex.ComplexField' data-valmsg-replace='true'/>
+            </div>
+         </section>
+      </div>
+   </c:template>
+
+</c:module>

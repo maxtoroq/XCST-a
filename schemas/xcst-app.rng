@@ -50,13 +50,13 @@
          <zeroOrMore>
             <choice>
                <ref name="extension-instruction"/>
-               <ref name="other-element"/>
+               <ref name="_other-element"/>
                <text/>
             </choice>
          </zeroOrMore>
       </define>
 
-      <define name="other-element">
+      <define name="_other-element">
          <element>
             <anyName>
                <except>
@@ -75,15 +75,6 @@
             <ref name="sequence-constructor"/>
          </element>
       </define>
-
-      <define name="value-attribute-or-content">
-         <choice>
-            <attribute name="value">
-               <ref name="expression"/>
-            </attribute>
-            <ref name="sequence-constructor"/>
-         </choice>
-      </define>
    </div>
 
    <div>
@@ -91,7 +82,7 @@
 
       <define name="input">
          <element name="input">
-            <ref name="input-for-name-value-attribs"/>
+            <ref name="_input-for-name-value-attribs"/>
             <zeroOrMore>
                <choice>
                   <attribute name="type">
@@ -105,23 +96,23 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="text-box-attribs"/>
-            <ref name="input-attribs"/>
-            <ref name="html-attribs"/>
+            <ref name="_text-box-attribs"/>
+            <ref name="_input-attribs"/>
+            <ref name="_html-attribs"/>
          </element>
       </define>
 
       <define name="hidden">
          <element name="hidden">
-            <ref name="input-for-name-value-attribs"/>
-            <ref name="input-attribs-except-autofocus"/>
-            <ref name="html-attribs"/>
+            <ref name="_input-for-name-value-attribs"/>
+            <ref name="_input-attribs-except-autofocus"/>
+            <ref name="_html-attribs"/>
          </element>
       </define>
 
       <define name="textarea">
          <element name="textarea">
-            <ref name="input-for-name-value-attribs"/>
+            <ref name="_input-for-name-value-attribs"/>
             <zeroOrMore>
                <choice>
                   <attribute name="rows">
@@ -138,9 +129,9 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="text-box-attribs"/>
-            <ref name="input-attribs"/>
-            <ref name="html-attribs"/>
+            <ref name="_text-box-attribs"/>
+            <ref name="_input-attribs"/>
+            <ref name="_html-attribs"/>
          </element>
       </define>
 
@@ -164,8 +155,8 @@
                   </choice>
                </zeroOrMore>
             </choice>
-            <ref name="input-attribs"/>
-            <ref name="html-attribs"/>
+            <ref name="_input-attribs"/>
+            <ref name="_html-attribs"/>
          </element>
       </define>
 
@@ -192,8 +183,8 @@
                   </choice>
                </zeroOrMore>
             </choice>
-            <ref name="input-attribs"/>
-            <ref name="html-attribs"/>
+            <ref name="_input-attribs"/>
+            <ref name="_html-attribs"/>
          </element>
       </define>
 
@@ -205,19 +196,19 @@
 
       <define name="select">
          <element name="select">
-            <ref name="input-for-name-value-attribs"/>
-            <ref name="options"/>
+            <ref name="_input-for-name-value-attribs"/>
+            <ref name="_options"/>
             <optional>
                <attribute name="multiple">
                   <ref name="boolean"/>
                </attribute>
             </optional>
-            <ref name="input-attribs"/>
-            <ref name="html-attribs"/>
+            <ref name="_input-attribs"/>
+            <ref name="_html-attribs"/>
          </element>
       </define>
 
-      <define name="options">
+      <define name="_options">
          <optional>
             <attribute name="options">
                <ref name="options-expr"/>
@@ -249,7 +240,7 @@
          </zeroOrMore>
       </define>
 
-      <define name="input-for-name-value-attribs">
+      <define name="_input-for-name-value-attribs">
          <choice>
             <attribute name="for">
                <ref name="expression"/>
@@ -267,8 +258,8 @@
          </choice>
       </define>
 
-      <define name="input-attribs">
-         <ref name="input-attribs-except-autofocus"/>
+      <define name="_input-attribs">
+         <ref name="_input-attribs-except-autofocus"/>
          <zeroOrMore>
             <choice>
                <attribute name="autofocus">
@@ -281,7 +272,7 @@
          </zeroOrMore>
       </define>
 
-      <define name="input-attribs-except-autofocus">
+      <define name="_input-attribs-except-autofocus">
          <zeroOrMore>
             <choice>
                <attribute name="disabled">
@@ -294,7 +285,7 @@
          </zeroOrMore>
       </define>
 
-      <define name="text-box-attribs">
+      <define name="_text-box-attribs">
          <zeroOrMore>
             <choice>
                <attribute name="readonly">
@@ -327,7 +318,7 @@
                   <ref name="avt"/>
                </attribute>
             </optional>
-            <ref name="html-attribs"/>
+            <ref name="_html-attribs"/>
          </element>
       </define>
 
@@ -346,7 +337,7 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="html-attribs"/>
+            <ref name="_html-attribs"/>
          </element>
       </define>
 
@@ -367,11 +358,11 @@
                   <ref name="avt"/>
                </attribute>
             </optional>
-            <ref name="html-attribs"/>
+            <ref name="_html-attribs"/>
          </element>
       </define>
 
-      <define name="html-attribs">
+      <define name="_html-attribs">
          <zeroOrMore>
             <choice>
                <attribute name="class">
@@ -390,7 +381,7 @@
 
       <define name="editor">
          <element name="editor">
-            <ref name="editor-display-common"/>
+            <ref name="_editor-display-common"/>
             <zeroOrMore>
                <choice>
                   <attribute name="autofocus">
@@ -418,11 +409,11 @@
 
       <define name="display">
          <element name="display">
-            <ref name="editor-display-common"/>
+            <ref name="_editor-display-common"/>
          </element>
       </define>
 
-      <define name="editor-display-common">
+      <define name="_editor-display-common">
          <choice>
             <attribute name="for">
                <ref name="expression"/>
@@ -433,6 +424,19 @@
                </attribute>
             </optional>
          </choice>
+         <optional>
+            <choice>
+               <attribute name="members">
+                  <ref name="members"/>
+               </attribute>
+               <attribute name="members-names">
+                  <choice>
+                     <ref name="members"/>
+                     <ref name="avt-expr"/>
+                  </choice>
+               </attribute>
+            </choice>
+         </optional>
          <zeroOrMore>
             <choice>
                <attribute name="template">
@@ -453,30 +457,38 @@
             </choice>
          </zeroOrMore>
          <zeroOrMore>
-            <element name="with-options">
-               <choice>
-                  <attribute name="for">
-                     <ref name="expression"/>
-                  </attribute>
-                  <optional>
-                     <attribute name="name">
-                        <ref name="avt"/>
-                     </attribute>
-                  </optional>
-               </choice>
-               <ref name="options"/>
-            </element>
+            <ref name="with-options"/>
          </zeroOrMore>
          <optional>
-            <element name="member-template">
+            <ref name="member-template"/>
+         </optional>
+      </define>
+
+      <define name="with-options">
+         <element name="with-options">
+            <choice>
+               <attribute name="for">
+                  <ref name="expression"/>
+               </attribute>
                <optional>
-                  <attribute name="helper-name">
-                     <ref name="identifier"/>
+                  <attribute name="name">
+                     <ref name="avt"/>
                   </attribute>
                </optional>
-               <ref name="sequence-constructor"/>
-            </element>
-         </optional>
+            </choice>
+            <ref name="_options"/>
+         </element>
+      </define>
+
+      <define name="member-template">
+         <element name="member-template">
+            <optional>
+               <attribute name="helper-name">
+                  <ref name="identifier"/>
+               </attribute>
+            </optional>
+            <ref name="sequence-constructor"/>
+         </element>
       </define>
    </div>
 
@@ -588,8 +600,8 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="html-attribs"/>
-            <ref name="form-model-common"/>
+            <ref name="_html-attribs"/>
+            <ref name="_form-model-common"/>
          </element>
       </define>
 
@@ -605,11 +617,11 @@
                   </attribute>
                </choice>
             </oneOrMore>
-            <ref name="form-model-common"/>
+            <ref name="_form-model-common"/>
          </element>
       </define>
 
-      <define name="form-model-common">
+      <define name="_form-model-common">
          <zeroOrMore>
             <choice>
                <attribute name="field-prefix">
@@ -714,6 +726,14 @@
             </docs:expression-type>
             <docs:expression-type name="System.Collections.IEnumerable"/>
          </ref>
+      </define>
+
+      <define name="members">
+         <list>
+            <zeroOrMore>
+               <ref name="identifier"/>
+            </zeroOrMore>
+         </list>
       </define>
 
       <define name="identifier">

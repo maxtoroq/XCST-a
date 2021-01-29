@@ -858,18 +858,26 @@
       <variable name="editor" select="self::a:editor"/>
 
       <call-template name="xcst:validate-attribs">
-         <with-param name="optional" select="'for', 'name', 'template', 'field-name', 'attributes', 'with-params', 'options', ('autofocus', 'disabled', 'readonly')[$editor]"/>
+         <with-param name="optional" select="'for', 'name', 'template', 'field-name', 'members'[not($a:aspnetmvc)], 'members-names'[not($a:aspnetmvc)], 'attributes', 'with-params', 'options', ('autofocus', 'disabled', 'readonly')[$editor]"/>
          <with-param name="extension" select="true()"/>
       </call-template>
 
       <call-template name="a:validate-for"/>
+
+      <if test="@members and @members-names">
+         <sequence select="error((), '''members'' and ''members-names'' attributes are mutually exclusive.', src:error-object(.))"/>
+      </if>
+
+      <variable name="html-helper" as="element()">
+         <call-template name="a:html-helper"/>
+      </variable>
 
       <variable name="for-model" select="empty((@for, @name))"/>
 
       <code:method-call name="{if ($editor) then 'Editor' else 'Display'}{'For'[current()/@for], 'ForModel'[$for-model]}">
          <sequence select="a:helper-type(concat((if ($editor) then 'Editor' else 'Display'), 'Instructions'))"/>
          <code:arguments>
-            <call-template name="a:html-helper"/>
+            <sequence select="$html-helper"/>
             <code:this-reference/>
             <sequence select="$output/src:reference/code:*"/>
             <if test="not($for-model)">
@@ -892,23 +900,67 @@
                   </when>
                </choose>
             </if>
-            <code:argument name="templateName">
-               <choose>
-                  <when test="@template">
-                     <call-template name="src:expand-attribute">
-                        <with-param name="attr" select="@template"/>
-                     </call-template>
-                  </when>
-                  <otherwise>
-                     <code:null/>
-                  </otherwise>
-               </choose>
-            </code:argument>
+            <if test="@template">
+               <code:argument name="templateName">
+                  <call-template name="src:expand-attribute">
+                     <with-param name="attr" select="@template"/>
+                  </call-template>
+               </code:argument>
+            </if>
             <if test="@field-name">
                <code:argument name="htmlFieldName">
                   <call-template name="src:expand-attribute">
                      <with-param name="attr" select="@field-name"/>
                   </call-template>
+               </code:argument>
+            </if>
+            <if test="@members">
+               <variable name="members" select="xcst:list(@members)"/>
+               <if test="exists($members)">
+                  <code:argument name="membersNames">
+                     <code:new-array>
+                        <code:type-reference name="String" namespace="System"/>
+                        <code:collection-initializer>
+                           <variable name="for" select="@for/xcst:expression(.)"/>
+                           <for-each select="$members">
+                              <code:nameof>
+                                 <code:chain>
+                                    <sequence select="$html-helper"/>
+                                    <code:property-reference name="ViewData">
+                                       <code:chain-reference/>
+                                    </code:property-reference>
+                                    <code:property-reference name="Model">
+                                       <code:chain-reference/>
+                                    </code:property-reference>
+                                    <if test="$for">
+                                       <code:property-reference name="{$for}">
+                                          <code:chain-reference/>
+                                       </code:property-reference>
+                                    </if>
+                                    <code:property-reference name="{.}">
+                                       <code:chain-reference/>
+                                    </code:property-reference>
+                                 </code:chain>
+                              </code:nameof>
+                           </for-each>
+                        </code:collection-initializer>
+                     </code:new-array>
+                  </code:argument>
+               </if>
+            </if>
+            <if test="@members-names">
+               <code:argument name="membersNames">
+                  <code:method-call name="List">
+                     <sequence select="src:helper-type('DataType')"/>
+                     <code:arguments>
+                        <call-template name="src:expand-attribute">
+                           <with-param name="attr" select="@members-names"/>
+                        </call-template>
+                        <code:method-reference name="String">
+                           <sequence select="src:helper-type('DataType')"/>
+                        </code:method-reference>
+                     </code:arguments>
+                  </code:method-call>
                </code:argument>
             </if>
             <call-template name="a:editor-additional-view-data"/>
