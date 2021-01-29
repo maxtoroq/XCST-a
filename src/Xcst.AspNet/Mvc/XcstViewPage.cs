@@ -43,9 +43,11 @@ namespace Xcst.Web.Mvc {
             Context = value?.HttpContext;
 #pragma warning restore CS8601
 
+#if ASPNETMVC
             if (value?.ViewData is ViewDataDictionary vd) {
                ViewData = vd;
             }
+#endif
 
 #pragma warning disable CS8625
             Url = null;
@@ -104,7 +106,11 @@ namespace Xcst.Web.Mvc {
       public ModelStateDictionary ModelState => ViewData.ModelState;
 
       public virtual TempDataDictionary TempData {
-         get => _tempData ??= ViewContext?.TempData ?? new TempDataDictionary();
+         get => _tempData ??=
+#if ASPNETMVC
+            ViewContext?.TempData ??
+#endif
+            new TempDataDictionary();
          set => _tempData = value;
       }
 
@@ -206,8 +212,10 @@ namespace Xcst.Web.Mvc {
                view: new XcstView(this.ViewContext, viewPage.VirtualPath),
 #endif
                viewData: (_viewData != null) ? new ViewDataDictionary(_viewData)
+#if ASPNETMVC
                   // Never use this.ViewContext.ViewData
                   : (this.ViewContext.ViewData != null) ? new ViewDataDictionary()
+#endif
                   : null,
                tempData: _tempData
             );

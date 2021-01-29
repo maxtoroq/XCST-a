@@ -109,12 +109,8 @@ namespace Xcst.Web {
             context
 #if ASPNETMVC
             , view ?? context.View
-#endif
-#if !NETCOREAPP
             , viewData ?? context.ViewData
             , tempData ?? context.TempData
-#endif
-#if ASPNETMVC
             , writer ?? context.Writer
 #endif
          ) {
