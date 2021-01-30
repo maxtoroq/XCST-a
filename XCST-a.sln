@@ -98,30 +98,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet.Compilation", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet.Extension", "src\Xcst.AspNet.Extension\Xcst.AspNet.Extension.csproj", "{5039E116-8B5F-406D-A7FD-550F309A7178}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aspnet-precompiled-code", "samples\aspnet-precompiled-code\aspnet-precompiled-code.csproj", "{85105E77-C24A-4006-B523-99C94E418219}"
-EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "aspnet-precompiled-site", "samples\aspnet-precompiled-site\", "{526FF9FB-17E3-4235-9DCA-B0F2986A6251}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
-		ProjectReferences = "{85105e77-c24a-4006-b523-99c94e418219}|AspNetPrecompiled.dll;{5CB9AA5E-52B2-4FBB-8DB3-D1D53193D34F}|Xcst.AspNet.dll;{d70b8cb0-6475-41b1-9c61-d6ab8f9ab276}|Xcst.AspNet.Precompilation.dll;"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_56269"
-		Debug.AspNetCompiler.PhysicalPath = "samples\aspnet-precompiled-site\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56269\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_56269"
-		Release.AspNetCompiler.PhysicalPath = "samples\aspnet-precompiled-site\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56269\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "56269"
-		SlnRelativePath = "samples\aspnet-precompiled-site\"
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xcst-codegen", "samples\xcst-codegen\xcst-codegen.csproj", "{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcst.AspNet.Precompilation", "src\Xcst.AspNet.Precompilation\Xcst.AspNet.Precompilation.csproj", "{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276}"
@@ -129,6 +105,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcst.AspNetCore", "src\Xcst.AspNetCore\Xcst.AspNetCore.csproj", "{76A90B3D-3008-45BE-9D30-DAE368945FC8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aspnetcore", "samples\aspnetcore\aspnetcore.csproj", "{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aspnet-precompiled", "samples\aspnet-precompiled\aspnet-precompiled.csproj", "{1A2483BB-B94A-4C53-BEF4-A00076E1D0E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -185,18 +163,6 @@ Global
 		{5039E116-8B5F-406D-A7FD-550F309A7178}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5039E116-8B5F-406D-A7FD-550F309A7178}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5039E116-8B5F-406D-A7FD-550F309A7178}.Release|Any CPU.Build.0 = Release|Any CPU
-		{85105E77-C24A-4006-B523-99C94E418219}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
-		{85105E77-C24A-4006-B523-99C94E418219}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
-		{85105E77-C24A-4006-B523-99C94E418219}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85105E77-C24A-4006-B523-99C94E418219}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85105E77-C24A-4006-B523-99C94E418219}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85105E77-C24A-4006-B523-99C94E418219}.Release|Any CPU.Build.0 = Release|Any CPU
-		{526FF9FB-17E3-4235-9DCA-B0F2986A6251}.CodeAnalysis|Any CPU.ActiveCfg = Debug|Any CPU
-		{526FF9FB-17E3-4235-9DCA-B0F2986A6251}.CodeAnalysis|Any CPU.Build.0 = Debug|Any CPU
-		{526FF9FB-17E3-4235-9DCA-B0F2986A6251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{526FF9FB-17E3-4235-9DCA-B0F2986A6251}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{526FF9FB-17E3-4235-9DCA-B0F2986A6251}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{526FF9FB-17E3-4235-9DCA-B0F2986A6251}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
 		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
 		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -221,6 +187,12 @@ Global
 		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A2483BB-B94A-4C53-BEF4-A00076E1D0E8}.CodeAnalysis|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A2483BB-B94A-4C53-BEF4-A00076E1D0E8}.CodeAnalysis|Any CPU.Build.0 = Debug|Any CPU
+		{1A2483BB-B94A-4C53-BEF4-A00076E1D0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A2483BB-B94A-4C53-BEF4-A00076E1D0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A2483BB-B94A-4C53-BEF4-A00076E1D0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A2483BB-B94A-4C53-BEF4-A00076E1D0E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -234,12 +206,11 @@ Global
 		{5C9BDC47-2C36-4CFF-AC98-D6F6198E43FA} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{30E0CB99-1953-476B-A994-7BC15D903B25} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
 		{5039E116-8B5F-406D-A7FD-550F309A7178} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
-		{85105E77-C24A-4006-B523-99C94E418219} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
-		{526FF9FB-17E3-4235-9DCA-B0F2986A6251} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{3EC3CDA1-62BC-4CC7-9C97-D47B3B1328B4} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 		{D70B8CB0-6475-41B1-9C61-D6AB8F9AB276} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
 		{76A90B3D-3008-45BE-9D30-DAE368945FC8} = {3D9FCA40-C58E-428A-AE3C-480DF5724451}
 		{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
+		{1A2483BB-B94A-4C53-BEF4-A00076E1D0E8} = {A359B933-E00C-4356-B908-7ED4CCA83B65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9D68F6E0-43F6-4AF7-8617-714A04B12736}
