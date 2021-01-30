@@ -9,9 +9,8 @@ namespace AspNetMvc {
       string contactTo = "sales@example.com";
       string contactSubject = "Web Contact";
 
-      public ActionResult Index() {
-         return View(new Contact());
-      }
+      public ActionResult Index() =>
+         View(new Contact());
 
       [HttpPost]
       [ValidateAntiForgeryToken]

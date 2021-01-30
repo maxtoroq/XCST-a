@@ -6,9 +6,8 @@ namespace AspNetMvc {
 
    public static class MvcHelpers {
 
-      public static string RenderViewAsString(this ControllerContext context, string viewName, object model) {
-         return RenderViewAsString(context, viewName, new ViewDataDictionary(model));
-      }
+      public static string RenderViewAsString(this ControllerContext context, string viewName, object model) =>
+         RenderViewAsString(context, viewName, new ViewDataDictionary(model));
 
       public static string RenderViewAsString(this ControllerContext context, string viewName, ViewDataDictionary viewData) {
 
@@ -18,9 +17,8 @@ namespace AspNetMvc {
          }
       }
 
-      public static void RenderView(this ControllerContext context, string viewName, object model, TextWriter output) {
+      public static void RenderView(this ControllerContext context, string viewName, object model, TextWriter output) =>
          RenderView(context, viewName, new ViewDataDictionary(model), output);
-      }
 
       public static void RenderView(this ControllerContext context, string viewName, ViewDataDictionary viewData, TextWriter output) {
 

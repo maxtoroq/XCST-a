@@ -16,6 +16,10 @@ try {
          continue
       }
 
+      if (Test-Path $web\*.csproj) {
+         continue
+      }
+
       &$nuget restore $packagesPath -SolutionDirectory ..
 
       [xml]$packagesDoc = Get-Content $packagesPath
