@@ -216,9 +216,7 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         var filteredProperties = modelMetadata.Properties
-            .Where(p => EditorInstructions.ShowForEdit(html, p));
-
+         var filteredProperties = EditorInstructions.EditorProperties(html);
          var groupedProperties = filteredProperties.GroupBy(p => p.GroupName());
 
          bool createFieldset = groupedProperties.Any(g => g.Key != null);

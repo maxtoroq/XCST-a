@@ -21,6 +21,11 @@
          </section>
          <section>
             <a:model value='new Foo()'>
+               <a:display members-names='DontDisplay SomeField'/>
+            </a:model>
+         </section>
+         <section>
+            <a:model value='new Foo()'>
                <a:display members-names=''/>
             </a:model>
          </section>
@@ -38,6 +43,12 @@
             <div class='display-label'>SomeField</div>
             <div class='display-field'/>
             <div class='display-label'>DontDisplay</div>
+            <div class='display-field'/>
+         </section>
+         <section>
+            <div class='display-label'>DontDisplay</div>
+            <div class='display-field'/>
+            <div class='display-label'>SomeField</div>
             <div class='display-field'/>
          </section>
          <section>

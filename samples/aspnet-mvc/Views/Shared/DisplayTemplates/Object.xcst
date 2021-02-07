@@ -4,9 +4,6 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='System'/>
-   <c:import-namespace ns='System.Linq'/>
-   <c:import-namespace ns='System.Web.Mvc'/>
    <c:import-namespace ns='Xcst.Web.Runtime'/>
 
    <c:param name='labelColumnClass'>col-md-3</c:param>
@@ -18,7 +15,7 @@
             <a:display-text/>
          </c:when>
          <c:otherwise>
-            <c:for-each name='propertyMeta' in='ViewData.ModelMetadata.Properties.Where(x => DisplayInstructions.ShowForDisplay(Html, x))'>
+            <c:for-each name='propertyMeta' in='DisplayInstructions.DisplayProperties(Html)'>
                <c:variable name='propertyName' value='propertyMeta.PropertyName'/>
                <c:variable name='displayTemplate' value='propertyMeta.TemplateHint ?? propertyMeta.DataTypeName'/>
                <c:choose>

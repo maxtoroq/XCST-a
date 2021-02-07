@@ -21,6 +21,11 @@
          </section>
          <section>
             <a:model as='Foo'>
+               <a:editor members='DontDisplay SomeField'/>
+            </a:model>
+         </section>
+         <section>
+            <a:model as='Foo'>
                <a:editor members=''/>
             </a:model>
          </section>
@@ -50,6 +55,24 @@
                <input type='text' id='DontDisplay' name='DontDisplay' value='' class='text-box single-line'/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='DontDisplay' data-valmsg-replace='true'/>
+            </div>
+         </section>
+         <section>
+            <div class='editor-label'>
+               <label for='DontDisplay'>DontDisplay</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='DontDisplay' name='DontDisplay' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='DontDisplay' data-valmsg-replace='true'/>
+            </div>
+            <div class='editor-label'>
+               <label for='SomeField'>SomeField</label>
+            </div>
+            <div class='editor-field'>
+               <input type='text' id='SomeField' name='SomeField' value='' class='text-box single-line'/>
+               <c:text> </c:text>
+               <span class='field-validation-valid' data-valmsg-for='SomeField' data-valmsg-replace='true'/>
             </div>
          </section>
          <section>

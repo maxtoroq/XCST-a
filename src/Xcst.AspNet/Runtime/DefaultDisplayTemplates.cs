@@ -188,9 +188,7 @@ namespace Xcst.Web.Runtime {
             return;
          }
 
-         var filteredProperties = modelMetadata.Properties
-            .Where(p => DisplayInstructions.ShowForDisplay(html, p));
-
+         var filteredProperties = DisplayInstructions.DisplayProperties(html);
          var groupedProperties = filteredProperties.GroupBy(p => p.GroupName());
 
          bool createFieldset = groupedProperties.Any(g => g.Key != null);

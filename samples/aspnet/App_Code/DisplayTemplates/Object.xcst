@@ -18,7 +18,7 @@
             <a:display-text/>
          </c:when>
          <c:otherwise>
-            <c:variable name='filteredProperties' value='ViewData.ModelMetadata.Properties.Where(x => Html.ShowForDisplay(x))'/>
+            <c:variable name='filteredProperties' value='Html.DisplayProperties()'/>
             <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => p.GroupName)'/>
             <c:variable name='createFieldset' value='groupedProperties.Any(g => g.Key != null)'/>
             <c:choose>

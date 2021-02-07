@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<?inherits Xcst.Web.Mvc.XcstViewPage<dynamic>?>
+<?inherits Xcst.Web.Mvc.XcstViewPage?>
 <c:package version='1.0' language='C#'
    xmlns:c='http://maxtoroq.github.io/XCST'
    xmlns:a='http://maxtoroq.github.io/XCST/application'
@@ -18,7 +18,7 @@
             <a:display-text/>
          </c:when>
          <c:otherwise>
-            <c:variable name='filteredProperties' value='ViewData.ModelMetadata.Properties.Where(x => Html.ShowForEdit(x))'/>
+            <c:variable name='filteredProperties' value='Html.EditorProperties()'/>
             <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => p.GroupName)'/>
             <c:variable name='createFieldset' value='groupedProperties.Any(g => g.Key != null)'/>
             <c:choose>

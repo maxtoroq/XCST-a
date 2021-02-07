@@ -278,28 +278,28 @@ namespace System.Web.Mvc {
       }
 
       /// <summary>
-      /// Determines whether a property should be shown in a display template, based on its metadata.
+      /// Returns the properties that should be shown in a display template, based on the
+      /// model's metadata.
       /// </summary>
-      /// <param name="propertyMetadata">The property's metadata.</param>
-      /// <returns>true if the property should be shown; otherwise false.</returns>
+      /// <returns>The relevant model properties.</returns>
       /// <remarks>
       /// This method uses the same logic used by the built-in <code>Object</code> display template;
-      /// e.g. by default, it returns false for complex types.
+      /// e.g. by default, it excludes complex-type properties.
       /// </remarks>
-      public bool ShowForDisplay(ModelMetadata propertyMetadata) =>
-         DisplayInstructions.ShowForDisplay(this, propertyMetadata);
+      public IEnumerable<ModelMetadata> DisplayProperties() =>
+         DisplayInstructions.DisplayProperties(this);
 
       /// <summary>
-      /// Determines whether a property should be shown in an editor template, based on its metadata.
+      /// Returns the properties that should be shown in an editor template, based on the
+      /// model's metadata.
       /// </summary>
-      /// <param name="propertyMetadata">The property's metadata.</param>
-      /// <returns>true if the property should be shown; otherwise false.</returns>
+      /// <returns>The relevant model properties.</returns>
       /// <remarks>
       /// This method uses the same logic used by the built-in <code>Object</code> editor template;
-      /// e.g. by default, it returns false for complex types.
+      /// e.g. by default, it excludes complex-type properties.
       /// </remarks>
-      public bool ShowForEdit(ModelMetadata propertyMetadata) =>
-         EditorInstructions.ShowForEdit(this, propertyMetadata);
+      public IEnumerable<ModelMetadata> EditorProperties() =>
+         EditorInstructions.EditorProperties(this);
 
       /// <summary>
       /// Returns the member template delegate for the provided property.

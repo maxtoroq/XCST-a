@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Data;
 #endif
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using Xcst.PackageModel;
@@ -83,7 +84,27 @@ namespace Xcst.Web.Runtime {
             additionalViewData
          );
 
-      public static bool ShowForEdit(HtmlHelper html, ModelMetadata propertyMetadata) {
+      public static IEnumerable<ModelMetadata> EditorProperties(HtmlHelper html) {
+
+         if (html is null) throw new ArgumentNullException(nameof(html));
+
+         TemplateInfo templateInfo = html.ViewData.TemplateInfo;
+
+         var filteredProperties = html.ViewData.ModelMetadata.Properties
+            .Where(p => ShowForEdit(html, p));
+
+#if ASPNETMVC
+         return filteredProperties;
+#else
+         var orderedProperties = (templateInfo.MembersNames.Count > 0) ?
+            filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.PropertyName))
+            : filteredProperties;
+
+         return orderedProperties;
+#endif
+      }
+
+      static bool ShowForEdit(HtmlHelper html, ModelMetadata propertyMetadata) {
 
          if (html is null) throw new ArgumentNullException(nameof(html));
          if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
