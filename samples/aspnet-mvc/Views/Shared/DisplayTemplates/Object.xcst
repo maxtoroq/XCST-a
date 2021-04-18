@@ -26,7 +26,7 @@
                      <c:variable name='memberTemplate' value='DisplayInstructions.MemberTemplate(Html, propertyMeta)'/>
                      <c:choose>
                         <c:when test='memberTemplate != null'>
-                           <c:evaluate-delegate delegate='memberTemplate'/>
+                           <c:invoke-delegate delegate='memberTemplate'/>
                         </c:when>
                         <c:otherwise>
                            <div class='form-group row'>

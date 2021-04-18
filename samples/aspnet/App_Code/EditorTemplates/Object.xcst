@@ -59,7 +59,7 @@
             <c:variable name='memberTemplate' value='Html.MemberTemplate(propertyMeta)'/>
             <c:choose>
                <c:when test='memberTemplate != null'>
-                  <c:evaluate-delegate delegate='memberTemplate'/>
+                  <c:invoke-delegate delegate='memberTemplate'/>
                </c:when>
                <c:otherwise>
                   <div class='form-group row'>
