@@ -39,6 +39,7 @@ namespace Xcst.Web.Tests {
 
       public static void RunXcstTest(string packageFile, string testName, string testNamespace, bool correct, bool fail) {
 
+         bool printCode = _printCode;
          var packageUri = new Uri(packageFile, UriKind.Absolute);
 
          CompileResult xcstResult;
@@ -46,14 +47,15 @@ namespace Xcst.Web.Tests {
 
          try {
             var codegenResult = GenerateCode(packageUri, testName, testNamespace);
-            xcstResult = codegenResult.Item1;
-            packageName = codegenResult.Item2;
+            xcstResult = codegenResult.result;
+            packageName = codegenResult.packageName;
 
-         } catch (CompileException ex) when (correct || _printCode) {
+         } catch (CompileException ex) when (printCode) {
 
             Console.WriteLine($"// {ex.Message}");
             Console.WriteLine($"// Module URI: {ex.ModuleUri}");
             Console.WriteLine($"// Line number: {ex.LineNumber}");
+
             throw;
          }
 
@@ -73,8 +75,6 @@ namespace Xcst.Web.Tests {
                TestAssert.Fail("A package that defines an 'expected' template without an initial template makes no sense.");
             }
          }
-
-         bool printCode = _printCode;
 
          try {
 
@@ -107,16 +107,20 @@ namespace Xcst.Web.Tests {
                } else if (xcstResult.Templates.Contains(_initialName)) {
 
                   if (xcstResult.Templates.Contains(_expectedName)) {
-                     TestAssert.IsTrue(OutputEqualsToExpected(packageType, packageUri));
+                     TestAssert.IsTrue(OutputEqualsToExpected(packageType, packageUri, printCode));
                   } else {
                      SimplyRun(packageType, packageUri);
                   }
                }
 
-            } catch (RuntimeException ex) when (!fail) {
+            } catch (RuntimeException ex) {
 
-               Console.WriteLine($"// {ex.Message}");
-               printCode = true;
+               if (printCode) {
+                  Console.WriteLine($"// {ex.Message}");
+               } else if (!fail) {
+                  printCode = true;
+               }
+
                throw;
 
             } catch (TestAssertException) {
@@ -144,7 +148,7 @@ namespace Xcst.Web.Tests {
          return compiler;
       }
 
-      static Tuple<CompileResult, string> GenerateCode(Uri packageUri, string testName, string testNamespace) {
+      static (CompileResult result, string packageName) GenerateCode(Uri packageUri, string testName, string testNamespace) {
 
          XcstCompiler compiler = CreateCompiler();
          compiler.TargetNamespace = testNamespace;
@@ -154,7 +158,7 @@ namespace Xcst.Web.Tests {
 
          CompileResult result = compiler.Compile(packageUri);
 
-         return Tuple.Create(result, compiler.TargetNamespace + "." + compiler.TargetClass);
+         return (result, compiler.TargetNamespace + "." + compiler.TargetClass);
       }
 
       public static Type CompileCode(string packageName, Uri packageUri, IEnumerable<string> compilationUnits, string language, bool correct) {
@@ -196,7 +200,7 @@ namespace Xcst.Web.Tests {
 
                if (!codeResult.Success) {
 
-                  Diagnostic error = codeResult.Diagnostics
+                  Diagnostic? error = codeResult.Diagnostics
                      .Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error)
                      .FirstOrDefault();
 
@@ -214,7 +218,7 @@ namespace Xcst.Web.Tests {
                pdbStream.Position = 0;
 
                Assembly assembly = Assembly.Load(assemblyStream.ToArray(), pdbStream.ToArray());
-               Type type = assembly.GetType(packageName);
+               Type type = assembly.GetType(packageName)!;
 
                return type;
             }
@@ -230,7 +234,7 @@ namespace Xcst.Web.Tests {
          httpContextMock.Setup(c => c.Items)
             .Returns(() => new System.Collections.Hashtable());
 
-         // Cookies and Headers used by a:anti-forgery-token
+         // Cookies and Headers used by a:antiforgery
          httpContextMock.Setup(c => c.Response.Cookies)
             .Returns(() => new HttpCookieCollection());
 
@@ -242,7 +246,7 @@ namespace Xcst.Web.Tests {
          return package;
       }
 
-      static bool OutputEqualsToExpected(Type packageType, Uri packageUri) {
+      static bool OutputEqualsToExpected(Type packageType, Uri packageUri, bool printCode) {
 
          XcstViewPage package = CreatePackage(packageType);
 
@@ -271,12 +275,14 @@ namespace Xcst.Web.Tests {
          XDocument normalizedActual = XDocumentNormalizer.Normalize(actualDoc);
          bool equals = XNode.DeepEquals(normalizedExpected, normalizedActual);
 
-         if (!equals) {
+         if (printCode || !equals) {
+            Console.WriteLine("/*");
             Console.WriteLine("<!-- expected -->");
             Console.WriteLine(normalizedExpected.ToString());
             Console.WriteLine();
             Console.WriteLine("<!-- actual -->");
             Console.WriteLine(normalizedActual.ToString());
+            Console.WriteLine("*/");
          }
 
          return equals;

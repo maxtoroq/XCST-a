@@ -1,441 +1,71 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\NUnit3TestAdapter.3.16.1\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\..\packages\NUnit3TestAdapter.3.16.1\build\net35\NUnit3TestAdapter.props')" />
-  <Import Project="..\..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\..\packages\NUnit.3.12.0\build\NUnit.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9C2C8E13-E69D-4656-8554-11CD69147448}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Xcst.Web.Tests</RootNamespace>
-    <AssemblyName>Xcst.AspNet.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-    <TargetFrameworkProfile />
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>8</LangVersion>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis, Version=2.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Common.2.6.1\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=2.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.2.6.1\lib\netstandard1.3\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Moq, Version=4.8.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Moq.4.8.0\lib\net45\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="saxon9he-api, Version=9.9.1.5, Culture=neutral, PublicKeyToken=e1fdd002d5083fe6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\saxon9he-api.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition" />
+    <Compile Include="..\..\src\XmlNamespaces.cs" Link="XmlNamespaces.cs" />
+    <Compile Include="..\XDocumentNormalizer.cs" Link="XDocumentNormalizer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="3.8.0" />
+    <PackageReference Include="Moq" Version="4.8.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="Xcst.Compiler" Version="0.130.0" />
+    <PackageReference Include="Xcst.Runtime" Version="0.130.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Xcst.AspNet.Compilation\Xcst.AspNet.Compilation.csproj" />
+    <ProjectReference Include="..\..\src\Xcst.AspNet.Extension\Xcst.AspNet.Extension.csproj" />
+    <ProjectReference Include="..\..\src\Xcst.AspNet\Xcst.AspNet.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Diagnostics.FileVersionInfo, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Diagnostics.FileVersionInfo.4.3.0\lib\net46\System.Diagnostics.FileVersionInfo.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Diagnostics.StackTrace, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Diagnostics.StackTrace.4.3.0\lib\net46\System.Diagnostics.StackTrace.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Reflection.Metadata.1.6.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Text.Encoding.CodePages.4.4.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.4.0\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Thread, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="saxon9he, Version=9.9.1.5, Culture=neutral, PublicKeyToken=e1fdd002d5083fe6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\saxon9he.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.XmlDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Xml.XmlDocument.4.3.0\lib\net46\System.Xml.XmlDocument.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="IKVM.OpenJDK.Charsets, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\IKVM.OpenJDK.Charsets.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.XPath, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Xml.XPath.4.3.0\lib\net46\System.Xml.XPath.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.XPath.XDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Xml.XPath.XDocument.4.3.0\lib\net46\System.Xml.XPath.XDocument.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="IKVM.OpenJDK.Security, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\IKVM.OpenJDK.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Xcst.Compiler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Compiler.0.130.0\lib\net461\Xcst.Compiler.dll</HintPath>
+    <Reference Include="IKVM.OpenJDK.Text, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\IKVM.OpenJDK.Text.dll</HintPath>
     </Reference>
-    <Reference Include="Xcst.Runtime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xcst.Runtime.0.130.0\lib\net461\Xcst.Runtime.dll</HintPath>
+    <Reference Include="IKVM.OpenJDK.Util, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.API, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\IKVM.OpenJDK.XML.API.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\..\packages\Saxon-HE.9.9.1.5\lib\net40\IKVM.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\src\XmlNamespaces.cs">
-      <Link>XmlNamespaces.cs</Link>
-    </Compile>
-    <Compile Include="..\XDocumentNormalizer.cs">
-      <Link>XDocumentNormalizer.cs</Link>
-    </Compile>
-    <Compile Include="Extension\Display\Templates\Enum\EnumWithDisplayName.cs" />
-    <Compile Include="Extension\Editor\Templates\Enum\EnumWithDisplayName.cs" />
-    <Compile Include="Tests.generated.cs" />
-    <Compile Include="TestsHelper.cs" />
-    <None Include="Extension\Antiforgery\TypeInference.c.xcst" />
-    <None Include="Extension\Attributes\SkipBinding.c.xcst" />
-    <None Include="Extension\Attributes\member.skip-binding.type.c.xcst" />
-    <None Include="Extension\Attributes\member.skip-binding.type.i.xcst" />
-    <None Include="Extension\Attributes\validation.file-extensions-message.type.c.xcst" />
-    <None Include="Extension\Attributes\validation.file-max-length-message.type.c.xcst" />
-    <None Include="Extension\Attributes\member.foo.i.xcst" />
-    <None Include="Extension\Attributes\member.file-max-length-message.type.c.xcst" />
-    <None Include="Extension\Attributes\member.file-extensions-message.type.c.xcst" />
-    <None Include="Extension\Attributes\member.file-max-length.type.c.xcst" />
-    <None Include="Extension\Attributes\member.file-max-length.type.i.xcst" />
-    <None Include="Extension\Attributes\member.file-extensions.type.i.xcst" />
-    <None Include="Extension\Attributes\member.file-extensions.type.c.xcst" />
-    <None Include="Extension\Checkbox\checkbox.attributes.type.i.xcst" />
-    <None Include="Extension\Checkbox\checkbox.autofocus.type.i.xcst" />
-    <None Include="Extension\Checkbox\checkbox.checked.type.i.xcst" />
-    <None Include="Extension\Checkbox\checkbox.disabled.type.i.xcst" />
-    <None Include="Extension\Checkbox\checkbox.foo.i.xcst" />
-    <None Include="Extension\Checkbox\checkbox.for.type.i.xcst" />
-    <None Include="Extension\Checkbox\checkbox.for_checked.mutex.i.xcst" />
-    <None Include="Extension\Checkbox\checkbox.for_name.mutex.i.xcst" />
-    <None Include="Extension\Checkbox\ModelStateInvalidValue.c.xcst" />
-    <None Include="Extension\Checkbox\Checked.c.xcst" />
-    <None Include="Extension\Checkbox\TypeInference.c.xcst" />
-    <None Include="Extension\Directives\InheritsImported.c.xcst" />
-    <None Include="Extension\Directives\ModelImported.c.xcst" />
-    <None Include="Extension\Directives\Model.c.xcst" />
-    <None Include="Extension\Directives\Inherits.c.xcst" />
-    <None Include="Extension\Directives\sessionstate.dupl.i.xcst" />
-    <None Include="Extension\Directives\SessionState.c.xcst" />
-    <None Include="Extension\Directives\sessionstate.type.i.xcst" />
-    <None Include="Extension\Directives\model.dupl.i.xcst" />
-    <None Include="Extension\Directives\inherits.dupl.i.xcst" />
-    <None Include="Extension\Directives\inherits.type.i.xcst" />
-    <None Include="Extension\Directives\inherits_model.mutex.i.xcst" />
-    <None Include="Extension\Directives\model.type.i.xcst" />
-    <None Include="Extension\DisplayName\MemberName.c.xcst" />
-    <None Include="Extension\DisplayName\TypeInference.c.xcst" />
-    <None Include="Extension\DisplayText\TypeInference.c.xcst" />
-    <None Include="Extension\Display\display.members_members-names.mutex.i.xcst" />
-    <None Include="Extension\Display\Templates\Enum\FormatStringEditAndDisplayName.c.xcst" />
-    <None Include="Extension\Display\Templates\Enum\FormatStringEdit.c.xcst" />
-    <None Include="Extension\Display\Templates\Enum\FormatStringAndDisplayName.c.xcst" />
-    <None Include="Extension\Display\Templates\Enum\DisplayName.c.xcst" />
-    <None Include="Extension\Display\Templates\Enum\FormatString.c.xcst" />
-    <None Include="Extension\Display\Templates\Enum\Null.c.xcst" />
-    <None Include="Extension\Display\Templates\Enum\Enum.c.xcst" />
-    <None Include="Extension\Display\Templates\Object\MembersNames.c.xcst" />
-    <None Include="Extension\Display\Templates\Object\Members.c.xcst" />
-    <None Include="Extension\Display\Templates\Object\ObjectGrouped.c.xcst" />
-    <None Include="Extension\Display\Templates\Object\Object.c.xcst" />
-    <None Include="Extension\Display\Templates\Object\ObjectRaw.c.xcst" />
-    <None Include="Extension\Editor\editor.field-name.type.c.xcst" />
-    <None Include="Extension\Editor\editor.autofocus.type.c.xcst" />
-    <None Include="Extension\Editor\editor.disabled.type.c.xcst" />
-    <None Include="Extension\Editor\editor.disabled.type.i.xcst" />
-    <None Include="Extension\Editor\editor.members_members-names.mutex.i.xcst" />
-    <None Include="Extension\Editor\editor.readonly.type.c.xcst" />
-    <None Include="Extension\Editor\editor.readonly.type.i.xcst" />
-    <None Include="Extension\Editor\editor.autofocus.type.i.xcst" />
-    <None Include="Extension\Editor\MemberTemplate\CopyViewData.c.xcst" />
-    <None Include="Extension\Editor\Templates\Object\MembersNames.c.xcst" />
-    <None Include="Extension\Editor\Templates\Object\Members.c.xcst" />
-    <None Include="Extension\Editor\Templates\Object\HttpPostedFileBase.c.xcst" />
-    <None Include="Extension\Editor\Templates\Object\ObjectRaw.c.xcst" />
-    <None Include="Extension\Editor\Templates\Object\ObjectGrouped.c.xcst" />
-    <None Include="Extension\Editor\Templates\Object\Object.c.xcst" />
-    <None Include="Extension\Editor\Templates\Upload.c.xcst" />
-    <None Include="Extension\Editor\Templates\HttpPostedFileBase.c.xcst" />
-    <None Include="Extension\Editor\Templates\DateTime-local.c.xcst" />
-    <None Include="Extension\Editor\Templates\DateTimeOffset.c.xcst" />
-    <None Include="Extension\Editor\Templates\Enum\FormatStringEditAndDisplayName.c.xcst" />
-    <None Include="Extension\Editor\Templates\Enum\FormatStringEdit.c.xcst" />
-    <None Include="Extension\Editor\Templates\Enum\FormatStringAndDisplayName.c.xcst" />
-    <None Include="Extension\Editor\Templates\Enum\DisplayName.c.xcst" />
-    <None Include="Extension\Editor\Templates\Enum\FormatString.c.xcst" />
-    <None Include="Extension\Editor\Templates\Enum\SelectedWithFormatString.c.xcst" />
-    <None Include="Extension\Editor\Templates\Enum\Selected.c.xcst" />
-    <None Include="Extension\Editor\Templates\Enum\Nullable.c.xcst" />
-    <None Include="Extension\Editor\Templates\Enum\Enum.c.xcst" />
-    <None Include="Extension\Editor\Templates\Password.c.xcst" />
-    <None Include="Extension\Editor\Templates\Time.c.xcst" />
-    <None Include="Extension\Editor\Templates\DateTime.c.xcst" />
-    <None Include="Extension\Editor\Templates\Date.c.xcst" />
-    <None Include="Extension\Form\Attributes.c.xcst" />
-    <None Include="Extension\Form\Antiforgery.c.xcst" />
-    <None Include="Extension\Form\form.antiforgery.type.i.xcst" />
-    <None Include="Extension\Form\form.model-type.type.i.xcst" />
-    <None Include="Extension\Form\form.model-value.type.i.xcst" />
-    <None Include="Extension\Form\form.model-value_or_model-type.req.i.xcst" />
-    <None Include="Extension\Form\form.attributes.type.i.xcst" />
-    <None Include="Extension\Form\form.method.req.i.xcst" />
-    <None Include="Extension\Form\TypeInference.c.xcst" />
-    <None Include="Extension\Hidden\TypeInference.c.xcst" />
-    <None Include="Extension\Hidden\Value.c.xcst" />
-    <None Include="Extension\Input\AttributesDictionary.c.xcst" />
-    <None Include="Extension\Input\Attributes.c.xcst" />
-    <None Include="Extension\Input\FileOmitValue.c.xcst" />
-    <None Include="Extension\Input\NoCheckBox.c.xcst" />
-    <None Include="Extension\Input\TypeInference.c.xcst" />
-    <None Include="Extension\Input\Value.c.xcst" />
-    <None Include="Extension\Model\CopyViewData.c.xcst" />
-    <None Include="Extension\Model\HelperVariableScope.i.xcst" />
-    <None Include="Extension\Model\model.field-prefix.type.c.xcst" />
-    <None Include="Extension\Radio\Checked.c.xcst" />
-    <None Include="Extension\Radio\radio.attributes.type.i.xcst" />
-    <None Include="Extension\Radio\radio.autofocus.type.i.xcst" />
-    <None Include="Extension\Radio\radio.checked.type.i.xcst" />
-    <None Include="Extension\Radio\radio.disabled.type.i.xcst" />
-    <None Include="Extension\Radio\radio.foo.i.xcst" />
-    <None Include="Extension\Radio\radio.for.type.i.xcst" />
-    <None Include="Extension\Radio\radio.for_checked.mutex.i.xcst" />
-    <None Include="Extension\Radio\radio.for_name.mutex.i.xcst" />
-    <None Include="Extension\Radio\radio.value.req.i.xcst" />
-    <None Include="Extension\Radio\radio.value.type.i.xcst" />
-    <None Include="Extension\Radio\TypeInference.c.xcst" />
-    <None Include="Extension\Select\DynamicListEmpty.c.xcst" />
-    <None Include="Extension\Select\TypeInference.c.xcst" />
-    <None Include="Extension\Select\Multiple\Selected.c.xcst" />
-    <None Include="Extension\Select\Selected.c.xcst" />
-    <None Include="Extension\Textarea\TypeInference.c.xcst" />
-    <None Include="Extension\Textarea\Value.c.xcst" />
-    <None Include="generate-tests.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Extension\Antiforgery\antiforgery.foo.i.xcst" />
-    <None Include="Extension\Hidden\ByteArray.c.xcst" />
-    <None Include="Extension\Hidden\hidden.attributes.type.i.xcst" />
-    <None Include="Extension\Hidden\hidden.foo.i.xcst" />
-    <None Include="Extension\Hidden\hidden.for.type.i.xcst" />
-    <None Include="Extension\Hidden\hidden.for_name.mutex.i.xcst" />
-    <None Include="Extension\Hidden\hidden.for_value.mutex.i.xcst" />
-    <None Include="Extension\Hidden\hidden.value.type.i.xcst" />
-    <None Include="Extension\Input\input.autofocus.type.i.xcst" />
-    <None Include="Extension\Input\PasswordOmitValue.c.xcst" />
-    <None Include="Extension\Input\input.disabled.type.i.xcst" />
-    <None Include="Extension\Input\input.readonly.type.i.xcst" />
-    <None Include="Extension\Select\select.autofocus.type.i.xcst" />
-    <None Include="Extension\Select\select.foo.i.xcst" />
-    <None Include="Extension\Select\select.for.type.i.xcst" />
-    <None Include="Extension\Select\select.for_name.mutex.i.xcst" />
-    <None Include="Extension\Select\select.for_value.mutex.i.xcst" />
-    <None Include="Extension\Select\select.attributes.type.i.xcst" />
-    <None Include="Extension\Select\select.disabled.type.i.xcst" />
-    <None Include="Extension\Select\select.options.type.i.xcst" />
-    <None Include="Extension\Select\select.multiple.type.i.xcst" />
-    <None Include="Extension\Select\select.value.type.i.xcst" />
-    <None Include="Extension\Select\DynamicListIGroupingKeyValuePair.c.xcst" />
-    <None Include="Extension\Select\DynamicListIGrouping.c.xcst" />
-    <None Include="Extension\Select\DynamicListIEnumerable.c.xcst" />
-    <None Include="Extension\Select\DynamicListIEnumerableKeyValuePair.c.xcst" />
-    <None Include="Extension\Select\DynamicListNull.c.xcst" />
-    <None Include="Extension\Select\StaticAndDynamicList.c.xcst" />
-    <None Include="Extension\Select\StaticList.c.xcst" />
-    <None Include="Extension\Select\option.foo.i.xcst" />
-    <None Include="Extension\Select\option.disabled.type.i.xcst" />
-    <None Include="Extension\Select\option.selected.type.i.xcst" />
-    <None Include="Extension\Select\option.value.type.i.xcst" />
-    <None Include="Extension\Select\DynamicList.c.xcst" />
-    <None Include="Extension\Input\HiddenByteArray.c.xcst" />
-    <None Include="Extension\Input\input.type.type.i.xcst" />
-    <None Include="Extension\Label\label.foo.i.xcst" />
-    <None Include="Extension\Label\label.for_name.mutex.i.xcst" />
-    <None Include="Extension\Label\label.attributes.type.i.xcst" />
-    <None Include="Extension\Select\Multiple\DynamicList.c.xcst" />
-    <None Include="Extension\Select\Multiple\NullList.c.xcst" />
-    <None Include="Extension\Select\Multiple\StaticAndDynamicList.c.xcst" />
-    <None Include="Extension\Select\Multiple\StaticList.c.xcst" />
-    <None Include="Extension\Textarea\textarea.cols.type.i.xcst" />
-    <None Include="Extension\Textarea\textarea.autofocus.type.i.xcst" />
-    <None Include="Extension\Textarea\textarea.readonly.type.i.xcst" />
-    <None Include="Extension\Textarea\textarea.foo.i.xcst" />
-    <None Include="Extension\Textarea\textarea.rows.type.i.xcst" />
-    <None Include="Extension\Textarea\textarea.for.type.i.xcst" />
-    <None Include="Extension\Textarea\textarea.for_name.mutex.i.xcst" />
-    <None Include="Extension\Textarea\textarea.for_value.mutex.i.xcst" />
-    <None Include="Extension\Textarea\textarea.attributes.type.i.xcst" />
-    <None Include="Extension\Textarea\textarea.disabled.type.i.xcst" />
-    <None Include="Extension\Textarea\textarea.value.type.i.xcst" />
-    <None Include="Extension\Input\input.for_value.mutex.i.xcst" />
-    <None Include="Extension\Input\input.for_name.mutex.i.xcst" />
-    <None Include="Extension\Input\input.attributes.type.i.xcst" />
-    <None Include="Extension\Input\input.value.type.i.xcst" />
-    <None Include="Extension\Input\input.for.type.i.xcst" />
-    <None Include="Extension\Input\input.foo.i.xcst" />
-    <None Include="Extension\ValidationMessage\validation-message.for.type.i.xcst" />
-    <None Include="Extension\ValidationMessage\validation-message.for_name.mutex.i.xcst" />
-    <None Include="Extension\ValidationMessage\validation-message.foo.i.xcst" />
-    <None Include="Extension\ValidationMessage\validation-message.attributes.type.i.xcst" />
-    <None Include="Extension\ValidationSummary\validation-summary.foo.i.xcst" />
-    <None Include="Extension\ValidationSummary\validation-summary.attributes.type.i.xcst" />
-    <None Include="Extension\ValidationSummary\validation-summary.include-member-errors.type.i.xcst" />
-    <None Include="Extension\DisplayName\display-name.foo.i.xcst" />
-    <None Include="Extension\DisplayName\display-name.for.type.i.xcst" />
-    <None Include="Extension\DisplayName\display-name.for_name.mutex.i.xcst" />
-    <None Include="Extension\DisplayText\display-text.foo.i.xcst" />
-    <None Include="Extension\DisplayText\display-text.for.type.i.xcst" />
-    <None Include="Extension\DisplayText\display-text.for_name.mutex.i.xcst" />
-    <None Include="Extension\Model\model.value_or_as.req.i.xcst" />
-    <None Include="Extension\Model\model.value.type.i.xcst" />
-    <None Include="Extension\Model\model.as.type.i.xcst" />
-    <None Include="Extension\Model\model.foo.i.xcst" />
-    <None Include="Extension\Display\display.foo.i.xcst" />
-    <None Include="Extension\Display\display.for.type.i.xcst" />
-    <None Include="Extension\Display\display.for_name.mutex.i.xcst" />
-    <None Include="Extension\Display\display.html-attributes.type.i.xcst" />
-    <None Include="Extension\Display\display.with-params.type.i.xcst" />
-    <None Include="Extension\Display\member-template.foo.i.xcst" />
-    <None Include="Extension\Editor\WithOptionsForCollection.c.xcst" />
-    <None Include="Extension\Editor\WithOptionsStaticAndDynamic.c.xcst" />
-    <None Include="Extension\Editor\WithOptionsDynamic.c.xcst" />
-    <None Include="Extension\Editor\editor.options.type.i.xcst" />
-    <None Include="Extension\Editor\option.disabled.type.i.xcst" />
-    <None Include="Extension\Editor\option.foo.i.xcst" />
-    <None Include="Extension\Editor\option.selected.type.i.xcst" />
-    <None Include="Extension\Editor\option.value.type.i.xcst" />
-    <None Include="Extension\Editor\WithOptionsStatic.c.xcst" />
-    <None Include="Extension\Editor\with-options.options.type.i.xcst" />
-    <None Include="Extension\Editor\with-options.for.type.i.xcst" />
-    <None Include="Extension\Editor\with-options.foo.i.xcst" />
-    <None Include="Extension\Editor\member-template.foo.i.xcst" />
-    <None Include="Extension\Editor\editor.foo.i.xcst" />
-    <None Include="Extension\Editor\editor.for.type.i.xcst" />
-    <None Include="Extension\Editor\editor.for_name.mutex.i.xcst" />
-    <None Include="Extension\Editor\editor.with-params.type.i.xcst" />
-    <None Include="Extension\Editor\editor.attributes.type.i.xcst" />
-    <None Include="Framework\HtmlHelper\Value\UsesEditFormatString.c.xcst" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Xcst.AspNet.Compilation\Xcst.AspNet.Compilation.csproj">
-      <Project>{30e0cb99-1953-476b-a994-7bc15d903b25}</Project>
-      <Name>Xcst.AspNet.Compilation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Xcst.AspNet.Extension\Xcst.AspNet.Extension.csproj">
-      <Project>{5039e116-8b5f-406d-a7fd-550f309a7178}</Project>
-      <Name>Xcst.AspNet.Extension</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Xcst.AspNet\Xcst.AspNet.csproj">
-      <Project>{5cb9aa5e-52b2-4fbb-8db3-d1d53193d34f}</Project>
-      <Name>Xcst.AspNet</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEventDependsOn>ResolveReferences</PreBuildEventDependsOn>
-    <PreBuildEvent>powershell -NoProfile -ExecutionPolicy RemoteSigned -File $(ProjectDir)generate-tests.ps1 $(ConfigurationName)</PreBuildEvent>
-  </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NUnit.3.12.0\build\NUnit.props'))" />
-    <Error Condition="!Exists('..\..\packages\NUnit3TestAdapter.3.16.1\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NUnit3TestAdapter.3.16.1\build\net35\NUnit3TestAdapter.props'))" />
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" DependsOnTargets="ResolveReferences">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy RemoteSigned -File $(ProjectDir)generate-tests.ps1 $(Configuration)" />
+    <ItemGroup>
+      <Compile Remove="Tests.generated.cs" />
+      <Compile Include="Tests.generated.cs" />
+    </ItemGroup>
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

@@ -23,11 +23,10 @@ namespace Xcst.Web {
              source.Declaration,
              source.Nodes().Select(n => {
 
-                // Remove comments, processing instructions, and text nodes that are
-                // children of XDocument.  Only white space text nodes are allowed as
-                // children of a document, so we can remove all text nodes.
+                // Only white space text nodes are allowed as children of a document,
+                // so we can remove all text nodes.
 
-                if (n is XComment || n is XProcessingInstruction || n is XText) {
+                if (n is XText) {
                    return null;
                 }
 
@@ -41,12 +40,6 @@ namespace Xcst.Web {
       }
 
       static XNode NormalizeNode(XNode node) {
-
-         // trim comments and processing instructions from normalized tree
-
-         if (node is XComment || node is XProcessingInstruction) {
-            return null;
-         }
 
          if (node is XElement e) {
             return NormalizeElement(e);
