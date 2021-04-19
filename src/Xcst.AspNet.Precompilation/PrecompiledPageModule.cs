@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Web;
 using System.Web.Compilation;
 
@@ -30,7 +31,9 @@ namespace Xcst.Web.Precompilation {
    public class PrecompiledPageModule : IHttpModule {
 
       static readonly object _hasBeenRegisteredKey = new object();
-      static readonly Lazy<Dictionary<string, Type>> _pageMap = new Lazy<Dictionary<string, Type>>(InitializePageMap);
+
+      static readonly Lazy<Dictionary<string, Type>> _pageMap =
+         new Lazy<Dictionary<string, Type>>(InitializePageMap, LazyThreadSafetyMode.PublicationOnly);
 
       static Dictionary<string, Type> InitializePageMap() {
 
