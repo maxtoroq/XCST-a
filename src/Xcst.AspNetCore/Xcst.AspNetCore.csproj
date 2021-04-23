@@ -35,7 +35,6 @@
     <Compile Include="..\Xcst.AspNet\Framework\Common\TypeHelpers.cs" Link="Framework\Common\TypeHelpers.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\ControllerContext.cs" Link="Framework\ControllerContext.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\CachedDataAnnotationsModelMetadata.cs" Link="Framework\DataAnnotations\CachedDataAnnotationsModelMetadata.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataAnnotationsModelMetadata.cs" Link="Framework\DataAnnotations\DataAnnotationsModelMetadata.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataAnnotationsModelValidator.cs" Link="Framework\DataAnnotations\DataAnnotationsModelValidator.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" Link="Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataTypeUtil.cs" Link="Framework\DataAnnotations\DataTypeUtil.cs" />

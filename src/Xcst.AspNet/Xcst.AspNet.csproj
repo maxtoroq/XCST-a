@@ -91,7 +91,6 @@
     <Compile Include="Framework\Common\TypeHelpers.cs" />
     <Compile Include="Framework\DataAnnotations\CachedDataAnnotationsModelMetadata.cs" />
     <Compile Include="Framework\CachedModelMetadata.cs" />
-    <Compile Include="Framework\DataAnnotations\DataAnnotationsModelMetadata.cs" />
     <Compile Include="Framework\DataAnnotations\DataAnnotationsModelValidator.cs" />
     <Compile Include="Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" />
     <Compile Include="Framework\DataAnnotations\DataTypeUtil.cs" />
