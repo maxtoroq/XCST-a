@@ -302,6 +302,7 @@ namespace Xcst.Web.Runtime {
 
             if (viewData.TemplateInfo.FormattedModelValue == modelMetadata.Model) {
 
+#if ASPNETMVC
                Type modelType = modelMetadata.ModelType;
                Type enumType = Nullable.GetUnderlyingType(modelType) ?? modelType;
 
@@ -312,9 +313,12 @@ namespace Xcst.Web.Runtime {
                   if (enumField != null) {
 
                      viewData.TemplateInfo.FormattedModelValue =
-                        DefaultEditorTemplates.GetDisplayName(enumField);
+                        DisplayNameUtil.GetFieldDisplayName(enumField);
                   }
                }
+#else
+               viewData.TemplateInfo.FormattedModelValue = modelMetadata.SimpleDisplayText;
+#endif
             }
          }
 

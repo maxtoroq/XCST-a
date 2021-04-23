@@ -19,7 +19,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 #if ASPNETMVC
 using System.Drawing;
@@ -535,7 +534,7 @@ namespace Xcst.Web.Runtime {
 
             string text = (formatString != null && !applyFormatInEdit) ?
                output.SimpleContent.Format(formatString, enumValue)
-               : GetDisplayName(field);
+               : DisplayNameUtil.GetFieldDisplayName(field);
 
             selectList.Add(new SelectListItem {
                Value = value,
@@ -544,22 +543,6 @@ namespace Xcst.Web.Runtime {
          }
 
          return selectList;
-      }
-
-      internal static string GetDisplayName(FieldInfo field) {
-
-         DisplayAttribute? display = field.GetCustomAttribute<DisplayAttribute>(inherit: false);
-
-         if (display != null) {
-
-            string? name = display.GetName();
-
-            if (!String.IsNullOrEmpty(name)) {
-               return name;
-            }
-         }
-
-         return field.Name;
       }
    }
 }

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -162,9 +163,31 @@ namespace System.Web.Mvc {
                   return simpleDisplayTextValue.ToString();
                }
             }
+
+            if (TryGetEnumDisplayName(out string enumDisplayName)) {
+               return enumDisplayName;
+            }
          }
 
          return base.ComputeSimpleDisplayText();
+      }
+
+      internal bool TryGetEnumDisplayName([NotNullWhen(returnValue: true)] out string? displayName) {
+
+         Type type = Nullable.GetUnderlyingType(this.ModelType) ?? this.ModelType;
+
+         if (type.IsEnum) {
+
+            FieldInfo? enumField = type.GetField(this.Model.ToString());
+
+            if (enumField != null) {
+               displayName = DisplayNameUtil.GetFieldDisplayName(enumField);
+               return true;
+            }
+         }
+
+         displayName = null;
+         return false;
       }
 
       protected override string? ComputeTemplateHint() {

@@ -95,6 +95,7 @@
     <Compile Include="Framework\DataAnnotations\DataAnnotationsModelValidator.cs" />
     <Compile Include="Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" />
     <Compile Include="Framework\DataAnnotations\DataTypeUtil.cs" />
+    <Compile Include="Framework\DataAnnotations\DisplayNameUtil.cs" />
     <Compile Include="Framework\DataAnnotations\ValidatableObjectAdapter.cs" />
     <Compile Include="Framework\AdditionalMetaDataAttribute.cs" />
     <Compile Include="Framework\ControllerContext.cs" />

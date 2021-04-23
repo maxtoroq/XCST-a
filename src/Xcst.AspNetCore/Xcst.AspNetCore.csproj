@@ -39,6 +39,7 @@
     <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataAnnotationsModelValidator.cs" Link="Framework\DataAnnotations\DataAnnotationsModelValidator.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" Link="Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataTypeUtil.cs" Link="Framework\DataAnnotations\DataTypeUtil.cs" />
+    <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DisplayNameUtil.cs" Link="Framework\DataAnnotations\DisplayNameUtil.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\ValidatableObjectAdapter.cs" Link="Framework\DataAnnotations\ValidatableObjectAdapter.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\DataErrorInfoModelValidatorProvider.cs" Link="Framework\DataErrorInfoModelValidatorProvider.cs" />
     <Compile Include="..\Xcst.AspNet\Framework\DependencyResolver.cs" Link="Framework\DependencyResolver.cs" />
