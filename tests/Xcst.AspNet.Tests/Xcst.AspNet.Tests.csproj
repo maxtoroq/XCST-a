@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xcst.AspNet.Compilation\Xcst.AspNet.Compilation.csproj" />
     <ProjectReference Include="..\..\src\Xcst.AspNet.Extension\Xcst.AspNet.Extension.csproj" />
     <ProjectReference Include="..\..\src\Xcst.AspNet\Xcst.AspNet.csproj" />
   </ItemGroup>
