@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using System.Web.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
-using Xcst.Web.Precompilation;
+using Xcst.Web.Builder;
 
 namespace aspnetcore {
 
@@ -34,9 +33,7 @@ namespace aspnetcore {
          app.UseStaticFiles();
          //app.UseSession();
 
-         ConfigureXcstWeb(XcstWebConfiguration.Instance, svp);
-
-         app.UseMiddleware<PrecompiledPageMiddleware>((object)new Assembly[] { GetType().Assembly });
+         app.UseXcstPrecompiledPages(new[] { GetType().Assembly }, config => ConfigureXcstWeb(config, svp));
       }
 
       static void ConfigureXcstWeb(XcstWebConfiguration config, IServiceProvider svp) {
