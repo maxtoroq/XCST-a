@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Xcst.Web.Precompilation {
 
@@ -79,6 +80,10 @@ namespace Xcst.Web.Precompilation {
       PageType(string pagePath) =>
          _pageMap.Value[pagePath];
 
+      static XcstPage
+      CreatePage(Type pageType, IServiceProvider serviceProvider) =>
+         (XcstPage)ActivatorUtilities.CreateInstance(serviceProvider, pageType);
+
       public async Task
       Invoke(HttpContext context) {
 
@@ -88,11 +93,11 @@ namespace Xcst.Web.Precompilation {
 
          if (MatchRequest(requestPath, out string? pagePath, out string? pathInfo)) {
 
-            var page = (XcstPage)Activator.CreateInstance(PageType(pagePath))!;
+            XcstPage page = CreatePage(PageType(pagePath), context.RequestServices)!;
             page.VirtualPath = "~/" + pagePath;
             page.PathInfo = pathInfo;
 
-            var handler = page.CreateHttpHandler();
+            XcstPageHandler handler = page.CreateHttpHandler();
             handler.ProcessRequest(context);
 
             return;
