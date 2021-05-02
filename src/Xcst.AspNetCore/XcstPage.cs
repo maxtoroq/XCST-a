@@ -12,9 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
 
 namespace Xcst.Web {
@@ -81,6 +86,75 @@ namespace Xcst.Web {
       protected virtual void
       CopyState(XcstPage page) {
          page.Context = this.Context;
+      }
+
+      public async Task<bool>
+      TryAuthorizeAsync(string? policy = null, string[]? roles = null) {
+
+         PolicyAuthorizationResult authorizeResult =
+            await TryAuthorizeCoreAsync(policy, roles);
+
+         if (authorizeResult.Challenged) {
+            await this.Context.ChallengeAsync();
+            return false;
+         }
+
+         if (authorizeResult.Forbidden) {
+            await this.Context.ForbidAsync();
+            return false;
+         }
+
+         return true;
+      }
+
+      public virtual async Task<PolicyAuthorizationResult>
+      TryAuthorizeCoreAsync(string? policy = null, string[]? roles = null) {
+
+         HttpContext httpContext = this.Context;
+         IPrincipal user = this.User;
+
+         if (user.Identity is null
+            || !user.Identity.IsAuthenticated) {
+
+            return PolicyAuthorizationResult.Challenge();
+         }
+
+         if (policy is null
+            && (roles is null || roles.Length == 0)) {
+
+            return PolicyAuthorizationResult.Success();
+         }
+
+         var policyProvider = (IAuthorizationPolicyProvider)httpContext.RequestServices.GetService(typeof(IAuthorizationPolicyProvider))!;
+         var policyEval = (IPolicyEvaluator)httpContext.RequestServices.GetService(typeof(IPolicyEvaluator))!;
+
+         var authorizeData = new AuthorizeData {
+            Policy = policy,
+            Roles = (roles != null) ? String.Join(',', roles) : null
+         };
+
+         AuthorizationPolicy? authorizationPolicy =
+            await AuthorizationPolicy.CombineAsync(policyProvider, new[] { authorizeData });
+
+         AuthenticateResult authenticateResult =
+            await policyEval.AuthenticateAsync(authorizationPolicy!, httpContext);
+
+         PolicyAuthorizationResult authorizeResult =
+            await policyEval.AuthorizeAsync(authorizationPolicy!, authenticateResult, httpContext, null);
+
+         return authorizeResult;
+      }
+
+      class AuthorizeData : IAuthorizeData {
+
+         public string?
+         Policy { get; set; }
+
+         public string?
+         Roles { get; set; }
+
+         public string?
+         AuthenticationSchemes { get; set; }
       }
    }
 }
