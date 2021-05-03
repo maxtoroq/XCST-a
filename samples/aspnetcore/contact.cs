@@ -36,7 +36,7 @@ namespace aspnetcore {
          bool sent = false;
 
          if (IsPost
-            && AntiForgery.TryValidate(Context)
+            && AntiForgery.TryValidateAsync(Context).Result
             && TryBind(contact)
             && SendMail(contact)) {
 

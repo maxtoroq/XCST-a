@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Xcst;
@@ -36,12 +37,12 @@ namespace System.Web.Helpers {
          output.WriteEndElement();
       }
 
-      public static bool
-      TryValidate(HttpContext httpContext) {
+      public async static Task<bool>
+      TryValidateAsync(HttpContext httpContext) {
 
          IAntiforgery antiforgery = GetAntiforgeryService(httpContext);
 
-         return antiforgery.IsRequestValidAsync(httpContext).Result;
+         return await antiforgery.IsRequestValidAsync(httpContext);
       }
 
       static IAntiforgery
