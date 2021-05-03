@@ -1,6 +1,6 @@
 [XCST] web pages for ASP.NET
 ============================
-This repository provides integration of XCST with ASP.NET for web application development. It includes a set of extension instructions known as the "application extension" based on a [trimmed down fork](src/Xcst.AspNet/Framework) of ASP.NET MVC 5.
+This repository provides integration of XCST with ASP.NET and ASP.NET Core for web application development. It includes a set of extension instructions known as the "application extension" based on a [trimmed down fork](src/Xcst.AspNet/Framework) of ASP.NET MVC 5.
 
 See the [project home][XCST] for more information.
 
@@ -15,6 +15,7 @@ Version | Package | Description
 [![NuGet][Xcst.AspNet.Compilation-badge]][Xcst.AspNet.Compilation] | [Xcst.AspNet.Compilation] | ASP.NET build providers for run-time compilation.
 [![NuGet][Xcst.AspNet.Precompilation-badge]][Xcst.AspNet.Precompilation] | [Xcst.AspNet.Precompilation] | HTTP module that maps requests to precompiled XCST pages.
 [![NuGet][Xcst.Web.Mvc-badge]][Xcst.Web.Mvc] | [Xcst.Web.Mvc] | View engine for ASP.NET MVC 5.
+[![NuGet][Xcst.AspNetCore-badge]][Xcst.AspNetCore] | [Xcst.AspNetCore] | XCST web pages for ASP.NET Core.
 
 ### Related Repositories
 
@@ -50,9 +51,11 @@ MSBuild
 [Xcst.AspNet.Compilation]: https://www.nuget.org/packages/Xcst.AspNet.Compilation
 [Xcst.AspNet.Precompilation]: https://www.nuget.org/packages/Xcst.AspNet.Precompilation
 [Xcst.Web.Mvc]: https://www.nuget.org/packages/Xcst.Web.Mvc
+[Xcst.AspNetCore]: https://www.nuget.org/packages/Xcst.AspNetCore
 [Xcst.AspNet-badge]: https://img.shields.io/nuget/v/Xcst.AspNet.svg
 [Xcst.AspNet.Extension-badge]: https://img.shields.io/nuget/v/Xcst.AspNet.Extension.svg
 [Xcst.AspNet.Compilation-badge]: https://img.shields.io/nuget/v/Xcst.AspNet.Compilation.svg
 [Xcst.AspNet.Precompilation-badge]: https://img.shields.io/nuget/v/Xcst.AspNet.Precompilation.svg
 [Xcst.Web.Mvc-badge]: https://img.shields.io/nuget/v/Xcst.Web.Mvc.svg
+[Xcst.AspNetCore-badge]: https://img.shields.io/nuget/v/Xcst.AspNetCore.svg
 [Trang]: https://github.com/relaxng/jing-trang

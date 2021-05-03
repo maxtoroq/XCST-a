@@ -74,6 +74,7 @@ function NuSpec {
 
          "</dependencies>"
 
+   $project.nuspec.package.metadata.frameworkReferences.OuterXml
    $project.nuspec.package.metadata.frameworkAssemblies.OuterXml
 
       "</metadata>"
@@ -160,7 +161,7 @@ function Release {
    [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
    $notice = $noticeDoc.notice
 
-   $projects = "Xcst.AspNet", "Xcst.AspNet.Extension", "Xcst.AspNet.Compilation", "Xcst.AspNet.Precompilation", "Xcst.Web.Mvc"
+   $projects = "Xcst.AspNet", "Xcst.AspNet.Extension", "Xcst.AspNet.Compilation", "Xcst.AspNet.Precompilation", "Xcst.Web.Mvc", "Xcst.AspNetCore"
    $solution = @{ }
 
    foreach ($projName in $projects) {

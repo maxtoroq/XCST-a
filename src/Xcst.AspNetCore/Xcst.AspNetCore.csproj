@@ -1,21 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
     <RootNamespace>Xcst.Web</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Runtime.Caching" Version="5.0.0" />
-    <PackageReference Include="Xcst.Runtime" Version="0.130.0" />
+    <PackageReference Include="Xcst.Runtime" Version="[0.130.0,0.131.0)" />
   </ItemGroup>
-
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="..\Xcst.AspNet\Configuration\EditorInfo.cs" Link="Configuration\EditorInfo.cs" />
     <Compile Include="..\Xcst.AspNet\Configuration\XcstWebConfiguration.cs" Link="Configuration\XcstWebConfiguration.cs" />
     <Compile Include="..\Xcst.AspNet\Diagnostics.cs" Link="Diagnostics.cs" />
@@ -127,5 +130,4 @@
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
-
 </Project>

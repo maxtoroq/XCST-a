@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+   <metadata>
+      <description>XCST web pages for ASP.NET Core</description>
+      <dependencies>
+         <dependency id="System.Runtime.Caching"/>
+         <dependency id="Xcst.Runtime"/>
+      </dependencies>
+      <frameworkReferences>
+         <group targetFramework="net5.0">
+            <frameworkReference name="Microsoft.AspNetCore.App"/>
+         </group>
+      </frameworkReferences>
+   </metadata>
+   <files>
+      <file src="..\..\schemas\*.rng" target="schemas"/>
+      <file src="..\..\schemas\*.xsd" target="schemas"/>
+   </files>
+</package>
