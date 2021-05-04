@@ -998,7 +998,7 @@
                      <code:type-reference name="Dictionary" namespace="System.Collections.Generic">
                         <code:type-arguments>
                            <code:type-reference name="String" namespace="System"/>
-                           <code:type-reference name="Object" namespace="System"/>
+                           <sequence select="$src:nullable-object-type"/>
                         </code:type-arguments>
                      </code:type-reference>
                      <if test="$with-params">
