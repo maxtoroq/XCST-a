@@ -264,9 +264,9 @@
             <xs:documentation>A maximum valid file length for this member.</xs:documentation>
          </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="skip-binding" form="qualified" type="a:boolean">
+      <xs:attribute name="bind" form="qualified" type="a:boolean">
          <xs:annotation>
-            <xs:documentation>Specifies if this member should be excluded from model binding.</xs:documentation>
+            <xs:documentation>Specifies if this member should be included or excluded from model binding.</xs:documentation>
          </xs:annotation>
       </xs:attribute>
    </xs:attributeGroup>

@@ -1162,7 +1162,7 @@
 
    <template match="c:type | c:member" mode="src:type-attribute-extra">
       <next-match/>
-      <variable name="excluded" select="c:member[@a:skip-binding[xcst:boolean(.)]]/xcst:name(@name)"/>
+      <variable name="excluded" select="c:member[@a:bind[not(xcst:boolean(.))]]/xcst:name(@name)"/>
       <if test="exists($excluded)">
          <code:attribute>
             <code:type-reference name="Bind" namespace="System.Web.Mvc"/>
@@ -1243,7 +1243,7 @@
       </code:attribute>
    </template>
 
-   <template match="@a:file-extensions-message | @a:file-max-length-message | @a:skip-binding" mode="a:src.member-attribute-extra"/>
+   <template match="@a:file-extensions-message | @a:file-max-length-message | @a:bind" mode="a:src.member-attribute-extra"/>
 
    <template match="@a:*" mode="a:src.member-attribute-extra">
       <sequence select="error((), concat('Attribute ''a:', local-name(), ''' is not allowed on element ', name(..)), src:error-object(.))"/>

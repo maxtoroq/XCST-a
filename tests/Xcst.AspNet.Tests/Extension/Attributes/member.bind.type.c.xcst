@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:type name='Foo'>
-      <c:member name='file' a:skip-binding=''/>
+      <c:member name='file' a:bind='no'/>
    </c:type>
 
 </c:module>

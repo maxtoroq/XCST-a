@@ -8,7 +8,7 @@
    <c:import-namespace ns='System.Web.Mvc'/>
 
    <c:type name='Foo'>
-      <c:member name='color' as='string' a:skip-binding='yes'/>
+      <c:member name='color' as='string' a:bind='no'/>
       <c:member name='animal' as='string'/>
    </c:type>
 
