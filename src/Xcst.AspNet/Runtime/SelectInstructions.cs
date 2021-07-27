@@ -191,8 +191,15 @@ namespace Xcst.Web.Runtime {
          string? cssClass = (viewData.ModelState.TryGetValue(fullName, out ModelState modelState)
             && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
+         var validationAttribs = htmlHelper.GetUnobtrusiveValidationAttributes(
+            name, metadata
+#if !ASPNETMVC
+            , excludeMinMaxLength: !allowMultiple
+#endif
+         );
+
          HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
-         HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), output);
+         HtmlAttributeHelper.WriteAttributes(validationAttribs, output);
 
          // name cannnot be overridden, and class was already written
 

@@ -168,7 +168,10 @@ namespace System.Web.Mvc {
       // never rendered validation for a field with this name in this form. Also, if there's no form context,
       // then we can't render the attributes (we'd have no <form> to attach them to).
 
-      public IDictionary<string, object> GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata) {
+      public IDictionary<string, object> GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata) =>
+         GetUnobtrusiveValidationAttributes(name, metadata, false);
+
+      internal IDictionary<string, object> GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata, bool excludeMinMaxLength) {
 
          var results = new Dictionary<string, object>();
 
@@ -193,6 +196,13 @@ namespace System.Web.Mvc {
          formContext.RenderedField(fullName, true);
 
          IEnumerable<ModelClientValidationRule> clientRules = ClientValidationRuleFactory(name, metadata);
+
+         if (excludeMinMaxLength) {
+
+            clientRules = clientRules
+               .Where(p => !(p is ModelClientValidationMinLengthRule
+                  || p is ModelClientValidationMaxLengthRule));
+         }
 
          UnobtrusiveValidationAttributesGenerator.GetValidationAttributes(clientRules, results);
 

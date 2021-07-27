@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Web.Mvc'/>
+
+   <c:type name='ModelType'>
+      <c:member name='foo' as='string[]' min-length='2'/>
+      <c:member name='bar' as='string[]' max-length='2'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:model as='ModelType'>
+            <a:select for='foo' options='null' multiple='yes'/>
+            <a:select for='bar' options='null' multiple='yes'/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <select name='foo' id='foo' multiple='multiple'
+            data-val='true' data-val-minlength="The field foo must be a string or array type with a minimum length of '2'." data-val-minlength-min='2'/>
+         <select name='bar' id='bar' multiple='multiple'
+            data-val='true' data-val-maxlength="The field bar must be a string or array type with a maximum length of '2'." data-val-maxlength-max='2'/>
+      </div>
+   </c:template>
+
+</c:module>
