@@ -47,7 +47,7 @@ namespace aspnetcore {
             contact = new Contact();
          }
 
-         layout(new { contact, sent });
+         layout(new { contact, sent, antiforgery });
       }
    }
 }

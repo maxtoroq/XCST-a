@@ -1,11 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<c:module version='1.0' language='C#' xmlns:c='http://maxtoroq.github.io/XCST'>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
 
    <c:validation required-message='Required field cannot be left blank.'/>
 
    <c:output method='html' version='5'/>
 
    <c:variable name='title' as='string'/>
+
+   <c:variable name='antiforgery'>
+      <a:antiforgery/>
+   </c:variable>
 
    <c:use-package name='aspnetcore.LayoutPackage'>
       <c:override>

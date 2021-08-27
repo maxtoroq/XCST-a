@@ -44,6 +44,7 @@
    <c:template name='content' expand-text='yes'>
       <c:param name='contact' as='Contact' required='yes' tunnel='yes'/>
       <c:param name='sent' as='bool' required='yes' tunnel='yes'/>
+      <c:param name='antiforgery' required='yes' tunnel='yes'/>
 
       <h1>{this.title}</h1>
       <c:if test='sent'>
@@ -52,7 +53,7 @@
             <c:text>Thanks for contacting us. We'll get back to you shortly.</c:text>
          </div>
       </c:if>
-      <a:form method='post' model-value='contact' antiforgery='yes'>
+      <a:form method='post' model-value='contact'>
          <a:validation-summary/>
          <a:editor with-params='new { labelColumnClass = "col-md-3", fieldColumnClass = "col-md-9" }'/>
          <div class='form-group row'>
@@ -60,6 +61,7 @@
                <button type='submit' class='btn btn-primary'>Send</button>
             </div>
          </div>
+         <c:copy-of value='antiforgery'/>
       </a:form>
    </c:template>
 
