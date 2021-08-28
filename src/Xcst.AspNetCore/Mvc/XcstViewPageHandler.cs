@@ -44,6 +44,8 @@ namespace Xcst.Web.Mvc {
       protected override void
       RenderPage(XcstPage page, HttpContext context) {
 
+         context.Response.ContentType = "text/html";
+
          // TempData is loaded lazily, see XcstViewPage
 
          try {
