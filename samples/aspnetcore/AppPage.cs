@@ -16,6 +16,8 @@ namespace aspnetcore {
 
          protected override void RenderViewPage(XcstViewPage page, HttpContext context) {
 
+            context.Response.ContentType = "text/html";
+
             if (page is IPageInit pInit) {
 
                XcstEvaluator.Using(pInit)
