@@ -4,7 +4,7 @@ This repository provides integration of XCST with ASP.NET and ASP.NET Core for w
 
 See the [project home][XCST] for more information.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/4chhbklsb4b6h09c?svg=true)](https://ci.appveyor.com/project/maxtoroq/xcst-a) ![Tests](https://img.shields.io/appveyor/tests/maxtoroq/XCST-a)
+[![Build status](https://ci.appveyor.com/api/projects/status/4chhbklsb4b6h09c/branch/master?svg=true)](https://ci.appveyor.com/project/maxtoroq/xcst-a/branch/master) ![Tests](https://img.shields.io/appveyor/tests/maxtoroq/XCST-a/master)
 
 ### Packages Built From This Repository
 
