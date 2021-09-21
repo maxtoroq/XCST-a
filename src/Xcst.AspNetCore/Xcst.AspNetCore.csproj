@@ -15,7 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Runtime.Caching" Version="5.0.0" />
-    <PackageReference Include="Xcst.Runtime" Version="[0.150.0,0.151.0)" />
+    <PackageReference Include="Xcst.Runtime" Version="[0.151.0,0.152.0)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />

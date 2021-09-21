@@ -1160,7 +1160,7 @@
 
    <!-- ## Metadata -->
 
-   <template match="c:type | c:member" mode="src:type-attribute-extra">
+   <template match="c:type | c:member" mode="src:type-attribute-extra src:anonymous-type-attribute-extra">
       <next-match/>
       <variable name="excluded" select="c:member[@a:bind[not(xcst:boolean(.))]]/xcst:name(@name)"/>
       <if test="exists($excluded)">
