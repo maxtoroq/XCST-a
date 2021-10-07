@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <XcstPageBaseType>AspNetPrecompiled.AppPage</XcstPageBaseType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -88,11 +89,6 @@
       <Project>{5cb9aa5e-52b2-4fbb-8db3-d1d53193d34f}</Project>
       <Name>Xcst.AspNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\xcst-codegen\xcst-codegen.csproj">
-      <Project>{3ec3cda1-62bc-4cc7-9c97-d47b3b1328b4}</Project>
-      <Name>xcst-codegen</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppPage.cs" />
@@ -100,7 +96,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="xcst.generated.cs" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -127,8 +122,5 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <PropertyGroup>
-    <PreBuildEventDependsOn>ResolveReferences</PreBuildEventDependsOn>
-    <PreBuildEvent>$(ProjectDir)\..\xcst-codegen\bin\$(ConfigurationName)\xcst-codegen.exe $(ProjectPath) $(ConfigurationName) -LibsAndPages -PageBaseType global::AspNetPrecompiled.AppPage</PreBuildEvent>
-  </PropertyGroup>
+  <Import Project="..\xcst-codegen\xcst-codegen.targets" />
 </Project>

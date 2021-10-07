@@ -4,6 +4,8 @@ using System.Web.Mvc;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
 
+[assembly: Xcst.Web.Precompilation.PrecompiledModule]
+
 namespace AspNetPrecompiled {
 
    public class Application : HttpApplication {

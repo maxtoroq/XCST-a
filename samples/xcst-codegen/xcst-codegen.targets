@@ -1,0 +1,35 @@
+<Project>
+
+  <PropertyGroup>
+    <XcstPageEnable Condition="'$(XcstPageEnable)'==''">True</XcstPageEnable>
+    <XcstPageBaseType Condition="'$(XcstPageBaseType)'==''">Xcst.Web.Mvc.XcstViewPage</XcstPageBaseType>
+    <XcstInput Condition="'$(XcstInput)'==''">**\*.xcst</XcstInput>
+    <XcstOutput Condition="'$(XcstOutput)'==''">xcst.generated.cs</XcstOutput>
+    <XcstCodegenExe Condition="'$(XcstCodegenExe)'==''">$(ProjectDir)..\xcst-codegen\bin\$(Configuration)\xcst-codegen.exe</XcstCodegenExe>
+    <XcstCodegenParams>-PageEnable $(XcstPageEnable) -PageBaseType $(XcstPageBaseType) $(XcstCodegenParams)</XcstCodegenParams>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(XcstOutput)</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\xcst-codegen\xcst-codegen.csproj" ReferenceOutputAssembly="False">
+      <Project>{3ec3cda1-62bc-4cc7-9c97-d47b3b1328b4}</Project>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <XcstInput Include="$(XcstInput)" />
+    <UpToDateCheckInput Include="@(XcstInput)" />
+    <UpToDateCheckBuilt Include="$(XcstOutput)" />
+    <Compile Include="$(XcstOutput)" />
+  </ItemGroup>
+
+  <Target Name="XcstCodeGen"
+          BeforeTargets="PreBuildEvent"
+          DependsOnTargets="ResolveReferences"
+          Inputs="@(XcstInput);$(ProjectPath);$(MSBuildThisFileFullPath);$(XcstCodegenExe)"
+          Outputs="$(XcstOutput)">
+    <Message Text="xcst-codegen [$(MSBuildProjectName)]: $(XcstCodegenParams)" Importance="high" />
+    <Exec Command="$(XcstCodegenExe) $(ProjectPath) $(Configuration) $(XcstCodegenParams)" />
+  </Target>
+
+</Project>

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <XcstPageBaseType>aspnetcore.AppPage</XcstPageBaseType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,16 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Xcst.AspNetCore\Xcst.AspNetCore.csproj" />
-    <ProjectReference Include="..\xcst-codegen\xcst-codegen.csproj">
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" DependsOnTargets="ResolveReferences">
-    <Exec Command="$(ProjectDir)\..\xcst-codegen\bin\$(Configuration)\xcst-codegen.exe $(ProjectPath) $(Configuration) -LibsAndPages -PageBaseType global::aspnetcore.AppPage" />
-    <ItemGroup>
-      <Compile Remove="xcst.generated.cs" />
-      <Compile Include="xcst.generated.cs" />
-    </ItemGroup>
-  </Target>
+  <Import Project="..\xcst-codegen\xcst-codegen.targets" />
+
 </Project>
