@@ -1,5 +1,9 @@
 ﻿param(
-   [Parameter(Mandatory=$true, Position=0)][string]$ProjectName
+   [Parameter(Mandatory=$true, Position=0)]
+   [string]$ProjectName,
+   [Parameter(Mandatory=$true, Position=1)]
+   [ValidateSet('major','minor','patch')]
+   [string]$Increment
 )
 
 $ErrorActionPreference = "Stop"
@@ -7,24 +11,6 @@ Push-Location (Split-Path $script:MyInvocation.MyCommand.Path)
 
 $solutionPath = Resolve-Path ..
 $configuration = "Release"
-
-function PackageVersion($project) {
-   
-   $assemblyPath = if ($project.sdkStyle) { Resolve-Path "$($project.path)\bin\$configuration\$($project.targetFx.Split(';')[0])\$($project.assemblyName).dll" }
-      else { Resolve-Path "$($project.path)\bin\$configuration\$($project.assemblyName).dll" }
-
-   $fvi = [Diagnostics.FileVersionInfo]::GetVersionInfo($assemblyPath.Path)
-   return New-Object Version $fvi.FileVersion
-}
-
-function DependencyVersionRange($project) {
-
-   $dependencyVersion = PackageVersion $project
-   $minVersion = $dependencyVersion
-   $maxVersion = New-Object Version $minVersion.Major, ($minVersion.Minor + 1), 0
-
-   return "[$minVersion,$maxVersion)"
-}
 
 function NuSpec {
 
@@ -43,36 +29,42 @@ function NuSpec {
          "<icon>icon.png</icon>"
          "<repository type='git' url='$(git remote get-url origin)' branch='$(git branch --show-current)' commit='$(git rev-parse HEAD)'/>"
 
-         "<dependencies>"
+   $dependencies = $project.nuspec.package.metadata.dependencies
 
-   foreach ($dep in $project.nuspec.package.metadata.dependencies.dependency) {
+   if ($dependencies) {
 
-      $local = $dep.GetAttribute("local-dependency", "http://maxtoroq.github.io/XCST/nuspec")
-      $version = $null
+      $depsCopy = $dependencies.CloneNode($true)
 
-      if ($local -eq 'yes') {
-         $version = DependencyVersionRange $solution[$dep.id]
+      foreach ($dep in $depsCopy.SelectNodes("//*[local-name() = 'dependency']")) {
 
-      } elseif ($packagesDoc -ne $null) {
+         $local = $dep.GetAttribute("local-dependency", "http://maxtoroq.github.io/XCST/nuspec")
+         $dep.RemoveAttribute("local-dependency", "http://maxtoroq.github.io/XCST/nuspec")
+         $version = $null
 
-         $pkgRef = $packagesDoc.packages.package | where { $_.id -eq $dep.id }
-         $version = $pkgRef.allowedVersions
+         if ($local -eq 'yes') {
+            $version = $localDepRangeVersion
 
-         if ($version -eq $null) {
-            $version = $pkgRef.version
+         } elseif ($packagesDoc -ne $null) {
+
+            $pkgRef = $packagesDoc.packages.package | where { $_.id -eq $dep.id }
+            $version = $pkgRef.allowedVersions
+
+            if ($version -eq $null) {
+               $version = $pkgRef.version
+            }
+
+         } else {
+
+            # $project.sdkStyle should be true
+            $pkgRef = $project.doc.SelectSingleNode("//PackageReference[@Include = '$($dep.id)']")
+            $version = $pkgRef.Version
          }
 
-      } else {
-
-         # $project.sdkStyle should be true
-         $pkgRef = $project.doc.SelectSingleNode("//PackageReference[@Include = '$($dep.id)']")
-         $version = $pkgRef.Version
+         $dep.SetAttribute("version", $version)
       }
 
-            "<dependency id='$($dep.id)' version='$version'/>"
+      $depsCopy.OuterXml
    }
-
-         "</dependencies>"
 
    $project.nuspec.package.metadata.frameworkReferences.OuterXml
    $project.nuspec.package.metadata.frameworkAssemblies.OuterXml
@@ -154,6 +146,40 @@ function ProjectData([string]$projName) {
 
 function Release {
 
+   if ($Increment -ne "patch" -and $ProjectName -ne "*") {
+      throw "Major and minor increments should release all packages."
+   }
+
+   $lastTag = .\last-tag.ps1
+   $lastRelease = New-Object Version $lastTag.Substring(1)
+
+   $pkgVersion = if ($Increment -eq "major") {
+      New-Object Version ($lastRelease.Major + 1), 0, 0
+   } elseif ($Increment -eq "minor") {
+      New-Object Version ($lastRelease.Major), ($lastRelease.Minor + 1), 0
+   } else {
+      New-Object Version ($lastRelease.Major), ($lastRelease.Minor), ($lastRelease.Patch)
+   }
+
+   if ($pkgVersion -lt $lastRelease) {
+      throw "The package version ($pkgVersion) cannot be less than the last tag ($lastTag)."
+   }
+
+   $assemblyVersion = if ($pkgVersion.Major -eq 0) {
+      New-Object Version 1, 0, 0
+   } else {
+      New-Object Version ($pkgVersion.Major), ($pkgVersion.Minor), 0
+   }
+
+   $localDepMinVersion = if ($Increment -eq "patch") {
+      New-Object Version ($pkgVersion.Major), ($pkgVersion.Minor), 0
+   } else {
+      $pkgVersion
+   }
+
+   $localDepMaxVersion = New-Object Version $localDepMinVersion.Major, ($localDepMinVersion.Minor + 1), 0
+   $localDepRangeVersion = "[$localDepMinVersion,$localDepMaxVersion)"
+
    if (-not (Test-Path temp -PathType Container)) {
       md temp | Out-Null
    }
@@ -174,6 +200,9 @@ function Release {
 using System;
 using System.Reflection;
 
+[assembly: AssemblyVersion("$assemblyVersion")]
+[assembly: AssemblyFileVersion("$pkgVersion")]
+[assembly: AssemblyInformationalVersion("$pkgVersion")]
 [assembly: AssemblyTitle("$($project.assemblyName)")]
 [assembly: AssemblyDescription("$($project.nuspec.package.metadata.description)")]
 [assembly: AssemblyProduct("$($notice.work)")]
@@ -222,14 +251,6 @@ using System.Reflection;
       $project = $solution[$projName]
 
       ""
-
-      $lastTag = .\last-tag.ps1
-      $lastRelease = New-Object Version $lastTag.Substring(1)
-      $pkgVersion = PackageVersion $project
-
-      if ($pkgVersion -lt $lastRelease) {
-         throw "The package version ($pkgVersion) cannot be less than the last tag ($lastTag). Don't forget to update the project's AssemblyInfo file."
-      }
 
       $newPackages.Add((NuPack))
 

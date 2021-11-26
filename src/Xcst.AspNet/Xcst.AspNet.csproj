@@ -55,9 +55,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="AntiXsrf\AntiForgery.cs" />
     <Compile Include="AntiXsrf\AntiForgeryConfig.cs" />
     <Compile Include="AntiXsrf\AntiForgeryConfigWrapper.cs" />
