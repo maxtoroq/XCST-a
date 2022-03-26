@@ -19,9 +19,9 @@
    xmlns:xs="http://www.w3.org/2001/XMLSchema"
    xmlns:c="http://maxtoroq.github.io/XCST"
    xmlns:a="http://maxtoroq.github.io/XCST/application"
-   xmlns:xcst="http://maxtoroq.github.io/XCST/grammar"
-   xmlns:code="http://maxtoroq.github.io/XCST/code"
-   xmlns:src="http://maxtoroq.github.io/XCST/compiled">
+   xmlns:xcst="https://maxtoroq.github.io/XCST/grammar"
+   xmlns:code="https://maxtoroq.github.io/XCST/code"
+   xmlns:src="https://maxtoroq.github.io/XCST/compiled">
 
    <import href="../../../XCST/src/Xcst.Compiler/CodeGeneration/xcst-metadata.xsl" use-when="false()"/>
    <import href="../../../XCST/src/Xcst.Compiler/CodeGeneration/xcst-core.xsl" use-when="false()"/>
