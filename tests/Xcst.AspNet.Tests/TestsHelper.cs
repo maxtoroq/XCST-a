@@ -50,7 +50,7 @@ namespace Xcst.Web.Tests {
             xcstResult = codegenResult.result;
             packageName = codegenResult.packageName;
 
-         } catch (CompileException ex) when (printCode) {
+         } catch (CompileException ex) {
 
             Console.WriteLine($"// {ex.Message}");
             Console.WriteLine($"// Module URI: {ex.ModuleUri}");
@@ -115,9 +115,9 @@ namespace Xcst.Web.Tests {
 
             } catch (RuntimeException ex) {
 
-               if (printCode) {
-                  Console.WriteLine($"// {ex.Message}");
-               } else if (!fail) {
+               Console.WriteLine($"// {ex.Message}");
+
+               if (!fail) {
                   printCode = true;
                }
 
@@ -204,9 +204,7 @@ namespace Xcst.Web.Tests {
                      .Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error)
                      .FirstOrDefault();
 
-                  if (error != null
-                     && correct) {
-
+                  if (error != null) {
                      Console.WriteLine($"// {error.Id}: {error.GetMessage()}");
                      Console.WriteLine($"// Line number: {error.Location.GetLineSpan().StartLinePosition.Line}");
                   }
