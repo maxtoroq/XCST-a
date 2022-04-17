@@ -82,6 +82,7 @@
 
       <define name="input">
          <element name="input">
+            <ann:documentation>Creates an &lt;input> element.</ann:documentation>
             <ref name="_input-for-name-value-attribs"/>
             <zeroOrMore>
                <choice>
@@ -104,6 +105,7 @@
 
       <define name="hidden">
          <element name="hidden">
+            <ann:documentation>Creates an &lt;input> element of type 'hidden'.</ann:documentation>
             <ref name="_input-for-name-value-attribs"/>
             <ref name="_input-attribs-except-autofocus"/>
             <ref name="_html-attribs"/>
@@ -112,6 +114,7 @@
 
       <define name="textarea">
          <element name="textarea">
+            <ann:documentation>Creates a &lt;textarea> element.</ann:documentation>
             <ref name="_input-for-name-value-attribs"/>
             <zeroOrMore>
                <choice>
@@ -137,6 +140,7 @@
 
       <define name="checkbox">
          <element name="checkbox">
+            <ann:documentation>Creates an &lt;input> element of type 'checkbox'.</ann:documentation>
             <choice>
                <attribute name="for">
                   <ref name="expression"/>
@@ -162,6 +166,7 @@
 
       <define name="radio">
          <element name="radio">
+            <ann:documentation>Creates an &lt;input> element of type 'radio'.</ann:documentation>
             <attribute name="value">
                <ref name="expression"/>
             </attribute>
@@ -190,12 +195,14 @@
 
       <define name="antiforgery">
          <element name="antiforgery">
+            <ann:documentation>Creates an &lt;input> element of type 'hidden' containing the antiforgery token.</ann:documentation>
             <empty/>
          </element>
       </define>
 
       <define name="select">
          <element name="select">
+            <ann:documentation>Creates a &lt;select> element.</ann:documentation>
             <ref name="_input-for-name-value-attribs"/>
             <ref name="_options"/>
             <optional>
@@ -216,6 +223,7 @@
          </optional>
          <zeroOrMore>
             <element name="option">
+               <ann:documentation>Creates an &lt;option> element.</ann:documentation>
                <zeroOrMore>
                   <choice>
                      <attribute name="value">
@@ -303,6 +311,7 @@
 
       <define name="label">
          <element name="label">
+            <ann:documentation>Creates a &lt;label> element.</ann:documentation>
             <choice>
                <attribute name="for">
                   <ref name="expression"/>
@@ -324,6 +333,7 @@
 
       <define name="validation-summary">
          <element name="validation-summary">
+            <ann:documentation>Creates an unordered list (&lt;ul> element) of validation messages.</ann:documentation>
             <zeroOrMore>
                <choice>
                   <attribute name="include-member-errors">
@@ -343,6 +353,7 @@
 
       <define name="validation-message">
          <element name="validation-message">
+            <ann:documentation>Creates a &lt;span> element with a validation message if it exists.</ann:documentation>
             <choice>
                <attribute name="for">
                   <ref name="expression"/>
@@ -381,6 +392,7 @@
 
       <define name="editor">
          <element name="editor">
+            <ann:documentation>Creates a form control for a model's member, or an "edit view" for a whole model.</ann:documentation>
             <ref name="_editor-display-common"/>
             <zeroOrMore>
                <choice>
@@ -409,6 +421,7 @@
 
       <define name="display">
          <element name="display">
+            <ann:documentation>Creates a "displayable" representation of a model's member or whole model.</ann:documentation>
             <ref name="_editor-display-common"/>
          </element>
       </define>
@@ -466,6 +479,7 @@
 
       <define name="with-options">
          <element name="with-options">
+            <ann:documentation>Defines options for a model's member form control.</ann:documentation>
             <choice>
                <attribute name="for">
                   <ref name="expression"/>
@@ -482,6 +496,7 @@
 
       <define name="member-template">
          <element name="member-template">
+            <ann:documentation>Defines a custom template for the members of a model.</ann:documentation>
             <optional>
                <attribute name="helper-name">
                   <ref name="identifier"/>
@@ -497,6 +512,7 @@
 
       <define name="display-name">
          <element name="display-name">
+            <ann:documentation>The possibly localized name of a model's member suitable for UI.</ann:documentation>
             <choice>
                <attribute name="for">
                   <ref name="expression"/>
@@ -512,6 +528,7 @@
 
       <define name="display-text">
          <element name="display-text">
+            <ann:documentation>The text representation of a model's member suitable for UI.</ann:documentation>
             <choice>
                <attribute name="for">
                   <ref name="expression"/>
@@ -565,6 +582,7 @@
 
       <define name="form">
          <element name="form">
+            <ann:documentation>Creates a &lt;form> element and defines a model for descendant instructions.</ann:documentation>
             <attribute name="method">
                <ref name="form-method"/>
             </attribute>
@@ -607,6 +625,7 @@
 
       <define name="model">
          <element name="model">
+            <ann:documentation>Defines a model for descendant instructions.</ann:documentation>
             <oneOrMore>
                <choice>
                   <attribute name="value">

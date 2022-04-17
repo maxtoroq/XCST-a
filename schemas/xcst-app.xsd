@@ -15,6 +15,9 @@
       </xs:choice>
    </xs:group>
    <xs:element name="input" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates an &lt;input&gt; element.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attributeGroup ref="a:_input-for-name-value-attribs"/>
          <xs:attribute name="type">
@@ -29,6 +32,9 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="hidden" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates an &lt;input&gt; element of type 'hidden'.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attributeGroup ref="a:_input-for-name-value-attribs"/>
          <xs:attributeGroup ref="a:_input-attribs-except-autofocus"/>
@@ -36,6 +42,9 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="textarea" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates a &lt;textarea&gt; element.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attributeGroup ref="a:_input-for-name-value-attribs"/>
          <xs:attribute name="rows">
@@ -54,6 +63,9 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="checkbox" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates an &lt;input&gt; element of type 'checkbox'.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
@@ -67,6 +79,9 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="radio" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates an &lt;input&gt; element of type 'radio'.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attribute name="value" use="required" type="a:expression"/>
          <xs:attribute name="for" type="a:expression"/>
@@ -81,9 +96,15 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="antiforgery" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates an &lt;input&gt; element of type 'hidden' containing the antiforgery token.</xs:documentation>
+      </xs:annotation>
       <xs:complexType/>
    </xs:element>
    <xs:element name="select" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates a &lt;select&gt; element.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:complexContent>
             <xs:extension base="a:_options">
@@ -102,6 +123,9 @@
       <xs:attribute name="options" type="a:options-expr"/>
    </xs:complexType>
    <xs:element name="option">
+      <xs:annotation>
+         <xs:documentation>Creates an &lt;option&gt; element.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:complexContent>
             <xs:extension base="a:sequence-constructor">
@@ -149,6 +173,9 @@
       <xs:attribute name="placeholder" type="a:avt"/>
    </xs:attributeGroup>
    <xs:element name="label" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates a &lt;label&gt; element.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
@@ -157,6 +184,9 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="validation-summary" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates an unordered list (&lt;ul&gt; element) of validation messages.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attribute name="include-member-errors">
             <xs:simpleType>
@@ -168,6 +198,9 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="validation-message" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates a &lt;span&gt; element with a validation message if it exists.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
@@ -180,6 +213,9 @@
       <xs:attribute name="attributes" type="a:expr-obj-dict"/>
    </xs:attributeGroup>
    <xs:element name="editor" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates a form control for a model's member, or an "edit view" for a whole model.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:complexContent>
             <xs:extension base="a:_editor-display-common">
@@ -202,7 +238,11 @@
          </xs:complexContent>
       </xs:complexType>
    </xs:element>
-   <xs:element name="display" substitutionGroup="a:extension-instruction" type="a:_editor-display-common"/>
+   <xs:element name="display" substitutionGroup="a:extension-instruction" type="a:_editor-display-common">
+      <xs:annotation>
+         <xs:documentation>Creates a "displayable" representation of a model's member or whole model.</xs:documentation>
+      </xs:annotation>
+   </xs:element>
    <xs:complexType name="_editor-display-common">
       <xs:sequence>
          <xs:element minOccurs="0" maxOccurs="unbounded" ref="a:with-options"/>
@@ -223,6 +263,9 @@
       <xs:attribute name="options" type="a:options-expr"/>
    </xs:complexType>
    <xs:element name="with-options">
+      <xs:annotation>
+         <xs:documentation>Defines options for a model's member form control.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:complexContent>
             <xs:extension base="a:_options">
@@ -233,6 +276,9 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="member-template">
+      <xs:annotation>
+         <xs:documentation>Defines a custom template for the members of a model.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:complexContent>
             <xs:extension base="a:sequence-constructor">
@@ -242,12 +288,18 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="display-name" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>The possibly localized name of a model's member suitable for UI.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="display-text" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>The text representation of a model's member suitable for UI.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:attribute name="for" type="a:expression"/>
          <xs:attribute name="name" type="a:avt"/>
@@ -283,6 +335,9 @@
       </xs:attribute>
    </xs:attributeGroup>
    <xs:element name="form" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates a &lt;form&gt; element and defines a model for descendant instructions.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:complexContent>
             <xs:extension base="a:_form-model-common">
@@ -304,6 +359,9 @@
       </xs:complexType>
    </xs:element>
    <xs:element name="model" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Defines a model for descendant instructions.</xs:documentation>
+      </xs:annotation>
       <xs:complexType>
          <xs:complexContent>
             <xs:extension base="a:_form-model-common">
