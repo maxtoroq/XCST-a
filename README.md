@@ -31,13 +31,9 @@ The [application extension schema](schemas/xcst-app.rng) is written in Relax NG 
 
 Building
 --------
-Run the following commands in PowerShell to build everything (source, samples and tests).
+Run the following commands to build everything (source, samples and tests).
 
-```powershell
-# clone
-git clone https://github.com/maxtoroq/XCST-a.git
-cd XCST-a
-
+```shell
 # restore packages
 .\build\restore-packages.ps1
 
