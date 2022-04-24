@@ -16,11 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\src\XmlNamespaces.cs" Link="XmlNamespaces.cs" />
-    <Compile Include="..\XDocumentNormalizer.cs" Link="XDocumentNormalizer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="3.8.0" />
     <PackageReference Include="Moq" Version="4.8.0" />
@@ -38,6 +34,11 @@
       <Private>False</Private>
       <PrivateAssets>All</PrivateAssets>
     </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\XmlNamespaces.cs" Link="XmlNamespaces.cs" />
+    <Compile Include="..\XDocumentNormalizer.cs" Link="XDocumentNormalizer.cs" />
   </ItemGroup>
 
   <ItemGroup>
