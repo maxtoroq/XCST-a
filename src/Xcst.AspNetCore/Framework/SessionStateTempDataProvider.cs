@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using TempDataSerializer = Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure.TempDataSerializer;
 
 namespace System.Web.Mvc {
@@ -31,10 +30,10 @@ namespace System.Web.Mvc {
       public virtual IDictionary<string, object?>
       LoadTempData(ControllerContext controllerContext) {
 
-         if (controllerContext == null) throw new ArgumentNullException(nameof(controllerContext));
+         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
          // Accessing Session property will throw if the session middleware is not enabled.
-         ISession session = controllerContext.HttpContext.Session;
+         var session = controllerContext.HttpContext.Session;
 
          if (session.TryGetValue(TempDataSessionStateKey, out var value)) {
             // If we got it from Session, remove it so that no other request gets it
@@ -52,12 +51,11 @@ namespace System.Web.Mvc {
          if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
 
          // Accessing Session property will throw if the session middleware is not enabled.
-         ISession session = controllerContext.HttpContext.Session;
-
-         bool hasValues = (values != null && values.Count > 0);
+         var session = controllerContext.HttpContext.Session;
+         var hasValues = (values != null && values.Count > 0);
 
          if (hasValues) {
-            byte[] bytes = _tempDataSerializer.Serialize(values);
+            var bytes = _tempDataSerializer.Serialize(values);
             session.Set(TempDataSessionStateKey, bytes);
          } else {
             session.Remove(TempDataSessionStateKey);

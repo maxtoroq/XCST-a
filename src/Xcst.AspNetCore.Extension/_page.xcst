@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ Copyright 2022 Max Toro Q.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<module version='1.0' language='C#'
+   xmlns='http://maxtoroq.github.io/XCST'
+   xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
+   xmlns:code='https://maxtoroq.github.io/XCST/code'
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
+   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+
+   <import-namespace ns='System.Linq'/>
+   <import-namespace ns='System.Xml.Linq'/>
+   <import-namespace ns='System.Text.RegularExpressions'/>
+
+   <template name='src:package-attribute-extra'>
+      <param name='el' as='XElement' required='yes'/>
+
+      <variable name='genAttr' value='this.AnnotateVirtualPath
+         &amp;&amp; this.IsPage
+         &amp;&amp; this.ApplicationUri != null'/>
+
+      <if test='genAttr
+            &amp;&amp; AppRelativeUri(el) is string relativeUri'>
+         <code:attribute>
+            <code:type-reference name='PageVirtualPath' namespace='Xcst.Web.Precompilation'/>
+            <code:arguments>
+               <code:string>
+                  <value-of value='app_page_path(relativeUri)'/>
+               </code:string>
+            </code:arguments>
+         </code:attribute>
+      </if>
+   </template>
+
+   <template name='src:base-types'>
+      <param name='el' as='XElement' required='yes'/>
+
+      <variable name='inheritsPi' value='app_inherits_directive(el)'/>
+      <variable name='modelPi' value='app_model_directive(el)'/>
+
+      <if test='!(inheritsPi is null || modelPi is null)'>
+         <message terminate='yes' error-data='src_error_object(el)' transform-text='trim'>
+            'inherits' and 'model' directives are mutually exclusive.
+         </message>
+      </if>
+
+      <choose>
+         <when test='inheritsPi != null'>
+            <code:type-reference name='{xcst_non_string(inheritsPi)}'/>
+         </when>
+         <when test='modelPi != null &amp;&amp; src_base_types?.Length > 0'>
+            <code:type-reference>
+               <copy-of value='attributes(src_base_types[0])'/>
+               <code:type-arguments>
+                  <code:type-reference name='{xcst_non_string(modelPi)}'/>
+               </code:type-arguments>
+            </code:type-reference>
+         </when>
+         <otherwise>
+            <copy-of value='src_base_types?.FirstOrDefault()'/>
+         </otherwise>
+      </choose>
+      <copy-of value='src_base_types?.Skip(1)'/>
+   </template>
+
+   <function name='app_inherits_directive' as='XProcessingInstruction?'>
+      <param name='el' as='XElement'/>
+
+      <variable name='pInsts' value='el
+         .NodesBeforeSelf()
+         .OfType&lt;XProcessingInstruction>()
+         .Where(p => p.Target == "inherits")
+         .ToArray()'/>
+
+      <if test='pInsts.Length > 0'>
+         <if test='!(pInsts.Length == 1)'>
+            <message terminate='yes' error-data='src_error_object(pInsts[1])' expand-text='yes' transform-text='trim'>
+               Only one '{pInsts[0].Target}' directive is allowed.
+            </message>
+         </if>
+         <return value='pInsts[0]'/>
+      </if>
+
+      <return value='null'/>
+   </function>
+
+   <function name='app_model_directive' as='XProcessingInstruction?'>
+      <param name='el' as='XElement'/>
+
+      <variable name='pInsts' value='el
+         .NodesBeforeSelf()
+         .OfType&lt;XProcessingInstruction>()
+         .Where(p => p.Target == "model")
+         .ToArray()'/>
+
+      <if test='pInsts.Length > 0'>
+         <if test='!(pInsts.Length == 1)'>
+            <message terminate='yes' error-data='src_error_object(pInsts[1])' expand-text='yes' transform-text='trim'>
+               Only one '{pInsts[0].Target}' directive is allowed.
+            </message>
+         </if>
+         <return value='pInsts[0]'/>
+      </if>
+
+      <return value='null'/>
+   </function>
+
+   <template name='src:infrastructure-extra'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='principalModule' as='bool' required='yes'/>
+
+      <variable name='genLinkTo' value='this.GenerateLinkTo
+         &amp;&amp; this.IsPage
+         &amp;&amp; this.ApplicationUri != null
+         &amp;&amp; principalModule'/>
+
+      <if test='genLinkTo
+            &amp;&amp; AppRelativeUri(el) is string relativeUri'>
+         <if test='genLinkTo'>
+            <call-template name='app:link-to'>
+               <with-param name='relativeUri' value='relativeUri'/>
+            </call-template>
+         </if>
+      </if>
+   </template>
+
+   <template name='app:link-to'>
+      <param name='relativeUri' as='string' required='yes'/>
+
+      <variable name='pagePath' value='app_page_path(relativeUri)'/>
+      <variable name='pageName' value='pagePath.Split(&apos;/&apos;).Last()'/>
+      <variable name='isDefaultPage' value='pageName == "index"'/>
+
+      <variable name='pathPartsRef'>
+         <code:variable-reference name='pathParts'/>
+      </variable>
+
+      <code:method name='LinkTo' extensibility='static' visibility='public'>
+         <code:type-reference name='String' namespace='System'/>
+         <code:parameters>
+            <code:parameter name='{pathPartsRef.Attribute("name")!.Value}' params='true'>
+               <code:type-reference array-dimensions='1' nullable='true'>
+                  <copy-of value='src_nullable_object_type'/>
+               </code:type-reference>
+            </code:parameter>
+         </code:parameters>
+         <code:block>
+            <code:return>
+               <code:method-call>
+                  <attribute name='name'>
+                     <text>LinkTo</text>
+                     <if test='isDefaultPage'>Default</if>
+                  </attribute>
+                  <call-template name='app:helper-type'>
+                     <with-param name='name'>LinkToHelper</with-param>
+                  </call-template>
+                  <code:arguments>
+                     <code:string>
+                        <value-of value='"/" + pagePath'/>
+                     </code:string>
+                     <if test='isDefaultPage'>
+                        <code:string>
+                           <value-of value='"/" + Regex.Replace(pagePath, "/?index$", "")'/>
+                        </code:string>
+                     </if>
+                     <copy-of value='pathPartsRef'/>
+                  </code:arguments>
+               </code:method-call>
+            </code:return>
+         </code:block>
+      </code:method>
+   </template>
+
+   <function name='app_page_path' as='string'>
+      <param name='relativeUri' as='string'/>
+
+      <return value='System.IO.Path.ChangeExtension(relativeUri, null)'/>
+   </function>
+
+</module>

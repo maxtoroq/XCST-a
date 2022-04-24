@@ -6,7 +6,8 @@ namespace aspnetcore {
 
    partial class _Page_contact : IPageInit {
 
-      bool SendMail(Contact contact) {
+      bool
+      SendMail(Contact contact) {
 
          var message = new MailMessage {
             From = new MailAddress("noreply@example.com", Request.Host.Value),
@@ -18,9 +19,9 @@ namespace aspnetcore {
          };
 
          try {
-            using (var smtp = new SmtpClient()) {
-               smtp.Send(message);
-            }
+            using var smtp = new SmtpClient();
+            smtp.Send(message);
+
             return true;
 
          } catch (SmtpException) {
@@ -33,7 +34,7 @@ namespace aspnetcore {
       public void Init() {
 
          var contact = new Contact();
-         bool sent = false;
+         var sent = false;
 
          if (IsPost
             && AntiForgery.TryValidateAsync(Context).Result
@@ -44,7 +45,7 @@ namespace aspnetcore {
 
             // clear form
             ModelState.Clear();
-            contact = new Contact();
+            contact = new();
          }
 
          layout(new { contact, sent, antiforgery });

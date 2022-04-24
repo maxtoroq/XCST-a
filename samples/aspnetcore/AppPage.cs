@@ -7,14 +7,17 @@ namespace aspnetcore {
 
    public abstract class AppPage : XcstViewPage {
 
-      public override XcstViewPageHandler CreateHttpHandler() => new PageInitHttpHandler(this);
+      public override XcstViewPageHandler
+      CreateHttpHandler() => new PageInitHttpHandler(this);
 
       class PageInitHttpHandler : XcstViewPageHandler {
 
-         public PageInitHttpHandler(XcstViewPage page)
+         public
+         PageInitHttpHandler(XcstViewPage page)
             : base(page) { }
 
-         protected override void RenderViewPage(XcstViewPage page, HttpContext context) {
+         protected override void
+         RenderViewPage(XcstViewPage page, HttpContext context) {
 
             context.Response.ContentType = "text/html";
 
@@ -33,6 +36,7 @@ namespace aspnetcore {
 
    public interface IPageInit : IXcstPackage {
 
-      void Init();
+      void
+      Init();
    }
 }

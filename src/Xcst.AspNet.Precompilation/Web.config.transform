@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-   <system.webServer>
-      <modules>
-         <add name="XCST" preCondition="managedHandler" type="Xcst.Web.Precompilation.PrecompiledPageModule, Xcst.AspNet.Precompilation" />
-      </modules>
-   </system.webServer>
-</configuration>

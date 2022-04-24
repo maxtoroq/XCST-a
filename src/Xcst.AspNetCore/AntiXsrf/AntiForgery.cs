@@ -26,9 +26,8 @@ namespace System.Web.Helpers {
       public static void
       GetHtml(HttpContext httpContext, XcstWriter output) {
 
-         IAntiforgery antiforgery = GetAntiforgeryService(httpContext);
-
-         AntiforgeryTokenSet tokenSet = antiforgery.GetAndStoreTokens(httpContext);
+         var antiforgery = GetAntiforgeryService(httpContext);
+         var tokenSet = antiforgery.GetAndStoreTokens(httpContext);
 
          output.WriteStartElement("input");
          output.WriteAttributeString("type", "hidden");
@@ -40,14 +39,14 @@ namespace System.Web.Helpers {
       public async static Task<bool>
       TryValidateAsync(HttpContext httpContext) {
 
-         IAntiforgery antiforgery = GetAntiforgeryService(httpContext);
+         var antiforgery = GetAntiforgeryService(httpContext);
 
          return await antiforgery.IsRequestValidAsync(httpContext);
       }
 
       static IAntiforgery
       GetAntiforgeryService(HttpContext httpContext) =>
-         (IAntiforgery?)httpContext.RequestServices.GetService(typeof(IAntiforgery))
+         httpContext.RequestServices.GetService(typeof(IAntiforgery)) as IAntiforgery
             ?? throw new InvalidOperationException("IAntiforgery service is not available.");
    }
 }

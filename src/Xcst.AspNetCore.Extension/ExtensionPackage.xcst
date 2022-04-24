@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ Copyright 2022 Max Toro Q.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<module version='1.0' language='C#'
+   xmlns='http://maxtoroq.github.io/XCST'
+   xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
+   xmlns:code='https://maxtoroq.github.io/XCST/code'
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
+   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+
+   <import-namespace ns='System.Linq'/>
+   <import-namespace ns='System.Xml.Linq'/>
+
+   <import href='_grammar.xcst'/>
+   <import href='_expressions.xcst'/>
+   <import href='_instructions.xcst'/>
+   <import href='_forms.xcst'/>
+   <import href='_templates.xcst'/>
+   <import href='_model.xcst'/>
+   <import href='_metadata.xcst'/>
+   <import href='_page.xcst'/>
+
+   <param name='ApplicationUri' as='System.Uri?'/>
+   <param name='GenerateHref' as='bool'/>
+   <param name='GenerateLinkTo' as='bool'/>
+   <param name='AnnotateVirtualPath' as='bool'/>
+   <param name='IsPage' as='bool'/>
+
+   <param name='xcst_is_value_template' as='System.Func&lt;object, bool>' required='yes'/>
+   <param name='xcst_require_output' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_base_types' as='XElement[]' required='yes'/>
+   <param name='src_doc_output' as='System.Func&lt;XObject?, XElement?, XElement>' required='yes'/>
+   <param name='src_output_is_doc' as='System.Func&lt;XElement, bool>' required='yes'/>
+   <param name='src_template_output' as='System.Func&lt;XElement?, XElement?, XElement>' required='yes'/>
+   <param name='src_helper_type' as='System.Func&lt;string, XElement>' required='yes'/>
+   <param name='src_expand_attribute' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_sequence_constructor' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_simple_content' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_validation_arguments' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_top_level_package_reference' as='XElement' required='yes'/>
+   <param name='src_line_number' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+
+   <variable name='code' as='XNamespace'>https://maxtoroq.github.io/XCST/code</variable>
+   <variable name='src' as='XNamespace'>https://maxtoroq.github.io/XCST/compiled</variable>
+   <variable name='c' as='XNamespace'>http://maxtoroq.github.io/XCST</variable>
+   <variable name='a' as='XNamespace'>http://maxtoroq.github.io/XCST/application</variable>
+
+   <template name='app:helper-type' as='XElement'>
+      <param name='name' as='string' required='yes'/>
+
+      <code:type-reference name='{name}' namespace='Xcst.Web.Runtime'/>
+   </template>
+
+   <function name='src_aux_variable' as='string'>
+      <param name='name' as='string'/>
+
+      <return value='"__xcsta_" + name'/>
+   </function>
+
+   <function name='src_error_object' as='object'>
+      <param name='node' as='XObject'/>
+
+      <return value='ErrorData(node)'/>
+   </function>
+
+   <template name='app:element-instruction' as='XElement'>
+      <xcst:instruction>
+         <code:type-reference name='XElement' namespace='System.Xml.Linq'/>
+      </xcst:instruction>
+   </template>
+
+</module>

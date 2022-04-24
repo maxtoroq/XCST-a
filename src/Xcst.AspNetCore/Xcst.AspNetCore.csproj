@@ -1,108 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
     <RootNamespace>Xcst.Web</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <VersionPrefix>2</VersionPrefix>
+    <Description>XCST web pages for ASP.NET Core</Description>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Runtime.Caching" Version="5.0.0" />
-    <PackageReference Include="Xcst.Runtime" Version="[0.154.0,0.155.0)" />
+    <PackageReference Include="Xcst.Runtime" Version="2.0.0.2-pre" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Xcst.AspNet\Configuration\EditorInfo.cs" Link="Configuration\EditorInfo.cs" />
-    <Compile Include="..\Xcst.AspNet\Configuration\XcstWebConfiguration.cs" Link="Configuration\XcstWebConfiguration.cs" />
-    <Compile Include="..\Xcst.AspNet\Diagnostics.cs" Link="Diagnostics.cs" />
-    <Compile Include="..\Xcst.AspNet\DictionaryExtensions.cs" Link="DictionaryExtensions.cs" />
-    <Compile Include="..\Xcst.AspNet\FrameworkExtensions.cs" Link="FrameworkExtensions.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\AdditionalMetaDataAttribute.cs" Link="Framework\AdditionalMetaDataAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\AssociatedMetadataProvider.cs" Link="Framework\AssociatedMetadataProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\AssociatedValidatorProvider.cs" Link="Framework\AssociatedValidatorProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\CachedModelMetadata.cs" Link="Framework\CachedModelMetadata.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ClientDataTypeModelValidatorProvider.cs" Link="Framework\ClientDataTypeModelValidatorProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\Common\AttributeList.cs" Link="Framework\Common\AttributeList.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\Common\CollectionExtensions.cs" Link="Framework\Common\CollectionExtensions.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\Common\CopyOnWriteDictionary.cs" Link="Framework\Common\CopyOnWriteDictionary.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\Common\PrefixContainer.cs" Link="Framework\Common\PrefixContainer.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\Common\PropertyHelper.cs" Link="Framework\Common\PropertyHelper.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\Common\TypeDescriptorHelper.cs" Link="Framework\Common\TypeDescriptorHelper.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\Common\TypeHelpers.cs" Link="Framework\Common\TypeHelpers.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ControllerContext.cs" Link="Framework\ControllerContext.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\CachedDataAnnotationsModelMetadata.cs" Link="Framework\DataAnnotations\CachedDataAnnotationsModelMetadata.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataAnnotationsModelValidator.cs" Link="Framework\DataAnnotations\DataAnnotationsModelValidator.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" Link="Framework\DataAnnotations\DataAnnotationsModelValidatorProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DataTypeUtil.cs" Link="Framework\DataAnnotations\DataTypeUtil.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\DisplayNameUtil.cs" Link="Framework\DataAnnotations\DisplayNameUtil.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DataAnnotations\ValidatableObjectAdapter.cs" Link="Framework\DataAnnotations\ValidatableObjectAdapter.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DataErrorInfoModelValidatorProvider.cs" Link="Framework\DataErrorInfoModelValidatorProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DependencyResolver.cs" Link="Framework\DependencyResolver.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\DynamicViewDataDictionary.cs" Link="Framework\DynamicViewDataDictionary.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ExpressionHelper.cs" Link="Framework\ExpressionHelper.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ExpressionUtil\CachedExpressionCompiler.cs" Link="Framework\ExpressionUtil\CachedExpressionCompiler.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ExpressionUtil\ExpressionFingerprint.cs" Link="Framework\ExpressionUtil\ExpressionFingerprint.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ExpressionUtil\ExpressionFingerprintChain.cs" Link="Framework\ExpressionUtil\ExpressionFingerprintChain.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ExpressionUtil\FingerprintingExpressionVisitor.cs" Link="Framework\ExpressionUtil\FingerprintingExpressionVisitor.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ExpressionUtil\HashCodeCombiner.cs" Link="Framework\ExpressionUtil\HashCodeCombiner.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ExpressionUtil\HoistingExpressionVisitor.cs" Link="Framework\ExpressionUtil\HoistingExpressionVisitor.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\HiddenInputAttribute.cs" Link="Framework\HiddenInputAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\HtmlHelper.cs" Link="Framework\HtmlHelper.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\IClientValidatable.cs" Link="Framework\IClientValidatable.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\IResolver.cs" Link="Framework\IResolver.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\BindAttribute.cs" Link="Framework\ModelBinding\BindAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\ByteArrayModelBinder.cs" Link="Framework\ModelBinding\ByteArrayModelBinder.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\CustomModelBinderAttribute.cs" Link="Framework\ModelBinding\CustomModelBinderAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\DefaultModelBinder.cs" Link="Framework\ModelBinding\DefaultModelBinder.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\DictionaryValueProvider.cs" Link="Framework\ModelBinding\DictionaryValueProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\FormValueProvider.cs" Link="Framework\ModelBinding\FormValueProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\IModelBinder.cs" Link="Framework\ModelBinding\IModelBinder.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\IModelBinderProvider.cs" Link="Framework\ModelBinding\IModelBinderProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\IValueProvider.cs" Link="Framework\ModelBinding\IValueProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\JQueryFormValueProvider.cs" Link="Framework\ModelBinding\JQueryFormValueProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\JsonValueProviderFactory.cs" Link="Framework\ModelBinding\JsonValueProviderFactory.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\ModelBinderAttribute.cs" Link="Framework\ModelBinding\ModelBinderAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\QueryStringValueProvider.cs" Link="Framework\ModelBinding\QueryStringValueProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\RouteDataValueProvider.cs" Link="Framework\ModelBinding\RouteDataValueProvider.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelBinding\ValueProviderFactory.cs" Link="Framework\ModelBinding\ValueProviderFactory.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelClientValidationRule.cs" Link="Framework\ModelClientValidationRule.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelMetadata.cs" Link="Framework\ModelMetadata.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelStateDictionary.cs" Link="Framework\ModelStateDictionary.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ModelValidator.cs" Link="Framework\ModelValidator.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\SelectListItem.cs" Link="Framework\SelectListItem.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\TempDataDictionary.cs" Link="Framework\TempDataDictionary.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\UrlHelper.cs" Link="Framework\UrlHelper.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ValueProviderResult.cs" Link="Framework\ValueProviderResult.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ViewContext.cs" Link="Framework\ViewContext.cs" />
-    <Compile Include="..\Xcst.AspNet\Framework\ViewDataDictionary.cs" Link="Framework\ViewDataDictionary.cs" />
-    <Compile Include="..\Xcst.AspNet\Mvc\FileExtensionsAttribute.cs" Link="Mvc\FileExtensionsAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Mvc\FileMaxLengthAttribute.cs" Link="Mvc\FileMaxLengthAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Mvc\ShowForAttribute.cs" Link="Mvc\ShowForAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Precompilation\PageVirtualPathAttribute.cs" Link="Precompilation\PageVirtualPathAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Precompilation\PrecompiledModuleAttribute.cs" Link="Precompilation\PrecompiledModuleAttribute.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\DefaultDisplayTemplates.cs" Link="Runtime\DefaultDisplayTemplates.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\DefaultEditorTemplates.cs" Link="Runtime\DefaultEditorTemplates.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\DisplayInstructions.cs" Link="Runtime\DisplayInstructions.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\EditorInstructions.cs" Link="Runtime\EditorInstructions.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\HtmlAttributeDictionary.cs" Link="Runtime\HtmlAttributeDictionary.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\HtmlAttributeHelper.cs" Link="Runtime\HtmlAttributeHelper.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\HtmlHelperFactory.cs" Link="Runtime\HtmlHelperFactory.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\InputInstructions.cs" Link="Runtime\InputInstructions.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\LabelInstructions.cs" Link="Runtime\LabelInstructions.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\LinkToHelper.cs" Link="Runtime\LinkToHelper.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\MetadataInstructions.cs" Link="Runtime\MetadataInstructions.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\OptionList.cs" Link="Runtime\OptionList.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\SelectInstructions.cs" Link="Runtime\SelectInstructions.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\TemplateHelpers.cs" Link="Runtime\TemplateHelpers.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\TextAreaInstructions.cs" Link="Runtime\TextAreaInstructions.cs" />
-    <Compile Include="..\Xcst.AspNet\Runtime\ValidationInstructions.cs" Link="Runtime\ValidationInstructions.cs" />
-    <Compile Include="..\Xcst.AspNet\UrlDataList.cs" Link="UrlDataList.cs" />
+    <Content Include="..\..\schemas\xcst-app.rng" Visible="false" PackagePath="schemas" />
+    <Content Include="..\..\schemas\xcst-app.xsd" Visible="false" PackagePath="schemas" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Framework\Common\MvcResources.Designer.cs">

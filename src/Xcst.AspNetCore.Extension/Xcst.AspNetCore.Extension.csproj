@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Xcst.Web.Extension</RootNamespace>
+    <VersionPrefix>2</VersionPrefix>
+    <Description>Extension instructions for XCST web pages</Description>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+   
+  <PropertyGroup>
+    <XcstInput>**\*.xcst</XcstInput>
+    <XcstOutput>xcst.generated.cs</XcstOutput>
+    <XcstCodegenExe>$(ProjectDir)..\extension-codegen\bin\$(Configuration)\net5.0\extension-codegen.exe</XcstCodegenExe>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(XcstOutput)</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Xcst.Runtime" Version="0.154.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\extension-codegen\extension-codegen.csproj">
+      <Private>False</Private>
+      <PrivateAssets>All</PrivateAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <XcstInput Include="$(XcstInput)" />
+    <UpToDateCheckInput Include="@(XcstInput)" />
+    <UpToDateCheckBuilt Include="$(XcstOutput)" />
+    <Compile Include="$(XcstOutput)" />
+  </ItemGroup>
+
+  <Target Name="XcstCodeGen" BeforeTargets="PreBuildEvent" DependsOnTargets="ResolveReferences" Inputs="@(XcstInput);$(MSBuildThisFileFullPath);$(XcstCodegenExe)" Outputs="$(XcstOutput)">
+    <Message Text="xcst-codegen [$(MSBuildProjectName)]" Importance="high" />
+    <Exec Command="$(XcstCodegenExe) $(MSBuildThisFileFullPath) $(XcstOutput)" />
+  </Target>
+
+</Project>

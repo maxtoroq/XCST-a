@@ -47,7 +47,7 @@ namespace Xcst.Web.Runtime {
          }
 
          string query;
-         string processedPath = UrlBuilder.BuildUrl(path, out query, pathParts);
+         var processedPath = UrlBuilder.BuildUrl(path, out query, pathParts);
 
          // many of the methods we call internally can't handle query strings properly, so tack it on after processing
          // the virtual app path and url rewrites
@@ -68,15 +68,15 @@ namespace Xcst.Web.Runtime {
 
          // can't call VirtualPathUtility.IsAppRelative since it throws on some inputs
 
-         bool isAppRelative = contentPath[0] == '~';
+         var isAppRelative = contentPath[0] == '~';
 
          if (isAppRelative) {
 
-            HttpContext context = httpContext
+            var context = httpContext
                ?? throw new ArgumentException("httpContext cannot be null for app-relative paths.", nameof(httpContext));
 
             // See also Microsoft.AspNetCore.Mvc.Routing.UrlHelperBase.Content
-            PathString other = new PathString(contentPath.Substring(1));
+            var other = new PathString(contentPath.Substring(1));
             return context.Request.PathBase.Add(other).Value!;
          }
 

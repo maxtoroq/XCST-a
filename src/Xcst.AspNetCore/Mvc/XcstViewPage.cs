@@ -172,7 +172,7 @@ namespace Xcst.Web.Mvc {
             ValueProvider = valueProvider
          };
 
-         IModelBinder binder = ModelBinders.Binders.GetBinder(type);
+         var binder = ModelBinders.Binders.GetBinder(type);
 
          binder.BindModel(this.ViewContext, bindingContext);
 
@@ -184,9 +184,9 @@ namespace Xcst.Web.Mvc {
 
          if (value is null) throw new ArgumentNullException(nameof(value));
 
-         ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => value, value.GetType());
+         var metadata = ModelMetadataProviders.Current.GetMetadataForType(() => value, value.GetType());
 
-         foreach (ModelValidationResult validationResult in ModelValidator.GetModelValidator(metadata, this.ViewContext).Validate(null)) {
+         foreach (var validationResult in ModelValidator.GetModelValidator(metadata, this.ViewContext).Validate(null)) {
             this.ModelState.AddModelError(CreateSubPropertyName(prefix, validationResult.MemberName), validationResult.Message);
          }
 
@@ -195,11 +195,13 @@ namespace Xcst.Web.Mvc {
 
       static bool
       IsPropertyAllowed(string propertyName, string[]? includeProperties, string[]? excludeProperties) {
+
          // We allow a property to be bound if its both in the include list AND not in the exclude list.
          // An empty include list implies all properties are allowed.
          // An empty exclude list implies no properties are disallowed.
-         bool includeProperty = (includeProperties is null) || (includeProperties.Length == 0) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
-         bool excludeProperty = (excludeProperties != null) && excludeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
+
+         var includeProperty = (includeProperties is null) || (includeProperties.Length == 0) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
+         var excludeProperty = (excludeProperties != null) && excludeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
          return includeProperty && !excludeProperty;
       }
 

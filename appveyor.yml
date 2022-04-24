@@ -1,7 +1,5 @@
 before_build:
-- ps: |
-    .\build\restore-packages.ps1
+- cmd: MSBuild -t:restore
 
 version: '{build}'
-
 image: Visual Studio 2019

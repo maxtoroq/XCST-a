@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Xcst.Web.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <XcstInput>**\*.xcst;**\*.pxcst</XcstInput>
+    <XcstOutput>Tests.generated.cs</XcstOutput>
+    <XcstCodegenExe>$(ProjectDir)..\tests-codegen\bin\$(Configuration)\net5.0\tests-codegen.exe</XcstCodegenExe>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(XcstOutput)</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\XmlNamespaces.cs" Link="XmlNamespaces.cs" />
+    <Compile Include="..\XDocumentNormalizer.cs" Link="XDocumentNormalizer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="3.8.0" />
+    <PackageReference Include="Moq" Version="4.8.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="NUnit" Version="3.13.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="coverlet.collector" Version="3.0.2" />
+    <PackageReference Include="Xcst.Compiler" Version="2.0.0.2-pre" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Xcst.AspNetCore.Extension\Xcst.AspNetCore.Extension.csproj" />
+    <ProjectReference Include="..\..\src\Xcst.AspNetCore\Xcst.AspNetCore.csproj" />
+    <ProjectReference Include="..\tests-codegen\tests-codegen.csproj">
+      <Private>False</Private>
+      <PrivateAssets>All</PrivateAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <XcstInput Include="$(XcstInput)" />
+    <UpToDateCheckInput Include="@(XcstInput)" />
+    <UpToDateCheckBuilt Include="$(XcstOutput)" />
+    <Compile Include="$(XcstOutput)" />
+  </ItemGroup>
+
+  <Target Name="XcstCodeGen" BeforeTargets="PreBuildEvent" DependsOnTargets="ResolveReferences" Inputs="@(XcstInput);$(MSBuildThisFileFullPath);$(XcstCodegenExe)" Outputs="$(XcstOutput)">
+    <Message Text="xcst-codegen [$(MSBuildProjectName)]" Importance="high" />
+    <Exec Command="$(XcstCodegenExe) $(MSBuildThisFileFullPath) $(XcstOutput)" />
+  </Target>
+
+</Project>

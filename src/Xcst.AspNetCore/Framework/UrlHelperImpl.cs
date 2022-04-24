@@ -17,8 +17,7 @@ namespace System.Web.Mvc {
          // many of the methods we call internally can't handle query strings properly, so just strip it out for
          // the time being
 
-         string? query;
-         contentPath = StripQuery(contentPath, out query);
+         contentPath = StripQuery(contentPath, out var query);
 
          // many of the methods we call internally can't handle query strings properly, so tack it on after processing
          // the virtual app path and url rewrites
@@ -37,12 +36,12 @@ namespace System.Web.Mvc {
             return contentPath;
          }
 
-         bool isAppRelative = contentPath[0] == '~';
+         var isAppRelative = contentPath[0] == '~';
 
          if (isAppRelative) {
 
             // See also Microsoft.AspNetCore.Mvc.Routing.UrlHelperBase.Content
-            PathString other = new PathString(contentPath.Substring(1));
+            var other = new PathString(contentPath.Substring(1));
             return httpContext.Request.PathBase.Add(other).Value!;
          }
 
@@ -52,7 +51,7 @@ namespace System.Web.Mvc {
       static string
       StripQuery(string path, out string? query) {
 
-         int queryIndex = path.IndexOf('?');
+         var queryIndex = path.IndexOf('?');
 
          if (queryIndex >= 0) {
             query = path.Substring(queryIndex);

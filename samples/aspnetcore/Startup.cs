@@ -15,7 +15,8 @@ namespace aspnetcore {
 
       // This method gets called by the runtime. Use this method to add services to the container.
       // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-      public void ConfigureServices(IServiceCollection services) {
+      public void
+      ConfigureServices(IServiceCollection services) {
 
          services.AddAntiforgery();
          //services.AddDistributedMemoryCache();
@@ -24,7 +25,8 @@ namespace aspnetcore {
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-      public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider svp) {
+      public void
+      Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider svp) {
 
          if (env.IsDevelopment()) {
             app.UseDeveloperExceptionPage();
@@ -36,7 +38,8 @@ namespace aspnetcore {
          app.UseXcstPrecompiledPages(new[] { GetType().Assembly }, config => ConfigureXcstWeb(config, svp));
       }
 
-      static void ConfigureXcstWeb(XcstWebConfiguration config, IServiceProvider svp) {
+      static void
+      ConfigureXcstWeb(XcstWebConfiguration config, IServiceProvider svp) {
 
          config.DisplayTemplates.TemplateFactory = LoadDisplayTemplate;
          config.EditorTemplates.TemplateFactory = LoadEditorTemplate;
@@ -51,13 +54,15 @@ namespace aspnetcore {
          //Xcst.Web.Runtime.UrlUtil.CurrentHttpContext = () => contextAccessor.HttpContext!;
       }
 
-      static XcstViewPage? LoadDisplayTemplate(string templateName, ViewContext context) =>
+      static XcstViewPage?
+      LoadDisplayTemplate(string templateName, ViewContext context) =>
          templateName switch {
             nameof(Object) => new DisplayTemplates.ObjectPackage(),
             _ => null,
          };
 
-      static XcstViewPage? LoadEditorTemplate(string templateName, ViewContext context) =>
+      static XcstViewPage?
+      LoadEditorTemplate(string templateName, ViewContext context) =>
          templateName switch {
             nameof(Boolean) => new EditorTemplates.BooleanPackage(),
             nameof(Object) => new EditorTemplates.ObjectPackage(),

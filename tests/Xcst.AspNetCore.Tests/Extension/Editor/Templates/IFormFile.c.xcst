@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='Microsoft.AspNetCore.Http'/>
+
+   <c:type name='Foo'>
+      <c:member name='f' as='IFormFile'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <a:model value='new Foo()'>
+         <a:editor for='f'/>
+      </a:model>
+   </c:template>
+
+   <c:template name='expected'>
+      <input type='file' id='f' name='f' class='text-box single-line'/>
+   </c:template>
+
+</c:module>

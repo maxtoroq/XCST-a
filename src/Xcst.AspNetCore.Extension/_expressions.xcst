@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ Copyright 2022 Max Toro Q.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<module version='1.0' language='C#'
+   xmlns='http://maxtoroq.github.io/XCST'
+   xmlns:code='https://maxtoroq.github.io/XCST/code'
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
+   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+
+   <import-namespace ns='System.Linq'/>
+   <import-namespace ns='System.Xml.Linq'/>
+
+   <variable name='src_object_type'>
+      <code:type-reference name='Object' namespace='System'/>
+   </variable>
+
+   <variable name='src_nullable_object_type'>
+      <code:type-reference name='Object' namespace='System' nullable='true'/>
+   </variable>
+
+
+   <!-- ## Data Types-->
+
+   <template name='src:boolean'>
+      <param name='val' as='bool?' required='yes'/>
+      <param name='avt' as='XAttribute?'/>
+
+      <choose>
+         <when test='val != null'>
+            <code:bool value='{@string(val.Value)}'/>
+         </when>
+         <otherwise>
+            <code:method-call name='Boolean'>
+               <copy-of value='src_helper_type("DataType")'/>
+               <code:arguments>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt! }'/>
+               </code:arguments>
+            </code:method-call>
+         </otherwise>
+      </choose>
+   </template>
+
+   <template name='src:integer'>
+      <param name='val' as='int?' required='yes'/>
+      <param name='avt' as='XAttribute?'/>
+
+      <choose>
+         <when test='val != null'>
+            <code:int value='{@string(val.Value)}'/>
+         </when>
+         <otherwise>
+            <code:method-call name='Integer'>
+               <copy-of value='src_helper_type("DataType")'/>
+               <code:arguments>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt! }'/>
+               </code:arguments>
+            </code:method-call>
+         </otherwise>
+      </choose>
+   </template>
+
+   <template name='src:input-type'>
+      <param name='val' as='string?' required='yes'/>
+      <param name='avt' as='XAttribute?'/>
+
+      <choose>
+         <when test='val != null'>
+            <code:string verbatim='true'>
+               <value-of value='val'/>
+            </code:string>
+         </when>
+         <otherwise>
+            <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt! }'/>
+         </otherwise>
+      </choose>
+   </template>
+
+</module>

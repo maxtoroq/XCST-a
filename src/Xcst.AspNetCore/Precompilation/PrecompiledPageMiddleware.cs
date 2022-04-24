@@ -41,7 +41,6 @@ namespace Xcst.Web.Precompilation {
 
       public
       PrecompiledPageMiddleware(RequestDelegate next, Assembly[] appModules) {
-
          _next = next;
          _appModules = appModules;
          _pageMap = new(InitializePageMap);
@@ -87,17 +86,16 @@ namespace Xcst.Web.Precompilation {
       public async Task
       Invoke(HttpContext context) {
 
-         HttpRequest request = context.Request;
+         var request = context.Request;
+         var requestPath = request.Path.Value!.Substring(1);
 
-         string requestPath = request.Path.Value!.Substring(1);
+         if (MatchRequest(requestPath, out var pagePath, out var pathInfo)) {
 
-         if (MatchRequest(requestPath, out string? pagePath, out string? pathInfo)) {
-
-            XcstPage page = CreatePage(PageType(pagePath), context.RequestServices)!;
+            var page = CreatePage(PageType(pagePath), context.RequestServices);
             page.VirtualPath = "~/" + pagePath;
             page.PathInfo = pathInfo;
 
-            XcstPageHandler handler = page.CreateHttpHandler();
+            var handler = page.CreateHttpHandler();
             handler.ProcessRequest(context);
 
             return;
@@ -107,7 +105,9 @@ namespace Xcst.Web.Precompilation {
       }
 
       bool
-      MatchRequest(string requestPath, [NotNullWhen(returnValue: true)] out string? pagePath, out string? pathInfo) {
+      MatchRequest(string requestPath,
+            [MaybeNullWhen(returnValue: false)] out string pagePath,
+            [MaybeNullWhen(returnValue: false)] out string pathInfo) {
 
          Debug.Assert(requestPath != null);
          Debug.Assert(!requestPath.StartsWith("~/"));
@@ -119,8 +119,8 @@ namespace Xcst.Web.Precompilation {
             // For each trimmed part of the path try to add a known extension and
             // check if it matches a file in the application.
 
-            string currentLevel = requestPath;
-            string currentPathInfo = String.Empty;
+            var currentLevel = requestPath;
+            var currentPathInfo = String.Empty;
 
             while (true) {
 
@@ -135,7 +135,7 @@ namespace Xcst.Web.Precompilation {
 
                // Try to remove the last path segment (e.g. go from /foo/bar to /foo)
 
-               int indexOfLastSlash = currentLevel.LastIndexOf('/');
+               var indexOfLastSlash = currentLevel.LastIndexOf('/');
 
                if (indexOfLastSlash == -1) {
 
@@ -170,11 +170,11 @@ namespace Xcst.Web.Precompilation {
       }
 
       bool
-      MatchDefaultFile(string requestPath, [NotNullWhen(returnValue: true)] out string? pagePath) {
+      MatchDefaultFile(string requestPath, [MaybeNullWhen(returnValue: false)] out string pagePath) {
 
          const string defaultDocument = "index";
 
-         string currentLevel = requestPath;
+         var currentLevel = requestPath;
          string currentLevelIndex;
 
          if (String.IsNullOrEmpty(currentLevel)) {

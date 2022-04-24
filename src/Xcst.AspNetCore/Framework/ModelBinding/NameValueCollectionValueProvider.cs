@@ -73,8 +73,7 @@ namespace System.Web.Mvc {
 
          if (key is null) throw new ArgumentNullException(nameof(key));
 
-         ValueProviderResult? valueProviderResult;
-         Values.TryGetValue(key, out valueProviderResult);
+         Values.TryGetValue(key, out var valueProviderResult);
 
          return valueProviderResult;
       }
@@ -90,7 +89,7 @@ namespace System.Web.Mvc {
 
          foreach (var pair in _collection) {
 
-            string key = pair.Key;
+            var key = pair.Key;
 
             if (key != null) {
 
@@ -100,8 +99,8 @@ namespace System.Web.Mvc {
                   normalizedKey = NormalizeJQueryToMvc(key);
                }
 
-               string[]? rawValue = pair.Value;
-               string attemptedValue = pair.Value;
+               var rawValue = (string[]?)pair.Value;
+               var attemptedValue = (string)pair.Value;
 
                tempValues[normalizedKey] =
                    new ValueProviderResult(rawValue, attemptedValue, _culture);
@@ -128,11 +127,11 @@ namespace System.Web.Mvc {
 
          StringBuilder? sb = null;
 
-         int i = 0;
+         var i = 0;
 
          while (true) {
 
-            int indexOpen = key.IndexOf('[', i);
+            var indexOpen = key.IndexOf('[', i);
 
             if (indexOpen < 0) {
 
@@ -153,7 +152,7 @@ namespace System.Web.Mvc {
 
             // Find closing bracket.
 
-            int indexClose = key.IndexOf(']', indexOpen);
+            var indexClose = key.IndexOf(']', indexOpen);
 
             if (indexClose == -1) {
                throw new ArgumentException(MvcResources.JQuerySyntaxMissingClosingBracket, nameof(key));

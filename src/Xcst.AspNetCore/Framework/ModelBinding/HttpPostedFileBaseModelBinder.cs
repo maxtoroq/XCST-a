@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-using Microsoft.AspNetCore.Http;
+using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
 namespace System.Web.Mvc {
 
@@ -12,7 +12,9 @@ namespace System.Web.Mvc {
          if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
          if (bindingContext is null) throw new ArgumentNullException(nameof(bindingContext));
 
-         IFormFile? theFile = controllerContext.HttpContext.Request.Form.Files.GetFile(bindingContext.ModelName);
+         var theFile = controllerContext.HttpContext.Request.Form.Files
+            .GetFile(bindingContext.ModelName);
+
          return ChooseFileOrNull(theFile);
       }
 

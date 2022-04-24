@@ -15,7 +15,7 @@
    <foreign-work type="source">
       <notice>
          <work>ASP.NET</work>
-         <website>http://aspnetwebstack.codeplex.com/</website>
+         <website>https://github.com/aspnet/AspNetWebStack</website>
          <copyright>Microsoft Open Technologies, Inc.</copyright>
          <license name="Apache-2.0"><![CDATA[Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved.
 Microsoft Open Technologies would like to thank its contributors, a list
@@ -33,10 +33,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 implied. See the License for the specific language governing permissions
 and limitations under the License.]]></license>
       </notice>
-      <used-by-source path="src/Xcst.AspNet/"/>
-      <used-by-source path="src/Xcst.AspNet.Compilation/"/>
-      <used-by-source path="src/Xcst.AspNet.Precompilation/"/>
-      <used-by-source path="src/Xcst.Web.Mvc/"/>
       <used-by-source path="src/Xcst.AspNetCore/"/>
    </foreign-work>
    <foreign-work type="source">
@@ -66,8 +62,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.]]></license>
       </notice>
-      <used-by-source path="src/Xcst.AspNet/"/>
-      <used-by-source path="src/Xcst.Web.Mvc/"/>
       <used-by-source path="src/Xcst.AspNetCore/"/>
+      <used-by-source path="src/Xcst.AspNetCore.Extension/"/>
    </foreign-work>
 </notice>

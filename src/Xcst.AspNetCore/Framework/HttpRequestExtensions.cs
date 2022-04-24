@@ -15,26 +15,26 @@ namespace System.Web.Mvc {
 
          if (request is null) throw new ArgumentNullException(nameof(request));
 
-         string incomingVerb = request.Method;
+         var incomingVerb = request.Method;
 
          if (!String.Equals(incomingVerb, "POST", StringComparison.OrdinalIgnoreCase)) {
             return incomingVerb;
          }
 
          string? verbOverride = null;
-         string headerOverrideValue = request.Headers[XHttpMethodOverrideKey];
+         var headerOverrideValue = (string)request.Headers[XHttpMethodOverrideKey];
 
          if (!String.IsNullOrEmpty(headerOverrideValue)) {
             verbOverride = headerOverrideValue;
          } else {
 
-            string formOverrideValue = request.Form[XHttpMethodOverrideKey];
+            var formOverrideValue = (string)request.Form[XHttpMethodOverrideKey];
 
             if (!String.IsNullOrEmpty(formOverrideValue)) {
                verbOverride = formOverrideValue;
             } else {
 
-               string queryStringOverrideValue = request.Query[XHttpMethodOverrideKey];
+               var queryStringOverrideValue = (string)request.Query[XHttpMethodOverrideKey];
 
                if (!String.IsNullOrEmpty(queryStringOverrideValue)) {
                   verbOverride = queryStringOverrideValue;
@@ -72,14 +72,10 @@ namespace System.Web.Mvc {
             (url.Length > 1 && url[0] == '~' && url[1] == '/')); // "~/" or "~/foo"
       }
 
-      static string
-      Item(this HttpRequest request, string key) {
-
-         return request.Query[key].ToString()
+      static string?
+      Item(this HttpRequest request, string key) =>
+         request.Query[key].ToString()
             ?? request.Form[key].ToString()
-            ?? request.Cookies[key].ToString()
-            //?? ServerVariables[key]
-            ;
-      }
+            ?? request.Cookies[key];
    }
 }

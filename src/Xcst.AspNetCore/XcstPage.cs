@@ -91,8 +91,7 @@ namespace Xcst.Web {
       public async Task<bool>
       TryAuthorizeAsync(string? policy = null, string[]? roles = null) {
 
-         PolicyAuthorizationResult authorizeResult =
-            await TryAuthorizeCoreAsync(policy, roles);
+         var authorizeResult = await TryAuthorizeCoreAsync(policy, roles);
 
          if (authorizeResult.Challenged) {
             await this.Context.ChallengeAsync();
@@ -110,8 +109,8 @@ namespace Xcst.Web {
       public virtual async Task<PolicyAuthorizationResult>
       TryAuthorizeCoreAsync(string? policy = null, string[]? roles = null) {
 
-         HttpContext httpContext = this.Context;
-         IPrincipal user = this.User;
+         var httpContext = this.Context;
+         var user = this.User;
 
          if (user.Identity is null
             || !user.Identity.IsAuthenticated) {
@@ -133,14 +132,9 @@ namespace Xcst.Web {
             Roles = (roles != null) ? String.Join(',', roles) : null
          };
 
-         AuthorizationPolicy? authorizationPolicy =
-            await AuthorizationPolicy.CombineAsync(policyProvider, new[] { authorizeData });
-
-         AuthenticateResult authenticateResult =
-            await policyEval.AuthenticateAsync(authorizationPolicy!, httpContext);
-
-         PolicyAuthorizationResult authorizeResult =
-            await policyEval.AuthorizeAsync(authorizationPolicy!, authenticateResult, httpContext, null);
+         var authorizationPolicy = await AuthorizationPolicy.CombineAsync(policyProvider, new[] { authorizeData });
+         var authenticateResult = await policyEval.AuthenticateAsync(authorizationPolicy!, httpContext);
+         var authorizeResult = await policyEval.AuthorizeAsync(authorizationPolicy!, authenticateResult, httpContext, null);
 
          return authorizeResult;
       }

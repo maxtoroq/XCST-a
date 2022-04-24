@@ -33,7 +33,7 @@ namespace System.Web.Mvc {
 
          for (int i = 0; i < files.Count; i++) {
 
-            IFormFile? file = HttpPostedFileBaseModelBinder.ChooseFileOrNull(files[i]);
+            var file = HttpPostedFileBaseModelBinder.ChooseFileOrNull(files[i]);
 
             if (file?.FileName != null) {
                mapping.Add(new KeyValuePair<string, IFormFile>(file.FileName, file));

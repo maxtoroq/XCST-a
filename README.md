@@ -1,21 +1,18 @@
-[XCST] web pages for ASP.NET
-============================
-This repository provides integration of XCST with ASP.NET and ASP.NET Core for web application development. It includes a set of extension instructions known as the "application extension" based on a [trimmed down fork](src/Xcst.AspNet/Framework) of ASP.NET MVC 5.
+[XCST] web pages for ASP.NET Core
+=================================
+This repository provides integration of XCST with ASP.NET Core for web application development. It includes a set of extension instructions known as the "application extension" based on a [trimmed down fork](src/Xcst.AspNetCore/Framework) of ASP.NET MVC 5.
 
 See the [project home][XCST] for more information.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/4chhbklsb4b6h09c/branch/v1?svg=true)](https://ci.appveyor.com/project/maxtoroq/xcst-a/branch/v1) ![Tests](https://img.shields.io/appveyor/tests/maxtoroq/XCST-a/v1)
+[![Build status](https://ci.appveyor.com/api/projects/status/4chhbklsb4b6h09c/branch/v2?svg=true)](https://ci.appveyor.com/project/maxtoroq/xcst-a/branch/v2) ![Tests](https://img.shields.io/appveyor/tests/maxtoroq/XCST-a/v2)
 
 ### Packages Built From This Repository
+*Note: This branch doesn't have releases yet, see `v1` instead.*
 
 Package | Description
 ------- | -----------
-[Xcst.AspNet] | XCST web pages core components for ASP.NET.
-[Xcst.AspNet.Extension] | Extension instructions for XCST web pages.
-[Xcst.AspNet.Compilation] | ASP.NET build providers for run-time compilation.
-[Xcst.AspNet.Precompilation] | HTTP module that maps requests to precompiled XCST pages.
-[Xcst.Web.Mvc] | View engine for ASP.NET MVC 5.
-[Xcst.AspNetCore] | XCST web pages for ASP.NET Core.
+Xcst.AspNetCore | XCST web pages for ASP.NET Core.
+Xcst.AspNetCore.Extension | Extension instructions for XCST web pages.
 
 ### Related Repositories
 
@@ -23,7 +20,7 @@ Package | Description
 
 System Requirements
 -------------------
-The codebase is written in C# 8 and requires .NET 4.6 or higher.
+The codebase is written in C# 9 and requires .NET 5 or higher.
 
 The [release script](build/release.ps1) (which creates the NuGet packages) and other utility scripts are written in PowerShell 5.1.
 
@@ -35,17 +32,13 @@ Run the following commands to build everything (source, samples and tests).
 
 ```shell
 # restore packages
-.\build\restore-packages.ps1
+MSBuild -t:restore
 
 # build solution
 MSBuild
 ```
 
 [XCST]: https://maxtoroq.github.io/XCST/
-[Xcst.AspNet]: https://www.nuget.org/packages/Xcst.AspNet
-[Xcst.AspNet.Extension]: https://www.nuget.org/packages/Xcst.AspNet.Extension
-[Xcst.AspNet.Compilation]: https://www.nuget.org/packages/Xcst.AspNet.Compilation
-[Xcst.AspNet.Precompilation]: https://www.nuget.org/packages/Xcst.AspNet.Precompilation
-[Xcst.Web.Mvc]: https://www.nuget.org/packages/Xcst.Web.Mvc
 [Xcst.AspNetCore]: https://www.nuget.org/packages/Xcst.AspNetCore
+[Xcst.AspNetCore.Extension]: https://www.nuget.org/packages/Xcst.AspNetCore.Extension
 [Trang]: https://github.com/relaxng/jing-trang

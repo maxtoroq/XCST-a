@@ -5,15 +5,13 @@
     <XcstPageBaseType Condition="'$(XcstPageBaseType)'==''">Xcst.Web.Mvc.XcstViewPage</XcstPageBaseType>
     <XcstInput Condition="'$(XcstInput)'==''">**\*.xcst</XcstInput>
     <XcstOutput Condition="'$(XcstOutput)'==''">xcst.generated.cs</XcstOutput>
-    <XcstCodegenExe Condition="'$(XcstCodegenExe)'==''">$(ProjectDir)..\xcst-codegen\bin\$(Configuration)\xcst-codegen.exe</XcstCodegenExe>
+    <XcstCodegenExe Condition="'$(XcstCodegenExe)'==''">$(ProjectDir)..\xcst-codegen\bin\$(Configuration)\net5.0\xcst-codegen.exe</XcstCodegenExe>
     <XcstCodegenParams>-PageEnable $(XcstPageEnable) -PageBaseType $(XcstPageBaseType) $(XcstCodegenParams)</XcstCodegenParams>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(XcstOutput)</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\xcst-codegen\xcst-codegen.csproj" ReferenceOutputAssembly="False">
-      <Project>{3ec3cda1-62bc-4cc7-9c97-d47b3b1328b4}</Project>
-    </ProjectReference>
+    <ProjectReference Include="..\xcst-codegen\xcst-codegen.csproj" ReferenceOutputAssembly="False" />
   </ItemGroup>
 
   <ItemGroup>
