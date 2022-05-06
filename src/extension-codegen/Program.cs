@@ -90,13 +90,12 @@ namespace XcstCodeGen {
 
          var startUri = new Uri(_projectUri, ".");
 
-         var compilerFact = new XcstCompilerFactory();
-
-         var compiler = compilerFact.CreateCompiler();
-         compiler.PackageFileDirectory = startUri.LocalPath;
-         compiler.PackageFileExtension = _fileExt;
-         compiler.IndentChars = "   ";
-         compiler.CompilationUnitHandler = href => output;
+         var compiler = new XcstCompiler {
+            PackageFileDirectory = startUri.LocalPath,
+            PackageFileExtension = _fileExt,
+            IndentChars = "   ",
+            CompilationUnitHandler = href => output
+         };
 
          var projectDoc = XDocument.Load(_projectUri.LocalPath);
 
@@ -132,10 +131,8 @@ namespace XcstCodeGen {
             compiler.TargetClass = CleanIdentifier(fileBaseName);
             compiler.TargetBaseTypes = null;
 
-            CompileResult xcstResult;
-
             try {
-               xcstResult = compiler.Compile(fileUri);
+               compiler.Compile(fileUri);
 
             } catch (RuntimeException ex) {
                VisualStudioErrorLog(ex);

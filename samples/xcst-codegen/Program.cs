@@ -52,7 +52,7 @@ namespace XcstCodeGen {
       static string
       AssemblyName(XDocument projectDoc, string projectPath) {
 
-         XNamespace xmlns = projectDoc.Root!.Name.Namespace;
+         var xmlns = projectDoc.Root!.Name.Namespace;
 
          return projectDoc.Root!
             .Element(xmlns + "PropertyGroup")?
@@ -63,7 +63,7 @@ namespace XcstCodeGen {
       static string
       RootNamespace(XDocument projectDoc, string projectPath) {
 
-         XNamespace xmlns = projectDoc.Root!.Name.Namespace;
+         var xmlns = projectDoc.Root!.Name.Namespace;
 
          return projectDoc.Root!
             .Element(xmlns + "PropertyGroup")?
@@ -74,7 +74,7 @@ namespace XcstCodeGen {
       static string?
       Nullable(XDocument projectDoc) {
 
-         XNamespace xmlns = projectDoc.Root!.Name.Namespace;
+         var xmlns = projectDoc.Root!.Name.Namespace;
 
          return projectDoc.Root!
             .Element(xmlns + "PropertyGroup")?
@@ -85,7 +85,7 @@ namespace XcstCodeGen {
       ReferenceAssemblyPath(string refPath) {
 
          var refDoc = XDocument.Load(new Uri(_projectUri, refPath).LocalPath);
-         XNamespace xmlns = refDoc.Root!.Name.Namespace;
+         var xmlns = refDoc.Root!.Name.Namespace;
 
          var refName = AssemblyName(refDoc, refPath);
          var refDir = Path.GetDirectoryName(refPath)!;
@@ -111,7 +111,7 @@ namespace XcstCodeGen {
       void
       AddProjectDependencies(XDocument projectDoc, XcstCompiler compiler) {
 
-         XNamespace xmlns = projectDoc.Root!.Name.Namespace;
+         var xmlns = projectDoc.Root!.Name.Namespace;
 
          foreach (var projRef in projectDoc.Root.Elements(xmlns + "ItemGroup").Elements(xmlns + "ProjectReference")) {
 
@@ -187,11 +187,6 @@ namespace XcstCodeGen {
 
          var startUri = new Uri(_projectUri, ".");
 
-         var compilerFact = new XcstCompilerFactory {
-            EnableExtensions = true,
-            //ProcessXInclude = true
-         };
-
          // Enable "application" extension
          var appExt = new Xcst.Web.Extension.ExtensionPackage {
             ApplicationUri = startUri,
@@ -200,12 +195,13 @@ namespace XcstCodeGen {
             AnnotateVirtualPath = true
          };
 
-         compilerFact.RegisterExtension(appExt);
+         var compiler = new XcstCompiler {
+            PackageFileDirectory = startUri.LocalPath,
+            PackageFileExtension = _fileExt,
+            IndentChars = "   "
+         };
 
-         var compiler = compilerFact.CreateCompiler();
-         compiler.PackageFileDirectory = startUri.LocalPath;
-         compiler.PackageFileExtension = _fileExt;
-         compiler.IndentChars = "   ";
+         compiler.RegisterExtension(appExt);
 
          var projectDoc = XDocument.Load(_projectUri.LocalPath);
 

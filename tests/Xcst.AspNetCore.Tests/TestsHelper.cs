@@ -149,12 +149,11 @@ namespace Xcst.Web.Tests {
       public static XcstCompiler
       CreateCompiler() {
 
-         var factory = new XcstCompilerFactory();
-         factory.EnableExtensions = true;
-         factory.RegisterExtension(new Xcst.Web.Extension.ExtensionPackage());
+         var compiler = new XcstCompiler {
+            UseLineDirective = true
+         };
 
-         XcstCompiler compiler = factory.CreateCompiler();
-         compiler.UseLineDirective = true;
+         compiler.RegisterExtension(new Xcst.Web.Extension.ExtensionPackage());
          //compiler.PackageTypeResolver = n => Assembly.GetExecutingAssembly().GetType(n);
          compiler.AddPackageLibrary(Assembly.GetExecutingAssembly().Location);
 
@@ -164,7 +163,7 @@ namespace Xcst.Web.Tests {
       static (CompileResult result, string packageName)
       GenerateCode(Uri packageUri, string testName, string testNamespace) {
 
-         XcstCompiler compiler = CreateCompiler();
+         var compiler = CreateCompiler();
          compiler.TargetNamespace = testNamespace;
          compiler.TargetClass = testName;
          compiler.UsePackageBase = testNamespace;
@@ -173,7 +172,7 @@ namespace Xcst.Web.Tests {
          compiler.NullableAnnotate = true;
          compiler.NullableContext = "enable";
 
-         CompileResult result = compiler.Compile(packageUri);
+         var result = compiler.Compile(packageUri);
 
          return (result, compiler.TargetNamespace + "." + compiler.TargetClass);
       }
