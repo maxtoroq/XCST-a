@@ -89,7 +89,7 @@ function NuPack {
    $outputPath = Resolve-Path nupkg
    $tempNotice = PackageNotice
 
-   BuildProj "Pack"
+   BuildProj "Pack" | Out-Null
 
    return Join-Path $outputPath "$($project.name).$pkgVer.nupkg"
 }
@@ -101,9 +101,7 @@ function ProjectData([string]$projName) {
    $project.path = Resolve-Path $solutionPath\src\$($project.name)
    $project.file = "$($project.path)\$($project.name).csproj"
    $project.doc = [xml](Get-Content $project.file)
-   $project.sdkStyle = $project.doc.Project.GetAttributeNode("Sdk") -ne $null
-   $project.targetFx = if ($project.sdkStyle) { (($project.doc.Project.PropertyGroup | select -first 1) | %{ (($_.TargetFramework, $_.TargetFrameworks) -ne $null)[0] }) }
-      else { "net" + ($project.doc.Project.PropertyGroup | select -first 1).TargetFrameworkVersion.Substring(1).Replace(".", "") }
+   $project.targetFx = (($project.doc.Project.PropertyGroup | select -first 1) | %{ (($_.TargetFramework, $_.TargetFrameworks) -ne $null)[0] })
 
    $project.temp = Join-Path (Get-Item .) temp\$($project.name)
 
