@@ -28,13 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\extension-codegen\extension-codegen.csproj">
-      <Private>False</Private>
-      <PrivateAssets>All</PrivateAssets>
-    </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <XcstInput Include="$(XcstInput)" />
     <UpToDateCheckInput Include="@(XcstInput)" />
     <UpToDateCheckBuilt Include="$(XcstOutput)" />
@@ -42,6 +35,7 @@
   </ItemGroup>
 
   <Target Name="XcstCodeGen" BeforeTargets="PreBuildEvent" DependsOnTargets="ResolveReferences" Inputs="@(XcstInput);$(MSBuildThisFileFullPath);$(XcstCodegenExe)" Outputs="$(XcstOutput)">
+    <MSBuild Projects="..\extension-codegen\extension-codegen.csproj" />
     <Message Text="xcst-codegen [$(MSBuildProjectName)]" Importance="high" />
     <Exec Command="$(XcstCodegenExe) $(MSBuildThisFileFullPath) $(XcstOutput)" />
   </Target>

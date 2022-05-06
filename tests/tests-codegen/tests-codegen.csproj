@@ -5,12 +5,10 @@
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
-    <RootNamespace>tests_codegen</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Xcst.Compiler" Version="2.0.0.2-pre" />
-    <PackageReference Include="Xcst.Runtime" Version="0.154.0" />
   </ItemGroup>
 
 </Project>

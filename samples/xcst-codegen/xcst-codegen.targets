@@ -11,10 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\xcst-codegen\xcst-codegen.csproj" ReferenceOutputAssembly="False" />
-  </ItemGroup>
-
-  <ItemGroup>
     <XcstInput Include="$(XcstInput)" />
     <UpToDateCheckInput Include="@(XcstInput)" />
     <UpToDateCheckBuilt Include="$(XcstOutput)" />
@@ -26,6 +22,7 @@
           DependsOnTargets="ResolveReferences"
           Inputs="@(XcstInput);$(ProjectPath);$(MSBuildThisFileFullPath);$(XcstCodegenExe)"
           Outputs="$(XcstOutput)">
+    <MSBuild Projects="..\xcst-codegen\xcst-codegen.csproj" />
     <Message Text="xcst-codegen [$(MSBuildProjectName)]: $(XcstCodegenParams)" Importance="high" />
     <Exec Command="$(XcstCodegenExe) $(ProjectPath) $(Configuration) $(XcstCodegenParams)" />
   </Target>
