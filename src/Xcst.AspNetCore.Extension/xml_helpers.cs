@@ -28,16 +28,16 @@ namespace Xcst.Web.Extension {
             .Where(p => !p.IsNamespaceDeclaration);
 
       static bool
-      empty<T>(T[] p) => p.Length == 0;
+      fn_empty<T>(T[] p) => p.Length == 0;
 
       static bool
-      empty<T>(IEnumerable<T> p) => !p.Any();
+      fn_empty<T>(IEnumerable<T> p) => !p.Any();
 
       static string
-      name(XObject node) =>
+      fn_name(XObject node) =>
          node switch {
-            XAttribute a => substring_before(a.ToString(), '='),
-            XElement el => @string(el.Name, el),
+            XAttribute a => fn_substring_before(a.ToString(), '='),
+            XElement el => fn_string(el.Name, el),
             XProcessingInstruction pi => pi.Target,
             _ => throw new System.NotImplementedException()
          };
@@ -68,17 +68,17 @@ namespace Xcst.Web.Extension {
       }
 
       static string
-      @string(bool value) =>
+      fn_string(bool value) =>
          (value) ? "true" : "false";
 
       static string
-      @string(int value) => XmlConvert.ToString(value);
+      fn_string(int value) => XmlConvert.ToString(value);
 
       static string
-      @string(decimal value) => XmlConvert.ToString(value);
+      fn_string(decimal value) => XmlConvert.ToString(value);
 
       static string
-      @string(XName qname, XElement? context) {
+      fn_string(XName qname, XElement? context) {
 
          if (context is null) {
             return qname.LocalName;
@@ -94,7 +94,7 @@ namespace Xcst.Web.Extension {
       }
 
       static string
-      @string(XObject node) =>
+      fn_string(XObject node) =>
          node switch {
             XAttribute a => a.Value,
             XElement el => el.Value,
@@ -103,21 +103,21 @@ namespace Xcst.Web.Extension {
          };
 
       static string
-      substring_after(string str, char c) {
+      fn_substring_after(string str, char c) {
 
          var i = str.IndexOf(c);
          return str.Substring(i + 1);
       }
 
       static string
-      substring_before(string str, char c) {
+      fn_substring_before(string str, char c) {
 
          var i = str.IndexOf(c);
          return str.Substring(0, i);
       }
 
       static string[]
-      tokenize(string str) =>
+      fn_tokenize(string str) =>
          DataType.List(str, DataType.String)
             .ToArray();
 

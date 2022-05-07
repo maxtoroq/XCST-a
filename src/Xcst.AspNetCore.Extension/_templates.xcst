@@ -105,7 +105,7 @@
                </code:argument>
             </if>
             <if test='membersAttr != null'>
-               <variable name='members' value='tokenize(membersAttr.Value)'/>
+               <variable name='members' value='fn_tokenize(membersAttr.Value)'/>
                <if test='members.Length > 0'>
                   <code:argument name='membersNames'>
                      <code:new-array>

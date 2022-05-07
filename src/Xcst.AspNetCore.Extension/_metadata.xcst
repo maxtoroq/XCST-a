@@ -219,10 +219,10 @@
             <code:type-reference name='ShowFor' namespace='Xcst.Web.Mvc'/>
             <code:initializer>
                <code:member-initializer name='Display'>
-                  <code:bool value='{@string(display != "edit-only")}'/>
+                  <code:bool value='{fn_string(display != "edit-only")}'/>
                </code:member-initializer>
                <code:member-initializer name='Edit'>
-                  <code:bool value='{@string(display != "view-only")}'/>
+                  <code:bool value='{fn_string(display != "view-only")}'/>
                </code:member-initializer>
             </code:initializer>
          </code:attribute>
@@ -241,7 +241,7 @@
 
    <template match='XAttribute attr &amp;&amp; attr.Name.Namespace == a' mode='src:member-attribute-extra'>
       <message terminate='yes' error-code='XTSE0090' error-data='src_error_object(attr.Parent!)' expand-text='yes' transform-text='trim'>
-         Attribute 'a:{attr.Name.LocalName}' is not allowed on the {name(attr.Parent!)} element.
+         Attribute 'a:{attr.Name.LocalName}' is not allowed on the {fn_name(attr.Parent!)} element.
       </message>
    </template>
 

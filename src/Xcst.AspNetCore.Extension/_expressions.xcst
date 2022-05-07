@@ -40,7 +40,7 @@
 
       <choose>
          <when test='val != null'>
-            <code:bool value='{@string(val.Value)}'/>
+            <code:bool value='{fn_string(val.Value)}'/>
          </when>
          <otherwise>
             <code:method-call name='Boolean'>
@@ -59,7 +59,7 @@
 
       <choose>
          <when test='val != null'>
-            <code:int value='{@string(val.Value)}'/>
+            <code:int value='{fn_string(val.Value)}'/>
          </when>
          <otherwise>
             <code:method-call name='Integer'>

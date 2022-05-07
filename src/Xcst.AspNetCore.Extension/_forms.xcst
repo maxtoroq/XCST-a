@@ -561,7 +561,7 @@
             </call-template>
             <if test='multiple'>
                <code:argument name='multiple'>
-                  <code:bool value='{@string(multiple)}'/>
+                  <code:bool value='{fn_string(multiple)}'/>
                </code:argument>
             </if>
             <call-template name='app:html-attributes-param'>
@@ -620,7 +620,7 @@
                         </code:cast>
                         <if test='multiple'>
                            <code:argument name='multiple'>
-                              <code:bool value='{@string(multiple)}'/>
+                              <code:bool value='{fn_string(multiple)}'/>
                            </code:argument>
                         </if>
                      </code:arguments>
