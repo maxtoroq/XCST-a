@@ -131,7 +131,7 @@ namespace Xcst.Web.Runtime {
          if (html is null) throw new ArgumentNullException(nameof(html));
          if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
 
-         if (html.ViewData.TryGetValue("__xcsta_member_template", out Action<HtmlHelper, ISequenceWriter<object>>? memberTemplate)
+         if (html.ViewData.TryGetValue("__xcst_member_template", out Action<HtmlHelper, ISequenceWriter<object>>? memberTemplate)
             && memberTemplate != null) {
 
             var helper = HtmlHelperFactory.ForMemberTemplate(html, propertyMetadata);

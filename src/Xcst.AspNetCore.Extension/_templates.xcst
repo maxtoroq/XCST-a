@@ -269,9 +269,7 @@
 
       <code:collection-initializer>
          <code:add>
-            <code:string literal='true'>
-               <value-of value='src_aux_variable("options") + ":"'/>
-            </code:string>
+            <code:string literal='true'>__xcst_options:</code:string>
             <code:method-call>
                <attribute name='name'>
                   <text>Name</text>
@@ -360,9 +358,7 @@
       </variable>
 
       <code:collection-initializer>
-         <code:string literal='true'>
-            <value-of value='src_aux_variable("member_template")'/>
-         </code:string>
+         <code:string literal='true'>__xcst_member_template</code:string>
          <code:new-object>
             <code:type-reference name='Action' namespace='System'>
                <code:type-arguments>
