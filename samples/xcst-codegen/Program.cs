@@ -187,18 +187,18 @@ namespace XcstCodeGen {
 
          var startUri = new Uri(_projectUri, ".");
 
+         var compiler = new XcstCompiler {
+            PackageFileDirectory = startUri.LocalPath,
+            PackageFileExtension = _fileExt,
+            IndentChars = "   "
+         };
+
          // Enable "application" extension
          var appExt = new Xcst.Web.Extension.ExtensionPackage {
             ApplicationUri = startUri,
             GenerateLinkTo = true,
             //GenerateHref = true,
             AnnotateVirtualPath = true
-         };
-
-         var compiler = new XcstCompiler {
-            PackageFileDirectory = startUri.LocalPath,
-            PackageFileExtension = _fileExt,
-            IndentChars = "   "
          };
 
          compiler.RegisterExtension(appExt);
