@@ -184,7 +184,7 @@
       <variable name='newHelper'>
          <code:variable-reference name='{(el.Attribute("helper-name") is XAttribute helperNameAttr ?
             xcst_name(helperNameAttr)
-            : src_aux_variable("html") + "_" + generate_id(el))}'/>
+            : src_aux_variable("html") + "_" + fn_generate_id(el))}'/>
       </variable>
 
       <variable name='type' as='XElement?'>

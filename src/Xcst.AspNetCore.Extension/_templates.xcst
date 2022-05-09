@@ -80,7 +80,7 @@
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(generate_id(el))'/>
+                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -283,7 +283,7 @@
                   <call-template name='app:html-helper'/>
                   <choose>
                      <when test='useFor'>
-                        <variable name='param' value='src_aux_variable(generate_id(el))'/>
+                        <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
                         <code:lambda>
                            <code:parameters>
                               <code:parameter name='{param}'/>
@@ -354,7 +354,7 @@
       <variable name='newHelper'>
          <code:variable-reference name='{(el.Attribute("helper-name") is XAttribute helperNameAttr ?
             xcst_name(helperNameAttr)
-            : src_aux_variable("html") + "_" + generate_id(el))}'/>
+            : src_aux_variable("html") + "_" + fn_generate_id(el))}'/>
       </variable>
 
       <code:collection-initializer>

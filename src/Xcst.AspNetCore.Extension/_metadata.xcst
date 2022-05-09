@@ -70,7 +70,7 @@
             <call-template name='app:html-helper'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(generate_id(el))'/>
+                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -146,7 +146,7 @@
             </if>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(generate_id(el))'/>
+                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
