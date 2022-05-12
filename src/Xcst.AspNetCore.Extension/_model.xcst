@@ -65,7 +65,7 @@
 
             <variable name='attribs' value='attributes(el)
                .Where(p => p.Name.Namespace == XNamespace.None
-                  &amp;&amp; p.Name.LocalName is "method" or "id" or "autocomplete" or "enctype")
+                  &amp;&amp; p.Name.LocalName is "method" or "id" or "action" or "autocomplete" or "enctype")
                .ToArray()'/>
 
             <for-each name='attr' in='attribs'>
