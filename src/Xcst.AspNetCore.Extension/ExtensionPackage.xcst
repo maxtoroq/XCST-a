@@ -34,7 +34,6 @@
    <import href='_page.xcst'/>
 
    <param name='ApplicationUri' as='System.Uri?'/>
-   <param name='GenerateHref' as='bool'/>
    <param name='GenerateLinkTo' as='bool'/>
    <param name='AnnotateVirtualPath' as='bool'/>
    <param name='IsPage' as='bool'/>

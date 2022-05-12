@@ -197,7 +197,6 @@ namespace XcstCodeGen {
          var appExt = new Xcst.Web.Extension.ExtensionPackage {
             ApplicationUri = startUri,
             GenerateLinkTo = true,
-            //GenerateHref = true,
             AnnotateVirtualPath = true
          };
 
