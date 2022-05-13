@@ -114,8 +114,8 @@ function ProjectData([string]$projName) {
 
 function Release {
 
-   if ($Increment -ne "patch" -and $ProjectName -ne "*") {
-      throw "Major, minor and pre increments should release all packages."
+   if ($Increment -eq "major" -and $ProjectName -ne "*") {
+      throw "Major increment should release all packages."
    }
 
    $lastTag = .\last-tag.ps1
