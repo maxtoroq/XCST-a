@@ -7,12 +7,11 @@ See the [project home][XCST] for more information.
 [![Build status](https://ci.appveyor.com/api/projects/status/4chhbklsb4b6h09c/branch/v2?svg=true)](https://ci.appveyor.com/project/maxtoroq/xcst-a/branch/v2) ![Tests](https://img.shields.io/appveyor/tests/maxtoroq/XCST-a/v2)
 
 ### Packages Built From This Repository
-*Note: This branch doesn't have releases yet, see `v1` instead.*
 
 Package | Description
 ------- | -----------
-Xcst.AspNetCore | XCST web pages for ASP.NET Core.
-Xcst.AspNetCore.Extension | Extension instructions for XCST web pages.
+[Xcst.AspNetCore] | XCST web pages for ASP.NET Core.
+[Xcst.AspNetCore.Extension] | Extension instructions for XCST web pages.
 
 ### Related Repositories
 
