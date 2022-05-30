@@ -31,7 +31,8 @@ namespace aspnetcore {
          }
       }
 
-      public void Init() {
+      public void
+      Init() {
 
          var contact = new Contact();
          var sent = false;
