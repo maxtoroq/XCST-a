@@ -24,7 +24,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Xcst.Runtime" Version="0.155.0" />
+    <PackageReference Include="Xcst.Runtime" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>

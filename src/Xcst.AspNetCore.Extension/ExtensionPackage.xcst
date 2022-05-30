@@ -45,7 +45,7 @@
    <param name='src_output_is_doc' as='System.Func&lt;XElement, bool>' required='yes'/>
    <param name='src_template_output' as='System.Func&lt;XElement?, XElement?, XElement>' required='yes'/>
    <param name='src_helper_type' as='System.Func&lt;string, XElement>' required='yes'/>
-   <param name='src_expand_attribute' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_expand_attribute' as='Xcst.XcstDelegate&lt;XElement>' required='yes'/>
    <param name='src_sequence_constructor' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
    <param name='src_simple_content' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
    <param name='src_validation_arguments' as='Xcst.XcstDelegate&lt;object>' required='yes'/>

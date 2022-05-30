@@ -19,10 +19,10 @@ namespace Xcst.Web.Tests {
       const bool
       _printCode = false;
 
-      static readonly string
-      _initialName = "Q{" + XmlNamespaces.Xcst + "}initial-template";
+      static readonly XName
+      _initialName = XName.Get("initial-template", XmlNamespaces.Xcst);
 
-      static readonly string
+      static readonly XName
       _expectedName = "expected";
 
       public static void

@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:type name='Foo'>
-      <c:member name='bar' null-display-text='&lt;no bar>'/>
+      <c:member name='bar' null-text='&lt;no bar>'/>
    </c:type>
 
    <c:template name='c:initial-template'>
