@@ -170,6 +170,7 @@ function Release {
    $projectsToRelease = if ($ProjectName -eq '*') { $projects } else { @($ProjectName) }
    $newPackages = New-Object Collections.Generic.List[string]
    $createdTag = $false
+   $newTag = "v$pkgVer"
 
    foreach ($projName in $projectsToRelease) {
 
@@ -180,9 +181,8 @@ function Release {
 
       if (-not $createdTag -and
             $pkgVersion -gt $lastVersion -and
-            (Prompt-Choices -Message "Create tag?" -Default 1) -eq 0) {
+            (Prompt-Choices -Message "Create tag $newTag ?" -Default 1) -eq 0) {
 
-         $newTag = "v$pkgVer"
          git tag -a $newTag -m $newTag
          Write-Warning "Created tag: $newTag"
          $createdTag = $true
