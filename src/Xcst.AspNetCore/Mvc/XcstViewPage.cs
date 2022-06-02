@@ -229,7 +229,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
       if (page is XcstViewPage viewPage) {
 
-         viewPage.ViewContext = this.ViewContext.Clone();
+         viewPage.ViewContext = new ViewContext(this.ViewContext);
 
          if (_viewData != null) {
             viewPage.ViewData = new ViewDataDictionary(_viewData);

@@ -423,12 +423,12 @@ static class TemplateHelpers {
 
    static HtmlHelper
    MakeHtmlHelper(HtmlHelper currentHtml, ViewDataDictionary viewData) =>
-      currentHtml.Clone(currentHtml.ViewContext.Clone(), new ViewDataContainer(viewData));
+      new HtmlHelper(new ViewContext(currentHtml.ViewContext), new ViewDataContainer(viewData));
 
    static void
    RenderViewPage(HtmlHelper html, ISequenceWriter<object> output, ViewDataDictionary viewData, XcstViewPage viewPage) {
 
-      viewPage.ViewContext = html.ViewContext.Clone();
+      viewPage.ViewContext = new ViewContext(html.ViewContext);
       viewPage.ViewData = viewData;
 
       var evaluator = XcstEvaluator.Using((object)viewPage);

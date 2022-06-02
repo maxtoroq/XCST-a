@@ -445,7 +445,7 @@ static class DefaultEditorTemplates {
    static void
    ApplyRfc3339DateFormattingIfNeeded(HtmlHelper html, string format) {
 
-      if (html.Html5DateRenderingMode != Html5DateRenderingMode.Rfc3339) {
+      if (html.ViewContext.Html5DateRenderingMode != Html5DateRenderingMode.Rfc3339) {
          return;
       }
 

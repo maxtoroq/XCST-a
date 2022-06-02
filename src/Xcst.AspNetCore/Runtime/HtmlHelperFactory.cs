@@ -51,9 +51,9 @@ public static class HtmlHelperFactory {
       }
 
       // new ViewContext resets FormContext
-      var newViewContext = currentHtml.ViewContext.Clone();
+      var newViewContext = new ViewContext(currentHtml.ViewContext);
 
-      return currentHtml.Clone<TModel>(newViewContext, container);
+      return new HtmlHelper<TModel>(newViewContext, container);
    }
 
    internal static HtmlHelper
@@ -74,7 +74,7 @@ public static class HtmlHelperFactory {
          }
       };
 
-      return currentHtml.Clone(currentHtml.ViewContext, container);
+      return new HtmlHelper(currentHtml.ViewContext, container);
    }
 
    class ViewDataContainer : IViewDataContainer {
