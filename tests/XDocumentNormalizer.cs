@@ -9,15 +9,17 @@ namespace Xcst.Web;
 
 class XDocumentNormalizer {
 
-   public static bool DeepEqualsWithNormalization(XDocument doc1, XDocument doc2) {
+   public static bool
+   DeepEqualsWithNormalization(XDocument doc1, XDocument doc2) {
 
-      XDocument d1 = Normalize(doc1);
-      XDocument d2 = Normalize(doc2);
+      var d1 = Normalize(doc1);
+      var d2 = Normalize(doc2);
 
       return XNode.DeepEquals(d1, d2);
    }
 
-   public static XDocument Normalize(XDocument source) {
+   public static XDocument
+   Normalize(XDocument source) {
 
       return new XDocument(
           source.Declaration,
@@ -39,7 +41,8 @@ class XDocumentNormalizer {
       );
    }
 
-   static XNode NormalizeNode(XNode node) {
+   static XNode
+   NormalizeNode(XNode node) {
 
       if (node is XElement e) {
          return NormalizeElement(e);
@@ -49,7 +52,8 @@ class XDocumentNormalizer {
       return node;
    }
 
-   static XElement NormalizeElement(XElement element) {
+   static XElement
+   NormalizeElement(XElement element) {
 
       return new XElement(element.Name,
          NormalizeAttributes(element),
@@ -57,7 +61,8 @@ class XDocumentNormalizer {
       );
    }
 
-   static IEnumerable<XAttribute> NormalizeAttributes(XElement element) {
+   static IEnumerable<XAttribute>
+   NormalizeAttributes(XElement element) {
 
       return element.Attributes()
          .Where(a => !a.IsNamespaceDeclaration
@@ -69,8 +74,13 @@ class XDocumentNormalizer {
 
    class Xsi {
 
-      public static XNamespace xsi = "http://www.w3.org/2001/XMLSchema-instance";
-      public static XName schemaLocation = xsi + "schemaLocation";
-      public static XName noNamespaceSchemaLocation = xsi + "noNamespaceSchemaLocation";
+      public static XNamespace
+      xsi = "http://www.w3.org/2001/XMLSchema-instance";
+
+      public static XName
+      schemaLocation = xsi + "schemaLocation";
+
+      public static XName
+      noNamespaceSchemaLocation = xsi + "noNamespaceSchemaLocation";
    }
 }

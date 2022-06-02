@@ -16,6 +16,9 @@ namespace Xcst.Web;
 
 static class XmlNamespaces {
 
-   public const string Xcst = "http://maxtoroq.github.io/XCST";
-   public const string XcstApplication = Xcst + "/application";
+   public const string
+   Xcst = "http://maxtoroq.github.io/XCST";
+
+   public const string
+   XcstApplication = Xcst + "/application";
 }
