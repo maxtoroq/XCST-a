@@ -21,81 +21,80 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xcst.Web {
+namespace Xcst.Web;
 
-   // Wrapper for list that lets us return empty string for non existant pieces of the Url
+// Wrapper for list that lets us return empty string for non existant pieces of the Url
 
-   class UrlDataList : IList<string> {
+class UrlDataList : IList<string> {
 
-      readonly List<string>
-      _urlData;
+   readonly List<string>
+   _urlData;
 
-      public int
-      Count => _urlData.Count;
+   public int
+   Count => _urlData.Count;
 
-      public bool
-      IsReadOnly => true;
+   public bool
+   IsReadOnly => true;
 
-      public string
-      this[int index] {
-         get {
-            // REVIEW: what about index < 0
-            if (index >= _urlData.Count) {
-               return String.Empty;
-            }
-            return _urlData[index];
+   public string
+   this[int index] {
+      get {
+         // REVIEW: what about index < 0
+         if (index >= _urlData.Count) {
+            return String.Empty;
          }
-         set => throw new NotSupportedException();
+         return _urlData[index];
       }
-
-      public
-      UrlDataList(string? pathInfo) {
-
-         if (String.IsNullOrEmpty(pathInfo)) {
-            _urlData = new List<string>();
-         } else {
-            _urlData = pathInfo.Split(new char[] { '/' }).ToList();
-         }
-      }
-
-      public int
-      IndexOf(string item) =>
-         _urlData.IndexOf(item);
-
-      public void
-      Insert(int index, string item) =>
-         throw new NotSupportedException();
-
-      public void
-      RemoveAt(int index) =>
-         throw new NotSupportedException();
-
-      public void
-      Add(string item) =>
-         throw new NotSupportedException();
-
-      public void
-      Clear() =>
-         throw new NotSupportedException();
-
-      public bool
-      Contains(string item) =>
-         _urlData.Contains(item);
-
-      public void
-      CopyTo(string[] array, int arrayIndex) =>
-         _urlData.CopyTo(array, arrayIndex);
-
-      public bool
-      Remove(string item) =>
-         throw new NotSupportedException();
-
-      public IEnumerator<string>
-      GetEnumerator() =>
-         _urlData.GetEnumerator();
-
-      IEnumerator
-      IEnumerable.GetEnumerator() =>
-         _urlData.GetEnumerator();
+      set => throw new NotSupportedException();
    }
+
+   public
+   UrlDataList(string? pathInfo) {
+
+      if (String.IsNullOrEmpty(pathInfo)) {
+         _urlData = new List<string>();
+      } else {
+         _urlData = pathInfo.Split(new char[] { '/' }).ToList();
+      }
+   }
+
+   public int
+   IndexOf(string item) =>
+      _urlData.IndexOf(item);
+
+   public void
+   Insert(int index, string item) =>
+      throw new NotSupportedException();
+
+   public void
+   RemoveAt(int index) =>
+      throw new NotSupportedException();
+
+   public void
+   Add(string item) =>
+      throw new NotSupportedException();
+
+   public void
+   Clear() =>
+      throw new NotSupportedException();
+
+   public bool
+   Contains(string item) =>
+      _urlData.Contains(item);
+
+   public void
+   CopyTo(string[] array, int arrayIndex) =>
+      _urlData.CopyTo(array, arrayIndex);
+
+   public bool
+   Remove(string item) =>
+      throw new NotSupportedException();
+
+   public IEnumerator<string>
+   GetEnumerator() =>
+      _urlData.GetEnumerator();
+
+   IEnumerator
+   IEnumerable.GetEnumerator() =>
+      _urlData.GetEnumerator();
 }

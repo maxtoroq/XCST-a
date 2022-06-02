@@ -18,35 +18,34 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Xcst;
 
-namespace System.Web.Helpers {
+namespace System.Web.Helpers;
 
-   public static class AntiForgery {
+public static class AntiForgery {
 
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public static void
-      GetHtml(HttpContext httpContext, XcstWriter output) {
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public static void
+   GetHtml(HttpContext httpContext, XcstWriter output) {
 
-         var antiforgery = GetAntiforgeryService(httpContext);
-         var tokenSet = antiforgery.GetAndStoreTokens(httpContext);
+      var antiforgery = GetAntiforgeryService(httpContext);
+      var tokenSet = antiforgery.GetAndStoreTokens(httpContext);
 
-         output.WriteStartElement("input");
-         output.WriteAttributeString("type", "hidden");
-         output.WriteAttributeString("name", tokenSet.FormFieldName);
-         output.WriteAttributeString("value", tokenSet.RequestToken);
-         output.WriteEndElement();
-      }
-
-      public async static Task<bool>
-      TryValidateAsync(HttpContext httpContext) {
-
-         var antiforgery = GetAntiforgeryService(httpContext);
-
-         return await antiforgery.IsRequestValidAsync(httpContext);
-      }
-
-      static IAntiforgery
-      GetAntiforgeryService(HttpContext httpContext) =>
-         httpContext.RequestServices.GetService(typeof(IAntiforgery)) as IAntiforgery
-            ?? throw new InvalidOperationException("IAntiforgery service is not available.");
+      output.WriteStartElement("input");
+      output.WriteAttributeString("type", "hidden");
+      output.WriteAttributeString("name", tokenSet.FormFieldName);
+      output.WriteAttributeString("value", tokenSet.RequestToken);
+      output.WriteEndElement();
    }
+
+   public async static Task<bool>
+   TryValidateAsync(HttpContext httpContext) {
+
+      var antiforgery = GetAntiforgeryService(httpContext);
+
+      return await antiforgery.IsRequestValidAsync(httpContext);
+   }
+
+   static IAntiforgery
+   GetAntiforgeryService(HttpContext httpContext) =>
+      httpContext.RequestServices.GetService(typeof(IAntiforgery)) as IAntiforgery
+         ?? throw new InvalidOperationException("IAntiforgery service is not available.");
 }

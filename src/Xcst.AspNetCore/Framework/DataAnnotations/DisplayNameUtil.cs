@@ -15,25 +15,24 @@
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace System.Web.Mvc {
+namespace System.Web.Mvc;
 
-   static class DisplayNameUtil {
+static class DisplayNameUtil {
 
-      internal static string
-      GetFieldDisplayName(FieldInfo field) {
+   internal static string
+   GetFieldDisplayName(FieldInfo field) {
 
-         var display = field.GetCustomAttribute<DisplayAttribute>(inherit: false);
+      var display = field.GetCustomAttribute<DisplayAttribute>(inherit: false);
 
-         if (display != null) {
+      if (display != null) {
 
-            var name = display.GetName();
+         var name = display.GetName();
 
-            if (!String.IsNullOrEmpty(name)) {
-               return name;
-            }
+         if (!String.IsNullOrEmpty(name)) {
+            return name;
          }
-
-         return field.Name;
       }
+
+      return field.Name;
    }
 }

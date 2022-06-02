@@ -20,67 +20,66 @@ using System;
 using Microsoft.AspNetCore.Http;
 using UrlBuilder = System.Web.Mvc.UrlHelper.UrlBuilder;
 
-namespace Xcst.Web.Runtime {
+namespace Xcst.Web.Runtime;
 
-   /// <exclude/>
-   public static class UrlUtil {
+/// <exclude/>
+public static class UrlUtil {
 
-      // Code generation uses static method for Href function,
-      // therefore HttpContext cannot be provided dynamically
+   // Code generation uses static method for Href function,
+   // therefore HttpContext cannot be provided dynamically
 
-      public static Func<HttpContext>?
-      CurrentHttpContext { get; set; }
+   public static Func<HttpContext>?
+   CurrentHttpContext { get; set; }
 
-      public static string
-      GenerateClientUrl(string? basePath, string path, params object?[]? pathParts) =>
-         GenerateClientUrl(CurrentHttpContext?.Invoke(), basePath, path, pathParts);
+   public static string
+   GenerateClientUrl(string? basePath, string path, params object?[]? pathParts) =>
+      GenerateClientUrl(CurrentHttpContext?.Invoke(), basePath, path, pathParts);
 
-      static string
-      GenerateClientUrl(HttpContext? httpContext, string? basePath, string path, params object?[]? pathParts) {
+   static string
+   GenerateClientUrl(HttpContext? httpContext, string? basePath, string path, params object?[]? pathParts) {
 
-         if (String.IsNullOrEmpty(path)) {
-            return path;
-         }
-
-         if (basePath != null) {
-            path = new PathString(basePath).Add(path).Value!;
-         }
-
-         string query;
-         var processedPath = UrlBuilder.BuildUrl(path, out query, pathParts);
-
-         // many of the methods we call internally can't handle query strings properly, so tack it on after processing
-         // the virtual app path and url rewrites
-
-         if (String.IsNullOrEmpty(query)) {
-            return GenerateClientUrlInternal(httpContext, processedPath);
-         } else {
-            return GenerateClientUrlInternal(httpContext, processedPath) + query;
-         }
+      if (String.IsNullOrEmpty(path)) {
+         return path;
       }
 
-      static string
-      GenerateClientUrlInternal(HttpContext? httpContext, string contentPath) {
+      if (basePath != null) {
+         path = new PathString(basePath).Add(path).Value!;
+      }
 
-         if (String.IsNullOrEmpty(contentPath)) {
-            return contentPath;
-         }
+      string query;
+      var processedPath = UrlBuilder.BuildUrl(path, out query, pathParts);
 
-         // can't call VirtualPathUtility.IsAppRelative since it throws on some inputs
+      // many of the methods we call internally can't handle query strings properly, so tack it on after processing
+      // the virtual app path and url rewrites
 
-         var isAppRelative = contentPath[0] == '~';
+      if (String.IsNullOrEmpty(query)) {
+         return GenerateClientUrlInternal(httpContext, processedPath);
+      } else {
+         return GenerateClientUrlInternal(httpContext, processedPath) + query;
+      }
+   }
 
-         if (isAppRelative) {
+   static string
+   GenerateClientUrlInternal(HttpContext? httpContext, string contentPath) {
 
-            var context = httpContext
-               ?? throw new ArgumentException("httpContext cannot be null for app-relative paths.", nameof(httpContext));
-
-            // See also Microsoft.AspNetCore.Mvc.Routing.UrlHelperBase.Content
-            var other = new PathString(contentPath.Substring(1));
-            return context.Request.PathBase.Add(other).Value!;
-         }
-
+      if (String.IsNullOrEmpty(contentPath)) {
          return contentPath;
       }
+
+      // can't call VirtualPathUtility.IsAppRelative since it throws on some inputs
+
+      var isAppRelative = contentPath[0] == '~';
+
+      if (isAppRelative) {
+
+         var context = httpContext
+            ?? throw new ArgumentException("httpContext cannot be null for app-relative paths.", nameof(httpContext));
+
+         // See also Microsoft.AspNetCore.Mvc.Routing.UrlHelperBase.Content
+         var other = new PathString(contentPath.Substring(1));
+         return context.Request.PathBase.Add(other).Value!;
+      }
+
+      return contentPath;
    }
 }

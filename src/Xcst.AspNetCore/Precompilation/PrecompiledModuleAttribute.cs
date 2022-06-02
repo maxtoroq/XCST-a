@@ -14,8 +14,7 @@
 
 using System;
 
-namespace Xcst.Web.Precompilation {
+namespace Xcst.Web.Precompilation;
 
-   [AttributeUsage(AttributeTargets.Assembly)]
-   public sealed class PrecompiledModuleAttribute : Attribute { }
-}
+[AttributeUsage(AttributeTargets.Assembly)]
+public sealed class PrecompiledModuleAttribute : Attribute { }

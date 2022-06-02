@@ -4,52 +4,51 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 
-namespace System.Web.Mvc {
+namespace System.Web.Mvc;
 
-   sealed class DynamicViewDataDictionary : DynamicObject {
+sealed class DynamicViewDataDictionary : DynamicObject {
 
-      readonly Func<ViewDataDictionary>
-      _viewDataThunk;
+   readonly Func<ViewDataDictionary>
+   _viewDataThunk;
 
-      private ViewDataDictionary
-      ViewData {
-         get {
-            var viewData = _viewDataThunk();
-            Debug.Assert(viewData != null);
-            return viewData;
-         }
+   private ViewDataDictionary
+   ViewData {
+      get {
+         var viewData = _viewDataThunk();
+         Debug.Assert(viewData != null);
+         return viewData;
       }
+   }
 
-      public
-      DynamicViewDataDictionary(Func<ViewDataDictionary> viewDataThunk) {
-         _viewDataThunk = viewDataThunk;
-      }
+   public
+   DynamicViewDataDictionary(Func<ViewDataDictionary> viewDataThunk) {
+      _viewDataThunk = viewDataThunk;
+   }
 
-      // Implementing this function improves the debugging experience as it provides the debugger with the list of all
-      // the properties currently defined on the object
+   // Implementing this function improves the debugging experience as it provides the debugger with the list of all
+   // the properties currently defined on the object
 
-      public override IEnumerable<string>
-      GetDynamicMemberNames() =>
-         this.ViewData.Keys;
+   public override IEnumerable<string>
+   GetDynamicMemberNames() =>
+      this.ViewData.Keys;
 
-      public override bool
-      TryGetMember(GetMemberBinder binder, out object? result) {
+   public override bool
+   TryGetMember(GetMemberBinder binder, out object? result) {
 
-         result = this.ViewData[binder.Name];
+      result = this.ViewData[binder.Name];
 
-         // since ViewDataDictionary always returns a result even if the key does not exist, always return true
+      // since ViewDataDictionary always returns a result even if the key does not exist, always return true
 
-         return true;
-      }
+      return true;
+   }
 
-      public override bool
-      TrySetMember(SetMemberBinder binder, object? value) {
+   public override bool
+   TrySetMember(SetMemberBinder binder, object? value) {
 
-         this.ViewData[binder.Name] = value;
+      this.ViewData[binder.Name] = value;
 
-         // you can always set a key in the dictionary so return true
+      // you can always set a key in the dictionary so return true
 
-         return true;
-      }
+      return true;
    }
 }

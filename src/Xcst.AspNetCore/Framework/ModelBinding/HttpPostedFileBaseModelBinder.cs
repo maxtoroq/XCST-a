@@ -2,40 +2,39 @@
 
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
-namespace System.Web.Mvc {
+namespace System.Web.Mvc;
 
-   public class HttpPostedFileBaseModelBinder : IModelBinder {
+public class HttpPostedFileBaseModelBinder : IModelBinder {
 
-      public object?
-      BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
+   public object?
+   BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
-         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
-         if (bindingContext is null) throw new ArgumentNullException(nameof(bindingContext));
+      if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
+      if (bindingContext is null) throw new ArgumentNullException(nameof(bindingContext));
 
-         var theFile = controllerContext.HttpContext.Request.Form.Files
-            .GetFile(bindingContext.ModelName);
+      var theFile = controllerContext.HttpContext.Request.Form.Files
+         .GetFile(bindingContext.ModelName);
 
-         return ChooseFileOrNull(theFile);
+      return ChooseFileOrNull(theFile);
+   }
+
+   // helper that returns the original file if there was content uploaded, null if empty
+   internal static IFormFile?
+   ChooseFileOrNull(IFormFile? rawFile) {
+
+      // case 1: there was no <input type="file" ... /> element in the post
+      if (rawFile is null) {
+         return null;
       }
 
-      // helper that returns the original file if there was content uploaded, null if empty
-      internal static IFormFile?
-      ChooseFileOrNull(IFormFile? rawFile) {
+      // case 2: there was an <input type="file" ... /> element in the post, but it was left blank
+      if (rawFile.Length == 0
+         && String.IsNullOrEmpty(rawFile.FileName)) {
 
-         // case 1: there was no <input type="file" ... /> element in the post
-         if (rawFile is null) {
-            return null;
-         }
-
-         // case 2: there was an <input type="file" ... /> element in the post, but it was left blank
-         if (rawFile.Length == 0
-            && String.IsNullOrEmpty(rawFile.FileName)) {
-
-            return null;
-         }
-
-         // case 3: the file was posted
-         return rawFile;
+         return null;
       }
+
+      // case 3: the file was posted
+      return rawFile;
    }
 }

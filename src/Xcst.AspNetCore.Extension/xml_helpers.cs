@@ -18,111 +18,110 @@ using System.Xml;
 using System.Xml.Linq;
 using Xcst.Runtime;
 
-namespace Xcst.Web.Extension {
+namespace Xcst.Web.Extension;
 
-   partial class ExtensionPackage {
+partial class ExtensionPackage {
 
-      static IEnumerable<XAttribute>
-      attributes(XElement node) =>
-         node.Attributes()
-            .Where(p => !p.IsNamespaceDeclaration);
+   static IEnumerable<XAttribute>
+   attributes(XElement node) =>
+      node.Attributes()
+         .Where(p => !p.IsNamespaceDeclaration);
 
-      static bool
-      fn_empty<T>(T[] p) => p.Length == 0;
+   static bool
+   fn_empty<T>(T[] p) => p.Length == 0;
 
-      static bool
-      fn_empty<T>(IEnumerable<T> p) => !p.Any();
+   static bool
+   fn_empty<T>(IEnumerable<T> p) => !p.Any();
 
-      static string
-      fn_name(XObject node) =>
-         node switch {
-            XAttribute a => fn_substring_before(a.ToString(), '='),
-            XElement el => fn_string(el.Name, el),
-            XProcessingInstruction pi => pi.Target,
-            _ => throw new System.NotImplementedException()
-         };
+   static string
+   fn_name(XObject node) =>
+      node switch {
+         XAttribute a => fn_substring_before(a.ToString(), '='),
+         XElement el => fn_string(el.Name, el),
+         XProcessingInstruction pi => pi.Target,
+         _ => throw new System.NotImplementedException()
+      };
 
-      static IEnumerable<XElement>
-      select(IEnumerable<XElement> nodes, params object[] names) =>
-         nodes.SelectMany(p => select(p, names));
+   static IEnumerable<XElement>
+   select(IEnumerable<XElement> nodes, params object[] names) =>
+      nodes.SelectMany(p => select(p, names));
 
-      static IEnumerable<XElement>
-      select(XElement? node, params object[] names) {
+   static IEnumerable<XElement>
+   select(XElement? node, params object[] names) {
 
-         if (node is null) {
-            return Enumerable.Empty<XElement>();
-         }
-
-         IEnumerable<XElement> selected = new XElement[] { node };
-
-         for (int i = 0; i < names.Length; i++) {
-
-            selected = names[i] switch {
-               XName name => selected.SelectMany(p => p.Elements(name)),
-               XNamespace ns => selected.SelectMany(p => p.Elements().Where(p2 => p2.Name.Namespace == ns)),
-               _ => throw new System.ArgumentOutOfRangeException(),
-            };
-         }
-
-         return selected;
+      if (node is null) {
+         return Enumerable.Empty<XElement>();
       }
 
-      static string
-      fn_string(bool value) =>
-         (value) ? "true" : "false";
+      IEnumerable<XElement> selected = new XElement[] { node };
 
-      static string
-      fn_string(int value) => XmlConvert.ToString(value);
+      for (int i = 0; i < names.Length; i++) {
 
-      static string
-      fn_string(decimal value) => XmlConvert.ToString(value);
+         selected = names[i] switch {
+            XName name => selected.SelectMany(p => p.Elements(name)),
+            XNamespace ns => selected.SelectMany(p => p.Elements().Where(p2 => p2.Name.Namespace == ns)),
+            _ => throw new System.ArgumentOutOfRangeException(),
+         };
+      }
 
-      static string
-      fn_string(XName qname, XElement? context) {
+      return selected;
+   }
 
-         if (context is null) {
-            return qname.LocalName;
-         }
+   static string
+   fn_string(bool value) =>
+      (value) ? "true" : "false";
 
-         var prefix = context.GetPrefixOfNamespace(qname.Namespace);
+   static string
+   fn_string(int value) => XmlConvert.ToString(value);
 
-         if (prefix != null) {
-            return prefix + ":" + qname.LocalName;
-         }
+   static string
+   fn_string(decimal value) => XmlConvert.ToString(value);
 
+   static string
+   fn_string(XName qname, XElement? context) {
+
+      if (context is null) {
          return qname.LocalName;
       }
 
-      static string
-      fn_string(XObject node) =>
-         node switch {
-            XAttribute a => a.Value,
-            XElement el => el.Value,
-            XProcessingInstruction pi => pi.Data,
-            _ => throw new System.NotImplementedException()
-         };
+      var prefix = context.GetPrefixOfNamespace(qname.Namespace);
 
-      static string
-      fn_substring_after(string str, char c) {
-
-         var i = str.IndexOf(c);
-         return str.Substring(i + 1);
+      if (prefix != null) {
+         return prefix + ":" + qname.LocalName;
       }
 
-      static string
-      fn_substring_before(string str, char c) {
-
-         var i = str.IndexOf(c);
-         return str.Substring(0, i);
-      }
-
-      static string[]
-      fn_tokenize(string str) =>
-         DataType.List(str, DataType.String)
-            .ToArray();
-
-      static string
-      trim(string? str) =>
-         SimpleContent.Trim(str);
+      return qname.LocalName;
    }
+
+   static string
+   fn_string(XObject node) =>
+      node switch {
+         XAttribute a => a.Value,
+         XElement el => el.Value,
+         XProcessingInstruction pi => pi.Data,
+         _ => throw new System.NotImplementedException()
+      };
+
+   static string
+   fn_substring_after(string str, char c) {
+
+      var i = str.IndexOf(c);
+      return str.Substring(i + 1);
+   }
+
+   static string
+   fn_substring_before(string str, char c) {
+
+      var i = str.IndexOf(c);
+      return str.Substring(0, i);
+   }
+
+   static string[]
+   fn_tokenize(string str) =>
+      DataType.List(str, DataType.String)
+         .ToArray();
+
+   static string
+   trim(string? str) =>
+      SimpleContent.Trim(str);
 }

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <LangVersion>9</LangVersion>
+    <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
     <RootNamespace>Xcst.Web.Extension</RootNamespace>
     <VersionPrefix>2</VersionPrefix>

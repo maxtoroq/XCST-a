@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Xcst.Web {
+namespace Xcst.Web;
 
-   static class XmlNamespaces {
+static class XmlNamespaces {
 
-      public const string Xcst = "http://maxtoroq.github.io/XCST";
-      public const string XcstApplication = Xcst + "/application";
-   }
+   public const string Xcst = "http://maxtoroq.github.io/XCST";
+   public const string XcstApplication = Xcst + "/application";
 }

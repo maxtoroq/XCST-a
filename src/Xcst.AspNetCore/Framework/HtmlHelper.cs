@@ -13,594 +13,593 @@ using Xcst;
 using Xcst.Web.Runtime;
 using RouteValueDictionary = Microsoft.AspNetCore.Routing.RouteValueDictionary;
 
-namespace System.Web.Mvc {
+namespace System.Web.Mvc;
 
-   public class HtmlHelper {
+public class HtmlHelper {
 
-      public static readonly string
-      ValidationInputCssClassName = "input-validation-error";
+   public static readonly string
+   ValidationInputCssClassName = "input-validation-error";
 
-      public static readonly string
-      ValidationInputValidCssClassName = "input-validation-valid";
+   public static readonly string
+   ValidationInputValidCssClassName = "input-validation-valid";
 
-      public static readonly string
-      ValidationMessageCssClassName = "field-validation-error";
+   public static readonly string
+   ValidationMessageCssClassName = "field-validation-error";
 
-      public static readonly string
-      ValidationMessageValidCssClassName = "field-validation-valid";
+   public static readonly string
+   ValidationMessageValidCssClassName = "field-validation-valid";
 
-      public static readonly string
-      ValidationSummaryCssClassName = "validation-summary-errors";
+   public static readonly string
+   ValidationSummaryCssClassName = "validation-summary-errors";
 
-      public static readonly string
-      ValidationSummaryValidCssClassName = "validation-summary-valid";
+   public static readonly string
+   ValidationSummaryValidCssClassName = "validation-summary-valid";
 
-      static string?
-      _idAttributeDotReplacement;
+   static string?
+   _idAttributeDotReplacement;
 
-      DynamicViewDataDictionary?
-      _viewBag;
+   DynamicViewDataDictionary?
+   _viewBag;
 
-      public static string
-      IdAttributeDotReplacement {
-         get {
-            if (String.IsNullOrEmpty(_idAttributeDotReplacement)) {
-               _idAttributeDotReplacement = "_";
-            }
-            return _idAttributeDotReplacement;
+   public static string
+   IdAttributeDotReplacement {
+      get {
+         if (String.IsNullOrEmpty(_idAttributeDotReplacement)) {
+            _idAttributeDotReplacement = "_";
          }
-         set => _idAttributeDotReplacement = value;
+         return _idAttributeDotReplacement;
       }
-
-      public dynamic
-      ViewBag =>
-         _viewBag ??= new DynamicViewDataDictionary(() => ViewData);
-
-      public ViewContext
-      ViewContext { get; private set; }
-
-      public ViewDataDictionary
-      ViewData => ViewDataContainer.ViewData;
-
-      public IViewDataContainer
-      ViewDataContainer { get; internal set; }
-
-      [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "The usage of the property is as an instance property of the helper.")]
-      public Html5DateRenderingMode
-      Html5DateRenderingMode { get; set; }
-
-      public ModelMetadata
-      ModelMetadata => ViewData.ModelMetadata;
-
-      internal Func<string, ModelMetadata?, IEnumerable<ModelClientValidationRule>>
-      ClientValidationRuleFactory { get; set; }
-
-      public
-      HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer) {
-
-         this.ViewContext = viewContext ?? throw new ArgumentNullException(nameof(viewContext));
-         this.ViewDataContainer = viewDataContainer ?? throw new ArgumentNullException(nameof(viewDataContainer));
-         this.ClientValidationRuleFactory = (name, metadata) =>
-            ModelValidatorProviders.Providers
-               .GetValidators(metadata ?? ModelMetadata.FromStringExpression(name, this.ViewData), this.ViewContext)
-               .SelectMany(v => v.GetClientValidationRules());
-      }
-
-      /// <summary>
-      /// Creates a dictionary of HTML attributes from the input object,
-      /// translating underscores to dashes.
-      /// </summary>
-      /// <example>
-      /// <c>new { data_name="value" }</c> will translate to the entry <c>{ "data-name" , "value" }</c>
-      /// in the resulting dictionary.
-      /// </example>
-      /// <param name="htmlAttributes">Anonymous object describing HTML attributes.</param>
-      /// <returns>A dictionary that represents HTML attributes.</returns>
-      public static RouteValueDictionary
-      AnonymousObjectToHtmlAttributes(object? htmlAttributes) {
-
-         var result = new RouteValueDictionary();
-
-         if (htmlAttributes != null) {
-            foreach (var property in HtmlAttributePropertyHelper.GetProperties(htmlAttributes)) {
-               result.Add(property.Name, property.GetValue(htmlAttributes));
-            }
-         }
-
-         return result;
-      }
-
-      public static string
-      GenerateIdFromName(string name) =>
-         GenerateIdFromName(name, IdAttributeDotReplacement);
-
-      public static string
-      GenerateIdFromName(string name, string idAttributeDotReplacement) {
-
-         if (name is null) throw new ArgumentNullException(nameof(name));
-         if (idAttributeDotReplacement is null) throw new ArgumentNullException(nameof(idAttributeDotReplacement));
-
-         // TagBuilder.CreateSanitizedId returns null for empty strings, return String.Empty instead to avoid breaking change
-
-         if (name.Length == 0) {
-            return String.Empty;
-         }
-
-#pragma warning disable CS8603 // there's a small chance CreateSanitizedId returns null
-         return TagBuilder.CreateSanitizedId(name, idAttributeDotReplacement);
-#pragma warning restore CS8603
-      }
-
-      public static string
-      GetInputTypeString(InputType inputType) =>
-         inputType switch {
-            InputType.CheckBox => "checkbox",
-            InputType.Hidden => "hidden",
-            InputType.Password => "password",
-            InputType.Radio => "radio",
-            InputType.Text => "text",
-            _ => "text",
-         };
-
-      /// <summary>
-      /// Creates a dictionary from an object, by adding each public instance property as a key with its associated
-      /// value to the dictionary. It will expose public properties from derived types as well. This is typically used
-      /// with objects of an anonymous type.
-      /// </summary>
-      /// <example>
-      /// <c>new { property_name = "value" }</c> will translate to the entry <c>{ "property_name" , "value" }</c>
-      /// in the resulting dictionary.
-      /// </example>
-      /// <param name="value">The object to be converted.</param>
-      /// <returns>The created dictionary of property names and property values.</returns>
-      public static IDictionary<string, object?>
-      ObjectToDictionary(object value) =>
-         TypeHelpers.ObjectToDictionary(value);
-
-      internal string
-      EvalString(string key) =>
-         Convert.ToString(this.ViewData.Eval(key), CultureInfo.CurrentCulture);
-
-      internal string
-      EvalString(string key, string? format) =>
-         Convert.ToString(this.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
-
-      [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-      public string
-      FormatValue(object? value, string? format) =>
-         ViewDataDictionary.FormatValueInternal(value, format);
-
-      internal bool
-      EvalBoolean(string key) =>
-         Convert.ToBoolean(this.ViewData.Eval(key), CultureInfo.InvariantCulture);
-
-      internal object?
-      GetModelStateValue(string key, Type destinationType) {
-
-         if (this.ViewData.ModelState.TryGetValue(key, out var modelState)
-            && modelState.Value != null) {
-
-            return modelState.Value.ConvertTo(destinationType, culture: null);
-         }
-
-         return null;
-      }
-
-      public IDictionary<string, object>
-      GetUnobtrusiveValidationAttributes(string name) =>
-         GetUnobtrusiveValidationAttributes(name, metadata: null);
-
-      // Only render attributes if unobtrusive client-side validation is enabled, and then only if we've
-      // never rendered validation for a field with this name in this form. Also, if there's no form context,
-      // then we can't render the attributes (we'd have no <form> to attach them to).
-
-      public IDictionary<string, object>
-      GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata) =>
-         GetUnobtrusiveValidationAttributes(name, metadata, false);
-
-      internal IDictionary<string, object>
-      GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata, bool excludeMinMaxLength) {
-
-         var results = new Dictionary<string, object>();
-
-         // The ordering of these 3 checks (and the early exits) is for performance reasons.
-
-         if (!this.ViewContext.UnobtrusiveJavaScriptEnabled) {
-            return results;
-         }
-
-         var formContext = this.ViewContext.GetFormContextForClientValidation();
-
-         if (formContext is null) {
-            return results;
-         }
-
-         var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
-
-         if (formContext.RenderedField(fullName)) {
-            return results;
-         }
-
-         formContext.RenderedField(fullName, true);
-
-         var clientRules = ClientValidationRuleFactory(name, metadata);
-
-         if (excludeMinMaxLength) {
-
-            clientRules = clientRules
-               .Where(p => !(p is ModelClientValidationMinLengthRule
-                  || p is ModelClientValidationMaxLengthRule));
-         }
-
-         UnobtrusiveValidationAttributesGenerator.GetValidationAttributes(clientRules, results);
-
-         return results;
-      }
-
-      public string
-      DisplayNameForModel() =>
-         MetadataInstructions.DisplayNameForModel(this);
-
-      public string
-      DisplayName(string name) =>
-         MetadataInstructions.DisplayName(this, name);
-
-      public string
-      IdForModel() => Id(String.Empty);
-
-      public string
-      Id(string name) =>
-         this.ViewData.TemplateInfo.GetFullHtmlFieldId(name);
-
-      public string
-      NameForModel() => InputInstructions.NameForModel(this);
-
-      public string
-      Name(string name) => InputInstructions.Name(this, name);
-
-      public string
-      ValueForModel() {
-
-         var format = this.ViewData.ModelMetadata.EditFormatString;
-
-         return ValueHelper(String.Empty, value: null, format: format, useViewData: true);
-      }
-
-      public string
-      Value(string name) {
-
-         if (name is null) throw new ArgumentNullException(nameof(name));
-
-         var metadata = ModelMetadata.FromStringExpression(name, this.ViewData);
-
-         return ValueHelper(name, value: null, format: metadata.EditFormatString, useViewData: true);
-      }
-
-      public string
-      Value(string name, string format) {
-
-         if (name is null) throw new ArgumentNullException(nameof(name));
-
-         return ValueHelper(name, value: null, format: format, useViewData: true);
-      }
-
-      internal string
-      ValueHelper(string name, object? value, string? format, bool useViewData) {
-
-         var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
-         var attemptedValue = (string?)GetModelStateValue(fullName, typeof(string));
-         string resolvedValue;
-
-         if (attemptedValue != null) {
-
-            // case 1: if ModelState has a value then it's already formatted so ignore format string
-
-            resolvedValue = attemptedValue;
-
-         } else if (useViewData) {
-
-            if (name.Length == 0) {
-
-               // case 2(a): format the value from ModelMetadata for the current model
-
-               var metadata = ModelMetadata.FromStringExpression(String.Empty, this.ViewData);
-               resolvedValue = FormatValue(metadata.Model, format);
-
-            } else {
-
-               // case 2(b): format the value from ViewData
-
-               resolvedValue = EvalString(name, format);
-            }
-         } else {
-
-            // case 3: format the explicit value from ModelMetadata
-
-            resolvedValue = FormatValue(value, format);
-         }
-
-         return resolvedValue;
-      }
-
-      /// <summary>
-      /// Returns the properties that should be shown in a display template, based on the
-      /// model's metadata.
-      /// </summary>
-      /// <returns>The relevant model properties.</returns>
-      /// <remarks>
-      /// This method uses the same logic used by the built-in <code>Object</code> display template;
-      /// e.g. by default, it excludes complex-type properties.
-      /// </remarks>
-      public IEnumerable<ModelMetadata>
-      DisplayProperties() =>
-         DisplayInstructions.DisplayProperties(this);
-
-      /// <summary>
-      /// Returns the properties that should be shown in an editor template, based on the
-      /// model's metadata.
-      /// </summary>
-      /// <returns>The relevant model properties.</returns>
-      /// <remarks>
-      /// This method uses the same logic used by the built-in <code>Object</code> editor template;
-      /// e.g. by default, it excludes complex-type properties.
-      /// </remarks>
-      public IEnumerable<ModelMetadata>
-      EditorProperties() =>
-         EditorInstructions.EditorProperties(this);
-
-      /// <summary>
-      /// Returns the member template delegate for the provided property.
-      /// </summary>
-      /// <param name="propertyMetadata">The property's metadata.</param>
-      /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
-      public XcstDelegate<object>?
-      MemberTemplate(ModelMetadata propertyMetadata) =>
-         EditorInstructions.MemberTemplate(this, propertyMetadata);
+      set => _idAttributeDotReplacement = value;
    }
 
-   public class HtmlHelper<TModel> : HtmlHelper {
+   public dynamic
+   ViewBag =>
+      _viewBag ??= new DynamicViewDataDictionary(() => ViewData);
 
-      public new ViewDataDictionary<TModel>
-      ViewData => (ViewDataDictionary<TModel>)ViewDataContainer.ViewData;
+   public ViewContext
+   ViewContext { get; private set; }
 
-      public
-      HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
-         : base(viewContext, viewDataContainer) {
+   public ViewDataDictionary
+   ViewData => ViewDataContainer.ViewData;
 
-         if (!(viewDataContainer.ViewData is ViewDataDictionary<TModel>)) {
-            throw new ArgumentException(
-               $"{nameof(viewDataContainer)}.ViewData should be an instance of 'ViewDataDictionary<TModel>'.",
-               nameof(viewDataContainer)
-            );
-         }
-      }
+   public IViewDataContainer
+   ViewDataContainer { get; internal set; }
 
-      public string
-      DisplayNameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
-         MetadataInstructions.DisplayNameFor(this, expression);
+   [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "The usage of the property is as an instance property of the helper.")]
+   public Html5DateRenderingMode
+   Html5DateRenderingMode { get; set; }
 
-      public string
-      IdFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
-         Id(ExpressionHelper.GetExpressionText(expression));
+   public ModelMetadata
+   ModelMetadata => ViewData.ModelMetadata;
 
-      public string
-      NameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
-         InputInstructions.NameFor(this, expression);
+   internal Func<string, ModelMetadata?, IEnumerable<ModelClientValidationRule>>
+   ClientValidationRuleFactory { get; set; }
 
-      public string
-      ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+   public
+   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer) {
 
-         var metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
-         var expressionString = ExpressionHelper.GetExpressionText(expression);
-
-         return ValueHelper(expressionString, metadata.Model, format: metadata.EditFormatString, useViewData: false);
-      }
-
-      public string
-      ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression, string format) {
-
-         var metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
-         var expressionString = ExpressionHelper.GetExpressionText(expression);
-
-         return ValueHelper(expressionString, metadata.Model, format, useViewData: false);
-      }
+      this.ViewContext = viewContext ?? throw new ArgumentNullException(nameof(viewContext));
+      this.ViewDataContainer = viewDataContainer ?? throw new ArgumentNullException(nameof(viewDataContainer));
+      this.ClientValidationRuleFactory = (name, metadata) =>
+         ModelValidatorProviders.Providers
+            .GetValidators(metadata ?? ModelMetadata.FromStringExpression(name, this.ViewData), this.ViewContext)
+            .SelectMany(v => v.GetClientValidationRules());
    }
 
    /// <summary>
-   /// Controls the value-rendering method For HTML5 input elements of types such as date, time, datetime and datetime-local.
+   /// Creates a dictionary of HTML attributes from the input object,
+   /// translating underscores to dashes.
    /// </summary>
-   public enum Html5DateRenderingMode {
+   /// <example>
+   /// <c>new { data_name="value" }</c> will translate to the entry <c>{ "data-name" , "value" }</c>
+   /// in the resulting dictionary.
+   /// </example>
+   /// <param name="htmlAttributes">Anonymous object describing HTML attributes.</param>
+   /// <returns>A dictionary that represents HTML attributes.</returns>
+   public static RouteValueDictionary
+   AnonymousObjectToHtmlAttributes(object? htmlAttributes) {
 
-      /// <summary>
-      /// Render date and time values as Rfc3339 compliant strings to support HTML5 date and time types of input elements.
-      /// </summary>
-      Rfc3339 = 0,
+      var result = new RouteValueDictionary();
 
-      /// <summary>
-      /// Render date and time values according to the current culture's ToString behavior.
-      /// </summary>
-      CurrentCulture
-   }
-
-   public enum InputType {
-      CheckBox,
-      Hidden,
-      Password,
-      Radio,
-      Text
-   }
-
-   static class UnobtrusiveValidationAttributesGenerator {
-
-      public static void
-      GetValidationAttributes(IEnumerable<ModelClientValidationRule> clientRules, IDictionary<string, object> results) {
-
-         if (clientRules is null) throw new ArgumentNullException(nameof(clientRules));
-         if (results is null) throw new ArgumentNullException(nameof(results));
-
-         var rulesRendered = false;
-
-         foreach (ModelClientValidationRule rule in clientRules) {
-
-            rulesRendered = true;
-            var ruleName = "data-val-" + rule.ValidationType;
-
-            ValidateUnobtrusiveValidationRule(rule, results, ruleName);
-
-            results.Add(ruleName, rule.ErrorMessage ?? String.Empty);
-            ruleName += "-";
-
-            foreach (var kvp in rule.ValidationParameters) {
-               results.Add(ruleName + kvp.Key, kvp.Value ?? String.Empty);
-            }
-         }
-
-         if (rulesRendered) {
-            results.Add("data-val", "true");
+      if (htmlAttributes != null) {
+         foreach (var property in HtmlAttributePropertyHelper.GetProperties(htmlAttributes)) {
+            result.Add(property.Name, property.GetValue(htmlAttributes));
          }
       }
 
-      static void
-      ValidateUnobtrusiveValidationRule(ModelClientValidationRule rule, IDictionary<string, object> resultsDictionary, string dictionaryKey) {
+      return result;
+   }
 
-         if (String.IsNullOrWhiteSpace(rule.ValidationType)) {
+   public static string
+   GenerateIdFromName(string name) =>
+      GenerateIdFromName(name, IdAttributeDotReplacement);
+
+   public static string
+   GenerateIdFromName(string name, string idAttributeDotReplacement) {
+
+      if (name is null) throw new ArgumentNullException(nameof(name));
+      if (idAttributeDotReplacement is null) throw new ArgumentNullException(nameof(idAttributeDotReplacement));
+
+      // TagBuilder.CreateSanitizedId returns null for empty strings, return String.Empty instead to avoid breaking change
+
+      if (name.Length == 0) {
+         return String.Empty;
+      }
+
+#pragma warning disable CS8603 // there's a small chance CreateSanitizedId returns null
+      return TagBuilder.CreateSanitizedId(name, idAttributeDotReplacement);
+#pragma warning restore CS8603
+   }
+
+   public static string
+   GetInputTypeString(InputType inputType) =>
+      inputType switch {
+         InputType.CheckBox => "checkbox",
+         InputType.Hidden => "hidden",
+         InputType.Password => "password",
+         InputType.Radio => "radio",
+         InputType.Text => "text",
+         _ => "text",
+      };
+
+   /// <summary>
+   /// Creates a dictionary from an object, by adding each public instance property as a key with its associated
+   /// value to the dictionary. It will expose public properties from derived types as well. This is typically used
+   /// with objects of an anonymous type.
+   /// </summary>
+   /// <example>
+   /// <c>new { property_name = "value" }</c> will translate to the entry <c>{ "property_name" , "value" }</c>
+   /// in the resulting dictionary.
+   /// </example>
+   /// <param name="value">The object to be converted.</param>
+   /// <returns>The created dictionary of property names and property values.</returns>
+   public static IDictionary<string, object?>
+   ObjectToDictionary(object value) =>
+      TypeHelpers.ObjectToDictionary(value);
+
+   internal string
+   EvalString(string key) =>
+      Convert.ToString(this.ViewData.Eval(key), CultureInfo.CurrentCulture);
+
+   internal string
+   EvalString(string key, string? format) =>
+      Convert.ToString(this.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
+
+   [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
+   public string
+   FormatValue(object? value, string? format) =>
+      ViewDataDictionary.FormatValueInternal(value, format);
+
+   internal bool
+   EvalBoolean(string key) =>
+      Convert.ToBoolean(this.ViewData.Eval(key), CultureInfo.InvariantCulture);
+
+   internal object?
+   GetModelStateValue(string key, Type destinationType) {
+
+      if (this.ViewData.ModelState.TryGetValue(key, out var modelState)
+         && modelState.Value != null) {
+
+         return modelState.Value.ConvertTo(destinationType, culture: null);
+      }
+
+      return null;
+   }
+
+   public IDictionary<string, object>
+   GetUnobtrusiveValidationAttributes(string name) =>
+      GetUnobtrusiveValidationAttributes(name, metadata: null);
+
+   // Only render attributes if unobtrusive client-side validation is enabled, and then only if we've
+   // never rendered validation for a field with this name in this form. Also, if there's no form context,
+   // then we can't render the attributes (we'd have no <form> to attach them to).
+
+   public IDictionary<string, object>
+   GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata) =>
+      GetUnobtrusiveValidationAttributes(name, metadata, false);
+
+   internal IDictionary<string, object>
+   GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata, bool excludeMinMaxLength) {
+
+      var results = new Dictionary<string, object>();
+
+      // The ordering of these 3 checks (and the early exits) is for performance reasons.
+
+      if (!this.ViewContext.UnobtrusiveJavaScriptEnabled) {
+         return results;
+      }
+
+      var formContext = this.ViewContext.GetFormContextForClientValidation();
+
+      if (formContext is null) {
+         return results;
+      }
+
+      var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+
+      if (formContext.RenderedField(fullName)) {
+         return results;
+      }
+
+      formContext.RenderedField(fullName, true);
+
+      var clientRules = ClientValidationRuleFactory(name, metadata);
+
+      if (excludeMinMaxLength) {
+
+         clientRules = clientRules
+            .Where(p => !(p is ModelClientValidationMinLengthRule
+               || p is ModelClientValidationMaxLengthRule));
+      }
+
+      UnobtrusiveValidationAttributesGenerator.GetValidationAttributes(clientRules, results);
+
+      return results;
+   }
+
+   public string
+   DisplayNameForModel() =>
+      MetadataInstructions.DisplayNameForModel(this);
+
+   public string
+   DisplayName(string name) =>
+      MetadataInstructions.DisplayName(this, name);
+
+   public string
+   IdForModel() => Id(String.Empty);
+
+   public string
+   Id(string name) =>
+      this.ViewData.TemplateInfo.GetFullHtmlFieldId(name);
+
+   public string
+   NameForModel() => InputInstructions.NameForModel(this);
+
+   public string
+   Name(string name) => InputInstructions.Name(this, name);
+
+   public string
+   ValueForModel() {
+
+      var format = this.ViewData.ModelMetadata.EditFormatString;
+
+      return ValueHelper(String.Empty, value: null, format: format, useViewData: true);
+   }
+
+   public string
+   Value(string name) {
+
+      if (name is null) throw new ArgumentNullException(nameof(name));
+
+      var metadata = ModelMetadata.FromStringExpression(name, this.ViewData);
+
+      return ValueHelper(name, value: null, format: metadata.EditFormatString, useViewData: true);
+   }
+
+   public string
+   Value(string name, string format) {
+
+      if (name is null) throw new ArgumentNullException(nameof(name));
+
+      return ValueHelper(name, value: null, format: format, useViewData: true);
+   }
+
+   internal string
+   ValueHelper(string name, object? value, string? format, bool useViewData) {
+
+      var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+      var attemptedValue = (string?)GetModelStateValue(fullName, typeof(string));
+      string resolvedValue;
+
+      if (attemptedValue != null) {
+
+         // case 1: if ModelState has a value then it's already formatted so ignore format string
+
+         resolvedValue = attemptedValue;
+
+      } else if (useViewData) {
+
+         if (name.Length == 0) {
+
+            // case 2(a): format the value from ModelMetadata for the current model
+
+            var metadata = ModelMetadata.FromStringExpression(String.Empty, this.ViewData);
+            resolvedValue = FormatValue(metadata.Model, format);
+
+         } else {
+
+            // case 2(b): format the value from ViewData
+
+            resolvedValue = EvalString(name, format);
+         }
+      } else {
+
+         // case 3: format the explicit value from ModelMetadata
+
+         resolvedValue = FormatValue(value, format);
+      }
+
+      return resolvedValue;
+   }
+
+   /// <summary>
+   /// Returns the properties that should be shown in a display template, based on the
+   /// model's metadata.
+   /// </summary>
+   /// <returns>The relevant model properties.</returns>
+   /// <remarks>
+   /// This method uses the same logic used by the built-in <code>Object</code> display template;
+   /// e.g. by default, it excludes complex-type properties.
+   /// </remarks>
+   public IEnumerable<ModelMetadata>
+   DisplayProperties() =>
+      DisplayInstructions.DisplayProperties(this);
+
+   /// <summary>
+   /// Returns the properties that should be shown in an editor template, based on the
+   /// model's metadata.
+   /// </summary>
+   /// <returns>The relevant model properties.</returns>
+   /// <remarks>
+   /// This method uses the same logic used by the built-in <code>Object</code> editor template;
+   /// e.g. by default, it excludes complex-type properties.
+   /// </remarks>
+   public IEnumerable<ModelMetadata>
+   EditorProperties() =>
+      EditorInstructions.EditorProperties(this);
+
+   /// <summary>
+   /// Returns the member template delegate for the provided property.
+   /// </summary>
+   /// <param name="propertyMetadata">The property's metadata.</param>
+   /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
+   public XcstDelegate<object>?
+   MemberTemplate(ModelMetadata propertyMetadata) =>
+      EditorInstructions.MemberTemplate(this, propertyMetadata);
+}
+
+public class HtmlHelper<TModel> : HtmlHelper {
+
+   public new ViewDataDictionary<TModel>
+   ViewData => (ViewDataDictionary<TModel>)ViewDataContainer.ViewData;
+
+   public
+   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
+      : base(viewContext, viewDataContainer) {
+
+      if (!(viewDataContainer.ViewData is ViewDataDictionary<TModel>)) {
+         throw new ArgumentException(
+            $"{nameof(viewDataContainer)}.ViewData should be an instance of 'ViewDataDictionary<TModel>'.",
+            nameof(viewDataContainer)
+         );
+      }
+   }
+
+   public string
+   DisplayNameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
+      MetadataInstructions.DisplayNameFor(this, expression);
+
+   public string
+   IdFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
+      Id(ExpressionHelper.GetExpressionText(expression));
+
+   public string
+   NameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
+      InputInstructions.NameFor(this, expression);
+
+   public string
+   ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+
+      var metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
+
+      return ValueHelper(expressionString, metadata.Model, format: metadata.EditFormatString, useViewData: false);
+   }
+
+   public string
+   ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression, string format) {
+
+      var metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
+
+      return ValueHelper(expressionString, metadata.Model, format, useViewData: false);
+   }
+}
+
+/// <summary>
+/// Controls the value-rendering method For HTML5 input elements of types such as date, time, datetime and datetime-local.
+/// </summary>
+public enum Html5DateRenderingMode {
+
+   /// <summary>
+   /// Render date and time values as Rfc3339 compliant strings to support HTML5 date and time types of input elements.
+   /// </summary>
+   Rfc3339 = 0,
+
+   /// <summary>
+   /// Render date and time values according to the current culture's ToString behavior.
+   /// </summary>
+   CurrentCulture
+}
+
+public enum InputType {
+   CheckBox,
+   Hidden,
+   Password,
+   Radio,
+   Text
+}
+
+static class UnobtrusiveValidationAttributesGenerator {
+
+   public static void
+   GetValidationAttributes(IEnumerable<ModelClientValidationRule> clientRules, IDictionary<string, object> results) {
+
+      if (clientRules is null) throw new ArgumentNullException(nameof(clientRules));
+      if (results is null) throw new ArgumentNullException(nameof(results));
+
+      var rulesRendered = false;
+
+      foreach (ModelClientValidationRule rule in clientRules) {
+
+         rulesRendered = true;
+         var ruleName = "data-val-" + rule.ValidationType;
+
+         ValidateUnobtrusiveValidationRule(rule, results, ruleName);
+
+         results.Add(ruleName, rule.ErrorMessage ?? String.Empty);
+         ruleName += "-";
+
+         foreach (var kvp in rule.ValidationParameters) {
+            results.Add(ruleName + kvp.Key, kvp.Value ?? String.Empty);
+         }
+      }
+
+      if (rulesRendered) {
+         results.Add("data-val", "true");
+      }
+   }
+
+   static void
+   ValidateUnobtrusiveValidationRule(ModelClientValidationRule rule, IDictionary<string, object> resultsDictionary, string dictionaryKey) {
+
+      if (String.IsNullOrWhiteSpace(rule.ValidationType)) {
+         throw new InvalidOperationException(
+            String.Format(
+               CultureInfo.CurrentCulture,
+               WebPageResources.UnobtrusiveJavascript_ValidationTypeCannotBeEmpty,
+               rule.GetType().FullName));
+      }
+
+      if (resultsDictionary.ContainsKey(dictionaryKey)) {
+         throw new InvalidOperationException(
+            String.Format(
+               CultureInfo.CurrentCulture,
+               WebPageResources.UnobtrusiveJavascript_ValidationTypeMustBeUnique,
+               rule.ValidationType));
+      }
+
+      if (rule.ValidationType.Any(c => !Char.IsLower(c))) {
+         throw new InvalidOperationException(
+            String.Format(CultureInfo.CurrentCulture, WebPageResources.UnobtrusiveJavascript_ValidationTypeMustBeLegal,
+               rule.ValidationType,
+               rule.GetType().FullName));
+      }
+
+      foreach (var key in rule.ValidationParameters.Keys) {
+
+         if (String.IsNullOrWhiteSpace(key)) {
             throw new InvalidOperationException(
                String.Format(
                   CultureInfo.CurrentCulture,
-                  WebPageResources.UnobtrusiveJavascript_ValidationTypeCannotBeEmpty,
+                  WebPageResources.UnobtrusiveJavascript_ValidationParameterCannotBeEmpty,
                   rule.GetType().FullName));
          }
 
-         if (resultsDictionary.ContainsKey(dictionaryKey)) {
+         if (!Char.IsLower(key.First()) || key.Any(c => !Char.IsLower(c) && !Char.IsDigit(c))) {
             throw new InvalidOperationException(
                String.Format(
                   CultureInfo.CurrentCulture,
-                  WebPageResources.UnobtrusiveJavascript_ValidationTypeMustBeUnique,
-                  rule.ValidationType));
-         }
-
-         if (rule.ValidationType.Any(c => !Char.IsLower(c))) {
-            throw new InvalidOperationException(
-               String.Format(CultureInfo.CurrentCulture, WebPageResources.UnobtrusiveJavascript_ValidationTypeMustBeLegal,
-                  rule.ValidationType,
+                  WebPageResources.UnobtrusiveJavascript_ValidationParameterMustBeLegal,
+                  key,
                   rule.GetType().FullName));
          }
-
-         foreach (var key in rule.ValidationParameters.Keys) {
-
-            if (String.IsNullOrWhiteSpace(key)) {
-               throw new InvalidOperationException(
-                  String.Format(
-                     CultureInfo.CurrentCulture,
-                     WebPageResources.UnobtrusiveJavascript_ValidationParameterCannotBeEmpty,
-                     rule.GetType().FullName));
-            }
-
-            if (!Char.IsLower(key.First()) || key.Any(c => !Char.IsLower(c) && !Char.IsDigit(c))) {
-               throw new InvalidOperationException(
-                  String.Format(
-                     CultureInfo.CurrentCulture,
-                     WebPageResources.UnobtrusiveJavascript_ValidationParameterMustBeLegal,
-                     key,
-                     rule.GetType().FullName));
-            }
-         }
       }
    }
+}
 
-   static class TagBuilder {
+static class TagBuilder {
 
-      public static string?
-      CreateSanitizedId(string originalId) =>
-         CreateSanitizedId(originalId, HtmlHelper.IdAttributeDotReplacement);
+   public static string?
+   CreateSanitizedId(string originalId) =>
+      CreateSanitizedId(originalId, HtmlHelper.IdAttributeDotReplacement);
 
-      public static string?
-      CreateSanitizedId(string originalId, string invalidCharReplacement) {
+   public static string?
+   CreateSanitizedId(string originalId, string invalidCharReplacement) {
 
-         if (String.IsNullOrEmpty(originalId)) {
-            return null;
-         }
-
-         if (invalidCharReplacement is null) {
-            throw new ArgumentNullException(nameof(invalidCharReplacement));
-         }
-
-         var firstChar = originalId[0];
-
-         if (!Html401IdUtil.IsLetter(firstChar)) {
-            // the first character must be a letter
-            return null;
-         }
-
-         var sb = new StringBuilder(originalId.Length);
-         sb.Append(firstChar);
-
-         for (int i = 1; i < originalId.Length; i++) {
-            var thisChar = originalId[i];
-            if (Html401IdUtil.IsValidIdCharacter(thisChar)) {
-               sb.Append(thisChar);
-            } else {
-               sb.Append(invalidCharReplacement);
-            }
-         }
-
-         return sb.ToString();
+      if (String.IsNullOrEmpty(originalId)) {
+         return null;
       }
 
-      // Valid IDs are defined in http://www.w3.org/TR/html401/types.html#type-id
-
-      static class Html401IdUtil {
-
-         public static bool
-         IsValidIdCharacter(char c) =>
-            (IsLetter(c) || IsDigit(c) || IsAllowableSpecialCharacter(c));
-
-         static bool
-         IsAllowableSpecialCharacter(char c) {
-            switch (c) {
-               case '-':
-               case '_':
-               case ':':
-                  // note that we're specifically excluding the '.' character
-                  return true;
-
-               default:
-                  return false;
-            }
-         }
-
-         static bool
-         IsDigit(char c) =>
-            ('0' <= c && c <= '9');
-
-         public static bool
-         IsLetter(char c) =>
-            (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z'));
+      if (invalidCharReplacement is null) {
+         throw new ArgumentNullException(nameof(invalidCharReplacement));
       }
+
+      var firstChar = originalId[0];
+
+      if (!Html401IdUtil.IsLetter(firstChar)) {
+         // the first character must be a letter
+         return null;
+      }
+
+      var sb = new StringBuilder(originalId.Length);
+      sb.Append(firstChar);
+
+      for (int i = 1; i < originalId.Length; i++) {
+         var thisChar = originalId[i];
+         if (Html401IdUtil.IsValidIdCharacter(thisChar)) {
+            sb.Append(thisChar);
+         } else {
+            sb.Append(invalidCharReplacement);
+         }
+      }
+
+      return sb.ToString();
    }
 
-   class HtmlAttributePropertyHelper : PropertyHelper {
+   // Valid IDs are defined in http://www.w3.org/TR/html401/types.html#type-id
 
-      static ConcurrentDictionary<Type, PropertyHelper[]>
-      _reflectionCache = new();
+   static class Html401IdUtil {
 
-      [AllowNull]
-      public override string
-      Name {
-         get => base.Name;
-         protected set => base.Name = value?.Replace('_', '-');
+      public static bool
+      IsValidIdCharacter(char c) =>
+         (IsLetter(c) || IsDigit(c) || IsAllowableSpecialCharacter(c));
+
+      static bool
+      IsAllowableSpecialCharacter(char c) {
+         switch (c) {
+            case '-':
+            case '_':
+            case ':':
+               // note that we're specifically excluding the '.' character
+               return true;
+
+            default:
+               return false;
+         }
       }
 
-      public static new PropertyHelper[]
-      GetProperties(object instance) =>
-         GetProperties(instance, CreateInstance, _reflectionCache);
+      static bool
+      IsDigit(char c) =>
+         ('0' <= c && c <= '9');
 
-      static PropertyHelper
-      CreateInstance(PropertyInfo property) =>
-         new HtmlAttributePropertyHelper(property);
-
-      public
-      HtmlAttributePropertyHelper(PropertyInfo property)
-         : base(property) { }
+      public static bool
+      IsLetter(char c) =>
+         (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z'));
    }
+}
+
+class HtmlAttributePropertyHelper : PropertyHelper {
+
+   static ConcurrentDictionary<Type, PropertyHelper[]>
+   _reflectionCache = new();
+
+   [AllowNull]
+   public override string
+   Name {
+      get => base.Name;
+      protected set => base.Name = value?.Replace('_', '-');
+   }
+
+   public static new PropertyHelper[]
+   GetProperties(object instance) =>
+      GetProperties(instance, CreateInstance, _reflectionCache);
+
+   static PropertyHelper
+   CreateInstance(PropertyInfo property) =>
+      new HtmlAttributePropertyHelper(property);
+
+   public
+   HtmlAttributePropertyHelper(PropertyInfo property)
+      : base(property) { }
 }

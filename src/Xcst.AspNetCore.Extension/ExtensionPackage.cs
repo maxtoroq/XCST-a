@@ -15,44 +15,43 @@
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Xcst.Web.Extension {
-   
-   public partial class ExtensionPackage {
+namespace Xcst.Web.Extension;
 
-      public string
-      ExtensionNamespace => a.NamespaceName;
+public partial class ExtensionPackage {
 
-      static object
-      ErrorData(XObject node) {
+   public string
+   ExtensionNamespace => a.NamespaceName;
 
-         dynamic data = new System.Dynamic.ExpandoObject();
-         data.LineNumber = LineNumber(node);
-         data.ModuleUri = ModuleUri(node);
+   static object
+   ErrorData(XObject node) {
 
-         return data;
+      dynamic data = new System.Dynamic.ExpandoObject();
+      data.LineNumber = LineNumber(node);
+      data.ModuleUri = ModuleUri(node);
+
+      return data;
+   }
+
+   static int
+   LineNumber(XObject node) =>
+      (node is IXmlLineInfo li) ?
+         li.LineNumber
+         : -1;
+
+   static string
+   ModuleUri(XObject node) =>
+      node.Document?.BaseUri ?? node.BaseUri;
+
+   string?
+   AppRelativeUri(XElement module) {
+
+      var moduleUri = new System.Uri(ModuleUri(module));
+      var relativeUri = this.ApplicationUri!.MakeRelativeUri(moduleUri);
+
+      if (!relativeUri.OriginalString.StartsWith("..")) {
+         return relativeUri.OriginalString;
       }
 
-      static int
-      LineNumber(XObject node) =>
-         (node is IXmlLineInfo li) ?
-            li.LineNumber
-            : -1;
-
-      static string
-      ModuleUri(XObject node) =>
-         node.Document?.BaseUri ?? node.BaseUri;
-
-      string?
-      AppRelativeUri(XElement module) {
-
-         var moduleUri = new System.Uri(ModuleUri(module));
-         var relativeUri = this.ApplicationUri!.MakeRelativeUri(moduleUri);
-
-         if (!relativeUri.OriginalString.StartsWith("..")) {
-            return relativeUri.OriginalString;
-         }
-
-         return null;
-      }
+      return null;
    }
 }

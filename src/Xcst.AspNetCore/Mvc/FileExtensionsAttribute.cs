@@ -27,89 +27,88 @@ using System.ComponentModel;
 using System.Reflection;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
-namespace Xcst.Web.Mvc {
+namespace Xcst.Web.Mvc;
 
-   /// <exclude/>
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
-   public class FileExtensionsAttribute : ValidationAttribute, IClientValidatable {
+/// <exclude/>
+[EditorBrowsable(EditorBrowsableState.Never)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
+public class FileExtensionsAttribute : ValidationAttribute, IClientValidatable {
 
-      public string
-      Extensions { get; }
+   public string
+   Extensions { get; }
 
-      private string
-      ExtensionsFormatted =>
-         ExtensionsParsed.Aggregate((left, right) => left + ", " + right);
+   private string
+   ExtensionsFormatted =>
+      ExtensionsParsed.Aggregate((left, right) => left + ", " + right);
 
-      [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "These strings are normalized to lowercase because they are presented to the user in lowercase format")]
-      private string
-      ExtensionsNormalized =>
-         Extensions.Replace(" ", "").Replace(".", "").ToLowerInvariant();
+   [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "These strings are normalized to lowercase because they are presented to the user in lowercase format")]
+   private string
+   ExtensionsNormalized =>
+      Extensions.Replace(" ", "").Replace(".", "").ToLowerInvariant();
 
-      private IEnumerable<string>
-      ExtensionsParsed =>
-         ExtensionsNormalized.Split(',').Select(e => "." + e);
+   private IEnumerable<string>
+   ExtensionsParsed =>
+      ExtensionsNormalized.Split(',').Select(e => "." + e);
 
-      public
-      FileExtensionsAttribute(string extensions) {
+   public
+   FileExtensionsAttribute(string extensions) {
 
-         if (String.IsNullOrWhiteSpace(extensions)) throw new ArgumentNullException(nameof(extensions));
+      if (String.IsNullOrWhiteSpace(extensions)) throw new ArgumentNullException(nameof(extensions));
 
-         this.Extensions = extensions;
+      this.Extensions = extensions;
 
-         base.GetType()
-            .GetProperty("DefaultErrorMessage", BindingFlags.Instance | BindingFlags.NonPublic)!
-            .SetValue(this, "The {0} field only accepts files with the following extensions: {1}");
+      base.GetType()
+         .GetProperty("DefaultErrorMessage", BindingFlags.Instance | BindingFlags.NonPublic)!
+         .SetValue(this, "The {0} field only accepts files with the following extensions: {1}");
+   }
+
+   public override string
+   FormatErrorMessage(string name) =>
+      String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, this.ExtensionsFormatted);
+
+   public override bool
+   IsValid(object? value) {
+
+      if (value is null) {
+         return true;
       }
 
-      public override string
-      FormatErrorMessage(string name) =>
-         String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, this.ExtensionsFormatted);
+      if (value is string valueAsString) {
+         return ValidateExtension(valueAsString);
+      }
 
-      public override bool
-      IsValid(object? value) {
+      if (value is Uri valueAsUri) {
+         return ValidateExtension(valueAsUri.OriginalString);
+      }
 
-         if (value is null) {
-            return true;
-         }
+      if (value is IFormFile valueAsFile) {
+         return ValidateExtension(valueAsFile.FileName);
+      }
 
-         if (value is string valueAsString) {
-            return ValidateExtension(valueAsString);
-         }
+      return false;
+   }
 
-         if (value is Uri valueAsUri) {
-            return ValidateExtension(valueAsUri.OriginalString);
-         }
+   [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "These strings are normalized to lowercase because they are presented to the user in lowercase format")]
+   bool
+   ValidateExtension(string fileName) {
 
-         if (value is IFormFile valueAsFile) {
-            return ValidateExtension(valueAsFile.FileName);
-         }
-
+      try {
+         return ExtensionsParsed.Contains(Path.GetExtension(fileName).ToLowerInvariant());
+      } catch (ArgumentException) {
          return false;
       }
+   }
 
-      [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "These strings are normalized to lowercase because they are presented to the user in lowercase format")]
-      bool
-      ValidateExtension(string fileName) {
+   public IEnumerable<ModelClientValidationRule>
+   GetClientValidationRules(ModelMetadata metadata, ControllerContext context) {
 
-         try {
-            return ExtensionsParsed.Contains(Path.GetExtension(fileName).ToLowerInvariant());
-         } catch (ArgumentException) {
-            return false;
-         }
-      }
+      var rule = new ModelClientValidationRule {
+         ValidationType = "extension",
+         ErrorMessage = FormatErrorMessage(metadata.GetDisplayName())
+      };
 
-      public IEnumerable<ModelClientValidationRule>
-      GetClientValidationRules(ModelMetadata metadata, ControllerContext context) {
+      rule.ValidationParameters["extension"] = this.ExtensionsNormalized;
 
-         var rule = new ModelClientValidationRule {
-            ValidationType = "extension",
-            ErrorMessage = FormatErrorMessage(metadata.GetDisplayName())
-         };
-
-         rule.ValidationParameters["extension"] = this.ExtensionsNormalized;
-
-         yield return rule;
-      }
+      yield return rule;
    }
 }

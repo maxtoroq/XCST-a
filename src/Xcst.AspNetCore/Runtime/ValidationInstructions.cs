@@ -25,250 +25,249 @@ using System.Linq.Expressions;
 using System.Web.Mvc;
 using Xcst.Web.Configuration;
 
-namespace Xcst.Web.Runtime {
+namespace Xcst.Web.Runtime;
 
-   using HtmlAttribs = IDictionary<string, object>;
+using HtmlAttribs = IDictionary<string, object>;
 
-   /// <exclude/>
-   public static class ValidationInstructions {
+/// <exclude/>
+public static class ValidationInstructions {
 
-      [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
-      public static void
-      ValidationMessage(HtmlHelper htmlHelper, XcstWriter output, string modelName, string? validationMessage = null, HtmlAttribs? htmlAttributes = null,
-            string? tag = null) {
+   [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
+   public static void
+   ValidationMessage(HtmlHelper htmlHelper, XcstWriter output, string modelName, string? validationMessage = null, HtmlAttribs? htmlAttributes = null,
+         string? tag = null) {
 
-         if (modelName is null) throw new ArgumentNullException(nameof(modelName));
+      if (modelName is null) throw new ArgumentNullException(nameof(modelName));
 
-         var metadata = ModelMetadata.FromStringExpression(modelName, htmlHelper.ViewData);
+      var metadata = ModelMetadata.FromStringExpression(modelName, htmlHelper.ViewData);
 
-         ValidationMessageHelper(htmlHelper, output, metadata, modelName, validationMessage, htmlAttributes, tag);
+      ValidationMessageHelper(htmlHelper, output, metadata, modelName, validationMessage, htmlAttributes, tag);
+   }
+
+   [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
+   public static void
+   ValidationMessageFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string? validationMessage = null,
+         HtmlAttribs? htmlAttributes = null, string? tag = null) {
+
+      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
+
+      ValidationMessageHelper(htmlHelper, output, metadata, expressionString, validationMessage, htmlAttributes, tag);
+   }
+
+   [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Normalization to lowercase is a common requirement for JavaScript and HTML values")]
+   internal static void
+   ValidationMessageHelper(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata modelMetadata, string expression, string? validationMessage,
+         HtmlAttribs? htmlAttributes, string? tag) {
+
+      var viewData = htmlHelper.ViewData;
+
+      var modelName = viewData.TemplateInfo.GetFullHtmlFieldName(expression);
+      var formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
+
+      if (!viewData.ModelState.ContainsKey(modelName)
+         && formContext is null) {
+
+         return;
       }
 
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void
-      ValidationMessageFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string? validationMessage = null,
-            HtmlAttribs? htmlAttributes = null, string? tag = null) {
+      var modelState = viewData.ModelState[modelName];
+      var modelErrors = modelState?.Errors;
 
-         var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-         var expressionString = ExpressionHelper.GetExpressionText(expression);
+      var modelError = (modelErrors is null || modelErrors.Count == 0) ? null
+         : (modelErrors.FirstOrDefault(m => !String.IsNullOrEmpty(m.ErrorMessage)) ?? modelErrors[0]);
 
-         ValidationMessageHelper(htmlHelper, output, metadata, expressionString, validationMessage, htmlAttributes, tag);
+      if (modelError is null
+         && formContext is null) {
+
+         return;
       }
 
-      [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Normalization to lowercase is a common requirement for JavaScript and HTML values")]
-      internal static void
-      ValidationMessageHelper(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata modelMetadata, string expression, string? validationMessage,
-            HtmlAttribs? htmlAttributes, string? tag) {
+      if (String.IsNullOrEmpty(tag)) {
+         tag = htmlHelper.ViewContext.ValidationMessageElement;
+      }
 
-         var viewData = htmlHelper.ViewData;
+      var validationClass = (modelError != null) ?
+         HtmlHelper.ValidationMessageCssClassName
+         : HtmlHelper.ValidationMessageValidCssClassName;
 
-         var modelName = viewData.TemplateInfo.GetFullHtmlFieldName(expression);
-         var formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
+      output.WriteStartElement(tag);
+      HtmlAttributeHelper.WriteClass(validationClass, htmlAttributes, output);
 
-         if (!viewData.ModelState.ContainsKey(modelName)
-            && formContext is null) {
+      if (formContext != null) {
+
+         var replaceValidationMessageContents = String.IsNullOrEmpty(validationMessage);
+
+         if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
+
+            output.WriteAttributeString("data-valmsg-for", modelName);
+            output.WriteAttributeString("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
+         }
+      }
+
+      // class was already written
+
+      HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "class");
+
+      if (!String.IsNullOrEmpty(validationMessage)) {
+         output.WriteString(validationMessage);
+
+      } else if (modelError != null) {
+         output.WriteString(GetUserErrorMessageOrDefault(modelError, modelState));
+      }
+
+      output.WriteEndElement();
+   }
+
+   public static void
+   ValidationSummary(HtmlHelper htmlHelper, XcstWriter output, bool includePropertyErrors = false, string? message = null, HtmlAttribs? htmlAttributes = null,
+         string? headingTag = null) {
+
+      if (htmlHelper is null) throw new ArgumentNullException(nameof(htmlHelper));
+
+      var formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
+
+      if (htmlHelper.ViewData.ModelState.IsValid) {
+
+         if (formContext is null) {
+
+            // No client side validation
 
             return;
          }
 
-         var modelState = viewData.ModelState[modelName];
-         var modelErrors = modelState?.Errors;
+         // TODO: This isn't really about unobtrusive; can we fix up non-unobtrusive to get rid of this, too?
 
-         var modelError = (modelErrors is null || modelErrors.Count == 0) ? null
-            : (modelErrors.FirstOrDefault(m => !String.IsNullOrEmpty(m.ErrorMessage)) ?? modelErrors[0]);
+         if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled
+            && !includePropertyErrors) {
 
-         if (modelError is null
-            && formContext is null) {
+            // No client-side updates
 
             return;
          }
+      }
 
-         if (String.IsNullOrEmpty(tag)) {
-            tag = htmlHelper.ViewContext.ValidationMessageElement;
-         }
+      var validationClass = (htmlHelper.ViewData.ModelState.IsValid) ?
+         HtmlHelper.ValidationSummaryValidCssClassName
+         : HtmlHelper.ValidationSummaryCssClassName;
 
-         var validationClass = (modelError != null) ?
-            HtmlHelper.ValidationMessageCssClassName
-            : HtmlHelper.ValidationMessageValidCssClassName;
+      output.WriteStartElement("div");
+      HtmlAttributeHelper.WriteClass(validationClass, htmlAttributes, output);
 
-         output.WriteStartElement(tag);
-         HtmlAttributeHelper.WriteClass(validationClass, htmlAttributes, output);
+      if (formContext != null) {
 
-         if (formContext != null) {
+         if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
 
-            var replaceValidationMessageContents = String.IsNullOrEmpty(validationMessage);
+            if (includePropertyErrors) {
 
-            if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
+               // Only put errors in the validation summary if they're supposed to be included there
 
-               output.WriteAttributeString("data-valmsg-for", modelName);
-               output.WriteAttributeString("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
+               output.WriteAttributeString("data-valmsg-summary", "true");
             }
          }
+      }
 
-         // class was already written
+      // class was already written
 
-         HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "class");
+      HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "class");
 
-         if (!String.IsNullOrEmpty(validationMessage)) {
-            output.WriteString(validationMessage);
+      if (!String.IsNullOrEmpty(message)) {
 
-         } else if (modelError != null) {
-            output.WriteString(GetUserErrorMessageOrDefault(modelError, modelState));
+         if (String.IsNullOrEmpty(headingTag)) {
+            headingTag = htmlHelper.ViewContext.ValidationSummaryMessageElement;
          }
 
+         output.WriteStartElement(headingTag!);
+         output.WriteString(message);
          output.WriteEndElement();
       }
 
-      public static void
-      ValidationSummary(HtmlHelper htmlHelper, XcstWriter output, bool includePropertyErrors = false, string? message = null, HtmlAttribs? htmlAttributes = null,
-            string? headingTag = null) {
+      output.WriteStartElement("ul");
 
-         if (htmlHelper is null) throw new ArgumentNullException(nameof(htmlHelper));
+      var empty = true;
+      var modelStates = GetModelStateList(htmlHelper, includePropertyErrors);
 
-         var formContext = htmlHelper.ViewContext.GetFormContextForClientValidation();
+      foreach (var modelState in modelStates) {
+         foreach (var modelError in modelState.Errors) {
 
-         if (htmlHelper.ViewData.ModelState.IsValid) {
+            var errorText = GetUserErrorMessageOrDefault(modelError, modelState: null);
 
-            if (formContext is null) {
+            if (!String.IsNullOrEmpty(errorText)) {
 
-               // No client side validation
+               empty = false;
 
-               return;
+               output.WriteStartElement("li");
+               output.WriteString(errorText);
+               output.WriteEndElement();
             }
-
-            // TODO: This isn't really about unobtrusive; can we fix up non-unobtrusive to get rid of this, too?
-
-            if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled
-               && !includePropertyErrors) {
-
-               // No client-side updates
-
-               return;
-            }
-         }
-
-         var validationClass = (htmlHelper.ViewData.ModelState.IsValid) ?
-            HtmlHelper.ValidationSummaryValidCssClassName
-            : HtmlHelper.ValidationSummaryCssClassName;
-
-         output.WriteStartElement("div");
-         HtmlAttributeHelper.WriteClass(validationClass, htmlAttributes, output);
-
-         if (formContext != null) {
-
-            if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
-
-               if (includePropertyErrors) {
-
-                  // Only put errors in the validation summary if they're supposed to be included there
-
-                  output.WriteAttributeString("data-valmsg-summary", "true");
-               }
-            }
-         }
-
-         // class was already written
-
-         HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "class");
-
-         if (!String.IsNullOrEmpty(message)) {
-
-            if (String.IsNullOrEmpty(headingTag)) {
-               headingTag = htmlHelper.ViewContext.ValidationSummaryMessageElement;
-            }
-
-            output.WriteStartElement(headingTag!);
-            output.WriteString(message);
-            output.WriteEndElement();
-         }
-
-         output.WriteStartElement("ul");
-
-         var empty = true;
-         var modelStates = GetModelStateList(htmlHelper, includePropertyErrors);
-
-         foreach (var modelState in modelStates) {
-            foreach (var modelError in modelState.Errors) {
-
-               var errorText = GetUserErrorMessageOrDefault(modelError, modelState: null);
-
-               if (!String.IsNullOrEmpty(errorText)) {
-
-                  empty = false;
-
-                  output.WriteStartElement("li");
-                  output.WriteString(errorText);
-                  output.WriteEndElement();
-               }
-            }
-         }
-
-         if (empty) {
-            output.WriteStartElement("li");
-            output.WriteAttributeString("style", "display:none");
-            output.WriteEndElement();
-         }
-
-         output.WriteEndElement(); // </ul>
-         output.WriteEndElement(); // </div>
-      }
-
-      // Returns non-null list of model states, which caller will render in order provided.
-
-      static IEnumerable<ModelState>
-      GetModelStateList(HtmlHelper htmlHelper, bool includePropertyErrors) {
-
-         var viewData = htmlHelper.ViewData;
-
-         if (!includePropertyErrors) {
-
-            if (viewData.ModelState.TryGetValue(viewData.TemplateInfo.HtmlFieldPrefix, out var ms)
-               && ms != null) {
-
-               return new ModelState[] { ms };
-            }
-
-            return new ModelState[0];
-
-         } else {
-
-            // Sort modelStates to respect the ordering in the metadata.
-            // ModelState doesn't refer to ModelMetadata, but we can correlate via the property name.
-
-            var ordering = new Dictionary<string, int>();
-            var metadata = viewData.ModelMetadata;
-
-            if (metadata != null) {
-               foreach (var m in metadata.Properties) {
-                  ordering[m.PropertyName] = m.Order;
-               }
-            }
-
-            return
-               from kv in viewData.ModelState
-               let name = kv.Key
-               orderby ordering.GetOrDefault(name, ModelMetadata.DefaultOrder)
-               select kv.Value;
          }
       }
 
-      static string?
-      GetUserErrorMessageOrDefault(ModelError error, ModelState? modelState) {
-
-         if (!String.IsNullOrEmpty(error.ErrorMessage)) {
-            return error.ErrorMessage;
-         }
-
-         if (modelState is null) {
-            return null;
-         }
-
-         var attemptedValue = modelState.Value?.AttemptedValue;
-
-         var messageFormat = XcstWebConfiguration.Instance.EditorTemplates.DefaultValidationMessage?.Invoke()
-            ?? "The value '{0}' is invalid.";
-
-         return String.Format(CultureInfo.CurrentCulture, messageFormat, attemptedValue);
+      if (empty) {
+         output.WriteStartElement("li");
+         output.WriteAttributeString("style", "display:none");
+         output.WriteEndElement();
       }
+
+      output.WriteEndElement(); // </ul>
+      output.WriteEndElement(); // </div>
+   }
+
+   // Returns non-null list of model states, which caller will render in order provided.
+
+   static IEnumerable<ModelState>
+   GetModelStateList(HtmlHelper htmlHelper, bool includePropertyErrors) {
+
+      var viewData = htmlHelper.ViewData;
+
+      if (!includePropertyErrors) {
+
+         if (viewData.ModelState.TryGetValue(viewData.TemplateInfo.HtmlFieldPrefix, out var ms)
+            && ms != null) {
+
+            return new ModelState[] { ms };
+         }
+
+         return new ModelState[0];
+
+      } else {
+
+         // Sort modelStates to respect the ordering in the metadata.
+         // ModelState doesn't refer to ModelMetadata, but we can correlate via the property name.
+
+         var ordering = new Dictionary<string, int>();
+         var metadata = viewData.ModelMetadata;
+
+         if (metadata != null) {
+            foreach (var m in metadata.Properties) {
+               ordering[m.PropertyName] = m.Order;
+            }
+         }
+
+         return
+            from kv in viewData.ModelState
+            let name = kv.Key
+            orderby ordering.GetOrDefault(name, ModelMetadata.DefaultOrder)
+            select kv.Value;
+      }
+   }
+
+   static string?
+   GetUserErrorMessageOrDefault(ModelError error, ModelState? modelState) {
+
+      if (!String.IsNullOrEmpty(error.ErrorMessage)) {
+         return error.ErrorMessage;
+      }
+
+      if (modelState is null) {
+         return null;
+      }
+
+      var attemptedValue = modelState.Value?.AttemptedValue;
+
+      var messageFormat = XcstWebConfiguration.Instance.EditorTemplates.DefaultValidationMessage?.Invoke()
+         ?? "The value '{0}' is invalid.";
+
+      return String.Format(CultureInfo.CurrentCulture, messageFormat, attemptedValue);
    }
 }

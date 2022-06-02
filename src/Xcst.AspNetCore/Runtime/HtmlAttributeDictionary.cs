@@ -16,101 +16,100 @@ using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Runtime {
+namespace Xcst.Web.Runtime;
 
-   /// <exclude/>
-   public class HtmlAttributeDictionary : Dictionary<string, object> {
+/// <exclude/>
+public class HtmlAttributeDictionary : Dictionary<string, object> {
 
-      public HtmlAttributeDictionary
-      SetClass(string? cssClass) {
+   public HtmlAttributeDictionary
+   SetClass(string? cssClass) {
 
-         if (!String.IsNullOrEmpty(cssClass)) {
-            this["class"] = cssClass;
-         }
-
-         return this;
+      if (!String.IsNullOrEmpty(cssClass)) {
+         this["class"] = cssClass;
       }
 
-      public HtmlAttributeDictionary
-      SetAttribute(string key, object value) {
+      return this;
+   }
 
-         if (String.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
+   public HtmlAttributeDictionary
+   SetAttribute(string key, object value) {
 
-         this[key] = value;
+      if (String.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
 
-         return this;
+      this[key] = value;
+
+      return this;
+   }
+
+   public HtmlAttributeDictionary
+   SetBoolean(string key, bool value) {
+
+      if (value) {
+         SetAttribute(key, key);
       }
 
-      public HtmlAttributeDictionary
-      SetBoolean(string key, bool value) {
+      return this;
+   }
 
-         if (value) {
-            SetAttribute(key, key);
-         }
+   public HtmlAttributeDictionary
+   SetAttributes(object? attributes) {
 
-         return this;
-      }
+      if (attributes != null) {
 
-      public HtmlAttributeDictionary
-      SetAttributes(object? attributes) {
-
-         if (attributes != null) {
-
-            var dict = attributes as IDictionary<string, object>
+         var dict = attributes as IDictionary<string, object>
 #pragma warning disable CS8619
-               ?? HtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
+            ?? HtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
 #pragma warning restore CS8619
 
-            SetAttributes(dict);
-         }
-
-         return this;
+         SetAttributes(dict);
       }
 
-      public HtmlAttributeDictionary
-      SetAttributes(IDictionary<string, object>? attributes) {
+      return this;
+   }
 
-         // NOTE: For backcompat, the dictionary class must be a non-null string to be joined
-         // with the attribute (or library) class, otherwise it's ignored. If there's no attribute class,
-         // the dictionary class can be null, resulting in an empty attribute.
-         // 
-         // See also HtmlAttributeHelper.WriteClass
-         // 
-         // Previous logic:
-         // if (!String.IsNullOrEmpty(cssClass)) {
-         //    if (DictionaryExtensions.TryGetValue(this, "class", out string existingClass)) {
-         //       this["class"] = existingClass + " " + cssClass;
-         //    } else {
-         //       this["class"] = cssClass;
-         //    }
-         // }
+   public HtmlAttributeDictionary
+   SetAttributes(IDictionary<string, object>? attributes) {
 
-         if (attributes != null) {
+      // NOTE: For backcompat, the dictionary class must be a non-null string to be joined
+      // with the attribute (or library) class, otherwise it's ignored. If there's no attribute class,
+      // the dictionary class can be null, resulting in an empty attribute.
+      // 
+      // See also HtmlAttributeHelper.WriteClass
+      // 
+      // Previous logic:
+      // if (!String.IsNullOrEmpty(cssClass)) {
+      //    if (DictionaryExtensions.TryGetValue(this, "class", out string existingClass)) {
+      //       this["class"] = existingClass + " " + cssClass;
+      //    } else {
+      //       this["class"] = cssClass;
+      //    }
+      // }
 
-            foreach (var entry in attributes) {
+      if (attributes != null) {
 
-               if (entry.Key == "class"
-                  && ContainsKey("class")) {
+         foreach (var entry in attributes) {
 
-                  if (entry.Value is string s) {
-                     this["class"] = (string)this["class"] + " " + s;
-                  }
+            if (entry.Key == "class"
+               && ContainsKey("class")) {
 
-               } else {
-                  SetAttribute(entry.Key, entry.Value);
+               if (entry.Value is string s) {
+                  this["class"] = (string)this["class"] + " " + s;
                }
+
+            } else {
+               SetAttribute(entry.Key, entry.Value);
             }
          }
-
-         return this;
       }
 
-      public void
-      WriteTo(XcstWriter output) {
+      return this;
+   }
 
-         foreach (var item in this) {
-            HtmlAttributeHelper.WriteAttribute(item.Key, item.Value, output);
-         }
+   public void
+   WriteTo(XcstWriter output) {
+
+      foreach (var item in this) {
+         HtmlAttributeHelper.WriteAttribute(item.Key, item.Value, output);
       }
    }
 }

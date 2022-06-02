@@ -7,178 +7,177 @@ using System.Text;
 using System.Web.Mvc.Properties;
 using Microsoft.Extensions.Primitives;
 
-namespace System.Web.Mvc {
+namespace System.Web.Mvc;
 
-   using INameValueEnumerable = IEnumerable<KeyValuePair<string, StringValues>>;
+using INameValueEnumerable = IEnumerable<KeyValuePair<string, StringValues>>;
 
-   [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Target = "jQueryToMvcRequestNormalizationRequired", Justification = "jQuery is usually spelled like this. Hence suppressing this message.")]
-   public class NameValueCollectionValueProvider : IValueProvider, IEnumerableValueProvider {
+[SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Target = "jQueryToMvcRequestNormalizationRequired", Justification = "jQuery is usually spelled like this. Hence suppressing this message.")]
+public class NameValueCollectionValueProvider : IValueProvider, IEnumerableValueProvider {
 
-      PrefixContainer?
-      _prefixContainer;
+   PrefixContainer?
+   _prefixContainer;
 
-      INameValueEnumerable
-      _collection;
+   INameValueEnumerable
+   _collection;
 
-      CultureInfo
-      _culture;
+   CultureInfo
+   _culture;
 
-      bool
-      _jQueryToMvcRequestNormalizationRequired;
+   bool
+   _jQueryToMvcRequestNormalizationRequired;
 
-      Dictionary<string, ValueProviderResult>?
-      _values = null;
+   Dictionary<string, ValueProviderResult>?
+   _values = null;
 
-      private Dictionary<string, ValueProviderResult>
-      Values => _values ??= InitializeCollectionValues();
+   private Dictionary<string, ValueProviderResult>
+   Values => _values ??= InitializeCollectionValues();
 
-      private PrefixContainer
-      PrefixContainer =>
-         // Race condition on initialization has no side effects
-         _prefixContainer ??= new PrefixContainer(Values.Keys);
+   private PrefixContainer
+   PrefixContainer =>
+      // Race condition on initialization has no side effects
+      _prefixContainer ??= new PrefixContainer(Values.Keys);
 
-      public
-      NameValueCollectionValueProvider(INameValueEnumerable collection, CultureInfo culture)
-         : this(collection, culture, jQueryToMvcRequestNormalizationRequired: false) { }
+   public
+   NameValueCollectionValueProvider(INameValueEnumerable collection, CultureInfo culture)
+      : this(collection, culture, jQueryToMvcRequestNormalizationRequired: false) { }
 
-      /// <summary>
-      /// Initializes Name Value collection provider.
-      /// </summary>
-      /// <param name="collection">Key value collection from request.</param>
-      /// <param name="unvalidatedCollection">Unvalidated key value collection from the request.</param>
-      /// <param name="culture">Culture with which the values are to be used.</param>
-      /// <param name="jQueryToMvcRequestNormalizationRequired">jQuery POST when sending complex Javascript 
-      /// objects to server does not encode in the way understandable by MVC. This flag should be set
-      /// if the request should be normalized to MVC form - https://aspnetwebstack.codeplex.com/workitem/1564. </param>
-      [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "j", Justification = "jQuery is not accepted as a valid variable name in this class")]
-      public
-      NameValueCollectionValueProvider(
-            INameValueEnumerable collection,
-            CultureInfo culture,
-            bool jQueryToMvcRequestNormalizationRequired) {
+   /// <summary>
+   /// Initializes Name Value collection provider.
+   /// </summary>
+   /// <param name="collection">Key value collection from request.</param>
+   /// <param name="unvalidatedCollection">Unvalidated key value collection from the request.</param>
+   /// <param name="culture">Culture with which the values are to be used.</param>
+   /// <param name="jQueryToMvcRequestNormalizationRequired">jQuery POST when sending complex Javascript 
+   /// objects to server does not encode in the way understandable by MVC. This flag should be set
+   /// if the request should be normalized to MVC form - https://aspnetwebstack.codeplex.com/workitem/1564. </param>
+   [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "j", Justification = "jQuery is not accepted as a valid variable name in this class")]
+   public
+   NameValueCollectionValueProvider(
+         INameValueEnumerable collection,
+         CultureInfo culture,
+         bool jQueryToMvcRequestNormalizationRequired) {
 
-         if (collection is null) throw new ArgumentNullException(nameof(collection));
+      if (collection is null) throw new ArgumentNullException(nameof(collection));
 
-         _collection = collection;
-         _culture = culture;
-         _jQueryToMvcRequestNormalizationRequired = jQueryToMvcRequestNormalizationRequired;
-      }
+      _collection = collection;
+      _culture = culture;
+      _jQueryToMvcRequestNormalizationRequired = jQueryToMvcRequestNormalizationRequired;
+   }
 
-      public virtual bool
-      ContainsPrefix(string prefix) =>
-         PrefixContainer.ContainsPrefix(prefix);
+   public virtual bool
+   ContainsPrefix(string prefix) =>
+      PrefixContainer.ContainsPrefix(prefix);
 
-      public virtual ValueProviderResult?
-      GetValue(string key) {
+   public virtual ValueProviderResult?
+   GetValue(string key) {
 
-         if (key is null) throw new ArgumentNullException(nameof(key));
+      if (key is null) throw new ArgumentNullException(nameof(key));
 
-         Values.TryGetValue(key, out var valueProviderResult);
+      Values.TryGetValue(key, out var valueProviderResult);
 
-         return valueProviderResult;
-      }
+      return valueProviderResult;
+   }
 
-      public virtual IDictionary<string, string>
-      GetKeysFromPrefix(string prefix) =>
-         PrefixContainer.GetKeysFromPrefix(prefix);
+   public virtual IDictionary<string, string>
+   GetKeysFromPrefix(string prefix) =>
+      PrefixContainer.GetKeysFromPrefix(prefix);
 
-      Dictionary<string, ValueProviderResult>
-      InitializeCollectionValues() {
+   Dictionary<string, ValueProviderResult>
+   InitializeCollectionValues() {
 
-         var tempValues = new Dictionary<string, ValueProviderResult>(StringComparer.OrdinalIgnoreCase);
+      var tempValues = new Dictionary<string, ValueProviderResult>(StringComparer.OrdinalIgnoreCase);
 
-         foreach (var pair in _collection) {
+      foreach (var pair in _collection) {
 
-            var key = pair.Key;
+         var key = pair.Key;
 
-            if (key != null) {
+         if (key != null) {
 
-               string normalizedKey = key;
+            string normalizedKey = key;
 
-               if (_jQueryToMvcRequestNormalizationRequired) {
-                  normalizedKey = NormalizeJQueryToMvc(key);
-               }
-
-               var rawValue = (string[]?)pair.Value;
-               var attemptedValue = (string)pair.Value;
-
-               tempValues[normalizedKey] =
-                   new ValueProviderResult(rawValue, attemptedValue, _culture);
+            if (_jQueryToMvcRequestNormalizationRequired) {
+               normalizedKey = NormalizeJQueryToMvc(key);
             }
-         }
 
-         return tempValues;
+            var rawValue = (string[]?)pair.Value;
+            var attemptedValue = (string)pair.Value;
+
+            tempValues[normalizedKey] =
+                new ValueProviderResult(rawValue, attemptedValue, _culture);
+         }
       }
 
-      // This code is borrowed from WebAPI FormDataCollectionExtensions.cs 
-      // This is a helper method to use Model Binding over a JQuery syntax. 
-      // Normalize from JQuery to MVC keys. The model binding infrastructure uses MVC keys
-      // x[] --> x
-      // [] --> ""
-      // x[12] --> x[12]
-      // x[field]  --> x.field, where field is not a number
+      return tempValues;
+   }
 
-      static string
-      NormalizeJQueryToMvc(string key) {
+   // This code is borrowed from WebAPI FormDataCollectionExtensions.cs 
+   // This is a helper method to use Model Binding over a JQuery syntax. 
+   // Normalize from JQuery to MVC keys. The model binding infrastructure uses MVC keys
+   // x[] --> x
+   // [] --> ""
+   // x[12] --> x[12]
+   // x[field]  --> x.field, where field is not a number
 
-         if (key is null) {
-            return String.Empty;
-         }
+   static string
+   NormalizeJQueryToMvc(string key) {
 
-         StringBuilder? sb = null;
+      if (key is null) {
+         return String.Empty;
+      }
 
-         var i = 0;
+      StringBuilder? sb = null;
 
-         while (true) {
+      var i = 0;
 
-            var indexOpen = key.IndexOf('[', i);
+      while (true) {
 
-            if (indexOpen < 0) {
+         var indexOpen = key.IndexOf('[', i);
 
-               // Fast path, no normalization needed.
-               // This skips the string conversion and allocating the string builder.
+         if (indexOpen < 0) {
 
-               if (i == 0) {
-                  return key;
-               }
+            // Fast path, no normalization needed.
+            // This skips the string conversion and allocating the string builder.
 
-               sb ??= new StringBuilder();
-               sb.Append(key, i, key.Length - i);
-               break; // no more brackets
+            if (i == 0) {
+               return key;
             }
 
             sb ??= new StringBuilder();
-            sb.Append(key, i, indexOpen - i); // everything up to "["
+            sb.Append(key, i, key.Length - i);
+            break; // no more brackets
+         }
 
-            // Find closing bracket.
+         sb ??= new StringBuilder();
+         sb.Append(key, i, indexOpen - i); // everything up to "["
 
-            var indexClose = key.IndexOf(']', indexOpen);
+         // Find closing bracket.
 
-            if (indexClose == -1) {
-               throw new ArgumentException(MvcResources.JQuerySyntaxMissingClosingBracket, nameof(key));
-            }
+         var indexClose = key.IndexOf(']', indexOpen);
 
-            if (indexClose == indexOpen + 1) {
-               // Empty bracket. Signifies array. Just remove. 
+         if (indexClose == -1) {
+            throw new ArgumentException(MvcResources.JQuerySyntaxMissingClosingBracket, nameof(key));
+         }
+
+         if (indexClose == indexOpen + 1) {
+            // Empty bracket. Signifies array. Just remove. 
+         } else {
+            if (Char.IsDigit(key[indexOpen + 1])) {
+               // array index. Leave unchanged. 
+               sb.Append(key, indexOpen, indexClose - indexOpen + 1);
             } else {
-               if (Char.IsDigit(key[indexOpen + 1])) {
-                  // array index. Leave unchanged. 
-                  sb.Append(key, indexOpen, indexClose - indexOpen + 1);
-               } else {
-                  // Field name.  Convert to dot notation. 
-                  sb.Append('.');
-                  sb.Append(key, indexOpen + 1, indexClose - indexOpen - 1);
-               }
-            }
-
-            i = indexClose + 1;
-
-            if (i >= key.Length) {
-               break; // end of string
+               // Field name.  Convert to dot notation. 
+               sb.Append('.');
+               sb.Append(key, indexOpen + 1, indexClose - indexOpen - 1);
             }
          }
 
-         return sb.ToString();
+         i = indexClose + 1;
+
+         if (i >= key.Length) {
+            break; // end of string
+         }
       }
+
+      return sb.ToString();
    }
 }

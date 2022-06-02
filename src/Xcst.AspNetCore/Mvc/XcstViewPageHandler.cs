@@ -16,47 +16,46 @@ using System;
 using System.Web.Mvc;
 using Microsoft.AspNetCore.Http;
 
-namespace Xcst.Web.Mvc {
+namespace Xcst.Web.Mvc;
 
-   public class XcstViewPageHandler : XcstPageHandler {
+public class XcstViewPageHandler : XcstPageHandler {
 
-      readonly XcstViewPage
-      _page;
+   readonly XcstViewPage
+   _page;
 
-      private ViewContext
-      ViewContext => _page.ViewContext;
+   private ViewContext
+   ViewContext => _page.ViewContext;
 
-      public
-      XcstViewPageHandler(XcstViewPage page)
-         : base(page) {
+   public
+   XcstViewPageHandler(XcstViewPage page)
+      : base(page) {
 
-         _page = page;
-      }
+      _page = page;
+   }
 
-      protected override void
-      InitializePage(XcstPage page, HttpContext context) {
+   protected override void
+   InitializePage(XcstPage page, HttpContext context) {
 
-         base.InitializePage(page, context);
+      base.InitializePage(page, context);
 
-         _page.ViewContext = new ViewContext(context);
-      }
+      _page.ViewContext = new ViewContext(context);
+   }
 
-      protected override void
-      RenderPage(XcstPage page, HttpContext context) {
+   protected override void
+   RenderPage(XcstPage page, HttpContext context) {
 
-         // TempData is loaded lazily, see XcstViewPage
+      // TempData is loaded lazily, see XcstViewPage
 
-         try {
-            RenderViewPage((XcstViewPage)page, context);
-         } finally {
-            if (_page.HasTempData) {
-               _page.TempData.Save(this.ViewContext, this.ViewContext.TempDataProvider);
-            }
+      try {
+         RenderViewPage((XcstViewPage)page, context);
+      } finally {
+         if (_page.HasTempData) {
+            _page.TempData.Save(this.ViewContext, this.ViewContext.TempDataProvider);
          }
       }
-
-      protected virtual void
-      RenderViewPage(XcstViewPage page, HttpContext context) =>
-         base.RenderPage(page, context);
    }
+
+   protected virtual void
+   RenderViewPage(XcstViewPage page, HttpContext context) =>
+      base.RenderPage(page, context);
 }

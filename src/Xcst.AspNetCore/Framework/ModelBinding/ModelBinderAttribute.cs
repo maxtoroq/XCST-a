@@ -3,45 +3,44 @@
 using System.Globalization;
 using System.Web.Mvc.Properties;
 
-namespace System.Web.Mvc {
+namespace System.Web.Mvc;
 
-   [AttributeUsage(ValidTargets, AllowMultiple = false, Inherited = false)]
-   public sealed class ModelBinderAttribute : CustomModelBinderAttribute {
+[AttributeUsage(ValidTargets, AllowMultiple = false, Inherited = false)]
+public sealed class ModelBinderAttribute : CustomModelBinderAttribute {
 
-      public Type
-      BinderType { get; private set; }
+   public Type
+   BinderType { get; private set; }
 
-      public
-      ModelBinderAttribute(Type binderType) {
+   public
+   ModelBinderAttribute(Type binderType) {
 
-         if (binderType is null) throw new ArgumentNullException(nameof(binderType));
+      if (binderType is null) throw new ArgumentNullException(nameof(binderType));
 
-         if (!typeof(IModelBinder).IsAssignableFrom(binderType)) {
+      if (!typeof(IModelBinder).IsAssignableFrom(binderType)) {
 
-            var message = String.Format(CultureInfo.CurrentCulture,
-               MvcResources.ModelBinderAttribute_TypeNotIModelBinder, binderType.FullName);
+         var message = String.Format(CultureInfo.CurrentCulture,
+            MvcResources.ModelBinderAttribute_TypeNotIModelBinder, binderType.FullName);
 
-            throw new ArgumentException(message, nameof(binderType));
-         }
-
-         this.BinderType = binderType;
+         throw new ArgumentException(message, nameof(binderType));
       }
 
-      public override IModelBinder
-      GetBinder() {
+      this.BinderType = binderType;
+   }
 
-         try {
-            return (IModelBinder)Activator.CreateInstance(this.BinderType)!;
+   public override IModelBinder
+   GetBinder() {
 
-         } catch (Exception ex) {
+      try {
+         return (IModelBinder)Activator.CreateInstance(this.BinderType)!;
 
-            throw new InvalidOperationException(
-               String.Format(
-                  CultureInfo.CurrentCulture,
-                  MvcResources.ModelBinderAttribute_ErrorCreatingModelBinder,
-                  this.BinderType.FullName),
-               ex);
-         }
+      } catch (Exception ex) {
+
+         throw new InvalidOperationException(
+            String.Format(
+               CultureInfo.CurrentCulture,
+               MvcResources.ModelBinderAttribute_ErrorCreatingModelBinder,
+               this.BinderType.FullName),
+            ex);
       }
    }
 }

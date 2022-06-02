@@ -3,40 +3,39 @@ using Xcst;
 using Xcst.PackageModel;
 using Xcst.Web.Mvc;
 
-namespace aspnetcore {
+namespace aspnetcore;
 
-   public abstract class AppPage : XcstViewPage {
+public abstract class AppPage : XcstViewPage {
 
-      public override XcstViewPageHandler
-      CreateHttpHandler() => new PageInitHttpHandler(this);
+   public override XcstViewPageHandler
+   CreateHttpHandler() => new PageInitHttpHandler(this);
 
-      class PageInitHttpHandler : XcstViewPageHandler {
+   class PageInitHttpHandler : XcstViewPageHandler {
 
-         public
-         PageInitHttpHandler(XcstViewPage page)
-            : base(page) { }
+      public
+      PageInitHttpHandler(XcstViewPage page)
+         : base(page) { }
 
-         protected override void
-         RenderViewPage(XcstViewPage page, HttpContext context) {
+      protected override void
+      RenderViewPage(XcstViewPage page, HttpContext context) {
 
-            context.Response.ContentType = "text/html";
+         context.Response.ContentType = "text/html";
 
-            if (page is IPageInit pInit) {
+         if (page is IPageInit pInit) {
 
-               XcstEvaluator.Using(pInit)
-                  .CallFunction(p => p.Init())
-                  .Run();
+            XcstEvaluator.Using(pInit)
+               .CallFunction(p => p.Init())
+               .Run();
 
-            } else {
-               base.RenderViewPage(page, context);
-            }
+         } else {
+            base.RenderViewPage(page, context);
          }
       }
    }
+}
 
-   public interface IPageInit : IXcstPackage {
+public interface IPageInit : IXcstPackage {
 
-      void
-      Init();
-   }
+   void
+   Init();
 }

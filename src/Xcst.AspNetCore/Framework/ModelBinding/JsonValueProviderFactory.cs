@@ -10,140 +10,139 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Xcst.Web.Configuration;
 
-namespace System.Web.Mvc {
+namespace System.Web.Mvc;
 
-   public sealed class JsonValueProviderFactory : ValueProviderFactory {
+public sealed class JsonValueProviderFactory : ValueProviderFactory {
 
-      public static JsonSerializerSettings
-      SerializationSettings { get; } = new() {
-         // using same default as ASP.NET Core
-         MaxDepth = 32,
-         Converters = { new ExpandoObjectConverter() }
-      };
+   public static JsonSerializerSettings
+   SerializationSettings { get; } = new() {
+      // using same default as ASP.NET Core
+      MaxDepth = 32,
+      Converters = { new ExpandoObjectConverter() }
+   };
 
-      static void
-      AddToBackingStore(EntryLimitedDictionary backingStore, string prefix, object? value) {
+   static void
+   AddToBackingStore(EntryLimitedDictionary backingStore, string prefix, object? value) {
 
-         if (value is IDictionary<string, object> d) {
+      if (value is IDictionary<string, object> d) {
 
-            foreach (var entry in d) {
-               AddToBackingStore(backingStore, MakePropertyKey(prefix, entry.Key), entry.Value);
-            }
-
-            return;
+         foreach (var entry in d) {
+            AddToBackingStore(backingStore, MakePropertyKey(prefix, entry.Key), entry.Value);
          }
 
-         if (value is IList l) {
-
-            for (int i = 0; i < l.Count; i++) {
-               AddToBackingStore(backingStore, MakeArrayKey(prefix, i), l[i]);
-            }
-
-            return;
-         }
-
-         // primitive
-
-         backingStore.Add(prefix, value);
+         return;
       }
 
-      static object?
-      GetDeserializedObject(ControllerContext controllerContext) {
+      if (value is IList l) {
 
-         var request = controllerContext.HttpContext.Request;
-
-         if (!request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)) {
-
-            // not JSON request
-
-            return null;
+         for (int i = 0; i < l.Count; i++) {
+            AddToBackingStore(backingStore, MakeArrayKey(prefix, i), l[i]);
          }
 
-         var inputStream = request.Body;
-
-         var textReader = new StreamReader(inputStream);
-         var jsonReader = new JsonTextReader(textReader);
-
-         if (!jsonReader.Read()) {
-            return null;
-         }
-
-         var serializer = JsonSerializer.Create(SerializationSettings);
-
-         object jsonData;
-
-         if (jsonReader.TokenType == JsonToken.StartArray) {
-            jsonData = serializer.Deserialize<List<ExpandoObject>>(jsonReader);
-         } else {
-            jsonData = serializer.Deserialize<ExpandoObject>(jsonReader);
-         }
-
-         return jsonData;
+         return;
       }
 
-      public override IValueProvider?
-      GetValueProvider(ControllerContext controllerContext) {
+      // primitive
 
-         if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
+      backingStore.Add(prefix, value);
+   }
 
-         var jsonData = GetDeserializedObject(controllerContext);
+   static object?
+   GetDeserializedObject(ControllerContext controllerContext) {
 
-         if (jsonData is null) {
-            return null;
-         }
+      var request = controllerContext.HttpContext.Request;
 
-         var backingStore = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
-         var backingStoreWrapper = new EntryLimitedDictionary(backingStore);
-         AddToBackingStore(backingStoreWrapper, String.Empty, jsonData);
+      if (!request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)) {
 
-         return new DictionaryValueProvider<object?>(backingStore, CultureInfo.CurrentCulture);
+         // not JSON request
+
+         return null;
       }
 
-      static string
-      MakeArrayKey(string prefix, int index) =>
-         prefix + "[" + index.ToString(CultureInfo.InvariantCulture) + "]";
+      var inputStream = request.Body;
 
-      static string
-      MakePropertyKey(string prefix, string propertyName) =>
-         (String.IsNullOrEmpty(prefix)) ? propertyName : prefix + "." + propertyName;
+      var textReader = new StreamReader(inputStream);
+      var jsonReader = new JsonTextReader(textReader);
 
-      class EntryLimitedDictionary {
+      if (!jsonReader.Read()) {
+         return null;
+      }
 
-         static int
-         _maximumDepth = GetMaximumDepth();
+      var serializer = JsonSerializer.Create(SerializationSettings);
 
-         readonly IDictionary<string, object?>
-         _innerDictionary;
+      object jsonData;
 
-         int
-         _itemCount = 0;
+      if (jsonReader.TokenType == JsonToken.StartArray) {
+         jsonData = serializer.Deserialize<List<ExpandoObject>>(jsonReader);
+      } else {
+         jsonData = serializer.Deserialize<ExpandoObject>(jsonReader);
+      }
 
-         public
-         EntryLimitedDictionary(IDictionary<string, object?> innerDictionary) {
-            _innerDictionary = innerDictionary;
+      return jsonData;
+   }
+
+   public override IValueProvider?
+   GetValueProvider(ControllerContext controllerContext) {
+
+      if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
+
+      var jsonData = GetDeserializedObject(controllerContext);
+
+      if (jsonData is null) {
+         return null;
+      }
+
+      var backingStore = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+      var backingStoreWrapper = new EntryLimitedDictionary(backingStore);
+      AddToBackingStore(backingStoreWrapper, String.Empty, jsonData);
+
+      return new DictionaryValueProvider<object?>(backingStore, CultureInfo.CurrentCulture);
+   }
+
+   static string
+   MakeArrayKey(string prefix, int index) =>
+      prefix + "[" + index.ToString(CultureInfo.InvariantCulture) + "]";
+
+   static string
+   MakePropertyKey(string prefix, string propertyName) =>
+      (String.IsNullOrEmpty(prefix)) ? propertyName : prefix + "." + propertyName;
+
+   class EntryLimitedDictionary {
+
+      static int
+      _maximumDepth = GetMaximumDepth();
+
+      readonly IDictionary<string, object?>
+      _innerDictionary;
+
+      int
+      _itemCount = 0;
+
+      public
+      EntryLimitedDictionary(IDictionary<string, object?> innerDictionary) {
+         _innerDictionary = innerDictionary;
+      }
+
+      public void
+      Add(string key, object? value) {
+
+         if (++_itemCount > _maximumDepth) {
+            throw new InvalidOperationException(MvcResources.JsonValueProviderFactory_RequestTooLarge);
          }
 
-         public void
-         Add(string key, object? value) {
+         _innerDictionary.Add(key, value);
+      }
 
-            if (++_itemCount > _maximumDepth) {
-               throw new InvalidOperationException(MvcResources.JsonValueProviderFactory_RequestTooLarge);
-            }
+      static int
+      GetMaximumDepth() {
 
-            _innerDictionary.Add(key, value);
+         var maxMembers = XcstWebConfiguration.Instance.ModelBinding.MaxJsonDeserializerMembers;
+
+         if (maxMembers > -1) {
+            return maxMembers;
          }
 
-         static int
-         GetMaximumDepth() {
-
-            var maxMembers = XcstWebConfiguration.Instance.ModelBinding.MaxJsonDeserializerMembers;
-
-            if (maxMembers > -1) {
-               return maxMembers;
-            }
-
-            return 1000; // Fallback default
-         }
+         return 1000; // Fallback default
       }
    }
 }

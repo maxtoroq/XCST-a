@@ -23,150 +23,149 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Runtime {
+namespace Xcst.Web.Runtime;
 
-   using HtmlAttribs = IDictionary<string, object>;
+using HtmlAttribs = IDictionary<string, object>;
 
-   /// <exclude/>
-   public static class TextAreaInstructions {
+/// <exclude/>
+public static class TextAreaInstructions {
 
-      // These values are similar to the defaults used by WebForms
-      // when using <asp:TextBox TextMode="MultiLine"> without specifying
-      // the Rows and Columns attributes.
+   // These values are similar to the defaults used by WebForms
+   // when using <asp:TextBox TextMode="MultiLine"> without specifying
+   // the Rows and Columns attributes.
 
-      const int
-      TextAreaRows = 2;
+   const int
+   TextAreaRows = 2;
 
-      const int
-      TextAreaColumns = 20;
+   const int
+   TextAreaColumns = 20;
 
-      static Dictionary<string, object>
-      implicitRowsAndColumns = new() {
-         { "rows", TextAreaRows.ToString(CultureInfo.InvariantCulture) },
-         { "cols", TextAreaColumns.ToString(CultureInfo.InvariantCulture) },
-      };
+   static Dictionary<string, object>
+   implicitRowsAndColumns = new() {
+      { "rows", TextAreaRows.ToString(CultureInfo.InvariantCulture) },
+      { "cols", TextAreaColumns.ToString(CultureInfo.InvariantCulture) },
+   };
 
-      static Dictionary<string, object>
-      GetRowsAndColumnsDictionary(int rows, int columns) {
+   static Dictionary<string, object>
+   GetRowsAndColumnsDictionary(int rows, int columns) {
 
-         if (rows < 0) throw new ArgumentOutOfRangeException(nameof(rows), "The value must be greater than or equal to zero.");
-         if (columns < 0) throw new ArgumentOutOfRangeException(nameof(columns), "The value must be greater than or equal to zero.");
+      if (rows < 0) throw new ArgumentOutOfRangeException(nameof(rows), "The value must be greater than or equal to zero.");
+      if (columns < 0) throw new ArgumentOutOfRangeException(nameof(columns), "The value must be greater than or equal to zero.");
 
-         var result = new Dictionary<string, object>();
+      var result = new Dictionary<string, object>();
 
-         if (rows > 0) {
-            result.Add("rows", rows.ToString(CultureInfo.InvariantCulture));
-         }
-
-         if (columns > 0) {
-            result.Add("cols", columns.ToString(CultureInfo.InvariantCulture));
-         }
-
-         return result;
+      if (rows > 0) {
+         result.Add("rows", rows.ToString(CultureInfo.InvariantCulture));
       }
 
-      public static void
-      TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null, HtmlAttribs? htmlAttributes = null) {
-
-         var metadata = ModelMetadata.FromStringExpression(name, htmlHelper.ViewData);
-
-         if (value != null) {
-            metadata.Model = value;
-         }
-
-         TextAreaHelper(htmlHelper, output, metadata, name, implicitRowsAndColumns, htmlAttributes);
+      if (columns > 0) {
+         result.Add("cols", columns.ToString(CultureInfo.InvariantCulture));
       }
 
-      public static void
-      TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value, int rows, int columns, HtmlAttribs? htmlAttributes = null) {
+      return result;
+   }
 
-         var metadata = ModelMetadata.FromStringExpression(name, htmlHelper.ViewData);
+   public static void
+   TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null, HtmlAttribs? htmlAttributes = null) {
 
-         if (value != null) {
-            metadata.Model = value;
-         }
+      var metadata = ModelMetadata.FromStringExpression(name, htmlHelper.ViewData);
 
-         var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
-
-         TextAreaHelper(htmlHelper, output, metadata, name, rowsAndColumns, htmlAttributes);
+      if (value != null) {
+         metadata.Model = value;
       }
 
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void
-      TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, HtmlAttribs? htmlAttributes = null) {
+      TextAreaHelper(htmlHelper, output, metadata, name, implicitRowsAndColumns, htmlAttributes);
+   }
 
-         if (expression is null) throw new ArgumentNullException(nameof(expression));
+   public static void
+   TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value, int rows, int columns, HtmlAttribs? htmlAttributes = null) {
 
-         var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-         var expressionString = ExpressionHelper.GetExpressionText(expression);
+      var metadata = ModelMetadata.FromStringExpression(name, htmlHelper.ViewData);
 
-         TextAreaHelper(htmlHelper, output, metadata, expressionString, implicitRowsAndColumns, htmlAttributes);
+      if (value != null) {
+         metadata.Model = value;
       }
 
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void
-      TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, int rows, int columns, HtmlAttribs? htmlAttributes = null) {
+      var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
 
-         if (expression is null) throw new ArgumentNullException(nameof(expression));
+      TextAreaHelper(htmlHelper, output, metadata, name, rowsAndColumns, htmlAttributes);
+   }
 
-         var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-         var expressionString = ExpressionHelper.GetExpressionText(expression);
-         var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
+   [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
+   public static void
+   TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, HtmlAttribs? htmlAttributes = null) {
 
-         TextAreaHelper(htmlHelper, output, metadata, expressionString, rowsAndColumns, htmlAttributes);
+      if (expression is null) throw new ArgumentNullException(nameof(expression));
+
+      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
+
+      TextAreaHelper(htmlHelper, output, metadata, expressionString, implicitRowsAndColumns, htmlAttributes);
+   }
+
+   [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
+   public static void
+   TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, int rows, int columns, HtmlAttribs? htmlAttributes = null) {
+
+      if (expression is null) throw new ArgumentNullException(nameof(expression));
+
+      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
+      var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
+
+      TextAreaHelper(htmlHelper, output, metadata, expressionString, rowsAndColumns, htmlAttributes);
+   }
+
+   [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "If this fails, it is because the string-based version had an empty 'name' parameter")]
+   internal static void
+   TextAreaHelper(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata metadata, string name, IDictionary<string, object> rowsAndColumns,
+         HtmlAttribs? htmlAttributes, string? innerHtmlPrefix = null) {
+
+      var fullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+
+      if (String.IsNullOrEmpty(fullName)) {
+         throw new ArgumentNullException(nameof(name));
       }
 
-      [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "If this fails, it is because the string-based version had an empty 'name' parameter")]
-      internal static void
-      TextAreaHelper(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata metadata, string name, IDictionary<string, object> rowsAndColumns,
-            HtmlAttribs? htmlAttributes, string? innerHtmlPrefix = null) {
+      output.WriteStartElement("textarea");
+      HtmlAttributeHelper.WriteId(fullName, output);
+      output.WriteAttributeString("name", fullName);
+      HtmlAttributeHelper.WriteAttributes(rowsAndColumns, output);
 
-         var fullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+      var explicitRowsAndCols = rowsAndColumns != implicitRowsAndColumns;
 
-         if (String.IsNullOrEmpty(fullName)) {
-            throw new ArgumentNullException(nameof(name));
-         }
+      // If there are any errors for a named field, we add the css attribute.
 
-         output.WriteStartElement("textarea");
-         HtmlAttributeHelper.WriteId(fullName, output);
-         output.WriteAttributeString("name", fullName);
-         HtmlAttributeHelper.WriteAttributes(rowsAndColumns, output);
+      var cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out var modelState)
+         && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
-         var explicitRowsAndCols = rowsAndColumns != implicitRowsAndColumns;
+      HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
+      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), output);
 
-         // If there are any errors for a named field, we add the css attribute.
+      // name cannnot be overridden, and class was already written
+      // explicit rows and cols cannot be overridden
 
-         var cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out var modelState)
-            && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
+      HtmlAttributeHelper.WriteAttributes(
+         htmlAttributes,
+         output,
+         excludeFn: n => n == "name" || n == "class" || (explicitRowsAndCols && (n == "rows" || n == "cols")));
 
-         HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
-         HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), output);
+      string? value;
 
-         // name cannnot be overridden, and class was already written
-         // explicit rows and cols cannot be overridden
+      if (modelState?.Value != null) {
+         value = modelState.Value.AttemptedValue;
 
-         HtmlAttributeHelper.WriteAttributes(
-            htmlAttributes,
-            output,
-            excludeFn: n => n == "name" || n == "class" || (explicitRowsAndCols && (n == "rows" || n == "cols")));
+      } else if (metadata.Model != null) {
+         value = Convert.ToString(metadata.Model, CultureInfo.CurrentCulture);
 
-         string? value;
-
-         if (modelState?.Value != null) {
-            value = modelState.Value.AttemptedValue;
-
-         } else if (metadata.Model != null) {
-            value = Convert.ToString(metadata.Model, CultureInfo.CurrentCulture);
-
-         } else {
-            value = String.Empty;
-         }
-
-         // The first newline is always trimmed when a TextArea is rendered, so we add an extra one
-         // in case the value being rendered is something like "\r\nHello".
-
-         output.WriteString((innerHtmlPrefix ?? Environment.NewLine) + value);
-         output.WriteEndElement();
+      } else {
+         value = String.Empty;
       }
+
+      // The first newline is always trimmed when a TextArea is rendered, so we add an extra one
+      // in case the value being rendered is something like "\r\nHello".
+
+      output.WriteString((innerHtmlPrefix ?? Environment.NewLine) + value);
+      output.WriteEndElement();
    }
 }

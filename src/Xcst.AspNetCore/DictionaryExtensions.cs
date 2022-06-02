@@ -21,57 +21,56 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Xcst.Web {
+namespace Xcst.Web;
+
+/// <summary>
+/// Extension methods for <see cref="IDictionary{TKey,TValue}"/>.
+/// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
+static class DictionaryExtensions {
 
    /// <summary>
-   /// Extension methods for <see cref="IDictionary{TKey,TValue}"/>.
+   /// Gets the value of <typeparamref name="T"/> associated with the specified key or <c>default</c> value if
+   /// either the key is not present or the value is not of type <typeparamref name="T"/>.
    /// </summary>
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   static class DictionaryExtensions {
+   /// <typeparam name="T">The type of the value associated with the specified key.</typeparam>
+   /// <param name="collection">The <see cref="IDictionary{TKey,TValue}"/> instance where <c>TValue</c> is <c>object</c>.</param>
+   /// <param name="key">The key whose value to get.</param>
+   /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter.</param>
+   /// <returns><c>true</c> if key was found, value is non-null, and value is of type <typeparamref name="T"/>; otherwise false.</returns>
+   public static bool
+   TryGetValue<T>(this IDictionary<string, object?> collection, string key, [MaybeNull] out T value) {
 
-      /// <summary>
-      /// Gets the value of <typeparamref name="T"/> associated with the specified key or <c>default</c> value if
-      /// either the key is not present or the value is not of type <typeparamref name="T"/>.
-      /// </summary>
-      /// <typeparam name="T">The type of the value associated with the specified key.</typeparam>
-      /// <param name="collection">The <see cref="IDictionary{TKey,TValue}"/> instance where <c>TValue</c> is <c>object</c>.</param>
-      /// <param name="key">The key whose value to get.</param>
-      /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter.</param>
-      /// <returns><c>true</c> if key was found, value is non-null, and value is of type <typeparamref name="T"/>; otherwise false.</returns>
-      public static bool
-      TryGetValue<T>(this IDictionary<string, object?> collection, string key, [MaybeNull] out T value) {
+      Debug.Assert(collection != null);
 
-         Debug.Assert(collection != null);
-
-         if (collection.TryGetValue(key, out var valueObj)) {
-            if (valueObj is T valueT) {
-               value = valueT;
-               return true;
-            }
+      if (collection.TryGetValue(key, out var valueObj)) {
+         if (valueObj is T valueT) {
+            value = valueT;
+            return true;
          }
-
-         value = default;
-         return false;
       }
 
-      public static TValue
-      GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue @default) {
+      value = default;
+      return false;
+   }
 
-         Debug.Assert(dict != null);
+   public static TValue
+   GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue @default) {
 
-         if (dict.TryGetValue(key, out var value)) {
-            return value;
-         }
+      Debug.Assert(dict != null);
 
-         return @default;
+      if (dict.TryGetValue(key, out var value)) {
+         return value;
       }
 
-      public static Dictionary<TKey, TValue>
-      Clone<TKey, TValue>(this IDictionary<TKey, TValue> dict) where TKey : notnull {
+      return @default;
+   }
 
-         Debug.Assert(dict != null);
+   public static Dictionary<TKey, TValue>
+   Clone<TKey, TValue>(this IDictionary<TKey, TValue> dict) where TKey : notnull {
 
-         return new Dictionary<TKey, TValue>(dict, (dict as Dictionary<TKey, TValue>)?.Comparer);
-      }
+      Debug.Assert(dict != null);
+
+      return new Dictionary<TKey, TValue>(dict, (dict as Dictionary<TKey, TValue>)?.Comparer);
    }
 }

@@ -15,39 +15,38 @@
 using System;
 using Microsoft.AspNetCore.Http;
 
-namespace Xcst.Web {
+namespace Xcst.Web;
 
-   public class XcstPageHandler {
+public class XcstPageHandler {
 
-      readonly XcstPage
-      _page;
+   readonly XcstPage
+   _page;
 
-      public
-      XcstPageHandler(XcstPage page) {
+   public
+   XcstPageHandler(XcstPage page) {
 
-         if (page is null) throw new ArgumentNullException(nameof(page));
+      if (page is null) throw new ArgumentNullException(nameof(page));
 
-         _page = page;
-      }
+      _page = page;
+   }
 
-      public virtual void
-      ProcessRequest(HttpContext context) {
+   public virtual void
+   ProcessRequest(HttpContext context) {
 
-         InitializePage(_page, context);
-         RenderPage(_page, context);
-      }
+      InitializePage(_page, context);
+      RenderPage(_page, context);
+   }
 
-      protected virtual void
-      InitializePage(XcstPage page, HttpContext context) =>
-         page.Context = context;
+   protected virtual void
+   InitializePage(XcstPage page, HttpContext context) =>
+      page.Context = context;
 
-      protected virtual void
-      RenderPage(XcstPage page, HttpContext context) {
+   protected virtual void
+   RenderPage(XcstPage page, HttpContext context) {
 
-         XcstEvaluator.Using((object)page)
-            .CallInitialTemplate()
-            .OutputTo(context.Response.BodyWriter.AsStream())
-            .Run();
-      }
+      XcstEvaluator.Using((object)page)
+         .CallInitialTemplate()
+         .OutputTo(context.Response.BodyWriter.AsStream())
+         .Run();
    }
 }

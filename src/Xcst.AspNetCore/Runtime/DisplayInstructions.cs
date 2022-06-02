@@ -25,104 +25,103 @@ using System.Web.Mvc;
 using Xcst.PackageModel;
 using Xcst.Runtime;
 
-namespace Xcst.Web.Runtime {
+namespace Xcst.Web.Runtime;
 
-   /// <exclude/>
-   public static class DisplayInstructions {
+/// <exclude/>
+public static class DisplayInstructions {
 
-      public static void
-      Display(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression,
-            string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
-         TemplateHelpers.Template(
-            html,
-            package,
-            output,
-            expression: expression,
-            htmlFieldName: htmlFieldName,
-            templateName: templateName,
-            membersNames,
-            DataBoundControlMode.ReadOnly,
-            additionalViewData
-         );
+   public static void
+   Display(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression,
+         string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
+      TemplateHelpers.Template(
+         html,
+         package,
+         output,
+         expression: expression,
+         htmlFieldName: htmlFieldName,
+         templateName: templateName,
+         membersNames,
+         DataBoundControlMode.ReadOnly,
+         additionalViewData
+      );
 
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void
-      DisplayFor<TModel, TValue>(HtmlHelper<TModel> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TModel, TValue>> expression,
-            string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
-         TemplateHelpers.TemplateFor(
-            html,
-            package,
-            output,
-            expression: expression,
-            htmlFieldName: htmlFieldName,
-            templateName: templateName,
-            membersNames,
-            DataBoundControlMode.ReadOnly,
-            additionalViewData
-         );
+   [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
+   public static void
+   DisplayFor<TModel, TValue>(HtmlHelper<TModel> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TModel, TValue>> expression,
+         string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
+      TemplateHelpers.TemplateFor(
+         html,
+         package,
+         output,
+         expression: expression,
+         htmlFieldName: htmlFieldName,
+         templateName: templateName,
+         membersNames,
+         DataBoundControlMode.ReadOnly,
+         additionalViewData
+      );
 
-      public static void
-      DisplayForModel(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output,
-            string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
-         TemplateHelpers.TemplateHelper(
-            html,
-            package,
-            output,
-            html.ViewData.ModelMetadata,
-            htmlFieldName: htmlFieldName,
-            templateName: templateName,
-            membersNames,
-            DataBoundControlMode.ReadOnly,
-            additionalViewData
-         );
+   public static void
+   DisplayForModel(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output,
+         string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
+      TemplateHelpers.TemplateHelper(
+         html,
+         package,
+         output,
+         html.ViewData.ModelMetadata,
+         htmlFieldName: htmlFieldName,
+         templateName: templateName,
+         membersNames,
+         DataBoundControlMode.ReadOnly,
+         additionalViewData
+      );
 
 
-      public static IEnumerable<ModelMetadata>
-      DisplayProperties(HtmlHelper html) {
+   public static IEnumerable<ModelMetadata>
+   DisplayProperties(HtmlHelper html) {
 
-         if (html is null) throw new ArgumentNullException(nameof(html));
+      if (html is null) throw new ArgumentNullException(nameof(html));
 
-         var templateInfo = html.ViewData.TemplateInfo;
+      var templateInfo = html.ViewData.TemplateInfo;
 
-         var filteredProperties = html.ViewData.ModelMetadata.Properties
-            .Where(p => ShowForDisplay(html, p));
+      var filteredProperties = html.ViewData.ModelMetadata.Properties
+         .Where(p => ShowForDisplay(html, p));
 
-         var orderedProperties = (templateInfo.MembersNames.Count > 0) ?
-            filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.PropertyName))
-            : filteredProperties;
+      var orderedProperties = (templateInfo.MembersNames.Count > 0) ?
+         filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.PropertyName))
+         : filteredProperties;
 
-         return orderedProperties;
-      }
-
-      static bool
-      ShowForDisplay(HtmlHelper html, ModelMetadata propertyMetadata) {
-
-         if (html is null) throw new ArgumentNullException(nameof(html));
-         if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
-
-         var templateInfo = html.ViewData.TemplateInfo;
-
-         if (templateInfo.Visited(propertyMetadata)) {
-            return false;
-         }
-
-         if (templateInfo.MembersNames.Count > 0) {
-            return templateInfo.MembersNames.Contains(propertyMetadata.PropertyName);
-         }
-
-         if (!propertyMetadata.ShowForDisplay) {
-            return false;
-         }
-
-         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForDisplay), out bool show)) {
-            return show;
-         }
-
-         return !propertyMetadata.IsComplexType;
-      }
-
-      public static XcstDelegate<object>?
-      MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) =>
-         EditorInstructions.MemberTemplate(html, propertyMetadata);
+      return orderedProperties;
    }
+
+   static bool
+   ShowForDisplay(HtmlHelper html, ModelMetadata propertyMetadata) {
+
+      if (html is null) throw new ArgumentNullException(nameof(html));
+      if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
+
+      var templateInfo = html.ViewData.TemplateInfo;
+
+      if (templateInfo.Visited(propertyMetadata)) {
+         return false;
+      }
+
+      if (templateInfo.MembersNames.Count > 0) {
+         return templateInfo.MembersNames.Contains(propertyMetadata.PropertyName);
+      }
+
+      if (!propertyMetadata.ShowForDisplay) {
+         return false;
+      }
+
+      if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForDisplay), out bool show)) {
+         return show;
+      }
+
+      return !propertyMetadata.IsComplexType;
+   }
+
+   public static XcstDelegate<object>?
+   MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) =>
+      EditorInstructions.MemberTemplate(html, propertyMetadata);
 }

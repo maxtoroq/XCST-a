@@ -7,65 +7,64 @@ using Microsoft.AspNetCore.Antiforgery;
 using Moq;
 using TestAssert = NUnit.Framework.Assert;
 
-namespace Xcst.Web.Tests {
+namespace Xcst.Web.Tests;
 
-   static partial class TestsHelper {
+static partial class TestsHelper {
 
-      static XcstViewPage
-      CreatePackage(Type packageType) {
+   static XcstViewPage
+   CreatePackage(Type packageType) {
 
-         var package = (XcstViewPage)Activator.CreateInstance(packageType)!;
+      var package = (XcstViewPage)Activator.CreateInstance(packageType)!;
 
-         var httpContextMock = new Mock<HttpContext>();
+      var httpContextMock = new Mock<HttpContext>();
 
-         httpContextMock.Setup(c => c.Items)
-            .Returns(() => new Dictionary<object, object?>());
+      httpContextMock.Setup(c => c.Items)
+         .Returns(() => new Dictionary<object, object?>());
 
-         var antiforgeryMock = new Mock<IAntiforgery>();
-         antiforgeryMock.Setup(p => p.GetAndStoreTokens(It.IsAny<HttpContext>()))
-            .Returns(new AntiforgeryTokenSet(null, null, "__RequestVerificationToken", null));
+      var antiforgeryMock = new Mock<IAntiforgery>();
+      antiforgeryMock.Setup(p => p.GetAndStoreTokens(It.IsAny<HttpContext>()))
+         .Returns(new AntiforgeryTokenSet(null, null, "__RequestVerificationToken", null));
 
-         var serviceProviderMock = new Mock<IServiceProvider>();
-         serviceProviderMock.Setup(p => p.GetService(It.Is<Type>(t => t == typeof(IAntiforgery))))
-            .Returns(antiforgeryMock.Object);
+      var serviceProviderMock = new Mock<IServiceProvider>();
+      serviceProviderMock.Setup(p => p.GetService(It.Is<Type>(t => t == typeof(IAntiforgery))))
+         .Returns(antiforgeryMock.Object);
 
-         httpContextMock.Setup(c => c.RequestServices)
-            .Returns(serviceProviderMock.Object);
+      httpContextMock.Setup(c => c.RequestServices)
+         .Returns(serviceProviderMock.Object);
 
-         package.ViewContext = new ViewContext(httpContextMock.Object);
+      package.ViewContext = new ViewContext(httpContextMock.Object);
 
-         return package;
-      }
+      return package;
    }
-
-   public abstract class TestBase : XcstViewPage {
-
-      protected static Type
-      CompileType<T>(T _) => typeof(T);
-
-      protected static class Assert {
-
-         public static void
-         IsTrue(bool condition) =>
-            TestAssert.IsTrue(condition);
-
-         public static void
-         IsFalse(bool condition) =>
-            TestAssert.IsFalse(condition);
-
-         public static void
-         AreEqual<T>(T expected, T actual) =>
-            TestAssert.AreEqual(expected, actual);
-
-         public static void
-         IsNull(object value) =>
-            TestAssert.IsNull(value);
-
-         public static void
-         IsNotNull(object value) =>
-            TestAssert.IsNotNull(value);
-      }
-   }
-
-   public abstract class TestBase<TModel> : XcstViewPage<TModel> { }
 }
+
+public abstract class TestBase : XcstViewPage {
+
+   protected static Type
+   CompileType<T>(T _) => typeof(T);
+
+   protected static class Assert {
+
+      public static void
+      IsTrue(bool condition) =>
+         TestAssert.IsTrue(condition);
+
+      public static void
+      IsFalse(bool condition) =>
+         TestAssert.IsFalse(condition);
+
+      public static void
+      AreEqual<T>(T expected, T actual) =>
+         TestAssert.AreEqual(expected, actual);
+
+      public static void
+      IsNull(object value) =>
+         TestAssert.IsNull(value);
+
+      public static void
+      IsNotNull(object value) =>
+         TestAssert.IsNotNull(value);
+   }
+}
+
+public abstract class TestBase<TModel> : XcstViewPage<TModel> { }

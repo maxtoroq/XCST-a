@@ -3,290 +3,289 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace System.Web.Mvc.ExpressionUtil {
+namespace System.Web.Mvc.ExpressionUtil;
 
-   // This is a visitor which produces a fingerprint of an expression. It doesn't
-   // rewrite the expression in a form which can be compiled and cached.
+// This is a visitor which produces a fingerprint of an expression. It doesn't
+// rewrite the expression in a form which can be compiled and cached.
 
-   sealed class FingerprintingExpressionVisitor : ExpressionVisitor {
+sealed class FingerprintingExpressionVisitor : ExpressionVisitor {
 
-      readonly List<object>
-      _seenConstants = new();
+   readonly List<object>
+   _seenConstants = new();
 
-      readonly List<ParameterExpression>
-      _seenParameters = new();
+   readonly List<ParameterExpression>
+   _seenParameters = new();
 
-      readonly ExpressionFingerprintChain
-      _currentChain = new();
+   readonly ExpressionFingerprintChain
+   _currentChain = new();
 
-      bool
-      _gaveUp;
+   bool
+   _gaveUp;
 
-      private
-      FingerprintingExpressionVisitor() { }
+   private
+   FingerprintingExpressionVisitor() { }
 
-      private T
-      GiveUp<T>(T node) {
+   private T
+   GiveUp<T>(T node) {
 
-         // We don't understand this node, so just quit.
+      // We don't understand this node, so just quit.
 
-         _gaveUp = true;
+      _gaveUp = true;
 
+      return node;
+   }
+
+   // Returns the fingerprint chain + captured constants list for this expression, or null
+   // if the expression couldn't be fingerprinted.
+
+   public static ExpressionFingerprintChain?
+   GetFingerprintChain(Expression expr, out List<object>? capturedConstants) {
+
+      var visitor = new FingerprintingExpressionVisitor();
+      visitor.Visit(expr);
+
+      if (visitor._gaveUp) {
+         capturedConstants = null;
+         return null;
+      } else {
+         capturedConstants = visitor._seenConstants;
+         return visitor._currentChain;
+      }
+   }
+
+   public override Expression?
+   Visit(Expression? node) {
+
+      if (node is null) {
+         _currentChain.Elements.Add(null);
+         return null;
+      } else {
+         return base.Visit(node);
+      }
+   }
+
+   protected override Expression
+   VisitBinary(BinaryExpression node) {
+
+      if (_gaveUp) {
          return node;
       }
 
-      // Returns the fingerprint chain + captured constants list for this expression, or null
-      // if the expression couldn't be fingerprinted.
+      _currentChain.Elements.Add(new BinaryExpressionFingerprint(node.NodeType, node.Type, node.Method));
+      return base.VisitBinary(node);
+   }
 
-      public static ExpressionFingerprintChain?
-      GetFingerprintChain(Expression expr, out List<object>? capturedConstants) {
+   protected override Expression
+   VisitBlock(BlockExpression node) =>
+      GiveUp(node);
 
-         var visitor = new FingerprintingExpressionVisitor();
-         visitor.Visit(expr);
+   protected override CatchBlock
+   VisitCatchBlock(CatchBlock node) =>
+      GiveUp(node);
 
-         if (visitor._gaveUp) {
-            capturedConstants = null;
-            return null;
-         } else {
-            capturedConstants = visitor._seenConstants;
-            return visitor._currentChain;
-         }
+   protected override Expression
+   VisitConditional(ConditionalExpression node) {
+
+      if (_gaveUp) {
+         return node;
       }
 
-      public override Expression?
-      Visit(Expression? node) {
+      _currentChain.Elements.Add(new ConditionalExpressionFingerprint(node.NodeType, node.Type));
+      return base.VisitConditional(node);
+   }
 
-         if (node is null) {
-            _currentChain.Elements.Add(null);
-            return null;
-         } else {
-            return base.Visit(node);
-         }
+   protected override Expression
+   VisitConstant(ConstantExpression node) {
+
+      if (_gaveUp) {
+         return node;
       }
 
-      protected override Expression
-      VisitBinary(BinaryExpression node) {
+      _seenConstants.Add(node.Value);
+      _currentChain.Elements.Add(new ConstantExpressionFingerprint(node.NodeType, node.Type));
+      return base.VisitConstant(node);
+   }
 
-         if (_gaveUp) {
-            return node;
-         }
+   protected override Expression
+   VisitDebugInfo(DebugInfoExpression node) =>
+      GiveUp(node);
 
-         _currentChain.Elements.Add(new BinaryExpressionFingerprint(node.NodeType, node.Type, node.Method));
-         return base.VisitBinary(node);
+   protected override Expression
+   VisitDefault(DefaultExpression node) {
+
+      if (_gaveUp) {
+         return node;
       }
 
-      protected override Expression
-      VisitBlock(BlockExpression node) =>
-         GiveUp(node);
+      _currentChain.Elements.Add(new DefaultExpressionFingerprint(node.NodeType, node.Type));
+      return base.VisitDefault(node);
+   }
 
-      protected override CatchBlock
-      VisitCatchBlock(CatchBlock node) =>
-         GiveUp(node);
+   protected override Expression
+   VisitDynamic(DynamicExpression node) =>
+      GiveUp(node);
 
-      protected override Expression
-      VisitConditional(ConditionalExpression node) {
+   protected override ElementInit
+   VisitElementInit(ElementInit node) =>
+      GiveUp(node);
 
-         if (_gaveUp) {
-            return node;
-         }
+   protected override Expression
+   VisitExtension(Expression node) =>
+      GiveUp(node);
 
-         _currentChain.Elements.Add(new ConditionalExpressionFingerprint(node.NodeType, node.Type));
-         return base.VisitConditional(node);
+   protected override Expression
+   VisitGoto(GotoExpression node) =>
+      GiveUp(node);
+
+   protected override Expression
+   VisitIndex(IndexExpression node) {
+
+      if (_gaveUp) {
+         return node;
       }
 
-      protected override Expression
-      VisitConstant(ConstantExpression node) {
+      _currentChain.Elements.Add(new IndexExpressionFingerprint(node.NodeType, node.Type, node.Indexer));
+      return base.VisitIndex(node);
+   }
 
-         if (_gaveUp) {
-            return node;
-         }
+   protected override Expression
+   VisitInvocation(InvocationExpression node) =>
+      GiveUp(node);
 
-         _seenConstants.Add(node.Value);
-         _currentChain.Elements.Add(new ConstantExpressionFingerprint(node.NodeType, node.Type));
-         return base.VisitConstant(node);
+   protected override Expression
+   VisitLabel(LabelExpression node) =>
+      GiveUp(node);
+
+   protected override LabelTarget
+   VisitLabelTarget(LabelTarget? node) =>
+      GiveUp(node);
+
+   protected override Expression
+   VisitLambda<T>(Expression<T> node) {
+
+      if (_gaveUp) {
+         return node;
       }
 
-      protected override Expression
-      VisitDebugInfo(DebugInfoExpression node) =>
-         GiveUp(node);
+      _currentChain.Elements.Add(new LambdaExpressionFingerprint(node.NodeType, node.Type));
+      return base.VisitLambda<T>(node);
+   }
 
-      protected override Expression
-      VisitDefault(DefaultExpression node) {
+   protected override Expression
+   VisitListInit(ListInitExpression node) =>
+      GiveUp(node);
 
-         if (_gaveUp) {
-            return node;
-         }
+   protected override Expression
+   VisitLoop(LoopExpression node) =>
+      GiveUp(node);
 
-         _currentChain.Elements.Add(new DefaultExpressionFingerprint(node.NodeType, node.Type));
-         return base.VisitDefault(node);
+   protected override Expression
+   VisitMember(MemberExpression node) {
+
+      if (_gaveUp) {
+         return node;
       }
 
-      protected override Expression
-      VisitDynamic(DynamicExpression node) =>
-         GiveUp(node);
+      _currentChain.Elements.Add(new MemberExpressionFingerprint(node.NodeType, node.Type, node.Member));
+      return base.VisitMember(node);
+   }
 
-      protected override ElementInit
-      VisitElementInit(ElementInit node) =>
-         GiveUp(node);
+   protected override MemberAssignment
+   VisitMemberAssignment(MemberAssignment node) =>
+      GiveUp(node);
 
-      protected override Expression
-      VisitExtension(Expression node) =>
-         GiveUp(node);
+   protected override MemberBinding
+   VisitMemberBinding(MemberBinding node) =>
+      GiveUp(node);
 
-      protected override Expression
-      VisitGoto(GotoExpression node) =>
-         GiveUp(node);
+   protected override Expression
+   VisitMemberInit(MemberInitExpression node) =>
+      GiveUp(node);
 
-      protected override Expression
-      VisitIndex(IndexExpression node) {
+   protected override MemberListBinding
+   VisitMemberListBinding(MemberListBinding node) =>
+      GiveUp(node);
 
-         if (_gaveUp) {
-            return node;
-         }
+   protected override MemberMemberBinding
+   VisitMemberMemberBinding(MemberMemberBinding node) =>
+      GiveUp(node);
 
-         _currentChain.Elements.Add(new IndexExpressionFingerprint(node.NodeType, node.Type, node.Indexer));
-         return base.VisitIndex(node);
+   protected override Expression
+   VisitMethodCall(MethodCallExpression node) {
+
+      if (_gaveUp) {
+         return node;
       }
 
-      protected override Expression
-      VisitInvocation(InvocationExpression node) =>
-         GiveUp(node);
+      _currentChain.Elements.Add(new MethodCallExpressionFingerprint(node.NodeType, node.Type, node.Method));
+      return base.VisitMethodCall(node);
+   }
 
-      protected override Expression
-      VisitLabel(LabelExpression node) =>
-         GiveUp(node);
+   protected override Expression
+   VisitNew(NewExpression node) =>
+      GiveUp(node);
 
-      protected override LabelTarget
-      VisitLabelTarget(LabelTarget? node) =>
-         GiveUp(node);
+   protected override Expression
+   VisitNewArray(NewArrayExpression node) =>
+      GiveUp(node);
 
-      protected override Expression
-      VisitLambda<T>(Expression<T> node) {
+   protected override Expression
+   VisitParameter(ParameterExpression node) {
 
-         if (_gaveUp) {
-            return node;
-         }
-
-         _currentChain.Elements.Add(new LambdaExpressionFingerprint(node.NodeType, node.Type));
-         return base.VisitLambda<T>(node);
+      if (_gaveUp) {
+         return node;
       }
 
-      protected override Expression
-      VisitListInit(ListInitExpression node) =>
-         GiveUp(node);
+      int parameterIndex = _seenParameters.IndexOf(node);
 
-      protected override Expression
-      VisitLoop(LoopExpression node) =>
-         GiveUp(node);
-
-      protected override Expression
-      VisitMember(MemberExpression node) {
-
-         if (_gaveUp) {
-            return node;
-         }
-
-         _currentChain.Elements.Add(new MemberExpressionFingerprint(node.NodeType, node.Type, node.Member));
-         return base.VisitMember(node);
+      if (parameterIndex < 0) {
+         // first time seeing this parameter
+         parameterIndex = _seenParameters.Count;
+         _seenParameters.Add(node);
       }
 
-      protected override MemberAssignment
-      VisitMemberAssignment(MemberAssignment node) =>
-         GiveUp(node);
+      _currentChain.Elements.Add(new ParameterExpressionFingerprint(node.NodeType, node.Type, parameterIndex));
 
-      protected override MemberBinding
-      VisitMemberBinding(MemberBinding node) =>
-         GiveUp(node);
+      return base.VisitParameter(node);
+   }
 
-      protected override Expression
-      VisitMemberInit(MemberInitExpression node) =>
-         GiveUp(node);
+   protected override Expression
+   VisitRuntimeVariables(RuntimeVariablesExpression node) =>
+      GiveUp(node);
 
-      protected override MemberListBinding
-      VisitMemberListBinding(MemberListBinding node) =>
-         GiveUp(node);
+   protected override Expression
+   VisitSwitch(SwitchExpression node) =>
+      GiveUp(node);
 
-      protected override MemberMemberBinding
-      VisitMemberMemberBinding(MemberMemberBinding node) =>
-         GiveUp(node);
+   protected override SwitchCase
+   VisitSwitchCase(SwitchCase node) =>
+      GiveUp(node);
 
-      protected override Expression
-      VisitMethodCall(MethodCallExpression node) {
+   protected override Expression
+   VisitTry(TryExpression node) =>
+      GiveUp(node);
 
-         if (_gaveUp) {
-            return node;
-         }
+   protected override Expression
+   VisitTypeBinary(TypeBinaryExpression node) {
 
-         _currentChain.Elements.Add(new MethodCallExpressionFingerprint(node.NodeType, node.Type, node.Method));
-         return base.VisitMethodCall(node);
+      if (_gaveUp) {
+         return node;
       }
 
-      protected override Expression
-      VisitNew(NewExpression node) =>
-         GiveUp(node);
+      _currentChain.Elements.Add(new TypeBinaryExpressionFingerprint(node.NodeType, node.Type, node.TypeOperand));
 
-      protected override Expression
-      VisitNewArray(NewArrayExpression node) =>
-         GiveUp(node);
+      return base.VisitTypeBinary(node);
+   }
 
-      protected override Expression
-      VisitParameter(ParameterExpression node) {
+   protected override Expression
+   VisitUnary(UnaryExpression node) {
 
-         if (_gaveUp) {
-            return node;
-         }
-
-         int parameterIndex = _seenParameters.IndexOf(node);
-
-         if (parameterIndex < 0) {
-            // first time seeing this parameter
-            parameterIndex = _seenParameters.Count;
-            _seenParameters.Add(node);
-         }
-
-         _currentChain.Elements.Add(new ParameterExpressionFingerprint(node.NodeType, node.Type, parameterIndex));
-
-         return base.VisitParameter(node);
+      if (_gaveUp) {
+         return node;
       }
 
-      protected override Expression
-      VisitRuntimeVariables(RuntimeVariablesExpression node) =>
-         GiveUp(node);
+      _currentChain.Elements.Add(new UnaryExpressionFingerprint(node.NodeType, node.Type, node.Method));
 
-      protected override Expression
-      VisitSwitch(SwitchExpression node) =>
-         GiveUp(node);
-
-      protected override SwitchCase
-      VisitSwitchCase(SwitchCase node) =>
-         GiveUp(node);
-
-      protected override Expression
-      VisitTry(TryExpression node) =>
-         GiveUp(node);
-
-      protected override Expression
-      VisitTypeBinary(TypeBinaryExpression node) {
-
-         if (_gaveUp) {
-            return node;
-         }
-
-         _currentChain.Elements.Add(new TypeBinaryExpressionFingerprint(node.NodeType, node.Type, node.TypeOperand));
-
-         return base.VisitTypeBinary(node);
-      }
-
-      protected override Expression
-      VisitUnary(UnaryExpression node) {
-
-         if (_gaveUp) {
-            return node;
-         }
-
-         _currentChain.Elements.Add(new UnaryExpressionFingerprint(node.NodeType, node.Type, node.Method));
-
-         return base.VisitUnary(node);
-      }
+      return base.VisitUnary(node);
    }
 }

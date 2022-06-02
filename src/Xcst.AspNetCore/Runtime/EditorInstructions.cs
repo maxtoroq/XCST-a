@@ -26,120 +26,119 @@ using Xcst.PackageModel;
 using Xcst.Runtime;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
-namespace Xcst.Web.Runtime {
+namespace Xcst.Web.Runtime;
 
-   /// <exclude/>
-   public static class EditorInstructions {
+/// <exclude/>
+public static class EditorInstructions {
 
-      public static void
-      Editor(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression,
-            string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
-         TemplateHelpers.Template(
-            html,
-            package,
-            output,
-            expression: expression,
-            htmlFieldName: htmlFieldName,
-            templateName: templateName,
-            membersNames,
-            DataBoundControlMode.Edit,
-            additionalViewData
-         );
+   public static void
+   Editor(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression,
+         string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
+      TemplateHelpers.Template(
+         html,
+         package,
+         output,
+         expression: expression,
+         htmlFieldName: htmlFieldName,
+         templateName: templateName,
+         membersNames,
+         DataBoundControlMode.Edit,
+         additionalViewData
+      );
 
-      [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-      public static void
-      EditorFor<TModel, TValue>(HtmlHelper<TModel> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TModel, TValue>> expression,
-            string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
-         TemplateHelpers.TemplateFor(
-            html,
-            package,
-            output,
-            expression: expression,
-            htmlFieldName: htmlFieldName,
-            templateName: templateName,
-            membersNames,
-            DataBoundControlMode.Edit,
-            additionalViewData
-         );
+   [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
+   public static void
+   EditorFor<TModel, TValue>(HtmlHelper<TModel> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TModel, TValue>> expression,
+         string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
+      TemplateHelpers.TemplateFor(
+         html,
+         package,
+         output,
+         expression: expression,
+         htmlFieldName: htmlFieldName,
+         templateName: templateName,
+         membersNames,
+         DataBoundControlMode.Edit,
+         additionalViewData
+      );
 
-      public static void
-      EditorForModel(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output,
-            string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
-         TemplateHelpers.TemplateHelper(
-            html,
-            package,
-            output,
-            html.ViewData.ModelMetadata,
-            htmlFieldName: htmlFieldName,
-            templateName: templateName,
-            membersNames,
-            DataBoundControlMode.Edit,
-            additionalViewData
-         );
+   public static void
+   EditorForModel(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output,
+         string? htmlFieldName = null, string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) =>
+      TemplateHelpers.TemplateHelper(
+         html,
+         package,
+         output,
+         html.ViewData.ModelMetadata,
+         htmlFieldName: htmlFieldName,
+         templateName: templateName,
+         membersNames,
+         DataBoundControlMode.Edit,
+         additionalViewData
+      );
 
-      public static IEnumerable<ModelMetadata>
-      EditorProperties(HtmlHelper html) {
+   public static IEnumerable<ModelMetadata>
+   EditorProperties(HtmlHelper html) {
 
-         if (html is null) throw new ArgumentNullException(nameof(html));
+      if (html is null) throw new ArgumentNullException(nameof(html));
 
-         var templateInfo = html.ViewData.TemplateInfo;
+      var templateInfo = html.ViewData.TemplateInfo;
 
-         var filteredProperties = html.ViewData.ModelMetadata.Properties
-            .Where(p => ShowForEdit(html, p));
+      var filteredProperties = html.ViewData.ModelMetadata.Properties
+         .Where(p => ShowForEdit(html, p));
 
-         var orderedProperties = (templateInfo.MembersNames.Count > 0) ?
-            filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.PropertyName))
-            : filteredProperties;
+      var orderedProperties = (templateInfo.MembersNames.Count > 0) ?
+         filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.PropertyName))
+         : filteredProperties;
 
-         return orderedProperties;
+      return orderedProperties;
+   }
+
+   static bool
+   ShowForEdit(HtmlHelper html, ModelMetadata propertyMetadata) {
+
+      if (html is null) throw new ArgumentNullException(nameof(html));
+      if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
+
+      var templateInfo = html.ViewData.TemplateInfo;
+
+      if (templateInfo.Visited(propertyMetadata)) {
+         return false;
       }
 
-      static bool
-      ShowForEdit(HtmlHelper html, ModelMetadata propertyMetadata) {
-
-         if (html is null) throw new ArgumentNullException(nameof(html));
-         if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
-
-         var templateInfo = html.ViewData.TemplateInfo;
-
-         if (templateInfo.Visited(propertyMetadata)) {
-            return false;
-         }
-
-         if (templateInfo.MembersNames.Count > 0) {
-            return templateInfo.MembersNames.Contains(propertyMetadata.PropertyName);
-         }
-
-         if (!propertyMetadata.ShowForEdit) {
-            return false;
-         }
-
-         if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForEdit), out bool show)) {
-            return show;
-         }
-
-         if (propertyMetadata.ModelType == typeof(IFormFile)) {
-            return true;
-         }
-
-         return !propertyMetadata.IsComplexType;
+      if (templateInfo.MembersNames.Count > 0) {
+         return templateInfo.MembersNames.Contains(propertyMetadata.PropertyName);
       }
 
-      public static XcstDelegate<object>?
-      MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) {
-
-         if (html is null) throw new ArgumentNullException(nameof(html));
-         if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
-
-         if (html.ViewData.TryGetValue("__xcst_member_template", out Action<HtmlHelper, ISequenceWriter<object>>? memberTemplate)
-            && memberTemplate != null) {
-
-            var helper = HtmlHelperFactory.ForMemberTemplate(html, propertyMetadata);
-
-            return (c, o) => memberTemplate(helper, o);
-         }
-
-         return null;
+      if (!propertyMetadata.ShowForEdit) {
+         return false;
       }
+
+      if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForEdit), out bool show)) {
+         return show;
+      }
+
+      if (propertyMetadata.ModelType == typeof(IFormFile)) {
+         return true;
+      }
+
+      return !propertyMetadata.IsComplexType;
+   }
+
+   public static XcstDelegate<object>?
+   MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) {
+
+      if (html is null) throw new ArgumentNullException(nameof(html));
+      if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
+
+      if (html.ViewData.TryGetValue("__xcst_member_template", out Action<HtmlHelper, ISequenceWriter<object>>? memberTemplate)
+         && memberTemplate != null) {
+
+         var helper = HtmlHelperFactory.ForMemberTemplate(html, propertyMetadata);
+
+         return (c, o) => memberTemplate(helper, o);
+      }
+
+      return null;
    }
 }

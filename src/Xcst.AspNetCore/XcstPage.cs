@@ -22,133 +22,132 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
 
-namespace Xcst.Web {
+namespace Xcst.Web;
 
-   // Many of the properties of XcstPage can be null if Context is not initialized.
-   // These are however not marked as nullable since, at runtime, Context is always initialized.
+// Many of the properties of XcstPage can be null if Context is not initialized.
+// These are however not marked as nullable since, at runtime, Context is always initialized.
 
-   public abstract class XcstPage {
+public abstract class XcstPage {
 
-      HttpContext?
-      _context;
+   HttpContext?
+   _context;
 
-      IList<string>?
-      _urlData;
+   IList<string>?
+   _urlData;
 
 #pragma warning disable CS8618
-      public virtual string
-      VirtualPath { get; set; }
+   public virtual string
+   VirtualPath { get; set; }
 #pragma warning restore CS8618
 
-      public virtual string?
-      PathInfo { get; set; }
+   public virtual string?
+   PathInfo { get; set; }
 
-      public virtual IList<string>
-      UrlData {
-         get => _urlData ??= new UrlDataList(PathInfo);
-         set => _urlData = value;
-      }
+   public virtual IList<string>
+   UrlData {
+      get => _urlData ??= new UrlDataList(PathInfo);
+      set => _urlData = value;
+   }
 
-      public virtual HttpContext
-      Context {
+   public virtual HttpContext
+   Context {
 #pragma warning disable CS8603
-         get => _context;
+      get => _context;
 #pragma warning restore CS8603
-         set {
-            _context = value;
-            _urlData = null;
-         }
+      set {
+         _context = value;
+         _urlData = null;
       }
+   }
 
 #pragma warning disable CS8603
-      public HttpRequest
-      Request => Context?.Request;
+   public HttpRequest
+   Request => Context?.Request;
 
-      public HttpResponse
-      Response => Context?.Response;
+   public HttpResponse
+   Response => Context?.Response;
 
-      public ISession
-      Session => Context?.Session;
+   public ISession
+   Session => Context?.Session;
 
-      public IPrincipal
-      User => Context?.User;
+   public IPrincipal
+   User => Context?.User;
 #pragma warning restore CS8603
 
-      public virtual bool
-      IsPost => Request?.Method == "POST";
+   public virtual bool
+   IsPost => Request?.Method == "POST";
 
-      public virtual bool
-      IsAjax => Request?.IsAjaxRequest() ?? false;
+   public virtual bool
+   IsAjax => Request?.IsAjaxRequest() ?? false;
 
-      public virtual XcstPageHandler
-      CreateHttpHandler() => new XcstPageHandler(this);
+   public virtual XcstPageHandler
+   CreateHttpHandler() => new XcstPageHandler(this);
 
-      protected virtual void
-      CopyState(XcstPage page) {
-         page.Context = this.Context;
+   protected virtual void
+   CopyState(XcstPage page) {
+      page.Context = this.Context;
+   }
+
+   public async Task<bool>
+   TryAuthorizeAsync(string? policy = null, string[]? roles = null) {
+
+      var authorizeResult = await TryAuthorizeCoreAsync(policy, roles);
+
+      if (authorizeResult.Challenged) {
+         await this.Context.ChallengeAsync();
+         return false;
       }
 
-      public async Task<bool>
-      TryAuthorizeAsync(string? policy = null, string[]? roles = null) {
-
-         var authorizeResult = await TryAuthorizeCoreAsync(policy, roles);
-
-         if (authorizeResult.Challenged) {
-            await this.Context.ChallengeAsync();
-            return false;
-         }
-
-         if (authorizeResult.Forbidden) {
-            await this.Context.ForbidAsync();
-            return false;
-         }
-
-         return true;
+      if (authorizeResult.Forbidden) {
+         await this.Context.ForbidAsync();
+         return false;
       }
 
-      public virtual async Task<PolicyAuthorizationResult>
-      TryAuthorizeCoreAsync(string? policy = null, string[]? roles = null) {
+      return true;
+   }
 
-         var httpContext = this.Context;
-         var user = this.User;
+   public virtual async Task<PolicyAuthorizationResult>
+   TryAuthorizeCoreAsync(string? policy = null, string[]? roles = null) {
 
-         if (user.Identity is null
-            || !user.Identity.IsAuthenticated) {
+      var httpContext = this.Context;
+      var user = this.User;
 
-            return PolicyAuthorizationResult.Challenge();
-         }
+      if (user.Identity is null
+         || !user.Identity.IsAuthenticated) {
 
-         if (policy is null
-            && (roles is null || roles.Length == 0)) {
-
-            return PolicyAuthorizationResult.Success();
-         }
-
-         var policyProvider = (IAuthorizationPolicyProvider)httpContext.RequestServices.GetService(typeof(IAuthorizationPolicyProvider))!;
-         var policyEval = (IPolicyEvaluator)httpContext.RequestServices.GetService(typeof(IPolicyEvaluator))!;
-
-         var authorizeData = new AuthorizeData {
-            Policy = policy,
-            Roles = (roles != null) ? String.Join(',', roles) : null
-         };
-
-         var authorizationPolicy = await AuthorizationPolicy.CombineAsync(policyProvider, new[] { authorizeData });
-         var authenticateResult = await policyEval.AuthenticateAsync(authorizationPolicy!, httpContext);
-         var authorizeResult = await policyEval.AuthorizeAsync(authorizationPolicy!, authenticateResult, httpContext, null);
-
-         return authorizeResult;
+         return PolicyAuthorizationResult.Challenge();
       }
 
-      class AuthorizeData : IAuthorizeData {
+      if (policy is null
+         && (roles is null || roles.Length == 0)) {
 
-         public string?
-         Policy { get; set; }
-
-         public string?
-         Roles { get; set; }
-
-         public string?
-         AuthenticationSchemes { get; set; }
+         return PolicyAuthorizationResult.Success();
       }
+
+      var policyProvider = (IAuthorizationPolicyProvider)httpContext.RequestServices.GetService(typeof(IAuthorizationPolicyProvider))!;
+      var policyEval = (IPolicyEvaluator)httpContext.RequestServices.GetService(typeof(IPolicyEvaluator))!;
+
+      var authorizeData = new AuthorizeData {
+         Policy = policy,
+         Roles = (roles != null) ? String.Join(',', roles) : null
+      };
+
+      var authorizationPolicy = await AuthorizationPolicy.CombineAsync(policyProvider, new[] { authorizeData });
+      var authenticateResult = await policyEval.AuthenticateAsync(authorizationPolicy!, httpContext);
+      var authorizeResult = await policyEval.AuthorizeAsync(authorizationPolicy!, authenticateResult, httpContext, null);
+
+      return authorizeResult;
+   }
+
+   class AuthorizeData : IAuthorizeData {
+
+      public string?
+      Policy { get; set; }
+
+      public string?
+      Roles { get; set; }
+
+      public string?
+      AuthenticationSchemes { get; set; }
    }
 }

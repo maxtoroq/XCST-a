@@ -15,74 +15,73 @@
 using System;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Runtime {
+namespace Xcst.Web.Runtime;
 
-   /// <exclude/>
-   public static class HtmlHelperFactory {
+/// <exclude/>
+public static class HtmlHelperFactory {
 
-      public static HtmlHelper<TModel>
-      ForModel<TModel>(HtmlHelper currentHtml, TModel model, string? htmlFieldPrefix = null) {
+   public static HtmlHelper<TModel>
+   ForModel<TModel>(HtmlHelper currentHtml, TModel model, string? htmlFieldPrefix = null) {
 
-         if (currentHtml is null) throw new ArgumentNullException(nameof(currentHtml));
+      if (currentHtml is null) throw new ArgumentNullException(nameof(currentHtml));
 
-         var currentViewData = currentHtml.ViewData;
+      var currentViewData = currentHtml.ViewData;
 
-         // Cannot call new ViewDataDictionary<TModel>(currentViewData)
-         // because currentViewData.Model might be incompatible with TModel
+      // Cannot call new ViewDataDictionary<TModel>(currentViewData)
+      // because currentViewData.Model might be incompatible with TModel
 
-         var tempDictionary = new ViewDataDictionary(currentViewData) {
-            Model = model
-         };
+      var tempDictionary = new ViewDataDictionary(currentViewData) {
+         Model = model
+      };
 
-         var container = new ViewDataContainer {
-            ViewData = new ViewDataDictionary<TModel>(tempDictionary) {
+      var container = new ViewDataContainer {
+         ViewData = new ViewDataDictionary<TModel>(tempDictionary) {
 
-               // setting new TemplateInfo clears VisitedObjects cache
-               TemplateInfo = new TemplateInfo {
-                  HtmlFieldPrefix = currentViewData.TemplateInfo.HtmlFieldPrefix
-               }
+            // setting new TemplateInfo clears VisitedObjects cache
+            TemplateInfo = new TemplateInfo {
+               HtmlFieldPrefix = currentViewData.TemplateInfo.HtmlFieldPrefix
             }
-         };
-
-         if (!String.IsNullOrEmpty(htmlFieldPrefix)) {
-
-            var templateInfo = container.ViewData.TemplateInfo;
-            templateInfo.HtmlFieldPrefix = templateInfo.GetFullHtmlFieldName(htmlFieldPrefix);
          }
+      };
 
-         // new ViewContext resets FormContext
-         var newViewContext = currentHtml.ViewContext.Clone();
+      if (!String.IsNullOrEmpty(htmlFieldPrefix)) {
 
-         return currentHtml.Clone<TModel>(newViewContext, container);
+         var templateInfo = container.ViewData.TemplateInfo;
+         templateInfo.HtmlFieldPrefix = templateInfo.GetFullHtmlFieldName(htmlFieldPrefix);
       }
 
-      internal static HtmlHelper
-      ForMemberTemplate(HtmlHelper currentHtml, ModelMetadata memberMetadata) {
+      // new ViewContext resets FormContext
+      var newViewContext = currentHtml.ViewContext.Clone();
 
-         if (currentHtml is null) throw new ArgumentNullException(nameof(currentHtml));
-         if (memberMetadata is null) throw new ArgumentNullException(nameof(memberMetadata));
+      return currentHtml.Clone<TModel>(newViewContext, container);
+   }
 
-         var currentViewData = currentHtml.ViewData;
+   internal static HtmlHelper
+   ForMemberTemplate(HtmlHelper currentHtml, ModelMetadata memberMetadata) {
 
-         var container = new ViewDataContainer {
-            ViewData = new ViewDataDictionary(currentViewData) {
-               Model = memberMetadata.Model,
-               ModelMetadata = memberMetadata,
-               TemplateInfo = new TemplateInfo {
-                  HtmlFieldPrefix = currentViewData.TemplateInfo.GetFullHtmlFieldName(memberMetadata.PropertyName)
-               }
+      if (currentHtml is null) throw new ArgumentNullException(nameof(currentHtml));
+      if (memberMetadata is null) throw new ArgumentNullException(nameof(memberMetadata));
+
+      var currentViewData = currentHtml.ViewData;
+
+      var container = new ViewDataContainer {
+         ViewData = new ViewDataDictionary(currentViewData) {
+            Model = memberMetadata.Model,
+            ModelMetadata = memberMetadata,
+            TemplateInfo = new TemplateInfo {
+               HtmlFieldPrefix = currentViewData.TemplateInfo.GetFullHtmlFieldName(memberMetadata.PropertyName)
             }
-         };
+         }
+      };
 
-         return currentHtml.Clone(currentHtml.ViewContext, container);
-      }
+      return currentHtml.Clone(currentHtml.ViewContext, container);
+   }
 
-      class ViewDataContainer : IViewDataContainer {
+   class ViewDataContainer : IViewDataContainer {
 
 #pragma warning disable CS8618
-         public ViewDataDictionary
-         ViewData { get; set; }
+      public ViewDataDictionary
+      ViewData { get; set; }
 #pragma warning restore CS8618
-      }
    }
 }

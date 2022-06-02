@@ -14,17 +14,16 @@
 
 using System;
 
-namespace Xcst.Web.Precompilation {
+namespace Xcst.Web.Precompilation;
 
-   [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-   public sealed class PageVirtualPathAttribute : Attribute {
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+public sealed class PageVirtualPathAttribute : Attribute {
 
-      public string
-      VirtualPath { get; }
+   public string
+   VirtualPath { get; }
 
-      public
-      PageVirtualPathAttribute(string virtualPath) {
-         this.VirtualPath = virtualPath;
-      }
+   public
+   PageVirtualPathAttribute(string virtualPath) {
+      this.VirtualPath = virtualPath;
    }
 }

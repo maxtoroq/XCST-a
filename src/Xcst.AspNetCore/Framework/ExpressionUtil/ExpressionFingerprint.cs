@@ -4,370 +4,369 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace System.Web.Mvc.ExpressionUtil {
+namespace System.Web.Mvc.ExpressionUtil;
 
-   // Serves as the base class for all expression fingerprints. Provides a default implementation
-   // of GetHashCode().
+// Serves as the base class for all expression fingerprints. Provides a default implementation
+// of GetHashCode().
 
-   abstract class ExpressionFingerprint {
+abstract class ExpressionFingerprint {
 
-      // the type of expression node, e.g. OP_ADD, MEMBER_ACCESS, etc.
+   // the type of expression node, e.g. OP_ADD, MEMBER_ACCESS, etc.
 
-      public ExpressionType
-      NodeType { get; private set; }
+   public ExpressionType
+   NodeType { get; private set; }
 
-      // the CLR type resulting from this expression, e.g. int, string, etc.
+   // the CLR type resulting from this expression, e.g. int, string, etc.
 
-      public Type
-      Type { get; private set; }
+   public Type
+   Type { get; private set; }
 
-      protected
-      ExpressionFingerprint(ExpressionType nodeType, Type type) {
+   protected
+   ExpressionFingerprint(ExpressionType nodeType, Type type) {
 
-         this.NodeType = nodeType;
-         this.Type = type;
-      }
-
-      internal virtual void
-      AddToHashCodeCombiner(HashCodeCombiner combiner) {
-         combiner.AddInt32((int)this.NodeType);
-         combiner.AddObject(this.Type);
-      }
-
-      protected bool
-      Equals(ExpressionFingerprint? other) =>
-         (other != null)
-            && (this.NodeType == other.NodeType)
-            && Equals(this.Type, other.Type);
-
-      public override bool
-      Equals(object? obj) =>
-         Equals(obj as ExpressionFingerprint);
-
-      public override int
-      GetHashCode() {
-
-         var combiner = new HashCodeCombiner();
-         AddToHashCodeCombiner(combiner);
-
-         return combiner.CombinedHash;
-      }
+      this.NodeType = nodeType;
+      this.Type = type;
    }
+
+   internal virtual void
+   AddToHashCodeCombiner(HashCodeCombiner combiner) {
+      combiner.AddInt32((int)this.NodeType);
+      combiner.AddObject(this.Type);
+   }
+
+   protected bool
+   Equals(ExpressionFingerprint? other) =>
+      (other != null)
+         && (this.NodeType == other.NodeType)
+         && Equals(this.Type, other.Type);
+
+   public override bool
+   Equals(object? obj) =>
+      Equals(obj as ExpressionFingerprint);
+
+   public override int
+   GetHashCode() {
+
+      var combiner = new HashCodeCombiner();
+      AddToHashCodeCombiner(combiner);
+
+      return combiner.CombinedHash;
+   }
+}
 
 #pragma warning disable 659 // overrides AddToHashCodeCombiner instead
 
-   // BinaryExpression fingerprint class
-   // Useful for things like array[index]
+// BinaryExpression fingerprint class
+// Useful for things like array[index]
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class BinaryExpressionFingerprint : ExpressionFingerprint {
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class BinaryExpressionFingerprint : ExpressionFingerprint {
 
-      public
-      BinaryExpressionFingerprint(ExpressionType nodeType, Type type, MethodInfo method)
-         : base(nodeType, type) {
+   public
+   BinaryExpressionFingerprint(ExpressionType nodeType, Type type, MethodInfo method)
+      : base(nodeType, type) {
 
-         // Other properties on BinaryExpression (like IsLifted / IsLiftedToNull) are simply derived
-         // from Type and NodeType, so they're not necessary for inclusion in the fingerprint.
+      // Other properties on BinaryExpression (like IsLifted / IsLiftedToNull) are simply derived
+      // from Type and NodeType, so they're not necessary for inclusion in the fingerprint.
 
-         this.Method = method;
-      }
-
-      // http://msdn.microsoft.com/en-us/library/system.linq.expressions.binaryexpression.method.aspx
-
-      public MethodInfo
-      Method { get; private set; }
-
-      public override bool
-      Equals(object? obj) =>
-         obj is BinaryExpressionFingerprint other
-            && Equals(this.Method, other.Method)
-            && this.Equals(other);
-
-      internal override void
-      AddToHashCodeCombiner(HashCodeCombiner combiner) {
-
-         combiner.AddObject(this.Method);
-
-         base.AddToHashCodeCombiner(combiner);
-      }
+      this.Method = method;
    }
 
-   // ConditionalExpression fingerprint class
-   // Expression of form (test) ? ifTrue : ifFalse
+   // http://msdn.microsoft.com/en-us/library/system.linq.expressions.binaryexpression.method.aspx
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class ConditionalExpressionFingerprint : ExpressionFingerprint {
+   public MethodInfo
+   Method { get; private set; }
 
-      public
-      ConditionalExpressionFingerprint(ExpressionType nodeType, Type type)
-         : base(nodeType, type) {
+   public override bool
+   Equals(object? obj) =>
+      obj is BinaryExpressionFingerprint other
+         && Equals(this.Method, other.Method)
+         && this.Equals(other);
 
-         // There are no properties on ConditionalExpression that are worth including in
-         // the fingerprint.
-      }
+   internal override void
+   AddToHashCodeCombiner(HashCodeCombiner combiner) {
 
-      public override bool
-      Equals(object? obj) =>
-         obj is ConditionalExpressionFingerprint other
-            && this.Equals(other);
+      combiner.AddObject(this.Method);
+
+      base.AddToHashCodeCombiner(combiner);
+   }
+}
+
+// ConditionalExpression fingerprint class
+// Expression of form (test) ? ifTrue : ifFalse
+
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class ConditionalExpressionFingerprint : ExpressionFingerprint {
+
+   public
+   ConditionalExpressionFingerprint(ExpressionType nodeType, Type type)
+      : base(nodeType, type) {
+
+      // There are no properties on ConditionalExpression that are worth including in
+      // the fingerprint.
    }
 
-   // ConstantExpression fingerprint class
-   //
-   // A ConstantExpression might represent a captured local variable, so we can't compile
-   // the value directly into the cached function. Instead, a placeholder is generated
-   // and the value is hoisted into a local variables array. This placeholder can then
-   // be compiled and cached, and the array lookup happens at runtime.
+   public override bool
+   Equals(object? obj) =>
+      obj is ConditionalExpressionFingerprint other
+         && this.Equals(other);
+}
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class ConstantExpressionFingerprint : ExpressionFingerprint {
+// ConstantExpression fingerprint class
+//
+// A ConstantExpression might represent a captured local variable, so we can't compile
+// the value directly into the cached function. Instead, a placeholder is generated
+// and the value is hoisted into a local variables array. This placeholder can then
+// be compiled and cached, and the array lookup happens at runtime.
 
-      public
-      ConstantExpressionFingerprint(ExpressionType nodeType, Type type)
-         : base(nodeType, type) {
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class ConstantExpressionFingerprint : ExpressionFingerprint {
 
-         // There are no properties on ConstantExpression that are worth including in
-         // the fingerprint.
-      }
+   public
+   ConstantExpressionFingerprint(ExpressionType nodeType, Type type)
+      : base(nodeType, type) {
 
-      public override bool
-      Equals(object? obj) =>
-         obj is ConstantExpressionFingerprint other
-            && this.Equals(other);
+      // There are no properties on ConstantExpression that are worth including in
+      // the fingerprint.
    }
 
-   // DefaultExpression fingerprint class
-   // Expression of form default(T)
+   public override bool
+   Equals(object? obj) =>
+      obj is ConstantExpressionFingerprint other
+         && this.Equals(other);
+}
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class DefaultExpressionFingerprint : ExpressionFingerprint {
+// DefaultExpression fingerprint class
+// Expression of form default(T)
 
-      public
-      DefaultExpressionFingerprint(ExpressionType nodeType, Type type)
-         : base(nodeType, type) {
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class DefaultExpressionFingerprint : ExpressionFingerprint {
 
-         // There are no properties on DefaultExpression that are worth including in
-         // the fingerprint.
-      }
+   public
+   DefaultExpressionFingerprint(ExpressionType nodeType, Type type)
+      : base(nodeType, type) {
 
-      public override bool
-      Equals(object? obj) =>
-         obj is DefaultExpressionFingerprint other
-            && this.Equals(other);
+      // There are no properties on DefaultExpression that are worth including in
+      // the fingerprint.
    }
 
-   // IndexExpression fingerprint class
-   // Represents certain forms of array access or indexer property access
+   public override bool
+   Equals(object? obj) =>
+      obj is DefaultExpressionFingerprint other
+         && this.Equals(other);
+}
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class IndexExpressionFingerprint : ExpressionFingerprint {
+// IndexExpression fingerprint class
+// Represents certain forms of array access or indexer property access
 
-      // http://msdn.microsoft.com/en-us/library/system.linq.expressions.indexexpression.indexer.aspx
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class IndexExpressionFingerprint : ExpressionFingerprint {
 
-      public PropertyInfo
-      Indexer { get; private set; }
+   // http://msdn.microsoft.com/en-us/library/system.linq.expressions.indexexpression.indexer.aspx
 
-      public
-      IndexExpressionFingerprint(ExpressionType nodeType, Type type, PropertyInfo indexer)
-         : base(nodeType, type) {
+   public PropertyInfo
+   Indexer { get; private set; }
 
-         // Other properties on IndexExpression (like the argument count) are simply derived
-         // from Type and Indexer, so they're not necessary for inclusion in the fingerprint.
+   public
+   IndexExpressionFingerprint(ExpressionType nodeType, Type type, PropertyInfo indexer)
+      : base(nodeType, type) {
 
-         this.Indexer = indexer;
-      }
+      // Other properties on IndexExpression (like the argument count) are simply derived
+      // from Type and Indexer, so they're not necessary for inclusion in the fingerprint.
 
-      public override bool
-      Equals(object? obj) =>
-         obj is IndexExpressionFingerprint other
-            && Equals(this.Indexer, other.Indexer)
-            && this.Equals(other);
-
-      internal override void
-      AddToHashCodeCombiner(HashCodeCombiner combiner) {
-         combiner.AddObject(Indexer);
-         base.AddToHashCodeCombiner(combiner);
-      }
+      this.Indexer = indexer;
    }
 
-   // LambdaExpression fingerprint class
-   // Represents a lambda expression (root element in Expression<T>)
+   public override bool
+   Equals(object? obj) =>
+      obj is IndexExpressionFingerprint other
+         && Equals(this.Indexer, other.Indexer)
+         && this.Equals(other);
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class LambdaExpressionFingerprint : ExpressionFingerprint {
+   internal override void
+   AddToHashCodeCombiner(HashCodeCombiner combiner) {
+      combiner.AddObject(Indexer);
+      base.AddToHashCodeCombiner(combiner);
+   }
+}
 
-      public
-      LambdaExpressionFingerprint(ExpressionType nodeType, Type type)
-         : base(nodeType, type) {
+// LambdaExpression fingerprint class
+// Represents a lambda expression (root element in Expression<T>)
 
-         // There are no properties on LambdaExpression that are worth including in
-         // the fingerprint.
-      }
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class LambdaExpressionFingerprint : ExpressionFingerprint {
 
-      public override bool
-      Equals(object? obj) =>
-         obj is LambdaExpressionFingerprint other
-            && this.Equals(other);
+   public
+   LambdaExpressionFingerprint(ExpressionType nodeType, Type type)
+      : base(nodeType, type) {
+
+      // There are no properties on LambdaExpression that are worth including in
+      // the fingerprint.
    }
 
-   // MemberExpression fingerprint class
-   // Expression of form xxx.FieldOrProperty
+   public override bool
+   Equals(object? obj) =>
+      obj is LambdaExpressionFingerprint other
+         && this.Equals(other);
+}
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class MemberExpressionFingerprint : ExpressionFingerprint {
+// MemberExpression fingerprint class
+// Expression of form xxx.FieldOrProperty
 
-      // http://msdn.microsoft.com/en-us/library/system.linq.expressions.memberexpression.member.aspx
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class MemberExpressionFingerprint : ExpressionFingerprint {
 
-      public MemberInfo
-      Member { get; private set; }
+   // http://msdn.microsoft.com/en-us/library/system.linq.expressions.memberexpression.member.aspx
 
-      public
-      MemberExpressionFingerprint(ExpressionType nodeType, Type type, MemberInfo member)
-         : base(nodeType, type) {
+   public MemberInfo
+   Member { get; private set; }
 
-         this.Member = member;
-      }
+   public
+   MemberExpressionFingerprint(ExpressionType nodeType, Type type, MemberInfo member)
+      : base(nodeType, type) {
 
-      public override bool
-      Equals(object? obj) =>
-         obj is MemberExpressionFingerprint other
-            && Equals(this.Member, other.Member)
-            && this.Equals(other);
-
-      internal override void
-      AddToHashCodeCombiner(HashCodeCombiner combiner) {
-         combiner.AddObject(this.Member);
-         base.AddToHashCodeCombiner(combiner);
-      }
+      this.Member = member;
    }
 
-   // MethodCallExpression fingerprint class
-   // Expression of form xxx.Foo(...), xxx[...] (get_Item()), etc.
+   public override bool
+   Equals(object? obj) =>
+      obj is MemberExpressionFingerprint other
+         && Equals(this.Member, other.Member)
+         && this.Equals(other);
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class MethodCallExpressionFingerprint : ExpressionFingerprint {
+   internal override void
+   AddToHashCodeCombiner(HashCodeCombiner combiner) {
+      combiner.AddObject(this.Member);
+      base.AddToHashCodeCombiner(combiner);
+   }
+}
 
-      // http://msdn.microsoft.com/en-us/library/system.linq.expressions.methodcallexpression.method.aspx
+// MethodCallExpression fingerprint class
+// Expression of form xxx.Foo(...), xxx[...] (get_Item()), etc.
 
-      public MethodInfo
-      Method { get; private set; }
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class MethodCallExpressionFingerprint : ExpressionFingerprint {
 
-      public
-      MethodCallExpressionFingerprint(ExpressionType nodeType, Type type, MethodInfo method)
-         : base(nodeType, type) {
+   // http://msdn.microsoft.com/en-us/library/system.linq.expressions.methodcallexpression.method.aspx
 
-         // Other properties on MethodCallExpression (like the argument count) are simply derived
-         // from Type and Indexer, so they're not necessary for inclusion in the fingerprint.
+   public MethodInfo
+   Method { get; private set; }
 
-         this.Method = method;
-      }
+   public
+   MethodCallExpressionFingerprint(ExpressionType nodeType, Type type, MethodInfo method)
+      : base(nodeType, type) {
 
-      public override bool
-      Equals(object? obj) =>
-         obj is MethodCallExpressionFingerprint other
-            && Equals(this.Method, other.Method)
-            && this.Equals(other);
+      // Other properties on MethodCallExpression (like the argument count) are simply derived
+      // from Type and Indexer, so they're not necessary for inclusion in the fingerprint.
 
-      internal override void
-      AddToHashCodeCombiner(HashCodeCombiner combiner) {
-         combiner.AddObject(this.Method);
-         base.AddToHashCodeCombiner(combiner);
-      }
+      this.Method = method;
    }
 
-   // ParameterExpression fingerprint class
-   // Can represent the model parameter or an inner parameter in an open lambda expression
+   public override bool
+   Equals(object? obj) =>
+      obj is MethodCallExpressionFingerprint other
+         && Equals(this.Method, other.Method)
+         && this.Equals(other);
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class ParameterExpressionFingerprint : ExpressionFingerprint {
+   internal override void
+   AddToHashCodeCombiner(HashCodeCombiner combiner) {
+      combiner.AddObject(this.Method);
+      base.AddToHashCodeCombiner(combiner);
+   }
+}
 
-      // Parameter position within the overall expression, used to maintain alpha equivalence.
+// ParameterExpression fingerprint class
+// Can represent the model parameter or an inner parameter in an open lambda expression
 
-      public int
-      ParameterIndex { get; private set; }
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class ParameterExpressionFingerprint : ExpressionFingerprint {
 
-      public
-      ParameterExpressionFingerprint(ExpressionType nodeType, Type type, int parameterIndex)
-         : base(nodeType, type) {
+   // Parameter position within the overall expression, used to maintain alpha equivalence.
 
-         this.ParameterIndex = parameterIndex;
-      }
+   public int
+   ParameterIndex { get; private set; }
 
-      public override bool
-      Equals(object? obj) =>
-         obj is ParameterExpressionFingerprint other
-            && (this.ParameterIndex == other.ParameterIndex)
-            && this.Equals(other);
+   public
+   ParameterExpressionFingerprint(ExpressionType nodeType, Type type, int parameterIndex)
+      : base(nodeType, type) {
 
-      internal override void
-      AddToHashCodeCombiner(HashCodeCombiner combiner) {
-         combiner.AddInt32(this.ParameterIndex);
-         base.AddToHashCodeCombiner(combiner);
-      }
+      this.ParameterIndex = parameterIndex;
    }
 
-   // TypeBinary fingerprint class
-   // Expression of form "obj is T"
+   public override bool
+   Equals(object? obj) =>
+      obj is ParameterExpressionFingerprint other
+         && (this.ParameterIndex == other.ParameterIndex)
+         && this.Equals(other);
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class TypeBinaryExpressionFingerprint : ExpressionFingerprint {
+   internal override void
+   AddToHashCodeCombiner(HashCodeCombiner combiner) {
+      combiner.AddInt32(this.ParameterIndex);
+      base.AddToHashCodeCombiner(combiner);
+   }
+}
 
-      // http://msdn.microsoft.com/en-us/library/system.linq.expressions.typebinaryexpression.typeoperand.aspx
+// TypeBinary fingerprint class
+// Expression of form "obj is T"
 
-      public Type
-      TypeOperand { get; private set; }
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class TypeBinaryExpressionFingerprint : ExpressionFingerprint {
 
-      public
-      TypeBinaryExpressionFingerprint(ExpressionType nodeType, Type type, Type typeOperand)
-         : base(nodeType, type) {
+   // http://msdn.microsoft.com/en-us/library/system.linq.expressions.typebinaryexpression.typeoperand.aspx
 
-         this.TypeOperand = typeOperand;
-      }
+   public Type
+   TypeOperand { get; private set; }
 
-      public override bool
-      Equals(object? obj) =>
-         obj is TypeBinaryExpressionFingerprint other
-            && Equals(this.TypeOperand, other.TypeOperand)
-            && this.Equals(other);
+   public
+   TypeBinaryExpressionFingerprint(ExpressionType nodeType, Type type, Type typeOperand)
+      : base(nodeType, type) {
 
-      internal override void
-      AddToHashCodeCombiner(HashCodeCombiner combiner) {
-         combiner.AddObject(this.TypeOperand);
-         base.AddToHashCodeCombiner(combiner);
-      }
+      this.TypeOperand = typeOperand;
    }
 
-   // UnaryExpression fingerprint class
-   // The most common appearance of a UnaryExpression is a cast or other conversion operator
+   public override bool
+   Equals(object? obj) =>
+      obj is TypeBinaryExpressionFingerprint other
+         && Equals(this.TypeOperand, other.TypeOperand)
+         && this.Equals(other);
 
-   [SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
-   sealed class UnaryExpressionFingerprint : ExpressionFingerprint {
+   internal override void
+   AddToHashCodeCombiner(HashCodeCombiner combiner) {
+      combiner.AddObject(this.TypeOperand);
+      base.AddToHashCodeCombiner(combiner);
+   }
+}
 
-      // http://msdn.microsoft.com/en-us/library/system.linq.expressions.unaryexpression.method.aspx
+// UnaryExpression fingerprint class
+// The most common appearance of a UnaryExpression is a cast or other conversion operator
 
-      public MethodInfo
-      Method { get; private set; }
+[SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Overrides AddToHashCodeCombiner() instead.")]
+sealed class UnaryExpressionFingerprint : ExpressionFingerprint {
 
-      public
-      UnaryExpressionFingerprint(ExpressionType nodeType, Type type, MethodInfo method)
-         : base(nodeType, type) {
+   // http://msdn.microsoft.com/en-us/library/system.linq.expressions.unaryexpression.method.aspx
 
-         // Other properties on UnaryExpression (like IsLifted / IsLiftedToNull) are simply derived
-         // from Type and NodeType, so they're not necessary for inclusion in the fingerprint.
+   public MethodInfo
+   Method { get; private set; }
 
-         this.Method = method;
-      }
+   public
+   UnaryExpressionFingerprint(ExpressionType nodeType, Type type, MethodInfo method)
+      : base(nodeType, type) {
 
-      public override bool
-      Equals(object? obj) =>
-         obj is UnaryExpressionFingerprint other
-            && Equals(this.Method, other.Method)
-            && this.Equals(other);
+      // Other properties on UnaryExpression (like IsLifted / IsLiftedToNull) are simply derived
+      // from Type and NodeType, so they're not necessary for inclusion in the fingerprint.
 
-      internal override void
-      AddToHashCodeCombiner(HashCodeCombiner combiner) {
-         combiner.AddObject(this.Method);
-         base.AddToHashCodeCombiner(combiner);
-      }
+      this.Method = method;
+   }
+
+   public override bool
+   Equals(object? obj) =>
+      obj is UnaryExpressionFingerprint other
+         && Equals(this.Method, other.Method)
+         && this.Equals(other);
+
+   internal override void
+   AddToHashCodeCombiner(HashCodeCombiner combiner) {
+      combiner.AddObject(this.Method);
+      base.AddToHashCodeCombiner(combiner);
    }
 }

@@ -18,31 +18,30 @@ using Microsoft.AspNetCore.Builder;
 using Xcst.Web.Configuration;
 using Xcst.Web.Precompilation;
 
-namespace Xcst.Web.Builder {
+namespace Xcst.Web.Builder;
 
-   public static class PrecompiledPageBuilderExtensions {
+public static class PrecompiledPageBuilderExtensions {
 
-      public static IApplicationBuilder
-      UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules) {
+   public static IApplicationBuilder
+   UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules) {
 
-         if (app is null) throw new ArgumentNullException(nameof(app));
-         if (appModules is null) throw new ArgumentNullException(nameof(appModules));
+      if (app is null) throw new ArgumentNullException(nameof(app));
+      if (appModules is null) throw new ArgumentNullException(nameof(appModules));
 
-         app.UseMiddleware<PrecompiledPageMiddleware>((object)appModules);
+      app.UseMiddleware<PrecompiledPageMiddleware>((object)appModules);
 
-         return app;
-      }
+      return app;
+   }
 
-      public static IApplicationBuilder
-      UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules, Action<XcstWebConfiguration> config) {
+   public static IApplicationBuilder
+   UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules, Action<XcstWebConfiguration> config) {
 
-         if (config is null) throw new ArgumentNullException(nameof(config));
+      if (config is null) throw new ArgumentNullException(nameof(config));
 
-         UseXcstPrecompiledPages(app, appModules);
+      UseXcstPrecompiledPages(app, appModules);
 
-         config(XcstWebConfiguration.Instance);
+      config(XcstWebConfiguration.Instance);
 
-         return app;
-      }
+      return app;
    }
 }

@@ -16,76 +16,75 @@ using System;
 using System.Web.Mvc;
 using Xcst.Web.Mvc;
 
-namespace Xcst.Web.Configuration {
+namespace Xcst.Web.Configuration;
 
-   public sealed class XcstWebConfiguration {
+public sealed class XcstWebConfiguration {
 
-      public static XcstWebConfiguration
-      Instance { get; } = new();
+   public static XcstWebConfiguration
+   Instance { get; } = new();
 
-      public EditorTemplatesConfiguration
-      EditorTemplates { get; } = new();
+   public EditorTemplatesConfiguration
+   EditorTemplates { get; } = new();
 
-      public DisplayTemplatesConfiguration
-      DisplayTemplates { get; } = new();
+   public DisplayTemplatesConfiguration
+   DisplayTemplates { get; } = new();
 
-      public ModelBindingConfiguration
-      ModelBinding { get; } = new();
+   public ModelBindingConfiguration
+   ModelBinding { get; } = new();
 
-      private
-      XcstWebConfiguration() { }
-   }
+   private
+   XcstWebConfiguration() { }
+}
 
-   public class EditorTemplatesConfiguration {
+public class EditorTemplatesConfiguration {
 
-      /// <summary>
-      /// Default message used by <code>a:validation-message</code> and <code>a:validation-summary</code>
-      /// when model state contains an error but with a null or empty message.
-      /// </summary>
-      public Func<string>?
-      DefaultValidationMessage { get; set; }
+   /// <summary>
+   /// Default message used by <code>a:validation-message</code> and <code>a:validation-summary</code>
+   /// when model state contains an error but with a null or empty message.
+   /// </summary>
+   public Func<string>?
+   DefaultValidationMessage { get; set; }
 
-      /// <summary>
-      /// Validation message for numeric types.
-      /// </summary>
-      public Func<string>?
-      NumberValidationMessage { get; set; }
+   /// <summary>
+   /// Validation message for numeric types.
+   /// </summary>
+   public Func<string>?
+   NumberValidationMessage { get; set; }
 
-      /// <summary>
-      /// Validation message for date types.
-      /// </summary>
-      public Func<string>?
-      DateValidationMessage { get; set; }
+   /// <summary>
+   /// Validation message for date types.
+   /// </summary>
+   public Func<string>?
+   DateValidationMessage { get; set; }
 
-      public Func<string, ViewContext, XcstViewPage?>?
-      TemplateFactory { get; set; }
+   public Func<string, ViewContext, XcstViewPage?>?
+   TemplateFactory { get; set; }
 
-      public Func<EditorInfo, string?, string?>?
-      EditorCssClass { get; set; }
-   }
+   public Func<EditorInfo, string?, string?>?
+   EditorCssClass { get; set; }
+}
 
-   public class DisplayTemplatesConfiguration {
+public class DisplayTemplatesConfiguration {
 
-      public Func<string, ViewContext, XcstViewPage?>?
-      TemplateFactory { get; set; }
-   }
+   public Func<string, ViewContext, XcstViewPage?>?
+   TemplateFactory { get; set; }
+}
 
-   public class ModelBindingConfiguration {
+public class ModelBindingConfiguration {
 
-      /// <summary>
-      /// Default message used when setting a property results in an exception.
-      /// </summary>
-      public Func<string>?
-      DefaultInvalidPropertyValueErrorMessage { get; set; }
+   /// <summary>
+   /// Default message used when setting a property results in an exception.
+   /// </summary>
+   public Func<string>?
+   DefaultInvalidPropertyValueErrorMessage { get; set; }
 
-      /// <summary>
-      /// Default message used when there's no value for a non-nullable property that does not explicitly
-      /// use the <code>RequiredAttribute</code>.
-      /// </summary>
-      public Func<string>?
-      DefaultRequiredPropertyValueErrorMessage { get; set; }
+   /// <summary>
+   /// Default message used when there's no value for a non-nullable property that does not explicitly
+   /// use the <code>RequiredAttribute</code>.
+   /// </summary>
+   public Func<string>?
+   DefaultRequiredPropertyValueErrorMessage { get; set; }
 
-      public int
-      MaxJsonDeserializerMembers { get; set; } = -1;
-   }
+   public int
+   MaxJsonDeserializerMembers { get; set; } = -1;
 }

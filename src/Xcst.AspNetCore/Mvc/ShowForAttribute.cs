@@ -16,60 +16,59 @@ using System;
 using System.ComponentModel;
 using System.Web.Mvc;
 
-namespace Xcst.Web.Mvc {
+namespace Xcst.Web.Mvc;
 
-   /// <exclude/>
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   [AttributeUsage(AttributeTargets.Property)]
-   public class ShowForAttribute : Attribute, IMetadataAware {
+/// <exclude/>
+[EditorBrowsable(EditorBrowsableState.Never)]
+[AttributeUsage(AttributeTargets.Property)]
+public class ShowForAttribute : Attribute, IMetadataAware {
 
-      bool
-      _displaySet;
+   bool
+   _displaySet;
 
-      bool
-      _display;
+   bool
+   _display;
 
-      bool
-      _editSet;
+   bool
+   _editSet;
 
-      bool
-      _edit;
+   bool
+   _edit;
 
-      public bool
-      Display {
-         get => _display;
-         set {
-            _display = value;
-            _displaySet = true;
-         }
+   public bool
+   Display {
+      get => _display;
+      set {
+         _display = value;
+         _displaySet = true;
+      }
+   }
+
+   public bool
+   Edit {
+      get => _edit;
+      set {
+         _edit = value;
+         _editSet = true;
+      }
+   }
+
+   public void
+   OnMetadataCreated(ModelMetadata metadata) {
+
+      if (metadata is null) throw new ArgumentNullException(nameof(metadata));
+
+      // because the framework uses true as default, we need a way to
+      // tell if a value is explicitly specified, hence the use of AdditionalValues
+
+      if (_displaySet) {
+         metadata.ShowForDisplay = _display;
+         metadata.AdditionalValues[nameof(ModelMetadata.ShowForDisplay)] = _display;
       }
 
-      public bool
-      Edit {
-         get => _edit;
-         set {
-            _edit = value;
-            _editSet = true;
-         }
-      }
-
-      public void
-      OnMetadataCreated(ModelMetadata metadata) {
-
-         if (metadata is null) throw new ArgumentNullException(nameof(metadata));
-
-         // because the framework uses true as default, we need a way to
-         // tell if a value is explicitly specified, hence the use of AdditionalValues
-
-         if (_displaySet) {
-            metadata.ShowForDisplay = _display;
-            metadata.AdditionalValues[nameof(ModelMetadata.ShowForDisplay)] = _display;
-         }
-
-         if (_editSet) {
-            metadata.ShowForEdit = _edit;
-            metadata.AdditionalValues[nameof(ModelMetadata.ShowForEdit)] = _edit;
-         }
+      if (_editSet) {
+         metadata.ShowForEdit = _edit;
+         metadata.AdditionalValues[nameof(ModelMetadata.ShowForEdit)] = _edit;
       }
    }
 }

@@ -6,47 +6,46 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc.Properties;
 
-namespace System.Web.Mvc {
+namespace System.Web.Mvc;
 
-   class ValidatableObjectAdapter : ModelValidator {
+class ValidatableObjectAdapter : ModelValidator {
 
-      public
-      ValidatableObjectAdapter(ModelMetadata metadata, ControllerContext context)
-         : base(metadata, context) { }
+   public
+   ValidatableObjectAdapter(ModelMetadata metadata, ControllerContext context)
+      : base(metadata, context) { }
 
-      public override IEnumerable<ModelValidationResult>
-      Validate(object? container) {
+   public override IEnumerable<ModelValidationResult>
+   Validate(object? container) {
 
-         // NOTE: Container is never used here, because IValidatableObject doesn't give you
-         // any way to get access to your container.
+      // NOTE: Container is never used here, because IValidatableObject doesn't give you
+      // any way to get access to your container.
 
-         var model = this.Metadata.Model;
+      var model = this.Metadata.Model;
 
-         if (model is null) {
-            return Enumerable.Empty<ModelValidationResult>();
-         }
-
-         var validatable = model as IValidatableObject
-            ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, MvcResources.ValidatableObjectAdapter_IncompatibleType,
-                  typeof(IValidatableObject).FullName, model.GetType().FullName));
-
-         var validationContext = new ValidationContext(validatable, null, null);
-
-         return ConvertResults(validatable.Validate(validationContext));
+      if (model is null) {
+         return Enumerable.Empty<ModelValidationResult>();
       }
 
-      IEnumerable<ModelValidationResult>
-      ConvertResults(IEnumerable<ValidationResult> results) {
+      var validatable = model as IValidatableObject
+         ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, MvcResources.ValidatableObjectAdapter_IncompatibleType,
+               typeof(IValidatableObject).FullName, model.GetType().FullName));
 
-         foreach (var result in results) {
+      var validationContext = new ValidationContext(validatable, null, null);
 
-            if (result != ValidationResult.Success) {
-               if (result.MemberNames is null || !result.MemberNames.Any()) {
-                  yield return new ModelValidationResult { Message = result.ErrorMessage };
-               } else {
-                  foreach (string memberName in result.MemberNames) {
-                     yield return new ModelValidationResult { Message = result.ErrorMessage, MemberName = memberName };
-                  }
+      return ConvertResults(validatable.Validate(validationContext));
+   }
+
+   IEnumerable<ModelValidationResult>
+   ConvertResults(IEnumerable<ValidationResult> results) {
+
+      foreach (var result in results) {
+
+         if (result != ValidationResult.Success) {
+            if (result.MemberNames is null || !result.MemberNames.Any()) {
+               yield return new ModelValidationResult { Message = result.ErrorMessage };
+            } else {
+               foreach (string memberName in result.MemberNames) {
+                  yield return new ModelValidationResult { Message = result.ErrorMessage, MemberName = memberName };
                }
             }
          }

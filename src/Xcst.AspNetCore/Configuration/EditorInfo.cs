@@ -14,29 +14,28 @@
 
 using System.Web.Mvc;
 
-namespace Xcst.Web.Configuration {
+namespace Xcst.Web.Configuration;
 
-   public class EditorInfo {
+public class EditorInfo {
 
-      public string
-      TemplateName { get; }
+   public string
+   TemplateName { get; }
 
-      public string
-      TagName { get; }
+   public string
+   TagName { get; }
 
-      public InputType
-      InputType { get; }
+   public InputType
+   InputType { get; }
 
-      internal
-      EditorInfo(string templateName, string tagName)
-         : this(templateName, tagName, (System.Web.Mvc.InputType)(-1)) { }
+   internal
+   EditorInfo(string templateName, string tagName)
+      : this(templateName, tagName, (System.Web.Mvc.InputType)(-1)) { }
 
-      internal
-      EditorInfo(string templateName, string tagName, InputType inputType) {
+   internal
+   EditorInfo(string templateName, string tagName, InputType inputType) {
 
-         this.TemplateName = templateName;
-         this.TagName = tagName;
-         this.InputType = inputType;
-      }
+      this.TemplateName = templateName;
+      this.TagName = tagName;
+      this.InputType = inputType;
    }
 }

@@ -14,29 +14,28 @@
 
 using System.Web.Mvc;
 
-namespace Xcst.Web {
+namespace Xcst.Web;
 
-   static class FrameworkExtensions {
+static class FrameworkExtensions {
 
-      internal static ViewContext
-      Clone(this ViewContext context) =>
-         new ViewContext(context) {
-            ClientValidationEnabled = context.ClientValidationEnabled,
-            UnobtrusiveJavaScriptEnabled = context.UnobtrusiveJavaScriptEnabled,
-            ValidationMessageElement = context.ValidationMessageElement,
-            ValidationSummaryMessageElement = context.ValidationSummaryMessageElement
-         };
+   internal static ViewContext
+   Clone(this ViewContext context) =>
+      new ViewContext(context) {
+         ClientValidationEnabled = context.ClientValidationEnabled,
+         UnobtrusiveJavaScriptEnabled = context.UnobtrusiveJavaScriptEnabled,
+         ValidationMessageElement = context.ValidationMessageElement,
+         ValidationSummaryMessageElement = context.ValidationSummaryMessageElement
+      };
 
-      internal static HtmlHelper
-      Clone(this HtmlHelper currentHtml, ViewContext viewContext, IViewDataContainer container) =>
-         new HtmlHelper(viewContext, container) {
-            Html5DateRenderingMode = currentHtml.Html5DateRenderingMode
-         };
+   internal static HtmlHelper
+   Clone(this HtmlHelper currentHtml, ViewContext viewContext, IViewDataContainer container) =>
+      new HtmlHelper(viewContext, container) {
+         Html5DateRenderingMode = currentHtml.Html5DateRenderingMode
+      };
 
-      internal static HtmlHelper<TModel>
-      Clone<TModel>(this HtmlHelper currentHtml, ViewContext viewContext, IViewDataContainer container) =>
-         new HtmlHelper<TModel>(viewContext, container) {
-            Html5DateRenderingMode = currentHtml.Html5DateRenderingMode
-         };
-   }
+   internal static HtmlHelper<TModel>
+   Clone<TModel>(this HtmlHelper currentHtml, ViewContext viewContext, IViewDataContainer container) =>
+      new HtmlHelper<TModel>(viewContext, container) {
+         Html5DateRenderingMode = currentHtml.Html5DateRenderingMode
+      };
 }

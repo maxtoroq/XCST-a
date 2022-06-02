@@ -16,26 +16,25 @@ using System;
 using System.Linq;
 using UrlBuilder = System.Web.Mvc.UrlHelper.UrlBuilder;
 
-namespace Xcst.Web.Runtime {
+namespace Xcst.Web.Runtime;
 
-   /// <exclude/>
-   public static class LinkToHelper {
+/// <exclude/>
+public static class LinkToHelper {
 
-      public static string
-      LinkTo(string path, params object?[]? pathParts) =>
-         UrlUtil.GenerateClientUrl(null, path, pathParts);
+   public static string
+   LinkTo(string path, params object?[]? pathParts) =>
+      UrlUtil.GenerateClientUrl(null, path, pathParts);
 
-      public static string
-      LinkToDefault(string path, string defaultPath, params object?[]? pathParts) {
+   public static string
+   LinkToDefault(string path, string defaultPath, params object?[]? pathParts) {
 
-         if (pathParts is null
-            || pathParts.Length == 0
-            || pathParts.All(p => p is null || !UrlBuilder.IsDisplayableType(p.GetType()))) {
+      if (pathParts is null
+         || pathParts.Length == 0
+         || pathParts.All(p => p is null || !UrlBuilder.IsDisplayableType(p.GetType()))) {
 
-            return LinkTo(defaultPath, pathParts);
-         }
-
-         return LinkTo(path, pathParts);
+         return LinkTo(defaultPath, pathParts);
       }
+
+      return LinkTo(path, pathParts);
    }
 }

@@ -5,50 +5,49 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Web.Mvc.Properties;
 
-namespace System.Web.Mvc {
+namespace System.Web.Mvc;
 
-   abstract class AssociatedValidatorProvider : ModelValidatorProvider {
+abstract class AssociatedValidatorProvider : ModelValidatorProvider {
 
-      protected virtual ICustomTypeDescriptor
-      GetTypeDescriptor(Type type) =>
-         TypeDescriptorHelper.Get(type);
+   protected virtual ICustomTypeDescriptor
+   GetTypeDescriptor(Type type) =>
+      TypeDescriptorHelper.Get(type);
 
-      public sealed override IEnumerable<ModelValidator>
-      GetValidators(ModelMetadata metadata, ControllerContext context) {
+   public sealed override IEnumerable<ModelValidator>
+   GetValidators(ModelMetadata metadata, ControllerContext context) {
 
-         if (metadata is null) throw new ArgumentNullException(nameof(metadata));
-         if (context is null) throw new ArgumentNullException(nameof(context));
+      if (metadata is null) throw new ArgumentNullException(nameof(metadata));
+      if (context is null) throw new ArgumentNullException(nameof(context));
 
-         if (metadata.ContainerType != null
-            && !String.IsNullOrEmpty(metadata.PropertyName)) {
+      if (metadata.ContainerType != null
+         && !String.IsNullOrEmpty(metadata.PropertyName)) {
 
-            return GetValidatorsForProperty(metadata, context);
-         }
-
-         return GetValidatorsForType(metadata, context);
+         return GetValidatorsForProperty(metadata, context);
       }
 
-      protected abstract IEnumerable<ModelValidator>
-      GetValidators(ModelMetadata metadata, ControllerContext context, IEnumerable<Attribute> attributes);
-
-      IEnumerable<ModelValidator>
-      GetValidatorsForProperty(ModelMetadata metadata, ControllerContext context) {
-
-         var containerType = metadata.ContainerType!;
-
-         var typeDescriptor = GetTypeDescriptor(containerType);
-
-         var property = typeDescriptor
-            .GetProperties()
-            .Find(metadata.PropertyName, ignoreCase: true)
-               ?? throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, MvcResources.Common_PropertyNotFound,
-                  containerType.FullName, metadata.PropertyName), nameof(metadata));
-
-         return GetValidators(metadata, context, new AttributeList(property.Attributes));
-      }
-
-      IEnumerable<ModelValidator>
-      GetValidatorsForType(ModelMetadata metadata, ControllerContext context) =>
-         GetValidators(metadata, context, new AttributeList(GetTypeDescriptor(metadata.ModelType).GetAttributes()));
+      return GetValidatorsForType(metadata, context);
    }
+
+   protected abstract IEnumerable<ModelValidator>
+   GetValidators(ModelMetadata metadata, ControllerContext context, IEnumerable<Attribute> attributes);
+
+   IEnumerable<ModelValidator>
+   GetValidatorsForProperty(ModelMetadata metadata, ControllerContext context) {
+
+      var containerType = metadata.ContainerType!;
+
+      var typeDescriptor = GetTypeDescriptor(containerType);
+
+      var property = typeDescriptor
+         .GetProperties()
+         .Find(metadata.PropertyName, ignoreCase: true)
+            ?? throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, MvcResources.Common_PropertyNotFound,
+               containerType.FullName, metadata.PropertyName), nameof(metadata));
+
+      return GetValidators(metadata, context, new AttributeList(property.Attributes));
+   }
+
+   IEnumerable<ModelValidator>
+   GetValidatorsForType(ModelMetadata metadata, ControllerContext context) =>
+      GetValidators(metadata, context, new AttributeList(GetTypeDescriptor(metadata.ModelType).GetAttributes()));
 }

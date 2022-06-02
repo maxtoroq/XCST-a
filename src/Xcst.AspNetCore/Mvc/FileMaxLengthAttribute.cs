@@ -19,46 +19,45 @@ using System.Globalization;
 using System.Reflection;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
-namespace Xcst.Web.Mvc {
+namespace Xcst.Web.Mvc;
 
-   /// <exclude/>
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
-   public class FileMaxLengthAttribute : ValidationAttribute {
+/// <exclude/>
+[EditorBrowsable(EditorBrowsableState.Never)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
+public class FileMaxLengthAttribute : ValidationAttribute {
 
-      public int
-      MaxLength { get; }
+   public int
+   MaxLength { get; }
 
-      public
-      FileMaxLengthAttribute(int length) {
+   public
+   FileMaxLengthAttribute(int length) {
 
-         this.MaxLength = length;
+      this.MaxLength = length;
 
-         GetType()
-            .GetProperty("DefaultErrorMessage", BindingFlags.Instance | BindingFlags.NonPublic)!
-            .SetValue(this, "The {0} file cannot exceed {1} bytes.");
-      }
-
-      public override string
-      FormatErrorMessage(string name) =>
-         String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, this.MaxLength);
-
-      public override bool
-      IsValid(object? value) {
-
-         if (value is null) {
-            return true;
-         }
-
-         if (value is IFormFile valueAsFile) {
-            return ValidateLength(valueAsFile.Length);
-         }
-
-         return false;
-      }
-
-      bool
-      ValidateLength(long length) =>
-         length <= this.MaxLength;
+      GetType()
+         .GetProperty("DefaultErrorMessage", BindingFlags.Instance | BindingFlags.NonPublic)!
+         .SetValue(this, "The {0} file cannot exceed {1} bytes.");
    }
+
+   public override string
+   FormatErrorMessage(string name) =>
+      String.Format(CultureInfo.CurrentCulture, this.ErrorMessageString, name, this.MaxLength);
+
+   public override bool
+   IsValid(object? value) {
+
+      if (value is null) {
+         return true;
+      }
+
+      if (value is IFormFile valueAsFile) {
+         return ValidateLength(valueAsFile.Length);
+      }
+
+      return false;
+   }
+
+   bool
+   ValidateLength(long length) =>
+      length <= this.MaxLength;
 }
