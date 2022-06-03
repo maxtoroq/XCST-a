@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Xcst.Web.Mvc;
 
@@ -41,6 +42,20 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    TempDataDictionary?
    _tempData;
+
+   public override HttpContext
+   Context {
+      get => base.Context;
+      set {
+         base.Context = value;
+
+         if (value != null
+            && ViewContext is null) {
+
+            ViewContext = new ViewContext(value);
+         }
+      }
+   }
 
    public virtual ViewContext
    ViewContext {
@@ -125,9 +140,6 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       set => _tempData = value;
    }
 
-   internal bool
-   HasTempData => _tempData != null;
-
    internal virtual void
    SetViewData(ViewDataDictionary viewData) {
       _viewData = viewData;
@@ -168,7 +180,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
          ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => value, type),
          ModelName = prefix,
          ModelState = this.ModelState,
-         PropertyFilter = p => IsPropertyAllowed(p, includeProperties, excludeProperties),
+         PropertyFilter = p => isPropertyAllowed(p, includeProperties, excludeProperties),
          ValueProvider = valueProvider
       };
 
@@ -177,6 +189,17 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       binder.BindModel(this.ViewContext, bindingContext);
 
       return this.ModelState.IsValid;
+
+      static bool isPropertyAllowed(string propertyName, string[]? includeProperties, string[]? excludeProperties) {
+
+         // We allow a property to be bound if its both in the include list AND not in the exclude list.
+         // An empty include list implies all properties are allowed.
+         // An empty exclude list implies no properties are disallowed.
+
+         var includeProperty = (includeProperties is null) || (includeProperties.Length == 0) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
+         var excludeProperty = (excludeProperties != null) && excludeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
+         return includeProperty && !excludeProperty;
+      }
    }
 
    public bool
@@ -187,40 +210,37 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       var metadata = ModelMetadataProviders.Current.GetMetadataForType(() => value, value.GetType());
 
       foreach (var validationResult in ModelValidator.GetModelValidator(metadata, this.ViewContext).Validate(null)) {
-         this.ModelState.AddModelError(CreateSubPropertyName(prefix, validationResult.MemberName), validationResult.Message);
+         this.ModelState.AddModelError(createSubPropertyName(prefix, validationResult.MemberName), validationResult.Message);
       }
 
       return this.ModelState.IsValid;
-   }
 
-   static bool
-   IsPropertyAllowed(string propertyName, string[]? includeProperties, string[]? excludeProperties) {
+      static string createSubPropertyName(string? prefix, string propertyName) {
 
-      // We allow a property to be bound if its both in the include list AND not in the exclude list.
-      // An empty include list implies all properties are allowed.
-      // An empty exclude list implies no properties are disallowed.
+         if (String.IsNullOrEmpty(prefix)) {
+            return propertyName;
+         }
 
-      var includeProperty = (includeProperties is null) || (includeProperties.Length == 0) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
-      var excludeProperty = (excludeProperties != null) && excludeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
-      return includeProperty && !excludeProperty;
-   }
+         if (String.IsNullOrEmpty(propertyName)) {
+            return prefix ?? String.Empty;
+         }
 
-   static string
-   CreateSubPropertyName(string? prefix, string propertyName) {
-
-      if (String.IsNullOrEmpty(prefix)) {
-         return propertyName;
+         return (prefix + "." + propertyName);
       }
-
-      if (String.IsNullOrEmpty(propertyName)) {
-         return prefix ?? String.Empty;
-      }
-
-      return (prefix + "." + propertyName);
    }
 
-   public override XcstViewPageHandler
-   CreateHttpHandler() => new XcstViewPageHandler(this);
+   public override void
+   RenderPage() {
+
+      try {
+         RenderViewPage();
+      } finally {
+         _tempData?.Save(this.ViewContext, this.ViewContext.TempDataProvider);
+      }
+   }
+
+   protected virtual void
+   RenderViewPage() => base.RenderPage();
 
    protected override void
    CopyState(XcstPage page) {

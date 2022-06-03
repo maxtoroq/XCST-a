@@ -80,8 +80,14 @@ public abstract class XcstPage {
    public virtual bool
    IsAjax => Request?.IsAjaxRequest() ?? false;
 
-   public virtual XcstPageHandler
-   CreateHttpHandler() => new XcstPageHandler(this);
+   public virtual void
+   RenderPage() {
+
+      XcstEvaluator.Using((object)this)
+         .CallInitialTemplate()
+         .OutputTo(this.Response.BodyWriter.AsStream())
+         .Run();
+   }
 
    protected virtual void
    CopyState(XcstPage page) {
