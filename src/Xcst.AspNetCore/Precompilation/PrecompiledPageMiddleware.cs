@@ -106,8 +106,8 @@ public class PrecompiledPageMiddleware {
 
    bool
    MatchRequest(string requestPath,
-         [MaybeNullWhen(returnValue: false)] out string pagePath,
-         [MaybeNullWhen(returnValue: false)] out string pathInfo) {
+         [NotNullWhen(returnValue: true)] out string? pagePath,
+         [NotNullWhen(returnValue: true)] out string? pathInfo) {
 
       Debug.Assert(requestPath != null);
       Debug.Assert(!requestPath.StartsWith("~/"));
@@ -170,7 +170,7 @@ public class PrecompiledPageMiddleware {
    }
 
    bool
-   MatchDefaultFile(string requestPath, [MaybeNullWhen(returnValue: false)] out string pagePath) {
+   MatchDefaultFile(string requestPath, [NotNullWhen(returnValue: true)] out string? pagePath) {
 
       const string defaultDocument = "index";
 

@@ -194,7 +194,7 @@ class CachedDataAnnotationsModelMetadata : CachedModelMetadata<CachedDataAnnotat
    }
 
    internal bool
-   TryGetEnumDisplayName([MaybeNullWhen(returnValue: false)] out string displayName) {
+   TryGetEnumDisplayName([NotNullWhen(returnValue: true)] out string? displayName) {
 
       var type = Nullable.GetUnderlyingType(this.ModelType) ?? this.ModelType;
 
