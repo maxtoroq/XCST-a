@@ -214,7 +214,7 @@ static partial class TestsHelper {
          MetadataReference.CreateFromFile(typeof(System.ComponentModel.DescriptionAttribute).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(Newtonsoft.Json.JsonWriter).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(Xcst.PackageModel.IXcstPackage).Assembly.Location),
+         MetadataReference.CreateFromFile(typeof(Xcst.IXcstPackage).Assembly.Location),
          // Tests dependencies
          MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Collections.Specialized.dll")),
          MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Dynamic.Runtime.dll")),
