@@ -221,7 +221,7 @@ class Program {
             compiler.TargetBaseTypes = null;
          }
 
-         compiler.SetTunnelParam("xcsta_is_page", isPage);
+         Xcst.Web.Extension.ExtensionPackage.IsPage(compiler.SetTunnelParam, isPage);
 
          try {
             compiler.Compile(fileUri);

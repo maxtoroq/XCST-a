@@ -19,8 +19,16 @@ namespace Xcst.Web.Extension;
 
 public partial class ExtensionPackage {
 
+   const string
+   _tunnelParamPrefix = "xcsta_";
+
    public string
    ExtensionNamespace => a.NamespaceName;
+
+   public static void
+   IsPage(System.Action<string, object?> setFn, bool isPage) {
+      setFn.Invoke(_tunnelParamPrefix + "is_page", isPage);
+   }
 
    static object
    ErrorData(XObject node) {
