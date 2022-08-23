@@ -27,9 +27,10 @@
 
    <template name='src:package-attribute-extra'>
       <param name='el' as='XElement' required='yes'/>
+      <param name='xcsta_is_page' as='bool' tunnel='yes'/>
 
       <variable name='genAttr' value='this.AnnotateVirtualPath
-         &amp;&amp; this.IsPage
+         &amp;&amp; xcsta_is_page
          &amp;&amp; this.ApplicationUri != null'/>
 
       <if test='genAttr
@@ -121,9 +122,10 @@
    <template name='src:infrastructure-extra'>
       <param name='el' as='XElement' required='yes'/>
       <param name='principalModule' as='bool' required='yes'/>
+      <param name='xcsta_is_page' as='bool' tunnel='yes'/>
 
       <variable name='genLinkTo' value='this.GenerateLinkTo
-         &amp;&amp; this.IsPage
+         &amp;&amp; xcsta_is_page
          &amp;&amp; this.ApplicationUri != null
          &amp;&amp; principalModule'/>
 

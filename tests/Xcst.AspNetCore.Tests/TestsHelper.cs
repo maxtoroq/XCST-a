@@ -153,7 +153,7 @@ static partial class TestsHelper {
          UseLineDirective = true
       };
 
-      compiler.RegisterExtension(new Xcst.Web.Extension.ExtensionPackage());
+      compiler.RegisterExtension(() => new Xcst.Web.Extension.ExtensionPackage());
       //compiler.PackageTypeResolver = n => Assembly.GetExecutingAssembly().GetType(n);
       compiler.AddPackageLibrary(Assembly.GetExecutingAssembly().Location);
 

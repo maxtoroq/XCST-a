@@ -169,13 +169,11 @@ class Program {
       }
 
       // Enable "application" extension
-      var appExt = new Xcst.Web.Extension.ExtensionPackage {
+      compiler.RegisterExtension(() => new Xcst.Web.Extension.ExtensionPackage {
          ApplicationUri = startUri,
          GenerateLinkTo = true,
          AnnotateVirtualPath = true
-      };
-
-      compiler.RegisterExtension(appExt);
+      });
 
       var projectDoc = XDocument.Load(ProjectUri.LocalPath);
       var rootNamespace = RootNamespace(projectDoc, ProjectUri.LocalPath);
@@ -223,7 +221,7 @@ class Program {
             compiler.TargetBaseTypes = null;
          }
 
-         appExt.IsPage = isPage;
+         compiler.SetTunnelParam("xcsta_is_page", isPage);
 
          try {
             compiler.Compile(fileUri);

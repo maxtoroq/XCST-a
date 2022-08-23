@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xcst.Compiler" Version="2.0.5" />
+    <PackageReference Include="Xcst.Compiler" Version="2.0.7" />
     <ProjectReference Include="..\..\src\Xcst.AspNetCore.Extension\Xcst.AspNetCore.Extension.csproj" />
   </ItemGroup>
 

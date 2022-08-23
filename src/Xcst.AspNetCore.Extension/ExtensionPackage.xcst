@@ -36,7 +36,6 @@
    <param name='ApplicationUri' as='System.Uri?'/>
    <param name='GenerateLinkTo' as='bool'/>
    <param name='AnnotateVirtualPath' as='bool'/>
-   <param name='IsPage' as='bool'/>
 
    <param name='xcst_is_value_template' as='System.Func&lt;object, bool>' required='yes'/>
    <param name='xcst_require_output' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
