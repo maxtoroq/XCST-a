@@ -48,10 +48,10 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    _tempData;
 
    public override HttpContext
-   Context {
-      get => base.Context;
+   HttpContext {
+      get => base.HttpContext;
       set {
-         base.Context = value;
+         base.HttpContext = value;
 
          if (value != null
             && ViewContext is null) {
@@ -70,7 +70,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
          _viewContext = value;
 
 #pragma warning disable CS8601
-         Context = value?.HttpContext;
+         HttpContext = value?.HttpContext;
 #pragma warning restore CS8601
 
 #pragma warning disable CS8625
@@ -100,16 +100,16 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    private protected IModelMetadataProvider
    MetadataProvider {
-      get => _modelMetadataProvider ??= Context.RequestServices.GetRequiredService<IModelMetadataProvider>();
+      get => _modelMetadataProvider ??= HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
    }
 
    public virtual UrlHelper
    Url {
       get {
          if (_url is null
-            && Context != null) {
+            && HttpContext != null) {
 
-            _url = new UrlHelper(Context);
+            _url = new UrlHelper(HttpContext);
          }
 #pragma warning disable CS8603
          return _url;

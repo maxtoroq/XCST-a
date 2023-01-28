@@ -30,7 +30,7 @@ namespace Xcst.Web;
 public abstract class XcstPage {
 
    HttpContext?
-   _context;
+   _httpContext;
 
    IList<string>?
    _urlData;
@@ -50,28 +50,28 @@ public abstract class XcstPage {
    }
 
    public virtual HttpContext
-   Context {
+   HttpContext {
 #pragma warning disable CS8603
-      get => _context;
+      get => _httpContext;
 #pragma warning restore CS8603
       set {
-         _context = value;
+         _httpContext = value;
          _urlData = null;
       }
    }
 
 #pragma warning disable CS8603
    public HttpRequest
-   Request => Context?.Request;
+   Request => HttpContext?.Request;
 
    public HttpResponse
-   Response => Context?.Response;
+   Response => HttpContext?.Response;
 
    public ISession
-   Session => Context?.Session;
+   Session => HttpContext?.Session;
 
    public IPrincipal
-   User => Context?.User;
+   User => HttpContext?.User;
 #pragma warning restore CS8603
 
    public virtual bool
@@ -91,7 +91,7 @@ public abstract class XcstPage {
 
    protected virtual void
    CopyState(XcstPage page) {
-      page.Context = this.Context;
+      page.HttpContext = this.HttpContext;
    }
 
    public async Task<bool>
@@ -100,12 +100,12 @@ public abstract class XcstPage {
       var authorizeResult = await TryAuthorizeCoreAsync(policy, roles);
 
       if (authorizeResult.Challenged) {
-         await this.Context.ChallengeAsync();
+         await this.HttpContext.ChallengeAsync();
          return false;
       }
 
       if (authorizeResult.Forbidden) {
-         await this.Context.ForbidAsync();
+         await this.HttpContext.ForbidAsync();
          return false;
       }
 
@@ -115,7 +115,7 @@ public abstract class XcstPage {
    public virtual async Task<PolicyAuthorizationResult>
    TryAuthorizeCoreAsync(string? policy = null, string[]? roles = null) {
 
-      var httpContext = this.Context;
+      var httpContext = this.HttpContext;
       var user = this.User;
 
       if (user.Identity is null

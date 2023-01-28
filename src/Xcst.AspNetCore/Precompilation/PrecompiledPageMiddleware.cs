@@ -94,7 +94,7 @@ public class PrecompiledPageMiddleware {
          var page = CreatePage(PageType(pagePath), context.RequestServices);
          page.VirtualPath = "~/" + pagePath;
          page.PathInfo = pathInfo;
-         page.Context = context;
+         page.HttpContext = context;
          page.RenderPage();
 
          return;

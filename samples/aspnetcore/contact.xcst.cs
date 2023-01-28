@@ -38,7 +38,7 @@ partial class _Page_contact : IPageInit {
       var sent = false;
 
       if (IsPost
-         && AntiForgery.TryValidateAsync(Context).Result
+         && AntiForgery.TryValidateAsync(HttpContext).Result
          && TryBind(contact)
          && SendMail(contact)) {
 
