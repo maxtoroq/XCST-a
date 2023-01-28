@@ -33,6 +33,7 @@
    <import href='_metadata.xcst'/>
    <import href='_page.xcst'/>
 
+   <param name='TargetRuntime' value='2m' as='decimal'/>
    <param name='ApplicationUri' as='System.Uri?'/>
    <param name='GenerateLinkTo' as='bool'/>
    <param name='AnnotateVirtualPath' as='bool'/>

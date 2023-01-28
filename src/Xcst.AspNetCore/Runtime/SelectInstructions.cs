@@ -37,7 +37,7 @@ public static class SelectInstructions {
    public static void
    Select(HtmlHelper htmlHelper, XcstWriter output, string name, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, HtmlAttribs? htmlAttributes = null) =>
-      SelectHelper(htmlHelper, output, default(ModelMetadata), name, selectList, default(string), multiple, htmlAttributes);
+      SelectHelper(htmlHelper, output, default(ModelExplorer), name, selectList, default(string), multiple, htmlAttributes);
 
    [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
@@ -47,20 +47,20 @@ public static class SelectInstructions {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      SelectHelper(htmlHelper, output, metadata, expressionString, selectList, default(string), multiple, htmlAttributes);
+      SelectHelper(htmlHelper, output, modelExplorer, expressionString, selectList, default(string), multiple, htmlAttributes);
    }
 
    public static void
    SelectForModel(HtmlHelper htmlHelper, XcstWriter output, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, HtmlAttribs? htmlAttributes = null) =>
 
-      SelectHelper(htmlHelper, output, htmlHelper.ViewData.ModelMetadata, String.Empty, selectList, default(string), multiple, htmlAttributes);
+      SelectHelper(htmlHelper, output, htmlHelper.ViewData.ModelExplorer, String.Empty, selectList, default(string), multiple, htmlAttributes);
 
    internal static void
-   SelectHelper(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata? metadata, string expression, IEnumerable<SelectListItem>? selectList,
+   SelectHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string expression, IEnumerable<SelectListItem>? selectList,
          string? optionLabel, bool multiple, HtmlAttribs? htmlAttributes) {
 
       if (!multiple
@@ -74,7 +74,7 @@ public static class SelectInstructions {
          }
       }
 
-      SelectInternal(htmlHelper, output, metadata, optionLabel, expression, selectList, multiple, htmlAttributes);
+      SelectInternal(htmlHelper, output, modelExplorer, optionLabel, expression, selectList, multiple, htmlAttributes);
    }
 
    // Helper methods
@@ -136,7 +136,7 @@ public static class SelectInstructions {
    }
 
    static void
-   SelectInternal(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata? metadata, string? optionLabel, string name, IEnumerable<SelectListItem>? selectList,
+   SelectInternal(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string? optionLabel, string name, IEnumerable<SelectListItem>? selectList,
          bool allowMultiple, HtmlAttribs? htmlAttributes) {
 
       var viewData = htmlHelper.ViewData;
@@ -164,7 +164,7 @@ public static class SelectInstructions {
 
       if (defaultValue is null) {
 
-         if (metadata is null) {
+         if (modelExplorer is null) {
 
             if (!usedViewData
                && !String.IsNullOrEmpty(name)) {
@@ -173,7 +173,7 @@ public static class SelectInstructions {
             }
 
          } else {
-            defaultValue = metadata.Model;
+            defaultValue = modelExplorer.Model;
          }
       }
 
@@ -192,7 +192,7 @@ public static class SelectInstructions {
          && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
       var validationAttribs = htmlHelper
-         .GetUnobtrusiveValidationAttributes(name, metadata, excludeMinMaxLength: !allowMultiple);
+         .GetUnobtrusiveValidationAttributes(name, modelExplorer?.Metadata, excludeMinMaxLength: !allowMultiple);
 
       HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
       HtmlAttributeHelper.WriteAttributes(validationAttribs, output);

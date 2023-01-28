@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
     <RootNamespace>Xcst.Web</RootNamespace>
@@ -20,6 +20,13 @@
     </PackageReference>
     <PackageReference Include="System.Runtime.Caching" Version="5.0.0" />
     <PackageReference Include="Xcst.Runtime" Version="2.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorer" Alias="ModelExplorer" />
+    <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorerExtensions" Static="true" />
+    <Using Include="Microsoft.AspNetCore.Mvc.ModelBinding.ModelMetadata" Alias="ModelMetadata" />
+    <Using Include="Microsoft.AspNetCore.Mvc.ModelBinding.IModelMetadataProvider" Alias="IModelMetadataProvider" />
+    <Using Include="Microsoft.AspNetCore.Mvc.ModelBinding.ModelMetadataProviderExtensions" Static="true" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\schemas\xcst-app.rng" Visible="false" PackagePath="schemas" />

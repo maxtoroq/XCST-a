@@ -17,6 +17,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Xcst.Web.Mvc;
 
@@ -30,6 +31,9 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    ViewDataDictionary?
    _viewData;
+
+   IModelMetadataProvider?
+   _modelMetadataProvider;
 
    DynamicViewDataDictionary?
    _viewBag;
@@ -80,7 +84,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    ViewData {
       get {
          if (_viewData is null) {
-            SetViewData(new ViewDataDictionary());
+            SetViewData(new ViewDataDictionary(MetadataProvider));
          }
          return _viewData!;
       }
@@ -93,6 +97,11 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    public object?
    Model => ViewData.Model;
+
+   private protected IModelMetadataProvider
+   MetadataProvider {
+      get => _modelMetadataProvider ??= Context.RequestServices.GetRequiredService<IModelMetadataProvider>();
+   }
 
    public virtual UrlHelper
    Url {
@@ -177,7 +186,8 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       }
 
       var bindingContext = new ModelBindingContext {
-         ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => value, type),
+         Model = value,
+         ModelMetadata = this.MetadataProvider.GetMetadataForType(type),
          ModelName = prefix,
          ModelState = this.ModelState,
          PropertyFilter = p => isPropertyAllowed(p, includeProperties, excludeProperties),
@@ -207,9 +217,9 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
       if (value is null) throw new ArgumentNullException(nameof(value));
 
-      var metadata = ModelMetadataProviders.Current.GetMetadataForType(() => value, value.GetType());
+      var metadata = this.MetadataProvider.GetMetadataForType(value.GetType());
 
-      foreach (var validationResult in ModelValidator.GetModelValidator(metadata, this.ViewContext).Validate(null)) {
+      foreach (var validationResult in ModelValidator.GetModelValidator(metadata, this.ViewContext).Validate(value)) {
          this.ModelState.AddModelError(createSubPropertyName(prefix, validationResult.MemberName), validationResult.Message);
       }
 
@@ -274,7 +284,7 @@ public abstract class XcstViewPage<TModel> : XcstViewPage {
    ViewData {
       get {
          if (_viewData is null) {
-            SetViewData(new ViewDataDictionary<TModel>());
+            SetViewData(new ViewDataDictionary<TModel>(MetadataProvider));
          }
          return _viewData!;
       }

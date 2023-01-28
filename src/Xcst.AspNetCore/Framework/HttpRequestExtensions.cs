@@ -22,19 +22,19 @@ public static class HttpRequestExtensions {
       }
 
       string? verbOverride = null;
-      var headerOverrideValue = (string)request.Headers[XHttpMethodOverrideKey];
+      var headerOverrideValue = (string?)request.Headers[XHttpMethodOverrideKey];
 
       if (!String.IsNullOrEmpty(headerOverrideValue)) {
          verbOverride = headerOverrideValue;
       } else {
 
-         var formOverrideValue = (string)request.Form[XHttpMethodOverrideKey];
+         var formOverrideValue = (string?)request.Form[XHttpMethodOverrideKey];
 
          if (!String.IsNullOrEmpty(formOverrideValue)) {
             verbOverride = formOverrideValue;
          } else {
 
-            var queryStringOverrideValue = (string)request.Query[XHttpMethodOverrideKey];
+            var queryStringOverrideValue = (string?)request.Query[XHttpMethodOverrideKey];
 
             if (!String.IsNullOrEmpty(queryStringOverrideValue)) {
                verbOverride = queryStringOverrideValue;

@@ -15,7 +15,7 @@
   <PropertyGroup>
     <XcstInput>**\*.xcst</XcstInput>
     <XcstOutput>xcst.generated.cs</XcstOutput>
-    <XcstCodegenExe>$(ProjectDir)..\extension-codegen\bin\$(Configuration)\net5.0\extension-codegen.exe</XcstCodegenExe>
+    <XcstCodegenExe>$(ProjectDir)..\extension-codegen\bin\$(Configuration)\net7.0\extension-codegen.exe</XcstCodegenExe>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(XcstOutput)</DefaultItemExcludes>
   </PropertyGroup>
 

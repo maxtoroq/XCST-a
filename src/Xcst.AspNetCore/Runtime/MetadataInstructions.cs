@@ -34,33 +34,31 @@ public static class MetadataInstructions {
    public static string
    DisplayName(HtmlHelper html, string name) {
 
-      var metadata = ModelMetadata.FromStringExpression(name, html.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, html.ViewData);
 
-      return DisplayNameHelper(metadata, name);
+      return DisplayNameHelper(modelExplorer, name);
    }
 
    public static string
    DisplayNameFor<TModel, TProperty>(HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression) {
 
-      ModelMetadata metadata;
-
-      if (typeof(IEnumerable<TModel>).IsAssignableFrom(typeof(TModel))) {
-         metadata = ModelMetadata.FromLambdaExpression(expression, new ViewDataDictionary<TModel>());
-      } else {
-         metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
-      }
+      var modelExplorer = (typeof(IEnumerable<TModel>).IsAssignableFrom(typeof(TModel))) ?
+          ExpressionMetadataProvider.FromLambdaExpression(expression, new ViewDataDictionary<TModel>(html.ViewData.MetadataProvider))
+          : ExpressionMetadataProvider.FromLambdaExpression(expression, html.ViewData);
 
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return DisplayNameHelper(metadata, expressionString);
+      return DisplayNameHelper(modelExplorer, expressionString);
    }
 
    public static string
    DisplayNameForModel(HtmlHelper html) =>
-      DisplayNameHelper(html.ViewData.ModelMetadata, String.Empty);
+      DisplayNameHelper(html.ViewData.ModelExplorer, String.Empty);
 
    internal static string
-   DisplayNameHelper(ModelMetadata metadata, string htmlFieldName) {
+   DisplayNameHelper(ModelExplorer modelExplorer, string htmlFieldName) {
+
+      var metadata = modelExplorer.Metadata;
 
       // We don't call ModelMetadata.GetDisplayName here because we want to fall back to the field name rather than the ModelType.
       // This is similar to how the LabelHelpers get the text of a label.
@@ -76,19 +74,19 @@ public static class MetadataInstructions {
 
    public static void
    DisplayText(HtmlHelper html, ISequenceWriter<string> output, string name) =>
-      DisplayTextHelper(html, output, ModelMetadata.FromStringExpression(name, html.ViewData));
+      DisplayTextHelper(html, output, ExpressionMetadataProvider.FromStringExpression(name, html.ViewData));
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
    public static void
    DisplayTextFor<TModel, TResult>(HtmlHelper<TModel> html, ISequenceWriter<string> output, Expression<Func<TModel, TResult>> expression) =>
-      DisplayTextHelper(html, output, ModelMetadata.FromLambdaExpression(expression, html.ViewData));
+      DisplayTextHelper(html, output, ExpressionMetadataProvider.FromLambdaExpression(expression, html.ViewData));
 
    internal static void
-   DisplayTextHelper(HtmlHelper html, ISequenceWriter<string> output, ModelMetadata metadata) {
+   DisplayTextHelper(HtmlHelper html, ISequenceWriter<string> output, ModelExplorer modelExplorer) {
 
-      var text = metadata.SimpleDisplayText;
+      var text = modelExplorer.GetSimpleDisplayText();
 
-      if (metadata.HtmlEncode) {
+      if (modelExplorer.Metadata.HtmlEncode) {
          output.WriteString(text);
       } else {
          output.WriteRaw(text);
@@ -97,14 +95,30 @@ public static class MetadataInstructions {
 
    public static string
    DisplayString(HtmlHelper html, string name) =>
-      DisplayStringHelper(html, ModelMetadata.FromStringExpression(name, html.ViewData));
+      DisplayStringHelper(html, ExpressionMetadataProvider.FromStringExpression(name, html.ViewData));
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
    public static string
    DisplayStringFor<TModel, TResult>(HtmlHelper<TModel> html, Expression<Func<TModel, TResult>> expression) =>
-      DisplayStringHelper(html, ModelMetadata.FromLambdaExpression(expression, html.ViewData));
+      DisplayStringHelper(html, ExpressionMetadataProvider.FromLambdaExpression(expression, html.ViewData));
 
    internal static string
-   DisplayStringHelper(HtmlHelper html, ModelMetadata metadata) =>
-      metadata.SimpleDisplayText;
+   DisplayStringHelper(HtmlHelper html, ModelExplorer modelExplorer) =>
+      modelExplorer.GetSimpleDisplayText();
+
+   // other
+
+   internal static string?
+   GroupName(ModelMetadata metadata) {
+
+      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+
+      if (metadata.AdditionalValues.TryGetValue("GroupName", out var groupNameObj)
+         && groupNameObj is string groupName) {
+
+         return groupName;
+      }
+
+      return null;
+   }
 }

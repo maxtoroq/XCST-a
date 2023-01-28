@@ -36,12 +36,8 @@ public class ModelBindingContext {
    public bool
    FallbackToEmptyPrefix { get; set; }
 
-   [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "value", Justification = "Cannot remove setter as that's a breaking change")]
    public object?
-   Model {
-      get => ModelMetadata.Model;
-      set => throw new InvalidOperationException(MvcResources.ModelMetadata_PropertyNotSettable);
-   }
+   Model { get; set; }
 
    public ModelMetadata
    ModelMetadata { get; set; }
@@ -74,8 +70,8 @@ public class ModelBindingContext {
 
    public IDictionary<string, ModelMetadata>
    PropertyMetadata =>
-      _propertyMetadata ??= ModelMetadata.PropertiesAsArray
-         .ToDictionaryFast(m => m.PropertyName, StringComparer.OrdinalIgnoreCase);
+      _propertyMetadata ??= ModelMetadata.Properties
+         .ToDictionaryFast(m => m.PropertyName!, StringComparer.OrdinalIgnoreCase);
 
    public IValueProvider
    ValueProvider { get; set; }

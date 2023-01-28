@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -30,7 +31,7 @@ static partial class TestsHelper {
          string packageFile, string testName, string testNamespace, bool correct, bool error, bool fail,
          string? disableWarning = null) {
 
-      var printCode = _printCode;
+      var printCode = _printCode || Debugger.IsAttached;
       var packageUri = new Uri(packageFile, UriKind.Absolute);
 
       CompileResult xcstResult;
@@ -41,6 +42,7 @@ static partial class TestsHelper {
 
          if (!correct) {
             // did not fail, caller Assert.Throws will
+            PrintCode(codegenResult.result);
             return;
          }
 
@@ -139,10 +141,15 @@ static partial class TestsHelper {
       } finally {
 
          if (printCode) {
-            foreach (var unit in xcstResult.CompilationUnits) {
-               Console.WriteLine(unit);
-            }
+            PrintCode(xcstResult);
          }
+      }
+   }
+
+   static void
+   PrintCode(CompileResult result) {
+      foreach (var unit in result.CompilationUnits) {
+         Console.WriteLine(unit);
       }
    }
 
@@ -224,6 +231,7 @@ static partial class TestsHelper {
          MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Http.HttpContext).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Http.IFormFile).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(Microsoft.Extensions.Primitives.StringValues).Assembly.Location),
+         MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Mvc.HiddenInputAttribute).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(TestAssert).Assembly.Location),
          MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location)

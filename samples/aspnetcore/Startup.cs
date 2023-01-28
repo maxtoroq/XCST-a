@@ -18,6 +18,10 @@ public class Startup {
    public void
    ConfigureServices(IServiceCollection services) {
 
+      services.AddMvcCore(opts => {
+         opts.ModelMetadataDetailsProviders.Add(new Xcst.Web.Mvc.ModelBinding.MetadataDetailsProvider());
+      }).AddDataAnnotations();
+
       services.AddAntiforgery();
       //services.AddDistributedMemoryCache();
       //services.AddSession();

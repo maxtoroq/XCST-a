@@ -8,10 +8,10 @@ See the [project home][XCST] for more information.
 
 ### Packages Built From This Repository
 
-Package | Description
-------- | -----------
-[Xcst.AspNetCore] | XCST web pages for ASP.NET Core.
-[Xcst.AspNetCore.Extension] | Extension instructions for XCST web pages.
+Package | Description | Targets
+------- | ----------- | -------
+[Xcst.AspNetCore] | XCST web pages for ASP.NET Core. | .NET 7
+[Xcst.AspNetCore.Extension] | Extension instructions for XCST web pages. | .NET 5
 
 ### Related Repositories
 
@@ -19,8 +19,6 @@ Package | Description
 
 System Requirements
 -------------------
-The codebase is written in C# 10 and requires .NET 5 or higher.
-
 The [release script](build/release.ps1) (which creates the NuGet packages) and other utility scripts are written in PowerShell 5.1.
 
 The [application extension schema](schemas/xcst-app.rng) is written in Relax NG and converted to XSD using [Trang], which requires Java.

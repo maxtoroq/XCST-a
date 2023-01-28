@@ -57,19 +57,19 @@ public static class HtmlHelperFactory {
    }
 
    internal static HtmlHelper
-   ForMemberTemplate(HtmlHelper currentHtml, ModelMetadata memberMetadata) {
+   ForMemberTemplate(HtmlHelper currentHtml, ModelExplorer memberExplorer) {
 
       if (currentHtml is null) throw new ArgumentNullException(nameof(currentHtml));
-      if (memberMetadata is null) throw new ArgumentNullException(nameof(memberMetadata));
+      if (memberExplorer is null) throw new ArgumentNullException(nameof(memberExplorer));
 
       var currentViewData = currentHtml.ViewData;
 
       var container = new ViewDataContainer {
          ViewData = new ViewDataDictionary(currentViewData) {
-            Model = memberMetadata.Model,
-            ModelMetadata = memberMetadata,
+            Model = memberExplorer.Model,
+            ModelExplorer = memberExplorer,
             TemplateInfo = new TemplateInfo {
-               HtmlFieldPrefix = currentViewData.TemplateInfo.GetFullHtmlFieldName(memberMetadata.PropertyName)
+               HtmlFieldPrefix = currentViewData.TemplateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName)
             }
          }
       };

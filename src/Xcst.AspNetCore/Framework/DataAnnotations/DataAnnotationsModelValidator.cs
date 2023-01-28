@@ -6,11 +6,15 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc.Properties;
+using Microsoft.Extensions.DependencyInjection;
 using DataAnnotationsCompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 
 namespace System.Web.Mvc;
 
 class DataAnnotationsModelValidator : ModelValidator {
+
+   readonly IModelMetadataProvider
+   _metadataProvider;
 
    protected internal ValidationAttribute
    Attribute { get; private set; }
@@ -28,6 +32,8 @@ class DataAnnotationsModelValidator : ModelValidator {
       if (attribute is null) throw new ArgumentNullException(nameof(attribute));
 
       this.Attribute = attribute;
+
+      _metadataProvider = context.HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
    }
 
    internal static ModelValidator
@@ -54,12 +60,14 @@ class DataAnnotationsModelValidator : ModelValidator {
 
       var memberName = this.Metadata.PropertyName ?? this.Metadata.ModelType.Name;
 
-      var context = new ValidationContext(container ?? this.Metadata.Model) {
+      var context = new ValidationContext(container/* ?? this.Metadata.Model*/) {
          DisplayName = this.Metadata.GetDisplayName(),
          MemberName = memberName
       };
 
-      var result = this.Attribute.GetValidationResult(this.Metadata.Model, context);
+      var modelExplorer = new ModelExplorer(_metadataProvider, this.Metadata, container);
+      var value = modelExplorer.Model;
+      var result = this.Attribute.GetValidationResult(value, context);
 
       if (result != ValidationResult.Success) {
 
@@ -140,12 +148,12 @@ class CompareAttributeAdapter : DataAnnotationsModelValidator<DataAnnotationsCom
          if (_otherPropertyDisplayName is null
             && metadata.ContainerType != null) {
 
-            _otherPropertyDisplayName = ModelMetadataProviders.Current.GetMetadataForProperty(() => metadata.Model, metadata.ContainerType, attribute.OtherProperty).GetDisplayName();
+            _otherPropertyDisplayName = metadata
+               .GetMetadataForProperty(metadata.ContainerType, attribute.OtherProperty)
+               .GetDisplayName();
          }
 
-         if (_otherPropertyDisplayName is null) {
-            _otherPropertyDisplayName = attribute.OtherProperty;
-         }
+         _otherPropertyDisplayName ??= attribute.OtherProperty;
 
          // Copy settable properties from wrapped attribute. Don't reset default message accessor (set as
          // CompareAttribute constructor calls ValidationAttribute constructor) when all properties are null to
@@ -246,7 +254,8 @@ class RangeAttributeAdapter : DataAnnotationsModelValidator<RangeAttribute> {
    public override IEnumerable<ModelClientValidationRule>
    GetClientValidationRules() {
 
-      var errorMessage = this.ErrorMessage; // Per Dev10 Bug #923283, need to make sure ErrorMessage is called before Minimum/Maximum
+      // Per Dev10 Bug #923283, need to make sure ErrorMessage is called before Minimum/Maximum
+      var errorMessage = this.ErrorMessage;
 
       return new[] { new ModelClientValidationRangeRule(errorMessage, this.Attribute.Minimum, this.Attribute.Maximum) };
    }

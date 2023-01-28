@@ -68,27 +68,26 @@ public static class TextAreaInstructions {
    public static void
    TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null, HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = ModelMetadata.FromStringExpression(name, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, htmlHelper.ViewData);
 
       if (value != null) {
-         metadata.Model = value;
+         modelExplorer = new ModelExplorer(htmlHelper.ViewData.MetadataProvider, modelExplorer.Container, modelExplorer.Metadata, value);
       }
 
-      TextAreaHelper(htmlHelper, output, metadata, name, implicitRowsAndColumns, htmlAttributes);
+      TextAreaHelper(htmlHelper, output, modelExplorer, name, implicitRowsAndColumns, htmlAttributes);
    }
 
    public static void
    TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value, int rows, int columns, HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = ModelMetadata.FromStringExpression(name, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, htmlHelper.ViewData);
 
       if (value != null) {
-         metadata.Model = value;
+         modelExplorer = new ModelExplorer(htmlHelper.ViewData.MetadataProvider, modelExplorer.Container, modelExplorer.Metadata, value);
       }
 
       var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
-
-      TextAreaHelper(htmlHelper, output, metadata, name, rowsAndColumns, htmlAttributes);
+      TextAreaHelper(htmlHelper, output, modelExplorer, name, rowsAndColumns, htmlAttributes);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
@@ -97,10 +96,10 @@ public static class TextAreaInstructions {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      TextAreaHelper(htmlHelper, output, metadata, expressionString, implicitRowsAndColumns, htmlAttributes);
+      TextAreaHelper(htmlHelper, output, modelExplorer, expressionString, implicitRowsAndColumns, htmlAttributes);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
@@ -109,16 +108,16 @@ public static class TextAreaInstructions {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
       var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
 
-      TextAreaHelper(htmlHelper, output, metadata, expressionString, rowsAndColumns, htmlAttributes);
+      TextAreaHelper(htmlHelper, output, modelExplorer, expressionString, rowsAndColumns, htmlAttributes);
    }
 
    [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "If this fails, it is because the string-based version had an empty 'name' parameter")]
    internal static void
-   TextAreaHelper(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata metadata, string name, IDictionary<string, object> rowsAndColumns,
+   TextAreaHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer modelExplorer, string name, IDictionary<string, object> rowsAndColumns,
          HtmlAttribs? htmlAttributes, string? innerHtmlPrefix = null) {
 
       var fullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
@@ -132,35 +131,30 @@ public static class TextAreaInstructions {
       output.WriteAttributeString("name", fullName);
       HtmlAttributeHelper.WriteAttributes(rowsAndColumns, output);
 
-      var explicitRowsAndCols = rowsAndColumns != implicitRowsAndColumns;
+      htmlHelper.ViewData.ModelState.TryGetValue(fullName, out var modelState);
 
       // If there are any errors for a named field, we add the css attribute.
 
-      var cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out var modelState)
-         && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
+      var cssClass = (modelState?.Errors.Count > 0) ?
+         HtmlHelper.ValidationInputCssClassName
+         : null;
 
       HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
-      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), output);
+      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer.Metadata), output);
 
       // name cannnot be overridden, and class was already written
       // explicit rows and cols cannot be overridden
+
+      var explicitRowsAndCols = rowsAndColumns != implicitRowsAndColumns;
 
       HtmlAttributeHelper.WriteAttributes(
          htmlAttributes,
          output,
          excludeFn: n => n == "name" || n == "class" || (explicitRowsAndCols && (n == "rows" || n == "cols")));
 
-      string? value;
-
-      if (modelState?.Value != null) {
-         value = modelState.Value.AttemptedValue;
-
-      } else if (metadata.Model != null) {
-         value = Convert.ToString(metadata.Model, CultureInfo.CurrentCulture);
-
-      } else {
-         value = String.Empty;
-      }
+      var value = (modelState?.Value != null) ? modelState.Value.AttemptedValue
+         : (modelExplorer.Model != null) ? Convert.ToString(modelExplorer.Model, CultureInfo.CurrentCulture)
+         : String.Empty;
 
       // The first newline is always trimmed when a TextArea is rendered, so we add an extra one
       // in case the value being rendered is something like "\r\nHello".

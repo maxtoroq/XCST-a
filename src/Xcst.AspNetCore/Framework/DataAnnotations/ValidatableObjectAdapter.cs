@@ -20,7 +20,8 @@ class ValidatableObjectAdapter : ModelValidator {
       // NOTE: Container is never used here, because IValidatableObject doesn't give you
       // any way to get access to your container.
 
-      var model = this.Metadata.Model;
+      //var model = this.Metadata.Model;
+      var model = container;
 
       if (model is null) {
          return Enumerable.Empty<ModelValidationResult>();

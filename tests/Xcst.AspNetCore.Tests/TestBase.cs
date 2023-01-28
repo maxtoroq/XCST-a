@@ -4,6 +4,8 @@ using System.Web.Mvc;
 using Xcst.Web.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using TestAssert = NUnit.Framework.Assert;
 
@@ -25,12 +27,20 @@ static partial class TestsHelper {
       antiforgeryMock.Setup(p => p.GetAndStoreTokens(It.IsAny<HttpContext>()))
          .Returns(new AntiforgeryTokenSet(null, null, "__RequestVerificationToken", null));
 
-      var serviceProviderMock = new Mock<IServiceProvider>();
-      serviceProviderMock.Setup(p => p.GetService(It.Is<Type>(t => t == typeof(IAntiforgery))))
-         .Returns(antiforgeryMock.Object);
+      var services = new ServiceCollection();
+      services
+         .AddOptions()
+         .AddMvcCore(opts => {
+            opts.ModelMetadataDetailsProviders.Add(new Xcst.Web.Mvc.ModelBinding.MetadataDetailsProvider());
+         })
+         .AddDataAnnotations();
+
+      services.AddSingleton(antiforgeryMock.Object);
+
+      var serviceProvider = services.BuildServiceProvider();
 
       httpContextMock.Setup(c => c.RequestServices)
-         .Returns(serviceProviderMock.Object);
+         .Returns(serviceProvider);
 
       package.ViewContext = new ViewContext(httpContextMock.Object);
 

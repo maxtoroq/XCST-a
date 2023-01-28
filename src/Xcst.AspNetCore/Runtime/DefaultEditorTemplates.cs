@@ -67,7 +67,7 @@ static class DefaultEditorTemplates {
    CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
       var viewData = html.ViewData;
-      var model = viewData.ModelMetadata.Model;
+      var model = viewData.ModelExplorer.Model;
 
       if (model is null) {
          return;
@@ -86,6 +86,8 @@ static class DefaultEditorTemplates {
       var typeInCollectionIsNullableValueType = TypeHelpers.IsNullableValueType(typeInCollection);
       var oldPrefix = viewData.TemplateInfo.HtmlFieldPrefix;
 
+      var elementMetadata = viewData.ModelMetadata.ElementMetadata;
+
       try {
 
          viewData.TemplateInfo.HtmlFieldPrefix = String.Empty;
@@ -95,22 +97,22 @@ static class DefaultEditorTemplates {
 
          foreach (var item in collection) {
 
-            var itemType = typeInCollection;
+            var itemMetadata = elementMetadata;
 
             if (item != null
                && !typeInCollectionIsNullableValueType) {
 
-               itemType = item.GetType();
+               itemMetadata = viewData.MetadataProvider.GetMetadataForType(item.GetType());
             }
 
-            var metadata = ModelMetadataProviders.Current.GetMetadataForType(() => item, itemType);
+            var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
             templateHelper(
                html,
                package,
                seqOutput,
-               metadata,
+               itemExplorer,
                htmlFieldName: fieldName,
                templateName: null,
                membersNames: null,
@@ -129,10 +131,10 @@ static class DefaultEditorTemplates {
 
       var viewData = html.ViewData;
 
-      if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelMetadata.Model) {
+      if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelExplorer.Model) {
 
          viewData.TemplateInfo.FormattedModelValue =
-            String.Format(CultureInfo.CurrentCulture, "{0:0.00}", viewData.ModelMetadata.Model);
+            String.Format(CultureInfo.CurrentCulture, "{0:0.00}", viewData.ModelExplorer.Model);
       }
 
       HtmlInputTemplateHelper(html, package, seqOutput, "Decimal");
@@ -184,8 +186,8 @@ static class DefaultEditorTemplates {
 
          var metadata = html.ViewData.ModelMetadata;
 
-         if (!String.IsNullOrEmpty(metadata.Watermark)) {
-            htmlAttributes["placeholder"] = metadata.Watermark;
+         if (!String.IsNullOrEmpty(metadata.Placeholder)) {
+            htmlAttributes["placeholder"] = metadata.Placeholder;
          }
 
          htmlAttributes.SetBoolean("readonly", metadata.IsReadOnly);
@@ -205,15 +207,14 @@ static class DefaultEditorTemplates {
    ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
       var viewData = html.ViewData;
-      var modelMetadata = viewData.ModelMetadata;
 
       if (viewData.TemplateInfo.TemplateDepth > 1) {
-         MetadataInstructions.DisplayTextHelper(html, seqOutput, modelMetadata);
+         MetadataInstructions.DisplayTextHelper(html, seqOutput, viewData.ModelExplorer);
          return;
       }
 
       var filteredProperties = EditorInstructions.EditorProperties(html);
-      var groupedProperties = filteredProperties.GroupBy(p => p.GroupName);
+      var groupedProperties = filteredProperties.GroupBy(p => MetadataInstructions.GroupName(p.Metadata));
 
       var createFieldset = groupedProperties.Any(g => g.Key != null);
 
@@ -231,16 +232,17 @@ static class DefaultEditorTemplates {
             fieldsetWriter.WriteEndElement();
          }
 
-         foreach (var propertyMeta in group) {
+         foreach (var propertyExplorer in group) {
 
             XcstWriter? fieldWriter = null;
+            var propertyMeta = propertyExplorer.Metadata;
 
             if (!propertyMeta.HideSurroundingHtml) {
 
-               var memberTemplate = EditorInstructions.MemberTemplate(html, propertyMeta);
+               var memberTemplate = EditorInstructions.MemberTemplate(html, propertyExplorer);
 
                if (memberTemplate != null) {
-                  memberTemplate(null!/* argument is not used */, fieldsetWriter ?? seqOutput);
+                  memberTemplate.Invoke(null!/* argument is not used */, fieldsetWriter ?? seqOutput);
                   continue;
                }
 
@@ -249,7 +251,7 @@ static class DefaultEditorTemplates {
 
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "editor-label");
-               LabelInstructions.LabelHelper(html, labelWriter, propertyMeta, propertyMeta.PropertyName);
+               LabelInstructions.LabelHelper(html, labelWriter, propertyExplorer, propertyMeta.PropertyName);
                labelWriter.WriteEndElement();
 
                fieldWriter = fieldsetWriter
@@ -263,7 +265,7 @@ static class DefaultEditorTemplates {
                html,
                package,
                fieldWriter ?? fieldsetWriter ?? seqOutput,
-               propertyMeta,
+               propertyExplorer,
                htmlFieldName: propertyMeta.PropertyName,
                templateName: null,
                membersNames: null,
@@ -273,7 +275,7 @@ static class DefaultEditorTemplates {
 
             if (!propertyMeta.HideSurroundingHtml) {
                fieldWriter!.WriteString(" ");
-               ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyMeta, propertyMeta.PropertyName, null, null, null);
+               ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyExplorer, propertyMeta.PropertyName, null, null, null);
                fieldWriter.WriteEndElement(); // </div>
             }
          }
@@ -394,10 +396,10 @@ static class DefaultEditorTemplates {
       var optionList = options as OptionList;
 
       if (optionList?.AddBlankOption == true) {
-         optionLabel = viewData.ModelMetadata.Watermark ?? String.Empty;
+         optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
       }
 
-      SelectInstructions.SelectHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, multiple: false, htmlAttributes: htmlAttributes);
+      SelectInstructions.SelectHelper(html, output, viewData.ModelExplorer, String.Empty, options, optionLabel, multiple: false, htmlAttributes: htmlAttributes);
    }
 
    public static void
@@ -411,7 +413,7 @@ static class DefaultEditorTemplates {
 
       var options = Options(viewData);
 
-      SelectInstructions.SelectHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel: null, multiple: true, htmlAttributes: htmlAttributes);
+      SelectInstructions.SelectHelper(html, output, viewData.ModelExplorer, String.Empty, options, optionLabel: null, multiple: true, htmlAttributes: htmlAttributes);
    }
 
    public static void
@@ -436,9 +438,9 @@ static class DefaultEditorTemplates {
       var applyFormatInEdit = viewData.ModelMetadata.EditFormatString != null;
 
       var options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
-      var optionLabel = viewData.ModelMetadata.Watermark ?? String.Empty;
+      var optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
 
-      SelectInstructions.SelectHelper(html, output, viewData.ModelMetadata, String.Empty, options, optionLabel, multiple: false, htmlAttributes: htmlAttributes);
+      SelectInstructions.SelectHelper(html, output, viewData.ModelExplorer, String.Empty, options, optionLabel, multiple: false, htmlAttributes: htmlAttributes);
    }
 
    static void
@@ -449,12 +451,10 @@ static class DefaultEditorTemplates {
       }
 
       var viewData = html.ViewData;
-      var metadata = viewData.ModelMetadata;
-
-      var value = metadata.Model;
+      var value = viewData.ModelExplorer.Model;
 
       if (viewData.TemplateInfo.FormattedModelValue != value
-         && metadata.HasNonDefaultEditFormat) {
+         && viewData.ModelMetadata.HasNonDefaultEditFormat) {
 
          return;
       }
@@ -485,7 +485,7 @@ static class DefaultEditorTemplates {
       var customFn = XcstWebConfiguration.Instance.EditorTemplates.EditorCssClass;
 
       if (customFn != null) {
-         return customFn(editorInfo, defaultCssClass);
+         return customFn.Invoke(editorInfo, defaultCssClass);
       }
 
       return defaultCssClass;
@@ -518,12 +518,12 @@ static class DefaultEditorTemplates {
 
       var selectList = new List<SelectListItem>();
 
-      const BindingFlags BindingFlags = BindingFlags.DeclaredOnly
+      const BindingFlags bindingFlags = BindingFlags.DeclaredOnly
          | BindingFlags.GetField
          | BindingFlags.Public
          | BindingFlags.Static;
 
-      foreach (var field in enumType.GetFields(BindingFlags)) {
+      foreach (var field in enumType.GetFields(bindingFlags)) {
 
          var enumValue = field.GetValue(null);
 

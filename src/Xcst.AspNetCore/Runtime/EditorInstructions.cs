@@ -68,7 +68,7 @@ public static class EditorInstructions {
          html,
          package,
          output,
-         html.ViewData.ModelMetadata,
+         html.ViewData.ModelExplorer,
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
@@ -76,32 +76,33 @@ public static class EditorInstructions {
          additionalViewData
       );
 
-   public static IEnumerable<ModelMetadata>
+   internal static IEnumerable<ModelExplorer>
    EditorProperties(HtmlHelper html) {
 
       if (html is null) throw new ArgumentNullException(nameof(html));
 
       var templateInfo = html.ViewData.TemplateInfo;
 
-      var filteredProperties = html.ViewData.ModelMetadata.Properties
+      var filteredProperties = html.ViewData.ModelExplorer.Properties
          .Where(p => ShowForEdit(html, p));
 
       var orderedProperties = (templateInfo.MembersNames.Count > 0) ?
-         filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.PropertyName))
+         filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.Metadata.PropertyName))
          : filteredProperties;
 
       return orderedProperties;
    }
 
    static bool
-   ShowForEdit(HtmlHelper html, ModelMetadata propertyMetadata) {
+   ShowForEdit(HtmlHelper html, ModelExplorer propertyExplorer) {
 
       if (html is null) throw new ArgumentNullException(nameof(html));
-      if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
+      if (propertyExplorer is null) throw new ArgumentNullException(nameof(propertyExplorer));
 
       var templateInfo = html.ViewData.TemplateInfo;
+      var propertyMetadata = propertyExplorer.Metadata;
 
-      if (templateInfo.Visited(propertyMetadata)) {
+      if (templateInfo.Visited(propertyExplorer)) {
          return false;
       }
 
@@ -113,7 +114,9 @@ public static class EditorInstructions {
          return false;
       }
 
-      if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForEdit), out bool show)) {
+      if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForEdit), out var showObj)
+         && showObj is bool show) {
+
          return show;
       }
 
@@ -125,15 +128,15 @@ public static class EditorInstructions {
    }
 
    public static XcstDelegate<object>?
-   MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) {
+   MemberTemplate(HtmlHelper html, ModelExplorer propertyExplorer) {
 
       if (html is null) throw new ArgumentNullException(nameof(html));
-      if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
+      if (propertyExplorer is null) throw new ArgumentNullException(nameof(propertyExplorer));
 
       if (html.ViewData.TryGetValue("__xcst_member_template", out Action<HtmlHelper, ISequenceWriter<object>>? memberTemplate)
          && memberTemplate != null) {
 
-         var helper = HtmlHelperFactory.ForMemberTemplate(html, propertyMetadata);
+         var helper = HtmlHelperFactory.ForMemberTemplate(html, propertyExplorer);
 
          return (c, o) => memberTemplate(helper, o);
       }

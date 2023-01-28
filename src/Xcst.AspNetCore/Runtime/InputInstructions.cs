@@ -38,11 +38,11 @@ public static class InputInstructions {
 
    public static void
    CheckBox(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, HtmlAttribs? htmlAttributes = null) =>
-      CheckBoxHelper(htmlHelper, package, output, default(ModelMetadata), name, isChecked: null, htmlAttributes: htmlAttributes);
+      CheckBoxHelper(htmlHelper, package, output, default(ModelExplorer), name, isChecked: null, htmlAttributes: htmlAttributes);
 
    public static void
    CheckBox(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, bool isChecked, HtmlAttribs? htmlAttributes = null) =>
-      CheckBoxHelper(htmlHelper, package, output, default(ModelMetadata), name, isChecked, htmlAttributes);
+      CheckBoxHelper(htmlHelper, package, output, default(ModelExplorer), name, isChecked, htmlAttributes);
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
    public static void
@@ -51,33 +51,33 @@ public static class InputInstructions {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      CheckBoxForMetadata(htmlHelper, package, output, metadata, expressionString, /*isChecked: */null, htmlAttributes);
+      CheckBoxForMetadata(htmlHelper, package, output, modelExplorer, expressionString, /*isChecked: */null, htmlAttributes);
    }
 
    public static void
    CheckBoxForModel(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = htmlHelper.ViewData.ModelMetadata;
+      var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      CheckBoxForMetadata(htmlHelper, package, output, metadata, /*expression: */String.Empty, /*isChecked: */null, htmlAttributes);
+      CheckBoxForMetadata(htmlHelper, package, output, modelExplorer, /*expression: */String.Empty, /*isChecked: */null, htmlAttributes);
    }
 
    public static void
    CheckBoxForModel(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, bool isChecked, HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = htmlHelper.ViewData.ModelMetadata;
+      var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      CheckBoxForMetadata(htmlHelper, package, output, metadata, /*expression: */String.Empty, isChecked, htmlAttributes);
+      CheckBoxForMetadata(htmlHelper, package, output, modelExplorer, /*expression: */String.Empty, isChecked, htmlAttributes);
    }
 
    static void
-   CheckBoxForMetadata(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelMetadata? metadata, string expression,
+   CheckBoxForMetadata(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelExplorer? modelExplorer, string expression,
          bool? isChecked, HtmlAttribs? htmlAttributes) {
 
-      var model = metadata?.Model;
+      var model = modelExplorer?.Model;
 
       if (isChecked is null
          && model != null) {
@@ -87,11 +87,11 @@ public static class InputInstructions {
          }
       }
 
-      CheckBoxHelper(htmlHelper, package, output, metadata, expression, isChecked, htmlAttributes);
+      CheckBoxHelper(htmlHelper, package, output, modelExplorer, expression, isChecked, htmlAttributes);
    }
 
    static void
-   CheckBoxHelper(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelMetadata? metadata, string name, bool? isChecked, HtmlAttribs? htmlAttributes) {
+   CheckBoxHelper(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelExplorer? modelExplorer, string name, bool? isChecked, HtmlAttribs? htmlAttributes) {
 
       var inputWriter = DocumentWriter.CastElement(package, output);
       var hiddenWriter = DocumentWriter.CastElement(package, output);
@@ -110,7 +110,7 @@ public static class InputInstructions {
          htmlHelper,
          inputWriter,
          InputType.CheckBox,
-         metadata,
+         modelExplorer,
          name,
          value: "true",
          useViewData: !explicitChecked,
@@ -170,33 +170,33 @@ public static class InputInstructions {
 
       if (value is null) throw new ArgumentNullException(nameof(value));
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      RadioButtonForMetadata(htmlHelper, output, metadata, expressionString, value, /*isChecked: */null, htmlAttributes);
+      RadioButtonForMetadata(htmlHelper, output, modelExplorer, expressionString, value, /*isChecked: */null, htmlAttributes);
    }
 
    public static void
    RadioButtonForModel(HtmlHelper htmlHelper, XcstWriter output, object value, HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = htmlHelper.ViewData.ModelMetadata;
+      var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      RadioButtonForMetadata(htmlHelper, output, metadata, String.Empty, value, /*isChecked: */null, htmlAttributes);
+      RadioButtonForMetadata(htmlHelper, output, modelExplorer, String.Empty, value, /*isChecked: */null, htmlAttributes);
    }
 
    public static void
    RadioButtonForModel(HtmlHelper htmlHelper, XcstWriter output, object value, bool isChecked, HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = htmlHelper.ViewData.ModelMetadata;
+      var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      RadioButtonForMetadata(htmlHelper, output, metadata, String.Empty, value, /*isChecked: */isChecked, htmlAttributes);
+      RadioButtonForMetadata(htmlHelper, output, modelExplorer, String.Empty, value, /*isChecked: */isChecked, htmlAttributes);
    }
 
    static void
-   RadioButtonForMetadata(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata? metadata, string expression, object value, bool? isChecked,
+   RadioButtonForMetadata(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string expression, object value, bool? isChecked,
          HtmlAttribs? htmlAttributes) {
 
-      var model = metadata?.Model;
+      var model = modelExplorer?.Model;
 
       if (isChecked is null
          && model != null) {
@@ -204,11 +204,11 @@ public static class InputInstructions {
          isChecked = RadioButtonValueEquals(value, model.ToString());
       }
 
-      RadioButtonHelper(htmlHelper, output, metadata, expression, value, isChecked, htmlAttributes);
+      RadioButtonHelper(htmlHelper, output, modelExplorer, expression, value, isChecked, htmlAttributes);
    }
 
    static void
-   RadioButtonHelper(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata? metadata, string name, object value, bool? isChecked, HtmlAttribs? htmlAttributes) {
+   RadioButtonHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string name, object value, bool? isChecked, HtmlAttribs? htmlAttributes) {
 
       var explicitChecked = isChecked.HasValue;
 
@@ -224,7 +224,7 @@ public static class InputInstructions {
          htmlHelper,
          output,
          InputType.Radio,
-         metadata,
+         modelExplorer,
          name,
          value,
          useViewData: false,
@@ -256,36 +256,36 @@ public static class InputInstructions {
    InputFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string? type = null, string? format = null,
          HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var exprString = ExpressionHelper.GetExpressionText(expression);
 
-      InputForMetadata(htmlHelper, output, type, metadata, exprString, /*value: */null, format, htmlAttributes);
+      InputForMetadata(htmlHelper, output, type, modelExplorer, exprString, /*value: */null, format, htmlAttributes);
    }
 
    public static void
    InputForModel(HtmlHelper htmlHelper, XcstWriter output, object? value = null, string? type = null, string? format = null, HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = htmlHelper.ViewData.ModelMetadata;
+      var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      InputForMetadata(htmlHelper, output, type, metadata, /*expression: */String.Empty, value, format, htmlAttributes);
+      InputForMetadata(htmlHelper, output, type, modelExplorer, /*expression: */String.Empty, value, format, htmlAttributes);
    }
 
    static void
-   InputForMetadata(HtmlHelper htmlHelper, XcstWriter output, string? type, ModelMetadata? metadata, string expression, object? value,
+   InputForMetadata(HtmlHelper htmlHelper, XcstWriter output, string? type, ModelExplorer? modelExplorer, string expression, object? value,
          string? format, HtmlAttribs? htmlAttributes) {
 
       if (value is null
-         && metadata != null
+         && modelExplorer != null
          && GetInputType(type) != InputType.Password) {
 
-         value = metadata.Model;
+         value = modelExplorer.Model;
       }
 
-      InputImpl(htmlHelper, output, type, metadata, expression, value, /*useViewData: */false, format, htmlAttributes);
+      InputImpl(htmlHelper, output, type, modelExplorer, expression, value, /*useViewData: */false, format, htmlAttributes);
    }
 
    static void
-   InputImpl(HtmlHelper htmlHelper, XcstWriter output, string? type, ModelMetadata? metadata, string expression, object? value,
+   InputImpl(HtmlHelper htmlHelper, XcstWriter output, string? type, ModelExplorer? modelExplorer, string expression, object? value,
          bool? useViewData, string? format, HtmlAttribs? htmlAttributes) {
 
       var inputType = GetInputType(type);
@@ -320,7 +320,7 @@ public static class InputInstructions {
          htmlHelper,
          output,
          inputType ?? InputType.Text,
-         metadata: metadata,
+         modelExplorer: modelExplorer,
          name: expression,
          value: value,
          useViewData: useViewData.Value,
@@ -343,7 +343,7 @@ public static class InputInstructions {
       };
 
    static void
-   InputHelper(HtmlHelper htmlHelper, XcstWriter output, InputType inputType, ModelMetadata? metadata, string name, object? value,
+   InputHelper(HtmlHelper htmlHelper, XcstWriter output, InputType inputType, ModelExplorer? modelExplorer, string name, object? value,
          bool useViewData, bool isChecked, bool setId, bool isExplicitValue, string? format, HtmlAttribs? htmlAttributes) {
 
       var fullName = Name(htmlHelper, name);
@@ -461,7 +461,7 @@ public static class InputInstructions {
          && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
       HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
-      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata), output);
+      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer?.Metadata), output);
 
       // name cannnot be overridden, and class was already written
       // explicit value cannot be overridden

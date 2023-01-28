@@ -102,7 +102,7 @@ static class TemplateHelpers {
    GetViewNamesDelegate(ModelMetadata metadata, params string?[] templateHints);
 
    internal delegate void
-   TemplateHelperDelegate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string? htmlFieldName, string? templateName,
+   TemplateHelperDelegate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelExplorer modelExplorer, string? htmlFieldName, string? templateName,
          IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData);
 
    public static void
@@ -125,17 +125,15 @@ static class TemplateHelpers {
    Template(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? htmlFieldName, string? templateName,
          IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData, TemplateHelperDelegate templateHelper) {
 
-      var metadata = ModelMetadata.FromStringExpression(expression, html.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, html.ViewData);
 
-      if (htmlFieldName is null) {
-         htmlFieldName = ExpressionHelper.GetExpressionText(expression);
-      }
+      htmlFieldName ??= ExpressionHelper.GetExpressionText(expression);
 
       templateHelper(
          html,
          package,
          output,
-         metadata,
+         modelExplorer,
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
@@ -164,17 +162,15 @@ static class TemplateHelpers {
    TemplateFor<TContainer, TValue>(HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
          string? htmlFieldName, string? templateName, IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData, TemplateHelperDelegate templateHelper) {
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, html.ViewData);
 
-      if (htmlFieldName is null) {
-         htmlFieldName = ExpressionHelper.GetExpressionText(expression);
-      }
+      htmlFieldName ??= ExpressionHelper.GetExpressionText(expression);
 
       templateHelper(
          html,
          package,
          output,
-         metadata,
+         modelExplorer,
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
@@ -184,13 +180,13 @@ static class TemplateHelpers {
    }
 
    public static void
-   TemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string? htmlFieldName, string? templateName,
+   TemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelExplorer modelExplorer, string? htmlFieldName, string? templateName,
          IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData) =>
       TemplateHelper(
          html,
          package,
          output,
-         metadata,
+         modelExplorer,
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
@@ -200,20 +196,22 @@ static class TemplateHelpers {
       );
 
    internal static void
-   TemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelMetadata metadata, string? htmlFieldName, string? templateName,
+   TemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelExplorer modelExplorer, string? htmlFieldName, string? templateName,
          IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData, ExecuteTemplateDelegate executeTemplate) {
 
       var displayMode = mode == DataBoundControlMode.ReadOnly;
+      var metadata = modelExplorer.Metadata;
+      var model = modelExplorer.Model;
 
       if (metadata.ConvertEmptyStringToNull
-         && String.Empty.Equals(metadata.Model)) {
+         && String.Empty.Equals(model)) {
 
-         metadata.Model = null;
+         model = null;
       }
 
-      var formattedModelValue = metadata.Model;
+      var formattedModelValue = model;
 
-      if (metadata.Model is null
+      if (model is null
          && displayMode) {
 
          formattedModelValue = metadata.NullDisplayText;
@@ -223,19 +221,18 @@ static class TemplateHelpers {
          metadata.DisplayFormatString
          : metadata.EditFormatString;
 
-      if (metadata.Model != null
+      if (model != null
          && !String.IsNullOrEmpty(formatString)) {
 
          formattedModelValue = (displayMode) ?
-            package.Context.SimpleContent.Format(formatString!, metadata.Model)
-            : String.Format(CultureInfo.CurrentCulture, formatString, metadata.Model);
+            package.Context.SimpleContent.Format(formatString!, model)
+            : String.Format(CultureInfo.CurrentCulture, formatString, model);
       }
 
       // Normally this shouldn't happen, unless someone writes their own custom Object templates which
       // don't check to make sure that the object hasn't already been displayed
 
-      var visitedObjectsKey = metadata.Model
-         ?? metadata.RealModelType;
+      var visitedObjectsKey = model ?? metadata.UnderlyingOrModelType;
 
       if (html.ViewData.TemplateInfo.VisitedObjects.Contains(visitedObjectsKey)) {
          // DDB #224750
@@ -243,8 +240,8 @@ static class TemplateHelpers {
       }
 
       var viewData = new ViewDataDictionary(html.ViewData) {
-         Model = metadata.Model,
-         ModelMetadata = metadata,
+         Model = model,
+         ModelExplorer = modelExplorer.GetExplorerForModel(model),
          TemplateInfo = new TemplateInfo {
             FormattedModelValue = formattedModelValue,
             HtmlFieldPrefix = html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
@@ -330,7 +327,7 @@ static class TemplateHelpers {
          }
       }
 
-      throw new InvalidOperationException($"Unable to locate an appropriate template for type {metadata.RealModelType.FullName}.");
+      throw new InvalidOperationException($"Unable to locate an appropriate template for type {metadata.UnderlyingOrModelType.FullName}.");
    }
 
    static Dictionary<string, ActionCacheItem?>
@@ -363,7 +360,7 @@ static class TemplateHelpers {
 
       // We don't want to search for Nullable<T>, we want to search for T (which should handle both T and Nullable<T>)
 
-      var fieldType = Nullable.GetUnderlyingType(metadata.RealModelType) ?? metadata.RealModelType;
+      var fieldType = metadata.UnderlyingOrModelType;
 
       // TODO: Make better string names for generic types
 

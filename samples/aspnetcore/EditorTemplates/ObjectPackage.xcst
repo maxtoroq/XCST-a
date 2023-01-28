@@ -7,7 +7,7 @@
 
    <c:import-namespace ns='System'/>
    <c:import-namespace ns='System.Linq'/>
-   <c:import-namespace ns='System.Web.Mvc'/>
+   <c:import-namespace ns='Microsoft.AspNetCore.Mvc.ViewFeatures'/>
 
    <c:param name='labelColumnClass'>col-md-3</c:param>
    <c:param name='fieldColumnClass'>col-md-9</c:param>
@@ -19,25 +19,25 @@
          </c:when>
          <c:otherwise>
             <c:variable name='filteredProperties' value='Html.EditorProperties()'/>
-            <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => p.GroupName)'/>
+            <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => Html.GroupName(p.Metadata))'/>
             <c:variable name='createFieldset' value='groupedProperties.Any(g => g.Key != null)'/>
             <c:choose>
                <c:when test='createFieldset'>
                   <c:for-each name='group' in='groupedProperties'>
                      <fieldset>
                         <legend>{group.Key}</legend>
-                        <c:for-each name='propertyMeta' in='group'>
+                        <c:for-each name='propertyExplorer' in='group'>
                            <c:call-template name='property-template'>
-                              <c:with-param name='propertyMeta' value='propertyMeta'/>
+                              <c:with-param name='propertyExplorer' value='propertyExplorer'/>
                            </c:call-template>
                         </c:for-each>
                      </fieldset>
                   </c:for-each>
                </c:when>
                <c:otherwise>
-                  <c:for-each name='propertyMeta' in='filteredProperties'>
+                  <c:for-each name='propertyExplorer' in='filteredProperties'>
                      <c:call-template name='property-template'>
-                        <c:with-param name='propertyMeta' value='propertyMeta'/>
+                        <c:with-param name='propertyExplorer' value='propertyExplorer'/>
                      </c:call-template>
                   </c:for-each>
                </c:otherwise>
@@ -47,8 +47,9 @@
    </c:template>
 
    <c:template name='property-template'>
-      <c:param name='propertyMeta' as='ModelMetadata' required='yes'/>
+      <c:param name='propertyExplorer' as='ModelExplorer' required='yes'/>
 
+      <c:variable name='propertyMeta' value='propertyExplorer.Metadata'/>
       <c:variable name='propertyName' value='propertyMeta.PropertyName'/>
       <c:variable name='templateName' value='propertyMeta.TemplateHint ?? propertyMeta.DataTypeName'/>
       <c:choose>
@@ -56,7 +57,7 @@
             <a:editor name='{propertyName}' template='{templateName}'/>
          </c:when>
          <c:otherwise>
-            <c:variable name='memberTemplate' value='Html.MemberTemplate(propertyMeta)'/>
+            <c:variable name='memberTemplate' value='Html.MemberTemplate(propertyExplorer)'/>
             <c:choose>
                <c:when test='memberTemplate != null'>
                   <c:invoke-delegate delegate='memberTemplate'/>

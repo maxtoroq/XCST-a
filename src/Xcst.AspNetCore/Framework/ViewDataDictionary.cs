@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Web.Mvc.Properties;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace System.Web.Mvc;
 
@@ -22,8 +23,8 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    object?
    _model;
 
-   ModelMetadata?
-   _modelMetadata;
+   ModelExplorer?
+   _modelExplorer;
 
    TemplateInfo?
    _templateMetadata;
@@ -41,23 +42,29 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    Model {
       get => _model;
       set {
-         _modelMetadata = null;
+         _modelExplorer = null;
          SetModel(value);
       }
    }
 
-   public virtual ModelMetadata
-   ModelMetadata {
+   internal IModelMetadataProvider
+   MetadataProvider { get; }
+
+   public virtual ModelExplorer
+   ModelExplorer {
       get {
-         if (_modelMetadata is null && _model != null) {
-            _modelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => _model, _model.GetType());
+         if (_modelExplorer is null && _model != null) {
+            _modelExplorer = MetadataProvider.GetModelExplorerForType(_model.GetType(), _model);
          }
 #pragma warning disable CS8603 // can be null, but most times when requested it's not
-         return _modelMetadata;
+         return _modelExplorer;
 #pragma warning restore CS8603
       }
-      set => _modelMetadata = value;
+      set => _modelExplorer = value;
    }
+
+   public ModelMetadata
+   ModelMetadata => ModelExplorer.Metadata;
 
    public ModelStateDictionary
    ModelState => _modelState;
@@ -86,14 +93,15 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    InnerDictionary => _innerDictionary;
 
    public
-   ViewDataDictionary()
-      : this(default(object)) { }
+   ViewDataDictionary(IModelMetadataProvider metadataProvider)
+      : this(default(object), metadataProvider) { }
 
    [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "See note on SetModel() method.")]
    public
-   ViewDataDictionary(object? model) {
+   ViewDataDictionary(object? model, IModelMetadataProvider metadataProvider) {
 
       this.Model = model;
+      this.MetadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
       _innerDictionary = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
       _modelState = new ModelStateDictionary();
    }
@@ -108,10 +116,11 @@ public class ViewDataDictionary : IDictionary<string, object?> {
       _modelState = new ModelStateDictionary(dictionary.ModelState);
 
       this.Model = dictionary.Model;
+      this.MetadataProvider = dictionary.MetadataProvider;
       this.TemplateInfo = dictionary.TemplateInfo;
 
       // PERF: Don't unnecessarily instantiate the model metadata
-      _modelMetadata = dictionary._modelMetadata;
+      _modelExplorer = dictionary._modelExplorer;
    }
 
    public void
@@ -406,23 +415,28 @@ public class TemplateInfo {
    public string
    GetFullHtmlFieldName(string? partialFieldName) {
 
-      if (partialFieldName?.StartsWith("[", StringComparison.Ordinal) == true) {
+      if (String.IsNullOrEmpty(partialFieldName)) {
+         return this.HtmlFieldPrefix;
+      }
+
+      if (String.IsNullOrEmpty(this.HtmlFieldPrefix)) {
+         return partialFieldName;
+      }
+
+      if (partialFieldName.StartsWith("[", StringComparison.Ordinal)) {
 
          // See Codeplex #544 - the partialFieldName might represent an indexer access, in which case combining
          // with a 'dot' would be invalid.
 
          return this.HtmlFieldPrefix + partialFieldName;
-
-      } else {
-
-         // This uses "combine and trim" because either or both of these values might be empty
-         return (this.HtmlFieldPrefix + "." + (partialFieldName ?? String.Empty)).Trim('.');
       }
+
+      return this.HtmlFieldPrefix + "." + partialFieldName;
    }
 
    public bool
-   Visited(ModelMetadata metadata) =>
-      this.VisitedObjects.Contains(metadata.Model ?? metadata.ModelType);
+   Visited(ModelExplorer modelExplorer) =>
+      this.VisitedObjects.Contains(modelExplorer.Model ?? modelExplorer.Metadata.ModelType);
 }
 
 public class ViewDataInfo {
@@ -475,27 +489,28 @@ public class ViewDataDictionary<TModel> : ViewDataDictionary {
       set => SetModel(value);
    }
 
-   public override ModelMetadata
-   ModelMetadata {
+   public override ModelExplorer
+   ModelExplorer {
       get {
-         var result = base.ModelMetadata;
+         var result = base.ModelExplorer;
 
          if (result is null) {
-            result = base.ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, typeof(TModel));
+            result = MetadataProvider.GetModelExplorerForType(typeof(TModel), null);
+            base.ModelExplorer = result;
          }
 
          return result;
       }
-      set => base.ModelMetadata = value;
+      set => base.ModelExplorer = value;
    }
 
    public
-   ViewDataDictionary()
-      : base(default(TModel)) { }
+   ViewDataDictionary(IModelMetadataProvider metadataProvider)
+      : base(default(TModel), metadataProvider) { }
 
    public
-   ViewDataDictionary(TModel model)
-      : base(model) { }
+   ViewDataDictionary(TModel model, IModelMetadataProvider metadataProvider)
+      : base(model, metadataProvider) { }
 
    public
    ViewDataDictionary(ViewDataDictionary viewDataDictionary)

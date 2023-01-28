@@ -228,7 +228,8 @@
          </code:attribute>
          <if test='display == "hidden"'>
             <code:attribute>
-               <code:type-reference name='HiddenInput' namespace='System.Web.Mvc'/>
+               <code:type-reference name='HiddenInput'
+                  namespace='{(this.TargetRuntime >= 2m ? "Microsoft.AspNetCore.Mvc" : "System.Web.Mvc")}'/>
                <code:initializer>
                   <code:member-initializer name='DisplayValue'>
                      <code:bool value='false'/>

@@ -11,6 +11,7 @@ using System.Text;
 using System.Web.Mvc.Properties;
 using Xcst;
 using Xcst.Web.Runtime;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using RouteValueDictionary = Microsoft.AspNetCore.Routing.RouteValueDictionary;
 
 namespace System.Web.Mvc;
@@ -65,6 +66,9 @@ public class HtmlHelper {
    public IViewDataContainer
    ViewDataContainer { get; internal set; }
 
+   public ModelExplorer
+   ModelExplorer => ViewData.ModelExplorer;
+
    public ModelMetadata
    ModelMetadata => ViewData.ModelMetadata;
 
@@ -78,7 +82,7 @@ public class HtmlHelper {
       this.ViewDataContainer = viewDataContainer ?? throw new ArgumentNullException(nameof(viewDataContainer));
       this.ClientValidationRuleFactory = (name, metadata) =>
          ModelValidatorProviders.Providers
-            .GetValidators(metadata ?? ModelMetadata.FromStringExpression(name, this.ViewData), this.ViewContext)
+            .GetValidators(metadata ?? ExpressionMetadataProvider.FromStringExpression(name, this.ViewData).Metadata, this.ViewContext)
             .SelectMany(v => v.GetClientValidationRules());
    }
 
@@ -219,7 +223,7 @@ public class HtmlHelper {
 
       formContext.RenderedField(fullName, true);
 
-      var clientRules = ClientValidationRuleFactory(name, metadata);
+      var clientRules = this.ClientValidationRuleFactory.Invoke(name, metadata);
 
       if (excludeMinMaxLength) {
 
@@ -267,9 +271,9 @@ public class HtmlHelper {
 
       if (name is null) throw new ArgumentNullException(nameof(name));
 
-      var metadata = ModelMetadata.FromStringExpression(name, this.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
 
-      return ValueHelper(name, value: null, format: metadata.EditFormatString, useViewData: true);
+      return ValueHelper(name, value: null, format: modelExplorer.Metadata.EditFormatString, useViewData: true);
    }
 
    public string
@@ -299,8 +303,8 @@ public class HtmlHelper {
 
             // case 2(a): format the value from ModelMetadata for the current model
 
-            var metadata = ModelMetadata.FromStringExpression(String.Empty, this.ViewData);
-            resolvedValue = FormatValue(metadata.Model, format);
+            var modelExplorer = ExpressionMetadataProvider.FromStringExpression(String.Empty, this.ViewData);
+            resolvedValue = FormatValue(modelExplorer.Model, format);
 
          } else {
 
@@ -327,7 +331,7 @@ public class HtmlHelper {
    /// This method uses the same logic used by the built-in <code>Object</code> display template;
    /// e.g. by default, it excludes complex-type properties.
    /// </remarks>
-   public IEnumerable<ModelMetadata>
+   public IEnumerable<ModelExplorer>
    DisplayProperties() =>
       DisplayInstructions.DisplayProperties(this);
 
@@ -340,18 +344,22 @@ public class HtmlHelper {
    /// This method uses the same logic used by the built-in <code>Object</code> editor template;
    /// e.g. by default, it excludes complex-type properties.
    /// </remarks>
-   public IEnumerable<ModelMetadata>
+   public IEnumerable<ModelExplorer>
    EditorProperties() =>
       EditorInstructions.EditorProperties(this);
 
    /// <summary>
    /// Returns the member template delegate for the provided property.
    /// </summary>
-   /// <param name="propertyMetadata">The property's metadata.</param>
+   /// <param name="propertyExplorer">The property's explorer.</param>
    /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
    public XcstDelegate<object>?
-   MemberTemplate(ModelMetadata propertyMetadata) =>
-      EditorInstructions.MemberTemplate(this, propertyMetadata);
+   MemberTemplate(ModelExplorer propertyExplorer) =>
+      EditorInstructions.MemberTemplate(this, propertyExplorer);
+
+   public string?
+   GroupName(ModelMetadata metadata) =>
+      MetadataInstructions.GroupName(metadata);
 }
 
 public class HtmlHelper<TModel> : HtmlHelper {
@@ -386,19 +394,19 @@ public class HtmlHelper<TModel> : HtmlHelper {
    public string
    ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return ValueHelper(expressionString, metadata.Model, format: metadata.EditFormatString, useViewData: false);
+      return ValueHelper(expressionString, modelExplorer.Model, format: modelExplorer.Metadata.EditFormatString, useViewData: false);
    }
 
    public string
    ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression, string format) {
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return ValueHelper(expressionString, metadata.Model, format, useViewData: false);
+      return ValueHelper(expressionString, modelExplorer.Model, format, useViewData: false);
    }
 }
 

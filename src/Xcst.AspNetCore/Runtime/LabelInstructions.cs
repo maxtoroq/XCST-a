@@ -33,9 +33,9 @@ public static class LabelInstructions {
    public static void
    Label(HtmlHelper html, XcstWriter output, string expression, string? labelText = null, HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = ModelMetadata.FromStringExpression(expression, html.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, html.ViewData);
 
-      LabelHelper(html, output, metadata, expression, labelText, htmlAttributes);
+      LabelHelper(html, output, modelExplorer, expression, labelText, htmlAttributes);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
@@ -43,20 +43,21 @@ public static class LabelInstructions {
    LabelFor<TModel, TValue>(HtmlHelper<TModel> html, XcstWriter output, Expression<Func<TModel, TValue>> expression, string? labelText = null,
          HtmlAttribs? htmlAttributes = null) {
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, html.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      LabelHelper(html, output, metadata, expressionString, labelText, htmlAttributes);
+      LabelHelper(html, output, modelExplorer, expressionString, labelText, htmlAttributes);
    }
 
    public static void
    LabelForModel(HtmlHelper html, XcstWriter output, string? labelText = null, HtmlAttribs? htmlAttributes = null) =>
-      LabelHelper(html, output, html.ViewData.ModelMetadata, String.Empty, labelText, htmlAttributes);
+      LabelHelper(html, output, html.ViewData.ModelExplorer, String.Empty, labelText, htmlAttributes);
 
    internal static void
-   LabelHelper(HtmlHelper html, XcstWriter output, ModelMetadata metadata, string expression, string? labelText = null, HtmlAttribs? htmlAttributes = null) {
+   LabelHelper(HtmlHelper html, XcstWriter output, ModelExplorer modelExplorer, string expression, string? labelText = null, HtmlAttribs? htmlAttributes = null) {
 
       var htmlFieldName = expression;
+      var metadata = modelExplorer.Metadata;
 
       var resolvedLabelText = labelText
          ?? metadata.DisplayName

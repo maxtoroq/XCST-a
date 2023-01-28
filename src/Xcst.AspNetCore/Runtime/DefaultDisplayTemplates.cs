@@ -79,7 +79,7 @@ static class DefaultDisplayTemplates {
    CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
       var viewData = html.ViewData;
-      var model = viewData.ModelMetadata.Model;
+      var model = viewData.ModelExplorer.Model;
 
       if (model is null) {
          return;
@@ -98,6 +98,8 @@ static class DefaultDisplayTemplates {
       var typeInCollectionIsNullableValueType = TypeHelpers.IsNullableValueType(typeInCollection);
       var oldPrefix = viewData.TemplateInfo.HtmlFieldPrefix;
 
+      var elementMetadata = viewData.ModelMetadata.ElementMetadata;
+
       try {
 
          viewData.TemplateInfo.HtmlFieldPrefix = String.Empty;
@@ -107,22 +109,22 @@ static class DefaultDisplayTemplates {
 
          foreach (var item in collection) {
 
-            var itemType = typeInCollection;
+            var itemMetadata = elementMetadata;
 
             if (item != null
                && !typeInCollectionIsNullableValueType) {
 
-               itemType = item.GetType();
+               itemMetadata = viewData.MetadataProvider.GetMetadataForType(item.GetType());
             }
 
-            var metadata = ModelMetadataProviders.Current.GetMetadataForType(() => item, itemType);
+            var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
             templateHelper(
                html,
                package,
                seqOutput,
-               metadata,
+               itemExplorer,
                htmlFieldName: fieldName,
                templateName: null,
                membersNames: null,
@@ -141,10 +143,10 @@ static class DefaultDisplayTemplates {
 
       var viewData = html.ViewData;
 
-      if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelMetadata.Model) {
+      if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelExplorer.Model) {
 
          viewData.TemplateInfo.FormattedModelValue =
-            package.Context.SimpleContent.Format("{0:0.00}", viewData.ModelMetadata.Model);
+            package.Context.SimpleContent.Format("{0:0.00}", viewData.ModelExplorer.Model);
       }
 
       StringTemplate(html, package, seqOutput);
@@ -182,17 +184,17 @@ static class DefaultDisplayTemplates {
    ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
 
       var viewData = html.ViewData;
-      var modelMetadata = viewData.ModelMetadata;
+      var modelExplorer = viewData.ModelExplorer;
 
-      if (modelMetadata.Model is null
+      if (modelExplorer.Model is null
          || viewData.TemplateInfo.TemplateDepth > 1) {
 
-         MetadataInstructions.DisplayTextHelper(html, seqOutput, modelMetadata);
+         MetadataInstructions.DisplayTextHelper(html, seqOutput, modelExplorer);
          return;
       }
 
       var filteredProperties = DisplayInstructions.DisplayProperties(html);
-      var groupedProperties = filteredProperties.GroupBy(p => p.GroupName);
+      var groupedProperties = filteredProperties.GroupBy(p => MetadataInstructions.GroupName(p.Metadata));
 
       bool createFieldset = groupedProperties.Any(g => g.Key != null);
 
@@ -210,16 +212,17 @@ static class DefaultDisplayTemplates {
             fieldsetWriter.WriteEndElement();
          }
 
-         foreach (ModelMetadata propertyMeta in group) {
+         foreach (var propertyExplorer in group) {
 
+            var propertyMeta = propertyExplorer.Metadata;
             XcstWriter? fieldWriter = null;
 
             if (!propertyMeta.HideSurroundingHtml) {
 
-               var memberTemplate = DisplayInstructions.MemberTemplate(html, propertyMeta);
+               var memberTemplate = DisplayInstructions.MemberTemplate(html, propertyExplorer);
 
                if (memberTemplate != null) {
-                  memberTemplate(null!/* argument is not used */, fieldsetWriter ?? seqOutput);
+                  memberTemplate.Invoke(null!/* argument is not used */, fieldsetWriter ?? seqOutput);
                   continue;
                }
 
@@ -242,7 +245,7 @@ static class DefaultDisplayTemplates {
                html,
                package,
                fieldWriter ?? fieldsetWriter ?? seqOutput,
-               propertyMeta,
+               propertyExplorer,
                htmlFieldName: propertyMeta.PropertyName,
                templateName: null,
                membersNames: null,
@@ -296,17 +299,17 @@ static class DefaultDisplayTemplates {
    EnumTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
-      var modelMetadata = viewData.ModelMetadata;
+      var modelExplorer = viewData.ModelExplorer;
 
-      if (modelMetadata.Model != null) {
+      if (modelExplorer.Model != null) {
 
-         if (modelMetadata.EditFormatString != null) {
+         if (modelExplorer.Metadata.EditFormatString != null) {
             // undo formatting if applicable to edit mode, for consistency with editor template
-            viewData.TemplateInfo.FormattedModelValue = modelMetadata.Model;
+            viewData.TemplateInfo.FormattedModelValue = modelExplorer.Model;
          }
 
-         if (viewData.TemplateInfo.FormattedModelValue == modelMetadata.Model) {
-            viewData.TemplateInfo.FormattedModelValue = modelMetadata.SimpleDisplayText;
+         if (viewData.TemplateInfo.FormattedModelValue == modelExplorer.Model) {
+            viewData.TemplateInfo.FormattedModelValue = modelExplorer.GetSimpleDisplayText();
          }
       }
 

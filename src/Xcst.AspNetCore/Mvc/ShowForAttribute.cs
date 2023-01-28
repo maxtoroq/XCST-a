@@ -14,22 +14,21 @@
 
 using System;
 using System.ComponentModel;
-using System.Web.Mvc;
 
 namespace Xcst.Web.Mvc;
 
 /// <exclude/>
 [EditorBrowsable(EditorBrowsableState.Never)]
 [AttributeUsage(AttributeTargets.Property)]
-public class ShowForAttribute : Attribute, IMetadataAware {
+public class ShowForAttribute : Attribute {
 
-   bool
+   internal bool
    _displaySet;
 
    bool
    _display;
 
-   bool
+   internal bool
    _editSet;
 
    bool
@@ -50,25 +49,6 @@ public class ShowForAttribute : Attribute, IMetadataAware {
       set {
          _edit = value;
          _editSet = true;
-      }
-   }
-
-   public void
-   OnMetadataCreated(ModelMetadata metadata) {
-
-      if (metadata is null) throw new ArgumentNullException(nameof(metadata));
-
-      // because the framework uses true as default, we need a way to
-      // tell if a value is explicitly specified, hence the use of AdditionalValues
-
-      if (_displaySet) {
-         metadata.ShowForDisplay = _display;
-         metadata.AdditionalValues[nameof(ModelMetadata.ShowForDisplay)] = _display;
-      }
-
-      if (_editSet) {
-         metadata.ShowForEdit = _edit;
-         metadata.AdditionalValues[nameof(ModelMetadata.ShowForEdit)] = _edit;
       }
    }
 }

@@ -67,7 +67,7 @@ public static class DisplayInstructions {
          html,
          package,
          output,
-         html.ViewData.ModelMetadata,
+         html.ViewData.ModelExplorer,
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
@@ -76,32 +76,33 @@ public static class DisplayInstructions {
       );
 
 
-   public static IEnumerable<ModelMetadata>
+   internal static IEnumerable<ModelExplorer>
    DisplayProperties(HtmlHelper html) {
 
       if (html is null) throw new ArgumentNullException(nameof(html));
 
       var templateInfo = html.ViewData.TemplateInfo;
 
-      var filteredProperties = html.ViewData.ModelMetadata.Properties
+      var filteredProperties = html.ViewData.ModelExplorer.Properties
          .Where(p => ShowForDisplay(html, p));
 
       var orderedProperties = (templateInfo.MembersNames.Count > 0) ?
-         filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.PropertyName))
+         filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.Metadata.PropertyName))
          : filteredProperties;
 
       return orderedProperties;
    }
 
    static bool
-   ShowForDisplay(HtmlHelper html, ModelMetadata propertyMetadata) {
+   ShowForDisplay(HtmlHelper html, ModelExplorer propertyExplorer) {
 
       if (html is null) throw new ArgumentNullException(nameof(html));
-      if (propertyMetadata is null) throw new ArgumentNullException(nameof(propertyMetadata));
+      if (propertyExplorer is null) throw new ArgumentNullException(nameof(propertyExplorer));
 
       var templateInfo = html.ViewData.TemplateInfo;
+      var propertyMetadata = propertyExplorer.Metadata;
 
-      if (templateInfo.Visited(propertyMetadata)) {
+      if (templateInfo.Visited(propertyExplorer)) {
          return false;
       }
 
@@ -113,14 +114,16 @@ public static class DisplayInstructions {
          return false;
       }
 
-      if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForDisplay), out bool show)) {
+      if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForDisplay), out var showObj)
+         && showObj is bool show) {
+
          return show;
       }
 
       return !propertyMetadata.IsComplexType;
    }
 
-   public static XcstDelegate<object>?
-   MemberTemplate(HtmlHelper html, ModelMetadata propertyMetadata) =>
-      EditorInstructions.MemberTemplate(html, propertyMetadata);
+   internal static XcstDelegate<object>?
+   MemberTemplate(HtmlHelper html, ModelExplorer propertyExplorer) =>
+      EditorInstructions.MemberTemplate(html, propertyExplorer);
 }

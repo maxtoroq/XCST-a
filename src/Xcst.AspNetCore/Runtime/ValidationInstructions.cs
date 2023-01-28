@@ -39,9 +39,9 @@ public static class ValidationInstructions {
 
       if (modelName is null) throw new ArgumentNullException(nameof(modelName));
 
-      var metadata = ModelMetadata.FromStringExpression(modelName, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(modelName, htmlHelper.ViewData);
 
-      ValidationMessageHelper(htmlHelper, output, metadata, modelName, validationMessage, htmlAttributes, tag);
+      ValidationMessageHelper(htmlHelper, output, modelExplorer, modelName, validationMessage, htmlAttributes, tag);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
@@ -49,15 +49,15 @@ public static class ValidationInstructions {
    ValidationMessageFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string? validationMessage = null,
          HtmlAttribs? htmlAttributes = null, string? tag = null) {
 
-      var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      ValidationMessageHelper(htmlHelper, output, metadata, expressionString, validationMessage, htmlAttributes, tag);
+      ValidationMessageHelper(htmlHelper, output, modelExplorer, expressionString, validationMessage, htmlAttributes, tag);
    }
 
    [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Normalization to lowercase is a common requirement for JavaScript and HTML values")]
    internal static void
-   ValidationMessageHelper(HtmlHelper htmlHelper, XcstWriter output, ModelMetadata modelMetadata, string expression, string? validationMessage,
+   ValidationMessageHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer modelExplorer, string expression, string? validationMessage,
          HtmlAttribs? htmlAttributes, string? tag) {
 
       var viewData = htmlHelper.ViewData;

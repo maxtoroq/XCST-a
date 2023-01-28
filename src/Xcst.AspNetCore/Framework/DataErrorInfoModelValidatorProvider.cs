@@ -48,7 +48,7 @@ class DataErrorInfoModelValidatorProvider : ModelValidatorProvider {
       public override IEnumerable<ModelValidationResult>
       Validate(object? container) {
 
-         if (this.Metadata.Model is IDataErrorInfo castModel) {
+         if (/*this.Metadata.Model*/container is IDataErrorInfo castModel) {
 
             var errorMessage = castModel.Error;
 

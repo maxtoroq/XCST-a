@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace System.Web.Mvc;
 
@@ -42,14 +43,21 @@ abstract class ModelValidator {
 
    class CompositeModelValidator : ModelValidator {
 
+      readonly IModelMetadataProvider
+      _metadataProvider;
+
       public
       CompositeModelValidator(ModelMetadata metadata, ControllerContext controllerContext)
-         : base(metadata, controllerContext) { }
+         : base(metadata, controllerContext) {
+
+         _metadataProvider = controllerContext.HttpContext.RequestServices
+            .GetRequiredService<IModelMetadataProvider>();
+      }
 
       static ModelValidationResult
-      CreateSubPropertyResult(ModelMetadata propertyMetadata, ModelValidationResult propertyResult) =>
+      CreateSubPropertyResult(ModelExplorer propertyExplorer, ModelValidationResult propertyResult) =>
          new ModelValidationResult {
-            MemberName = CreateSubPropertyName(propertyMetadata.PropertyName, propertyResult.MemberName),
+            MemberName = CreateSubPropertyName(propertyExplorer.Metadata.PropertyName, propertyResult.MemberName),
             Message = propertyResult.Message
          };
 
@@ -68,32 +76,38 @@ abstract class ModelValidator {
       public override IEnumerable<ModelValidationResult>
       Validate(object? container) {
 
+         var modelExplorer = new ModelExplorer(_metadataProvider, this.Metadata, container);
+
          var propertiesValid = true;
-         var properties = Metadata.PropertiesAsArray;
+         var properties = modelExplorer.Properties.ToArray();
 
          // Performance sensitive loops
 
          for (int propertyIndex = 0; propertyIndex < properties.Length; propertyIndex++) {
 
-            var propertyMetadata = properties[propertyIndex];
+            var propertyExplorer = properties[propertyIndex];
 
-            foreach (var propertyValidator in propertyMetadata.GetValidators(this.ControllerContext)) {
+            foreach (var propertyValidator in GetValidators(propertyExplorer.Metadata, this.ControllerContext)) {
 
-               foreach (var propertyResult in propertyValidator.Validate(this.Metadata.Model)) {
+               foreach (var propertyResult in propertyValidator.Validate(propertyExplorer.Model)) {
                   propertiesValid = false;
-                  yield return CreateSubPropertyResult(propertyMetadata, propertyResult);
+                  yield return CreateSubPropertyResult(propertyExplorer, propertyResult);
                }
             }
          }
 
          if (propertiesValid) {
-            foreach (var typeValidator in Metadata.GetValidators(this.ControllerContext)) {
+            foreach (var typeValidator in GetValidators(this.Metadata, this.ControllerContext)) {
                foreach (var typeResult in typeValidator.Validate(container)) {
                   yield return typeResult;
                }
             }
          }
       }
+
+      static IEnumerable<ModelValidator>
+      GetValidators(ModelMetadata metadata, ControllerContext context) =>
+         ModelValidatorProviders.Providers.GetValidators(metadata, context);
    }
 }
 

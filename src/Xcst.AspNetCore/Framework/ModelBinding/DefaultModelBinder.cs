@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Web.Mvc.Properties;
+using Microsoft.Extensions.DependencyInjection;
 using Xcst.Web.Configuration;
 
 namespace System.Web.Mvc;
@@ -17,6 +18,9 @@ public class DefaultModelBinder : IModelBinder {
 
    ModelBinderDictionary?
    _binders;
+
+   IModelMetadataProvider?
+   _metadataProvider;
 
    [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Property is settable so that the dictionary can be provided for unit testing purposes.")]
    protected internal ModelBinderDictionary
@@ -35,6 +39,10 @@ public class DefaultModelBinder : IModelBinder {
          modelState.AddModelError(modelStateKey, GetValueRequiredResource(controllerContext));
       }
    }
+
+   IModelMetadataProvider
+   GetMetadataProvider(ControllerContext controllerContext) =>
+      _metadataProvider ??= controllerContext.HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
 
    internal void
    BindComplexElementalModel(ControllerContext controllerContext, ModelBindingContext bindingContext, object model) {
@@ -66,7 +74,9 @@ public class DefaultModelBinder : IModelBinder {
          var collection = CreateModel(controllerContext, bindingContext, listType);
 
          var arrayBindingContext = new ModelBindingContext {
-            ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => collection, listType),
+            Model = collection,
+            ModelMetadata = GetMetadataProvider(controllerContext)
+               .GetMetadataForType(listType),
             ModelName = bindingContext.ModelName,
             ModelState = bindingContext.ModelState,
             PropertyFilter = bindingContext.PropertyFilter,
@@ -99,7 +109,9 @@ public class DefaultModelBinder : IModelBinder {
          var valueType = genericArguments[1];
 
          var dictionaryBindingContext = new ModelBindingContext {
-            ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, modelType),
+            Model = model,
+            ModelMetadata = GetMetadataProvider(controllerContext)
+               .GetMetadataForType(modelType),
             ModelName = bindingContext.ModelName,
             ModelState = bindingContext.ModelState,
             PropertyFilter = bindingContext.PropertyFilter,
@@ -121,7 +133,9 @@ public class DefaultModelBinder : IModelBinder {
          if (collectionType.IsInstanceOfType(model)) {
 
             var collectionBindingContext = new ModelBindingContext {
-               ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, modelType),
+               Model = model,
+               ModelMetadata = GetMetadataProvider(controllerContext)
+                  .GetMetadataForType(modelType),
                ModelName = bindingContext.ModelName,
                ModelState = bindingContext.ModelState,
                PropertyFilter = bindingContext.PropertyFilter,
@@ -159,6 +173,7 @@ public class DefaultModelBinder : IModelBinder {
          if (bindingContext.FallbackToEmptyPrefix) {
 
             bindingContext = new ModelBindingContext {
+               Model = bindingContext.Model,
                ModelMetadata = bindingContext.ModelMetadata,
                ModelState = bindingContext.ModelState,
                PropertyFilter = bindingContext.PropertyFilter,
@@ -223,12 +238,12 @@ public class DefaultModelBinder : IModelBinder {
 
       // call into the property's model binder
 
-      var propertyBinder = Binders.GetBinder(propertyDescriptor.PropertyType);
+      var propertyBinder = this.Binders.GetBinder(propertyDescriptor.PropertyType);
       var originalPropertyValue = propertyDescriptor.GetValue(bindingContext.Model);
       var propertyMetadata = bindingContext.PropertyMetadata[propertyDescriptor.Name];
-      propertyMetadata.Model = originalPropertyValue;
 
       var innerBindingContext = new ModelBindingContext {
+         Model = originalPropertyValue,
          ModelMetadata = propertyMetadata,
          ModelName = fullPropertyKey,
          ModelState = bindingContext.ModelState,
@@ -237,7 +252,7 @@ public class DefaultModelBinder : IModelBinder {
 
       var newPropertyValue = GetPropertyValue(controllerContext, innerBindingContext, propertyDescriptor, propertyBinder);
 
-      propertyMetadata.Model = newPropertyValue;
+      //propertyMetadata.Model = newPropertyValue;
 
       // validation
 
@@ -386,7 +401,8 @@ public class DefaultModelBinder : IModelBinder {
          : bindingContext.PropertyFilter;
 
       var newBindingContext = new ModelBindingContext {
-         ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, bindingContext.ModelType),
+         Model = model,
+         ModelMetadata = GetMetadataProvider(controllerContext).GetMetadataForType(bindingContext.ModelType),
          ModelName = bindingContext.ModelName,
          ModelState = bindingContext.ModelState,
          PropertyFilter = newPropertyFilter,
@@ -547,8 +563,9 @@ public class DefaultModelBinder : IModelBinder {
    OnModelUpdated(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 
       var startedValid = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+      var validator = ModelValidator.GetModelValidator(bindingContext.ModelMetadata, controllerContext);
 
-      foreach (ModelValidationResult validationResult in ModelValidator.GetModelValidator(bindingContext.ModelMetadata, controllerContext).Validate(null)) {
+      foreach (ModelValidationResult validationResult in validator.Validate(bindingContext.Model)) {
 
          var subPropertyName = CreateSubPropertyName(bindingContext.ModelName, validationResult.MemberName);
 
@@ -582,7 +599,7 @@ public class DefaultModelBinder : IModelBinder {
    SetProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object? value) {
 
       var propertyMetadata = bindingContext.PropertyMetadata[propertyDescriptor.Name];
-      propertyMetadata.Model = value;
+      //propertyMetadata.Model = value;
 
       var modelStateKey = CreateSubPropertyName(bindingContext.ModelName, propertyMetadata.PropertyName);
 
@@ -665,7 +682,7 @@ public class DefaultModelBinder : IModelBinder {
    UpdateCollection(ControllerContext controllerContext, ModelBindingContext bindingContext, Type elementType) {
 
       GetIndexes(bindingContext, out var stopOnIndexNotFound, out var indexes);
-      var elementBinder = Binders.GetBinder(elementType);
+      var elementBinder = this.Binders.GetBinder(elementType);
 
       // build up a list of items from the request
 
@@ -685,7 +702,8 @@ public class DefaultModelBinder : IModelBinder {
          }
 
          var innerContext = new ModelBindingContext {
-            ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, elementType),
+            ModelMetadata = GetMetadataProvider(controllerContext)
+               .GetMetadataForType(elementType),
             ModelName = subIndexKey,
             ModelState = bindingContext.ModelState,
             PropertyFilter = bindingContext.PropertyFilter,
@@ -719,8 +737,8 @@ public class DefaultModelBinder : IModelBinder {
 
       GetIndexes(bindingContext, out var stopOnIndexNotFound, out var indexes);
 
-      var keyBinder = Binders.GetBinder(keyType);
-      var valueBinder = Binders.GetBinder(valueType);
+      var keyBinder = this.Binders.GetBinder(keyType);
+      var valueBinder = this.Binders.GetBinder(valueType);
 
       // build up a list of items from the request
 
@@ -744,7 +762,8 @@ public class DefaultModelBinder : IModelBinder {
          // bind the key
 
          var keyBindingContext = new ModelBindingContext {
-            ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, keyType),
+            ModelMetadata = GetMetadataProvider(controllerContext)
+               .GetMetadataForType(keyType),
             ModelName = keyFieldKey,
             ModelState = bindingContext.ModelState,
             ValueProvider = bindingContext.ValueProvider
@@ -790,11 +809,12 @@ public class DefaultModelBinder : IModelBinder {
       return dictionary;
    }
 
-   static KeyValuePair<object, object?>
+   KeyValuePair<object, object?>
    CreateEntryForModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type valueType, IModelBinder valueBinder, string modelName, object modelKey) {
 
       var valueBindingContext = new ModelBindingContext {
-         ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, valueType),
+         ModelMetadata = GetMetadataProvider(controllerContext)
+            .GetMetadataForType(valueType),
          ModelName = modelName,
          ModelState = bindingContext.ModelState,
          PropertyFilter = bindingContext.PropertyFilter,
