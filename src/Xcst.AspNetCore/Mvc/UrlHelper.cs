@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
-using System.Web.Mvc.Properties;
+using System.Web;
+using System.Web.Mvc;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 public class UrlHelper {
 
@@ -32,7 +34,10 @@ public class UrlHelper {
    public static string
    GenerateContentUrl(string contentPath, HttpContext httpContext) {
 
-      if (String.IsNullOrEmpty(contentPath)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(contentPath));
+      if (string.IsNullOrEmpty(contentPath)) {
+         throw new ArgumentException(nameof(contentPath) + " cannot be null or empty.", nameof(contentPath));
+      }
+
       if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
 
       if (contentPath[0] == '~') {
@@ -45,7 +50,7 @@ public class UrlHelper {
    public string
    Href(string path, params object[] pathParts) {
 
-      if (String.IsNullOrEmpty(path)) {
+      if (string.IsNullOrEmpty(path)) {
          return path;
       }
 
@@ -58,7 +63,7 @@ public class UrlHelper {
       // many of the methods we call internally can't handle query strings properly, so tack it on after processing
       // the virtual app path and url rewrites
 
-      if (String.IsNullOrEmpty(query)) {
+      if (string.IsNullOrEmpty(query)) {
          return UrlHelperImpl.GenerateClientUrlInternal(_httpContext, processedPath);
       } else {
          return UrlHelperImpl.GenerateClientUrlInternal(_httpContext, processedPath) + query;
@@ -76,7 +81,7 @@ public class UrlHelper {
    public virtual bool
    IsLocalUrl(string url) =>
       // TODO this should call the System.Web.dll API once it gets added to the framework and MVC takes a dependency on it.
-      HttpRequestExtensions.IsUrlLocalToHost(_httpContext.Request, url);
+      _httpContext.Request.IsUrlLocalToHost(url);
 
    internal static class UrlBuilder {
 
@@ -94,7 +99,7 @@ public class UrlHelper {
          if (pathParts is null
             || pathParts.Length == 0) {
 
-            query = String.Empty;
+            query = string.Empty;
             finalPath = path;
 
          } else if (pathParts.Length == 1) {
@@ -102,14 +107,14 @@ public class UrlHelper {
             var pathPart = pathParts[0];
 
             if (pathPart is null) {
-               query = String.Empty;
+               query = string.Empty;
                finalPath = path;
 
             } else if (IsDisplayableType(pathPart.GetType())) {
 
                var displayablePath = Convert.ToString(pathPart, CultureInfo.InvariantCulture);
                path = path + "/" + displayablePath;
-               query = String.Empty;
+               query = string.Empty;
                finalPath = path;
 
             } else {

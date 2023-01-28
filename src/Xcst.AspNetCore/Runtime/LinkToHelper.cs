@@ -14,7 +14,7 @@
 
 using System;
 using System.Linq;
-using UrlBuilder = System.Web.Mvc.UrlHelper.UrlBuilder;
+using UrlBuilder = Xcst.Web.Mvc.UrlHelper.UrlBuilder;
 
 namespace Xcst.Web.Runtime;
 
