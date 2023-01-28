@@ -26,6 +26,7 @@ using System.Reflection;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
+using Xcst.Web.Mvc.Properties;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
 namespace Xcst.Web.Runtime;
@@ -494,9 +495,21 @@ static class DefaultEditorTemplates {
    internal static List<SelectListItem>
    TriStateValues(bool? value) =>
       new List<SelectListItem> {
-         new SelectListItem { Text = "Not Set", Value = String.Empty, Selected = !value.HasValue },
-         new SelectListItem { Text = "True", Value = "true", Selected = value.HasValue && value.Value },
-         new SelectListItem { Text = "False", Value = "false", Selected = value.HasValue && !value.Value },
+         new SelectListItem {
+            Text = MvcResources.Common_TriState_NotSet,
+            Value = String.Empty,
+            Selected = !value.HasValue
+         },
+         new SelectListItem {
+            Text = MvcResources.Common_TriState_True,
+            Value = "true",
+            Selected = value.HasValue && value.Value
+         },
+         new SelectListItem {
+            Text = MvcResources.Common_TriState_False,
+            Value = "false",
+            Selected = value.HasValue && !value.Value
+         }
       };
 
    internal static IEnumerable<SelectListItem>?

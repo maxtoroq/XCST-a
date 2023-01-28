@@ -38,22 +38,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>MvcResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Framework\Common\WebPageResources.Designer.cs">
-      <DependentUpon>WebPageResources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Framework\Common\MvcResources.resx">
       <SubType>Designer</SubType>
       <CustomToolNamespace>Xcst.Web.Mvc.Properties</CustomToolNamespace>
       <LastGenOutput>MvcResources.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Framework\Common\WebPageResources.resx">
-      <CustomToolNamespace>Xcst.Web.Mvc.Properties</CustomToolNamespace>
-      <LastGenOutput>WebPageResources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>

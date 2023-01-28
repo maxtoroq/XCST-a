@@ -454,7 +454,7 @@ static class UnobtrusiveValidationAttributesGenerator {
          throw new InvalidOperationException(
             String.Format(
                CultureInfo.CurrentCulture,
-               WebPageResources.UnobtrusiveJavascript_ValidationTypeCannotBeEmpty,
+               MvcResources.UnobtrusiveJavascript_ValidationTypeCannotBeEmpty,
                rule.GetType().FullName));
       }
 
@@ -462,13 +462,13 @@ static class UnobtrusiveValidationAttributesGenerator {
          throw new InvalidOperationException(
             String.Format(
                CultureInfo.CurrentCulture,
-               WebPageResources.UnobtrusiveJavascript_ValidationTypeMustBeUnique,
+               MvcResources.UnobtrusiveJavascript_ValidationTypeMustBeUnique,
                rule.ValidationType));
       }
 
       if (rule.ValidationType.Any(c => !Char.IsLower(c))) {
          throw new InvalidOperationException(
-            String.Format(CultureInfo.CurrentCulture, WebPageResources.UnobtrusiveJavascript_ValidationTypeMustBeLegal,
+            String.Format(CultureInfo.CurrentCulture, MvcResources.UnobtrusiveJavascript_ValidationTypeMustBeLegal,
                rule.ValidationType,
                rule.GetType().FullName));
       }
@@ -479,7 +479,7 @@ static class UnobtrusiveValidationAttributesGenerator {
             throw new InvalidOperationException(
                String.Format(
                   CultureInfo.CurrentCulture,
-                  WebPageResources.UnobtrusiveJavascript_ValidationParameterCannotBeEmpty,
+                  MvcResources.UnobtrusiveJavascript_ValidationParameterCannotBeEmpty,
                   rule.GetType().FullName));
          }
 
@@ -487,7 +487,7 @@ static class UnobtrusiveValidationAttributesGenerator {
             throw new InvalidOperationException(
                String.Format(
                   CultureInfo.CurrentCulture,
-                  WebPageResources.UnobtrusiveJavascript_ValidationParameterMustBeLegal,
+                  MvcResources.UnobtrusiveJavascript_ValidationParameterMustBeLegal,
                   key,
                   rule.GetType().FullName));
          }

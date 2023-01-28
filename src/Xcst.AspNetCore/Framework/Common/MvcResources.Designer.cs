@@ -484,6 +484,51 @@ namespace Xcst.Web.Mvc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Validation parameter names in unobtrusive client validation rules cannot be empty. Client rule type: {0}.
+        /// </summary>
+        internal static string UnobtrusiveJavascript_ValidationParameterCannotBeEmpty {
+            get {
+                return ResourceManager.GetString("UnobtrusiveJavascript_ValidationParameterCannotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation parameter names in unobtrusive client validation rules must start with a lowercase letter and consist of only lowercase letters or digits. Validation parameter name: {0}, client rule type: {1}.
+        /// </summary>
+        internal static string UnobtrusiveJavascript_ValidationParameterMustBeLegal {
+            get {
+                return ResourceManager.GetString("UnobtrusiveJavascript_ValidationParameterMustBeLegal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation type names in unobtrusive client validation rules cannot be empty. Client rule type: {0}.
+        /// </summary>
+        internal static string UnobtrusiveJavascript_ValidationTypeCannotBeEmpty {
+            get {
+                return ResourceManager.GetString("UnobtrusiveJavascript_ValidationTypeCannotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation type names in unobtrusive client validation rules must consist of only lowercase letters. Invalid name: &quot;{0}&quot;, client rule type: {1}.
+        /// </summary>
+        internal static string UnobtrusiveJavascript_ValidationTypeMustBeLegal {
+            get {
+                return ResourceManager.GetString("UnobtrusiveJavascript_ValidationTypeMustBeLegal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation type names in unobtrusive client validation rules must be unique. The following validation type was seen more than once: {0}.
+        /// </summary>
+        internal static string UnobtrusiveJavascript_ValidationTypeMustBeUnique {
+            get {
+                return ResourceManager.GetString("UnobtrusiveJavascript_ValidationTypeMustBeUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The model object inside the metadata claimed to be compatible with {0}, but was actually {1}..
         /// </summary>
         internal static string ValidatableObjectAdapter_IncompatibleType {
