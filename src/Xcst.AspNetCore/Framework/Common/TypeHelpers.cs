@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using RouteValueDictionary = Microsoft.AspNetCore.Routing.RouteValueDictionary;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 delegate bool
 TryGetValueDelegate(object dictionary, string key, out object? value);

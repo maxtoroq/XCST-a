@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 /// <summary>
 /// A <see cref="IDictionary{TKey, TValue}"/> that defers creating a shallow copy of the source dictionary until

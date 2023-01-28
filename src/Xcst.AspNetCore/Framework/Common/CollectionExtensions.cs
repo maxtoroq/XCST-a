@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 /// <summary>
 /// Helper extension methods for fast use of collections.

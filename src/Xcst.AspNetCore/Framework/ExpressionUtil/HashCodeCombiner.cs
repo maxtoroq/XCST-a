@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 
-namespace System.Web.Mvc.ExpressionUtil;
+namespace Xcst.Web.Mvc.ExpressionUtil;
 
 // based on System.Web.Util.HashCodeCombiner
 

@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
-using System.Web.Mvc.Properties;
 using Microsoft.Extensions.Primitives;
+using Xcst.Web.Mvc.Properties;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc.ModelBinding;
 
 using INameValueEnumerable = IEnumerable<KeyValuePair<string, StringValues>>;
 

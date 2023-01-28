@@ -161,7 +161,6 @@ static partial class TestsHelper {
       };
 
       compiler.RegisterExtension(() => new Xcst.Web.Extension.ExtensionPackage());
-      //compiler.PackageTypeResolver = n => Assembly.GetExecutingAssembly().GetType(n);
       compiler.AddPackageLibrary(Assembly.GetExecutingAssembly().Location);
 
       return compiler;

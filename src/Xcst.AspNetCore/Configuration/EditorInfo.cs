@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Web.Mvc;
+using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Configuration;
 
@@ -29,7 +29,7 @@ public class EditorInfo {
 
    internal
    EditorInfo(string templateName, string tagName)
-      : this(templateName, tagName, (System.Web.Mvc.InputType)(-1)) { }
+      : this(templateName, tagName, (Xcst.Web.Mvc.InputType)(-1)) { }
 
    internal
    EditorInfo(string templateName, string tagName, InputType inputType) {

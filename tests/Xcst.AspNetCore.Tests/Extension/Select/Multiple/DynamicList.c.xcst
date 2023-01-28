@@ -4,7 +4,7 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='System.Web.Mvc'/>
+   <c:import-namespace ns='Xcst.Web.Mvc'/>
 
    <c:template name='c:initial-template'>
       <a:select name='color' options='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue" } }' multiple='true'/>

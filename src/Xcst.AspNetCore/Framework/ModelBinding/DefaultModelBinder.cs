@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,11 +9,11 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Web.Mvc.Properties;
 using Microsoft.Extensions.DependencyInjection;
 using Xcst.Web.Configuration;
+using Xcst.Web.Mvc.Properties;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc.ModelBinding;
 
 public class DefaultModelBinder : IModelBinder {
 

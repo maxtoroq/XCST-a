@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
+using Microsoft.AspNetCore.Http;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 public class ViewContext : ControllerContext {
 

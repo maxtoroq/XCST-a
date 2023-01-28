@@ -647,7 +647,8 @@
             <code:default>
                <code:type-reference name='IEnumerable' namespace='System.Collections.Generic'>
                   <code:type-arguments>
-                     <code:type-reference name='SelectListItem' namespace='System.Web.Mvc'/>
+                     <code:type-reference name='SelectListItem'
+                        namespace='{(this.TargetRuntime >= 2m ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
                   </code:type-arguments>
                </code:type-reference>
             </code:default>

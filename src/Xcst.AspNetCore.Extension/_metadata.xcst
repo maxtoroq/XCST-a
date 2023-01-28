@@ -188,7 +188,8 @@
 
       <if test='excluded.Length > 0'>
          <code:attribute>
-            <code:type-reference name='Bind' namespace='System.Web.Mvc'/>
+            <code:type-reference name='Bind'
+               namespace='{(this.TargetRuntime >= 2m ? "Xcst.Web.Mvc.ModelBinding" : "System.Web.Mvc")}'/>
             <code:initializer>
                <code:member-initializer name='Exclude'>
                   <code:string literal='true'>

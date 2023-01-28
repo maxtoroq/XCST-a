@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 public class TempDataDictionary : IDictionary<string, object?> {
 

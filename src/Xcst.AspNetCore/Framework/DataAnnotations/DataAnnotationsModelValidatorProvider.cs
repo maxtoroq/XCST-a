@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -7,10 +8,9 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Web.Mvc.Properties;
-using DataAnnotationsCompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
+using Xcst.Web.Mvc.Properties;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 // A factory for validators based on ValidationAttribute
 
@@ -366,8 +366,8 @@ class DataAnnotationsModelValidatorProvider : AssociatedValidatorProvider {
       AddValidationAttributeAdapter(dict, typeof(MinLengthAttribute),
          (metadata, context, attribute) => new MinLengthAttributeAdapter(metadata, context, (MinLengthAttribute)attribute));
 
-      AddValidationAttributeAdapter(dict, typeof(DataAnnotationsCompareAttribute),
-         (metadata, context, attribute) => new CompareAttributeAdapter(metadata, context, (DataAnnotationsCompareAttribute)attribute));
+      AddValidationAttributeAdapter(dict, typeof(CompareAttribute),
+         (metadata, context, attribute) => new CompareAttributeAdapter(metadata, context, (CompareAttribute)attribute));
 
       AddValidationAttributeAdapter(dict, typeof(FileExtensionsAttribute),
          (metadata, context, attribute) => new FileExtensionsAttributeAdapter(metadata, context, (FileExtensionsAttribute)attribute));

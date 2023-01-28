@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:import-namespace ns='System.Collections'/>
-   <c:import-namespace ns='System.Web.Mvc'/>
+   <c:import-namespace ns='Xcst.Web.Mvc'/>
 
    <c:template name='c:initial-template'>
       <c:variable name='list' value='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue" } }'/>

@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace System.Web.Mvc.ExpressionUtil;
+namespace Xcst.Web.Mvc.ExpressionUtil;
 
 // Serves as the base class for all expression fingerprints. Provides a default implementation
 // of GetHashCode().

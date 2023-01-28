@@ -1,14 +1,15 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Web.Mvc.Properties;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Xcst.Web.Mvc.Properties;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 // TODO: Unit test ModelState interaction with VDD
 

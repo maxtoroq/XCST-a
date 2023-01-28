@@ -47,12 +47,12 @@
   <ItemGroup>
     <EmbeddedResource Update="Framework\Common\MvcResources.resx">
       <SubType>Designer</SubType>
-      <CustomToolNamespace>System.Web.Mvc.Properties</CustomToolNamespace>
+      <CustomToolNamespace>Xcst.Web.Mvc.Properties</CustomToolNamespace>
       <LastGenOutput>MvcResources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Framework\Common\WebPageResources.resx">
-      <CustomToolNamespace>System.Web.Mvc.Properties</CustomToolNamespace>
+      <CustomToolNamespace>Xcst.Web.Mvc.Properties</CustomToolNamespace>
       <LastGenOutput>WebPageResources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>

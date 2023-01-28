@@ -5,8 +5,9 @@
    extension-element-prefixes='a'>
 
    <c:import-namespace ns='System.Collections.Generic'/>
-   <c:import-namespace ns='System.Web.Mvc'/>
    <c:import-namespace ns='Microsoft.Extensions.Primitives'/>
+   <c:import-namespace ns='Xcst.Web.Mvc'/>
+   <c:import-namespace ns='Xcst.Web.Mvc.ModelBinding'/>
 
    <c:type name='Foo'>
       <c:member name='color' as='string' a:bind='no'/>

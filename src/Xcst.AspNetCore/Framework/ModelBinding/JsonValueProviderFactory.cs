@@ -1,16 +1,17 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
 using System.IO;
-using System.Web.Mvc.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Xcst.Web.Configuration;
+using Xcst.Web.Mvc.Properties;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc.ModelBinding;
 
 public sealed class JsonValueProviderFactory : ValueProviderFactory {
 

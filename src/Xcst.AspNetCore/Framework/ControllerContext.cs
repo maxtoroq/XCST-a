@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
+using System;
+using Microsoft.AspNetCore.Http;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 // Though many of the properties on ControllerContext and its subclassed types are virtual, there are still sealed
 // properties (like ControllerContext.RequestContext, ActionExecutingContext.Result, etc.). If these properties

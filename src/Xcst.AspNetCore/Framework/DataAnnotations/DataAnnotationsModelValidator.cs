@@ -1,15 +1,15 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Web.Mvc.Properties;
+using Xcst.Web.Mvc.Properties;
 using Microsoft.Extensions.DependencyInjection;
-using DataAnnotationsCompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 class DataAnnotationsModelValidator : ModelValidator {
 
@@ -108,13 +108,13 @@ class DataAnnotationsModelValidator<TAttribute> : DataAnnotationsModelValidator
       : base(metadata, context, attribute) { }
 }
 
-class CompareAttributeAdapter : DataAnnotationsModelValidator<DataAnnotationsCompareAttribute> {
+class CompareAttributeAdapter : DataAnnotationsModelValidator<CompareAttribute> {
 
    public
-   CompareAttributeAdapter(ModelMetadata metadata, ControllerContext context, DataAnnotationsCompareAttribute attribute)
+   CompareAttributeAdapter(ModelMetadata metadata, ControllerContext context, CompareAttribute attribute)
       : base(metadata, context, new CompareAttributeWrapper(attribute, metadata)) {
 
-      Debug.Assert(attribute.GetType() == typeof(DataAnnotationsCompareAttribute));
+      Debug.Assert(attribute.GetType() == typeof(CompareAttribute));
    }
 
    public override IEnumerable<ModelClientValidationRule>
@@ -134,13 +134,13 @@ class CompareAttributeAdapter : DataAnnotationsModelValidator<DataAnnotationsCom
    // The System.ComponentModel.DataAnnotations.CompareAttribute doesn't populate the OtherPropertyDisplayName until after IsValid() 
    // is called. Therefore, by the time we get the error message for client validation, the display name is not populated and won't be used.
 
-   sealed class CompareAttributeWrapper : DataAnnotationsCompareAttribute {
+   sealed class CompareAttributeWrapper : CompareAttribute {
 
       readonly string
       _otherPropertyDisplayName;
 
       public
-      CompareAttributeWrapper(DataAnnotationsCompareAttribute attribute, ModelMetadata metadata)
+      CompareAttributeWrapper(CompareAttribute attribute, ModelMetadata metadata)
          : base(attribute.OtherProperty) {
 
          _otherPropertyDisplayName = attribute.OtherPropertyDisplayName;

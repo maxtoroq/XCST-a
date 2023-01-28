@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Xcst.Web.Mvc.ModelBinding;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 [Serializable]
 public class ModelStateDictionary : IDictionary<string, ModelState> {

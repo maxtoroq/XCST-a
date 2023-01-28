@@ -215,7 +215,8 @@
                      <if test='withParamsExpr != null'>
                         <code:arguments>
                            <code:method-call name='ObjectToDictionary'>
-                              <code:type-reference name='HtmlHelper' namespace='System.Web.Mvc'/>
+                              <code:type-reference name='HtmlHelper'
+                                 namespace='{(this.TargetRuntime >= 2m ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
                               <code:arguments>
                                  <code:expression value='{withParamsExpr}'/>
                               </code:arguments>
@@ -362,7 +363,8 @@
          <code:new-object>
             <code:type-reference name='Action' namespace='System'>
                <code:type-arguments>
-                  <code:type-reference name='HtmlHelper' namespace='System.Web.Mvc'/>
+                  <code:type-reference name='HtmlHelper'
+                     namespace='{(this.TargetRuntime >= 2m ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
                   <copy-of value='select(newOutput, code + "type-reference")'/>
                </code:type-arguments>
             </code:type-reference>

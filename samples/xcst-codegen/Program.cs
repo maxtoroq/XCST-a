@@ -170,6 +170,7 @@ class Program {
 
       // Enable "application" extension
       compiler.RegisterExtension(() => new Xcst.Web.Extension.ExtensionPackage {
+         TargetRuntime = 2m,
          ApplicationUri = startUri,
          GenerateLinkTo = true,
          AnnotateVirtualPath = true

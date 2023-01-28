@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc;
 
 // The purpose of this interface is to make something as supporting client-side
 // validation, which could be discovered at runtime by whatever validation

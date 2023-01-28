@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Globalization;
-using System.Web.Mvc.Properties;
+using Xcst.Web.Mvc.Properties;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc.ModelBinding;
 
 [AttributeUsage(ValidTargets, AllowMultiple = false, Inherited = false)]
 public sealed class ModelBinderAttribute : CustomModelBinderAttribute {

@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 
-namespace System.Web.Mvc.ExpressionUtil;
+namespace Xcst.Web.Mvc.ExpressionUtil;
 
 // Expression fingerprint chain class
 // Contains information used for generalizing, comparing, and recreating Expression instances

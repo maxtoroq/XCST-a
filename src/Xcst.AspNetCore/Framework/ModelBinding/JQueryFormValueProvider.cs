@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Globalization;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc.ModelBinding;
 
 /// <summary>
 /// The JQuery Form Value provider is used to handle JQuery formatted data in

@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc.ModelBinding;
 
 public class HttpPostedFileBaseModelBinder : IModelBinder {
 

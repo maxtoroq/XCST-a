@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
-namespace System.Web.Mvc;
+namespace Xcst.Web.Mvc.ModelBinding;
 
 public sealed class HttpFileCollectionValueProvider : DictionaryValueProvider<IFormFile[]> {
 

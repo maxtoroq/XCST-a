@@ -5,8 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Web;
-using System.Web.Mvc;
-using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
+using Microsoft.AspNetCore.Http;
 
 namespace Xcst.Web.Mvc;
 
@@ -34,7 +33,7 @@ public class UrlHelper {
    public static string
    GenerateContentUrl(string contentPath, HttpContext httpContext) {
 
-      if (string.IsNullOrEmpty(contentPath)) {
+      if (String.IsNullOrEmpty(contentPath)) {
          throw new ArgumentException(nameof(contentPath) + " cannot be null or empty.", nameof(contentPath));
       }
 
@@ -50,7 +49,7 @@ public class UrlHelper {
    public string
    Href(string path, params object[] pathParts) {
 
-      if (string.IsNullOrEmpty(path)) {
+      if (String.IsNullOrEmpty(path)) {
          return path;
       }
 
@@ -63,7 +62,7 @@ public class UrlHelper {
       // many of the methods we call internally can't handle query strings properly, so tack it on after processing
       // the virtual app path and url rewrites
 
-      if (string.IsNullOrEmpty(query)) {
+      if (String.IsNullOrEmpty(query)) {
          return UrlHelperImpl.GenerateClientUrlInternal(_httpContext, processedPath);
       } else {
          return UrlHelperImpl.GenerateClientUrlInternal(_httpContext, processedPath) + query;
@@ -82,6 +81,65 @@ public class UrlHelper {
    IsLocalUrl(string url) =>
       // TODO this should call the System.Web.dll API once it gets added to the framework and MVC takes a dependency on it.
       _httpContext.Request.IsUrlLocalToHost(url);
+
+   static class UrlHelperImpl {
+
+      // this method can accept an app-relative path or an absolute path for contentPath
+      public static string
+      GenerateClientUrl(HttpContext httpContext, string contentPath) {
+
+         if (String.IsNullOrEmpty(contentPath)) {
+            return contentPath;
+         }
+
+         // many of the methods we call internally can't handle query strings properly, so just strip it out for
+         // the time being
+
+         contentPath = StripQuery(contentPath, out var query);
+
+         // many of the methods we call internally can't handle query strings properly, so tack it on after processing
+         // the virtual app path and url rewrites
+
+         if (String.IsNullOrEmpty(query)) {
+            return GenerateClientUrlInternal(httpContext, contentPath);
+         } else {
+            return GenerateClientUrlInternal(httpContext, contentPath) + query;
+         }
+      }
+
+      internal static string
+      GenerateClientUrlInternal(HttpContext httpContext, string contentPath) {
+
+         if (String.IsNullOrEmpty(contentPath)) {
+            return contentPath;
+         }
+
+         var isAppRelative = contentPath[0] == '~';
+
+         if (isAppRelative) {
+
+            // See also Microsoft.AspNetCore.Mvc.Routing.UrlHelperBase.Content
+            var other = new PathString(contentPath.Substring(1));
+            return httpContext.Request.PathBase.Add(other).Value!;
+         }
+
+         return contentPath;
+      }
+
+      static string
+      StripQuery(string path, out string? query) {
+
+         var queryIndex = path.IndexOf('?');
+
+         if (queryIndex >= 0) {
+            query = path.Substring(queryIndex);
+            return path.Substring(0, queryIndex);
+         } else {
+            query = null;
+            return path;
+         }
+      }
+   }
 
    internal static class UrlBuilder {
 
