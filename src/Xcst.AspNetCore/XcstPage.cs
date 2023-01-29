@@ -16,10 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Xcst.Web;
 
@@ -142,6 +144,14 @@ public abstract class XcstPage {
       var authorizeResult = await policyEval.AuthorizeAsync(authorizationPolicy!, authenticateResult, httpContext, null);
 
       return authorizeResult;
+   }
+
+   public async Task<bool>
+   TryValidateAntiforgeryAsync() {
+
+      var antiforgery = this.HttpContext.RequestServices.GetRequiredService<IAntiforgery>();
+
+      return await antiforgery.IsRequestValidAsync(this.HttpContext);
    }
 
    class AuthorizeData : IAuthorizeData {

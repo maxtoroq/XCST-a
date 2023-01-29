@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Mail;
-using System.Web.Helpers;
 
 namespace aspnetcore;
 
@@ -38,7 +37,7 @@ partial class _Page_contact : IPageInit {
       var sent = false;
 
       if (IsPost
-         && AntiForgery.TryValidateAsync(HttpContext).Result
+         && TryValidateAntiforgeryAsync().Result
          && TryBind(contact)
          && SendMail(contact)) {
 

@@ -475,9 +475,22 @@
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
 
-      <code:method-call name='GetHtml'>
+      <code:method-call>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <code:type-reference name='AntiForgery' namespace='System.Web.Helpers'/>
+         <choose>
+            <when test='this.TargetRuntime >= 2m'>
+               <code:method-reference name='HiddenToken'>
+                  <call-template name='app:helper-type'>
+                     <with-param name='name'>AntiforgeryInstructions</with-param>
+                  </call-template>
+               </code:method-reference>
+            </when>
+            <otherwise>
+               <code:method-reference name='GetHtml'>
+                  <code:type-reference name='AntiForgery' namespace='System.Web.Helpers'/>
+               </code:method-reference>
+            </otherwise>
+         </choose>
          <code:arguments>
             <code:chain>
                <call-template name='app:html-helper'/>

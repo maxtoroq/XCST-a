@@ -12,21 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
-using Xcst;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace System.Web.Helpers;
+namespace Xcst.Web.Runtime;
 
-public static class AntiForgery {
+/// <exclude/>
+public static class AntiforgeryInstructions {
 
-   [EditorBrowsable(EditorBrowsableState.Never)]
    public static void
-   GetHtml(HttpContext httpContext, XcstWriter output) {
+   HiddenToken(HttpContext httpContext, XcstWriter output) {
 
-      var antiforgery = GetAntiforgeryService(httpContext);
+      var antiforgery = httpContext.RequestServices.GetRequiredService<IAntiforgery>();
       var tokenSet = antiforgery.GetAndStoreTokens(httpContext);
 
       output.WriteStartElement("input");
@@ -35,17 +33,4 @@ public static class AntiForgery {
       output.WriteAttributeString("value", tokenSet.RequestToken);
       output.WriteEndElement();
    }
-
-   public async static Task<bool>
-   TryValidateAsync(HttpContext httpContext) {
-
-      var antiforgery = GetAntiforgeryService(httpContext);
-
-      return await antiforgery.IsRequestValidAsync(httpContext);
-   }
-
-   static IAntiforgery
-   GetAntiforgeryService(HttpContext httpContext) =>
-      httpContext.RequestServices.GetService(typeof(IAntiforgery)) as IAntiforgery
-         ?? throw new InvalidOperationException("IAntiforgery service is not available.");
 }
