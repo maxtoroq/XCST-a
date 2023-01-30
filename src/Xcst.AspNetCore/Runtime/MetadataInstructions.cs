@@ -105,20 +105,4 @@ public static class MetadataInstructions {
    internal static string
    DisplayStringHelper(HtmlHelper html, ModelExplorer modelExplorer) =>
       modelExplorer.GetSimpleDisplayText();
-
-   // other
-
-   internal static string?
-   GroupName(ModelMetadata metadata) {
-
-      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
-
-      if (metadata.AdditionalValues.TryGetValue("GroupName", out var groupNameObj)
-         && groupNameObj is string groupName) {
-
-         return groupName;
-      }
-
-      return null;
-   }
 }

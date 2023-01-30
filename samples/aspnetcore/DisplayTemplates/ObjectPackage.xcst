@@ -8,6 +8,7 @@
    <c:import-namespace ns='System'/>
    <c:import-namespace ns='System.Linq'/>
    <c:import-namespace ns='Microsoft.AspNetCore.Mvc.ViewFeatures'/>
+   <c:import-namespace ns='Xcst.Web.Mvc.ModelBinding'/>
 
    <c:param name='labelColumnClass'>col-md-3</c:param>
    <c:param name='fieldColumnClass'>col-md-9</c:param>
@@ -19,7 +20,7 @@
          </c:when>
          <c:otherwise>
             <c:variable name='filteredProperties' value='Html.DisplayProperties()'/>
-            <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => Html.GroupName(p.Metadata))'/>
+            <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => p.Metadata.GetGroupName())'/>
             <c:variable name='createFieldset' value='groupedProperties.Any(g => g.Key != null)'/>
             <c:choose>
                <c:when test='createFieldset'>

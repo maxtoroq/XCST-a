@@ -26,6 +26,7 @@ using System.Reflection;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
+using Xcst.Web.Mvc.ModelBinding;
 using Xcst.Web.Mvc.Properties;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
@@ -215,7 +216,7 @@ static class DefaultEditorTemplates {
       }
 
       var filteredProperties = EditorInstructions.EditorProperties(html);
-      var groupedProperties = filteredProperties.GroupBy(p => MetadataInstructions.GroupName(p.Metadata));
+      var groupedProperties = filteredProperties.GroupBy(p => MetadataDetailsProvider.GetGroupName(p.Metadata));
 
       var createFieldset = groupedProperties.Any(g => g.Key != null);
 

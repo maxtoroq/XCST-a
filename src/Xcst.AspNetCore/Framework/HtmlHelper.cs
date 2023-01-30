@@ -355,10 +355,6 @@ public class HtmlHelper {
    public XcstDelegate<object>?
    MemberTemplate(ModelExplorer propertyExplorer) =>
       EditorInstructions.MemberTemplate(this, propertyExplorer);
-
-   public string?
-   GroupName(ModelMetadata metadata) =>
-      MetadataInstructions.GroupName(metadata);
 }
 
 public class HtmlHelper<TModel> : HtmlHelper {

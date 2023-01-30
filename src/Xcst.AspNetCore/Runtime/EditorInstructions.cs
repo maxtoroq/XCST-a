@@ -23,6 +23,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Xcst.Runtime;
 using Xcst.Web.Mvc;
+using Xcst.Web.Mvc.ModelBinding;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
 namespace Xcst.Web.Runtime;
@@ -114,9 +115,7 @@ public static class EditorInstructions {
          return false;
       }
 
-      if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForEdit), out var showObj)
-         && showObj is bool show) {
-
+      if (MetadataDetailsProvider.GetShowForEdit(propertyMetadata) is bool show) {
          return show;
       }
 

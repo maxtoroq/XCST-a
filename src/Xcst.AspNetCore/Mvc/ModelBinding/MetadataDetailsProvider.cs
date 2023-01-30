@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
@@ -19,6 +20,18 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 namespace Xcst.Web.Mvc.ModelBinding;
 
 public class MetadataDetailsProvider : IDisplayMetadataProvider {
+
+   static readonly object
+   _showForDisplayKey = new();
+
+   static readonly object
+   _showForEditKey = new();
+
+   static readonly object
+   _groupName = new();
+
+   static readonly object
+   _shortName = new();
 
    public void
    CreateDisplayMetadata(DisplayMetadataProviderContext context) {
@@ -34,14 +47,13 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
          // tell if a value is explicitly specified, hence the use of AdditionalValues
 
          if (showForAttr._displaySet) {
-
             metadata.ShowForDisplay = showForAttr.Display;
-            metadata.AdditionalValues[nameof(ModelMetadata.ShowForDisplay)] = showForAttr.Display;
+            metadata.AdditionalValues[_showForDisplayKey] = showForAttr.Display;
          }
 
          if (showForAttr._editSet) {
             metadata.ShowForEdit = showForAttr.Edit;
-            metadata.AdditionalValues[nameof(ModelMetadata.ShowForEdit)] = showForAttr.Edit;
+            metadata.AdditionalValues[_showForEditKey] = showForAttr.Edit;
          }
       }
 
@@ -51,8 +63,68 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
       if (displayAtrr != null) {
 
          if (displayAtrr.GetGroupName() is string groupName) {
-            metadata.AdditionalValues[nameof(displayAtrr.GroupName)] = groupName;
+            metadata.AdditionalValues[_groupName] = groupName;
+         }
+
+         if (displayAtrr.GetShortName() is string shortName) {
+            metadata.AdditionalValues[_shortName] = shortName;
          }
       }
+   }
+
+   internal static bool?
+   GetShowForDisplay(ModelMetadata metadata) {
+
+      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+
+      if (metadata.AdditionalValues.TryGetValue(_showForDisplayKey, out var obj)
+         && obj is bool b) {
+
+         return b;
+      }
+
+      return null;
+   }
+
+   internal static bool?
+   GetShowForEdit(ModelMetadata metadata) {
+
+      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+
+      if (metadata.AdditionalValues.TryGetValue(_showForEditKey, out var obj)
+         && obj is bool b) {
+
+         return b;
+      }
+
+      return null;
+   }
+
+   internal static string?
+   GetGroupName(ModelMetadata metadata) {
+
+      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+
+      if (metadata.AdditionalValues.TryGetValue(_groupName, out var obj)
+         && obj is string str) {
+
+         return str;
+      }
+
+      return null;
+   }
+
+   internal static string?
+   GetShortName(ModelMetadata metadata) {
+
+      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+
+      if (metadata.AdditionalValues.TryGetValue(_shortName, out var obj)
+         && obj is string str) {
+
+         return str;
+      }
+
+      return null;
    }
 }

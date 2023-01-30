@@ -24,6 +24,7 @@ using System.Linq;
 using Xcst.Runtime;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
+using Xcst.Web.Mvc.ModelBinding;
 
 namespace Xcst.Web.Runtime;
 
@@ -194,7 +195,7 @@ static class DefaultDisplayTemplates {
       }
 
       var filteredProperties = DisplayInstructions.DisplayProperties(html);
-      var groupedProperties = filteredProperties.GroupBy(p => MetadataInstructions.GroupName(p.Metadata));
+      var groupedProperties = filteredProperties.GroupBy(p => MetadataDetailsProvider.GetGroupName(p.Metadata));
 
       bool createFieldset = groupedProperties.Any(g => g.Key != null);
 

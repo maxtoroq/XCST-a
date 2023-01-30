@@ -23,6 +23,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Xcst.Runtime;
 using Xcst.Web.Mvc;
+using Xcst.Web.Mvc.ModelBinding;
 
 namespace Xcst.Web.Runtime;
 
@@ -75,7 +76,6 @@ public static class DisplayInstructions {
          additionalViewData
       );
 
-
    internal static IEnumerable<ModelExplorer>
    DisplayProperties(HtmlHelper html) {
 
@@ -114,9 +114,7 @@ public static class DisplayInstructions {
          return false;
       }
 
-      if (propertyMetadata.AdditionalValues.TryGetValue(nameof(ModelMetadata.ShowForDisplay), out var showObj)
-         && showObj is bool show) {
-
+      if (MetadataDetailsProvider.GetShowForDisplay(propertyMetadata) is bool show) {
          return show;
       }
 
