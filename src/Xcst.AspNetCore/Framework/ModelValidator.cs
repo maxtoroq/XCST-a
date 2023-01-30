@@ -40,7 +40,7 @@ abstract class ModelValidator {
       new CompositeModelValidator(metadata, context);
 
    public abstract IEnumerable<ModelValidationResult>
-   Validate(object? container);
+   Validate(object container);
 
    class CompositeModelValidator : ModelValidator {
 
@@ -75,7 +75,7 @@ abstract class ModelValidator {
       }
 
       public override IEnumerable<ModelValidationResult>
-      Validate(object? container) {
+      Validate(object container) {
 
          var modelExplorer = new ModelExplorer(_metadataProvider, this.Metadata, container);
 
@@ -90,7 +90,7 @@ abstract class ModelValidator {
 
             foreach (var propertyValidator in GetValidators(propertyExplorer.Metadata, this.ControllerContext)) {
 
-               foreach (var propertyResult in propertyValidator.Validate(propertyExplorer.Model)) {
+               foreach (var propertyResult in propertyValidator.Validate(container)) {
                   propertiesValid = false;
                   yield return CreateSubPropertyResult(propertyExplorer, propertyResult);
                }

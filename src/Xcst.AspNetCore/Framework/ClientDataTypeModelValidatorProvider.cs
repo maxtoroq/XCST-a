@@ -115,7 +115,7 @@ class ClientDataTypeModelValidatorProvider : ModelValidatorProvider {
          String.Format(CultureInfo.CurrentCulture, _errorMessage, displayName);
 
       public sealed override IEnumerable<ModelValidationResult>
-      Validate(object? container) =>
+      Validate(object container) =>
          // this is not a server-side validator
          Enumerable.Empty<ModelValidationResult>();
    }

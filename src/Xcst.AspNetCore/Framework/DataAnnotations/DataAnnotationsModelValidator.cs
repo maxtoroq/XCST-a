@@ -53,19 +53,25 @@ class DataAnnotationsModelValidator : ModelValidator {
    }
 
    public override IEnumerable<ModelValidationResult>
-   Validate(object? container) {
+   Validate(object container) {
 
       // Per the WCF RIA Services team, instance can never be null (if you have
       // no parent, you pass yourself for the "instance" parameter).
 
-      var memberName = this.Metadata.PropertyName ?? this.Metadata.ModelType.Name;
+      var memberName = this.Metadata.Name;
 
-      var context = new ValidationContext(container/* ?? this.Metadata.Model*/) {
+      var context = new ValidationContext(container) {
          DisplayName = this.Metadata.GetDisplayName(),
          MemberName = memberName
       };
 
-      var modelExplorer = new ModelExplorer(_metadataProvider, this.Metadata, container);
+      var containerExplorer =
+         new ModelExplorer(_metadataProvider, this.Metadata.ContainerMetadata ?? this.Metadata, container);
+
+      var modelExplorer = (this.Metadata.ContainerMetadata != null) ?
+         containerExplorer.GetExplorerForProperty(memberName)
+         : containerExplorer;
+
       var value = modelExplorer.Model;
       var result = this.Attribute.GetValidationResult(value, context);
 
