@@ -177,13 +177,8 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
       if (value is null) throw new ArgumentNullException(nameof(value));
 
-      if (type is null) {
-         type = value.GetType();
-      }
-
-      if (valueProvider is null) {
-         valueProvider = ValueProviderFactories.Factories.GetValueProvider(this.ViewContext);
-      }
+      type ??= value.GetType();
+      valueProvider ??= ValueProviderFactories.Factories.GetValueProvider(this.ViewContext);
 
       var bindingContext = new ModelBindingContext {
          Model = value,
