@@ -10,10 +10,6 @@
 
    <c:variable name='title' as='string'/>
 
-   <c:variable name='antiforgery'>
-      <a:antiforgery/>
-   </c:variable>
-
    <c:use-package name='aspnetcore.LayoutPackage'>
       <c:override>
          <c:variable name='pageTitle' value='this.title' as='string'/>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 
 namespace aspnetcore;
 
@@ -37,7 +36,7 @@ partial class _Page_contact : IPageInit {
       var sent = false;
 
       if (IsPost
-         && TryValidateAntiforgeryAsync().Result
+         && Antiforgery.IsRequestValidAsync().Result
          && TryBind(contact)
          && SendMail(contact)) {
 
@@ -48,6 +47,8 @@ partial class _Page_contact : IPageInit {
          contact = new();
       }
 
-      layout(new { contact, sent, antiforgery });
+      Antiforgery.SetCookieTokenAndHeader();
+
+      layout(new { contact, sent });
    }
 }
