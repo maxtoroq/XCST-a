@@ -231,6 +231,7 @@ static partial class TestsHelper {
          MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Http.IFormFile).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(Microsoft.Extensions.Primitives.StringValues).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Mvc.HiddenInputAttribute).Assembly.Location),
+         MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelMetadata).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location),
          MetadataReference.CreateFromFile(typeof(TestAssert).Assembly.Location),
          MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location)
