@@ -126,14 +126,12 @@ static class TemplateHelpers {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, html.ViewData);
 
-      htmlFieldName ??= ExpressionHelper.GetExpressionText(expression);
-
       templateHelper(
          html,
          package,
          output,
          modelExplorer,
-         htmlFieldName: htmlFieldName,
+         htmlFieldName: expression,
          templateName: templateName,
          membersNames,
          mode,

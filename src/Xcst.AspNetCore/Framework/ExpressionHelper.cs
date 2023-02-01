@@ -14,10 +14,6 @@ namespace Xcst.Web.Mvc;
 public static class ExpressionHelper {
 
    public static string
-   GetExpressionText(string expression) =>
-      expression;
-
-   public static string
    GetExpressionText(LambdaExpression expression) {
 
       // Split apart the expression string for property/field accessors to create its name
