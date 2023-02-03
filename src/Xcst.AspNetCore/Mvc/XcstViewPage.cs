@@ -15,6 +15,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Xcst.Web.Mvc.ModelBinding;
@@ -234,18 +235,18 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       }
    }
 
-   public override void
-   RenderPage() {
+   public override async Task
+   RenderPageAsync() {
 
       try {
-         RenderViewPage();
+         await RenderViewPageAsync();
       } finally {
          _tempData?.Save(this.ViewContext, this.ViewContext.TempDataProvider);
       }
    }
 
-   protected virtual void
-   RenderViewPage() => base.RenderPage();
+   protected virtual async Task
+   RenderViewPageAsync() => await base.RenderPageAsync();
 
    protected override void
    CopyState(XcstPage page) {

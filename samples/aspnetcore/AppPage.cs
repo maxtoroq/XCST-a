@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Xcst;
 using Xcst.Web.Mvc;
 
@@ -6,25 +6,26 @@ namespace aspnetcore;
 
 public abstract class AppPage : XcstViewPage {
 
-   protected override void
-   RenderViewPage() {
+   protected override async Task
+   RenderViewPageAsync() {
 
       Response.ContentType = "text/html";
 
       if (this is IPageInit pInit) {
 
-         XcstEvaluator.Using(pInit)
-            .CallFunction(p => p.Init())
-            .Run();
+         await XcstEvaluator.Using(pInit)
+            .CallFunction(async p => await p.InitAsync())
+            .Evaluate();
 
-      } else {
-         base.RenderViewPage();
+         return;
       }
+
+      await base.RenderViewPageAsync();
    }
 }
 
 public interface IPageInit : IXcstPackage {
 
-   void
-   Init();
+   Task
+   InitAsync();
 }

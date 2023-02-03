@@ -86,13 +86,15 @@ public abstract class XcstPage {
    Antiforgery =>
       _antiforgery ??= new AntiforgeryHelper(() => HttpContext);
 
-   public virtual void
-   RenderPage() {
+   public virtual async Task
+   RenderPageAsync() {
 
       XcstEvaluator.Using((object)this)
          .CallInitialTemplate()
          .OutputTo(this.Response.BodyWriter.AsStream())
          .Run();
+
+      await Task.CompletedTask;
    }
 
    protected virtual void

@@ -95,8 +95,8 @@ public class PrecompiledPageMiddleware {
          page.VirtualPath = "~/" + pagePath;
          page.PathInfo = pathInfo;
          page.HttpContext = context;
-         page.RenderPage();
 
+         await page.RenderPageAsync();
          return;
       }
 

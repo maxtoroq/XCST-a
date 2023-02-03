@@ -28,6 +28,9 @@ public class AntiforgeryHelper {
    readonly IAntiforgery
    _antiforgery;
 
+   private HttpContext
+   HttpContext => _httpContextFn.Invoke();
+
    public
    AntiforgeryHelper(Func<HttpContext> httpContextFn) {
 
@@ -35,28 +38,27 @@ public class AntiforgeryHelper {
 
       _httpContextFn = httpContextFn;
 
-      _antiforgery = httpContextFn.Invoke()
-         .RequestServices
+      _antiforgery = this.HttpContext.RequestServices
          .GetRequiredService<IAntiforgery>();
    }
 
    public AntiforgeryTokenSet
    GetAndStoreTokens() =>
-      _antiforgery.GetAndStoreTokens(_httpContextFn.Invoke());
+      _antiforgery.GetAndStoreTokens(this.HttpContext);
 
    public AntiforgeryTokenSet
    GetTokens() =>
-      _antiforgery.GetTokens(_httpContextFn.Invoke());
+      _antiforgery.GetTokens(this.HttpContext);
 
-   public Task<bool>
+   public async Task<bool>
    IsRequestValidAsync() =>
-      _antiforgery.IsRequestValidAsync(_httpContextFn.Invoke());
+      await _antiforgery.IsRequestValidAsync(this.HttpContext);
 
-   public Task
+   public async Task
    ValidateRequestAsync() =>
-      _antiforgery.ValidateRequestAsync(_httpContextFn.Invoke());
+      await _antiforgery.ValidateRequestAsync(this.HttpContext);
 
    public void
    SetCookieTokenAndHeader() =>
-      _antiforgery.SetCookieTokenAndHeader(_httpContextFn.Invoke());
+      _antiforgery.SetCookieTokenAndHeader(this.HttpContext);
 }

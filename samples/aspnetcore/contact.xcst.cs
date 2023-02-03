@@ -1,4 +1,5 @@
 ﻿using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace aspnetcore;
 
@@ -29,14 +30,14 @@ partial class _Page_contact : IPageInit {
       }
    }
 
-   public void
-   Init() {
+   public async Task
+   InitAsync() {
 
       var contact = new Contact();
       var sent = false;
 
       if (IsPost
-         && Antiforgery.IsRequestValidAsync().Result
+         && await Antiforgery.IsRequestValidAsync()
          && TryBind(contact)
          && SendMail(contact)) {
 
