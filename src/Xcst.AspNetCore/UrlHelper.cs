@@ -7,7 +7,7 @@ using System.Text;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 
-namespace Xcst.Web.Mvc;
+namespace Xcst.Web;
 
 public class UrlHelper {
 

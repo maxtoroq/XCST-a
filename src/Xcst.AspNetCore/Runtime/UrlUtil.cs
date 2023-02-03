@@ -18,9 +18,10 @@
 
 using System;
 using Microsoft.AspNetCore.Http;
-using UrlBuilder = Xcst.Web.Mvc.UrlHelper.UrlBuilder;
 
 namespace Xcst.Web.Runtime;
+
+using UrlBuilder = Xcst.Web.UrlHelper.UrlBuilder;
 
 /// <exclude/>
 public static class UrlUtil {

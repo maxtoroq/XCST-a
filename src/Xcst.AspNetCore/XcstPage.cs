@@ -34,6 +34,9 @@ public abstract class XcstPage {
    IList<string>?
    _urlData;
 
+   UrlHelper?
+   _url;
+
    AntiforgeryHelper?
    _antiforgery;
 
@@ -59,6 +62,7 @@ public abstract class XcstPage {
       set {
          _httpContext = value;
          _urlData = null;
+         _url = null;
       }
    }
 
@@ -82,24 +86,33 @@ public abstract class XcstPage {
    public virtual bool
    IsAjax => Request?.IsAjaxRequest() ?? false;
 
+   public virtual UrlHelper
+   Url {
+      get {
+         if (_url is null
+            && HttpContext != null) {
+
+            _url = new UrlHelper(HttpContext);
+         }
+#pragma warning disable CS8603
+         return _url;
+#pragma warning restore CS8603
+      }
+      set => _url = value;
+   }
+
    public AntiforgeryHelper
    Antiforgery =>
       _antiforgery ??= new AntiforgeryHelper(() => HttpContext);
 
-   public virtual async Task
-   RenderPageAsync() {
-
-      XcstEvaluator.Using((object)this)
-         .CallInitialTemplate()
-         .OutputTo(this.Response.BodyWriter.AsStream())
-         .Run();
-
-      await Task.CompletedTask;
+   public virtual void
+   Redirect(string url) {
+      this.Response.Redirect(this.Url.Content(url));
    }
 
-   protected virtual void
-   CopyState(XcstPage page) {
-      page.HttpContext = this.HttpContext;
+   public virtual void
+   RedirectPermanent(string url) {
+      this.Response.Redirect(this.Url.Content(url), permanent: true);
    }
 
    public async Task<bool>
@@ -151,6 +164,22 @@ public abstract class XcstPage {
       var authorizeResult = await policyEval.AuthorizeAsync(authorizationPolicy!, authenticateResult, httpContext, null);
 
       return authorizeResult;
+   }
+
+   public virtual async Task
+   RenderPageAsync() {
+
+      XcstEvaluator.Using((object)this)
+         .CallInitialTemplate()
+         .OutputTo(this.Response.BodyWriter.AsStream())
+         .Run();
+
+      await Task.CompletedTask;
+   }
+
+   protected virtual void
+   CopyState(XcstPage page) {
+      page.HttpContext = this.HttpContext;
    }
 
    class AuthorizeData : IAuthorizeData {

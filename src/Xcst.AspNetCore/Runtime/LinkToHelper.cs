@@ -14,9 +14,10 @@
 
 using System;
 using System.Linq;
-using UrlBuilder = Xcst.Web.Mvc.UrlHelper.UrlBuilder;
 
 namespace Xcst.Web.Runtime;
+
+using UrlBuilder = UrlHelper.UrlBuilder;
 
 /// <exclude/>
 public static class LinkToHelper {

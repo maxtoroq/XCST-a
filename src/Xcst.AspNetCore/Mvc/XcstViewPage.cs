@@ -39,9 +39,6 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    DynamicViewDataDictionary?
    _viewBag;
 
-   UrlHelper?
-   _url;
-
    HtmlHelper?
    _html;
 
@@ -75,8 +72,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 #pragma warning restore CS8601
 
 #pragma warning disable CS8625
-         Url = null;
-         Html = null;
+         _html = null;
 #pragma warning restore CS8625
       }
    }
@@ -101,22 +97,8 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    private protected IModelMetadataProvider
    MetadataProvider {
-      get => _modelMetadataProvider ??= HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
-   }
-
-   public virtual UrlHelper
-   Url {
-      get {
-         if (_url is null
-            && HttpContext != null) {
-
-            _url = new UrlHelper(HttpContext);
-         }
-#pragma warning disable CS8603
-         return _url;
-#pragma warning restore CS8603
-      }
-      set => _url = value;
+      get => _modelMetadataProvider
+         ??= HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
    }
 
    public HtmlHelper
@@ -155,20 +137,20 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       _viewData = viewData;
    }
 
-   public void
+   public override void
    Redirect(string url) {
 
       _tempData?.Keep();
 
-      this.Response.Redirect(this.Url.Content(url));
+      base.Redirect(url);
    }
 
-   public void
+   public override void
    RedirectPermanent(string url) {
 
       _tempData?.Keep();
 
-      this.Response.Redirect(this.Url.Content(url), permanent: true);
+      base.RedirectPermanent(url);
    }
 
    public bool

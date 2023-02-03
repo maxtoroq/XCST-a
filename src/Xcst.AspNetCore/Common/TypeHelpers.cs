@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using RouteValueDictionary = Microsoft.AspNetCore.Routing.RouteValueDictionary;
 
-namespace Xcst.Web.Mvc;
+namespace Xcst.Web;
 
 delegate bool
 TryGetValueDelegate(object dictionary, string key, out object? value);
