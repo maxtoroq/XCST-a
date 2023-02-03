@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Xcst.Web.Builder;
+namespace Xcst.Web;
 
 class PrecompiledPageMiddleware {
 
