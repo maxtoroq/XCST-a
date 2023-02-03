@@ -29,7 +29,7 @@ public class Startup {
 
    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
    public void
-   Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider svp) {
+   Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 
       if (env.IsDevelopment()) {
          app.UseDeveloperExceptionPage();
@@ -38,11 +38,11 @@ public class Startup {
       app.UseStaticFiles();
       //app.UseSession();
 
-      app.UseXcstPrecompiledPages(new[] { GetType().Assembly }, config => ConfigureXcstWeb(config, svp));
+      app.UseXcstPrecompiledPages(new[] { GetType().Assembly }, config => ConfigureXcstWeb(config));
    }
 
    static void
-   ConfigureXcstWeb(XcstWebConfiguration config, IServiceProvider svp) {
+   ConfigureXcstWeb(XcstWebConfiguration config) {
 
       config.DisplayTemplates.TemplateFactory = LoadDisplayTemplate;
       config.EditorTemplates.TemplateFactory = LoadEditorTemplate;
@@ -52,9 +52,6 @@ public class Startup {
             || info.InputType == InputType.Password
             || info.TagName != "input") ? "form-control"
             : null;
-
-      //IHttpContextAccessor contextAccessor = svp.GetService<IHttpContextAccessor>()!;
-      //Xcst.Web.Runtime.UrlUtil.CurrentHttpContext = () => contextAccessor.HttpContext!;
    }
 
    static XcstViewPage?

@@ -25,15 +25,9 @@ namespace Xcst.Web.Runtime;
 /// <exclude/>
 public static class UrlUtil {
 
-   // Code generation uses static method for Href function,
-   // therefore HttpContext cannot be provided dynamically
-
-   public static Func<HttpContext>?
-   CurrentHttpContext { get; set; }
-
    public static string
    GenerateClientUrl(string? basePath, string path, params object?[]? pathParts) =>
-      GenerateClientUrl(CurrentHttpContext?.Invoke(), basePath, path, pathParts);
+      GenerateClientUrl(null, basePath, path, pathParts);
 
    static string
    GenerateClientUrl(HttpContext? httpContext, string? basePath, string path, params object?[]? pathParts) {
@@ -46,8 +40,7 @@ public static class UrlUtil {
          path = new PathString(basePath).Add(path).Value!;
       }
 
-      string query;
-      var processedPath = UrlBuilder.BuildUrl(path, out query, pathParts);
+      var processedPath = UrlBuilder.BuildUrl(path, out var query, pathParts);
 
       // many of the methods we call internally can't handle query strings properly, so tack it on after processing
       // the virtual app path and url rewrites
