@@ -26,9 +26,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Xcst.Web.Precompilation;
+namespace Xcst.Web.Builder;
 
-public class PrecompiledPageMiddleware {
+class PrecompiledPageMiddleware {
 
    readonly RequestDelegate
    _next;

@@ -16,7 +16,6 @@ using System;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Xcst.Web.Configuration;
-using Xcst.Web.Precompilation;
 
 namespace Xcst.Web.Builder;
 
