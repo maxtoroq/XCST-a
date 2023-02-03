@@ -61,8 +61,8 @@ public class PrecompiledPageMiddleware {
 
       foreach (var item in pairs) {
 
-         if (map.ContainsKey(item.Key)) {
-            throw new InvalidOperationException($"Ambiguous path '{item.Key}', is used by '{map[item.Key].AssemblyQualifiedName}' and '{item.Value.AssemblyQualifiedName}'.");
+         if (map.TryGetValue(item.Key, out var prevType)) {
+            throw new InvalidOperationException($"Ambiguous path '{item.Key}', is used by '{prevType.AssemblyQualifiedName}' and '{item.Value.AssemblyQualifiedName}'.");
          }
 
          map.Add(item.Key, item.Value);
