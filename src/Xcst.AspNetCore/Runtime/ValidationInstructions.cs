@@ -98,11 +98,8 @@ public static class ValidationInstructions {
 
          var replaceValidationMessageContents = String.IsNullOrEmpty(validationMessage);
 
-         if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
-
-            output.WriteAttributeString("data-valmsg-for", modelName);
-            output.WriteAttributeString("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
-         }
+         output.WriteAttributeString("data-valmsg-for", modelName);
+         output.WriteAttributeString("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
       }
 
       // class was already written
@@ -129,19 +126,8 @@ public static class ValidationInstructions {
 
       if (htmlHelper.ViewData.ModelState.IsValid) {
 
-         if (formContext is null) {
-
-            // No client side validation
-
-            return;
-         }
-
-         // TODO: This isn't really about unobtrusive; can we fix up non-unobtrusive to get rid of this, too?
-
-         if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled
-            && !includePropertyErrors) {
-
-            // No client-side updates
+         if (!htmlHelper.ViewContext.ClientValidationEnabled
+            || !includePropertyErrors) {
 
             return;
          }
@@ -156,14 +142,11 @@ public static class ValidationInstructions {
 
       if (formContext != null) {
 
-         if (htmlHelper.ViewContext.UnobtrusiveJavaScriptEnabled) {
+         if (includePropertyErrors) {
 
-            if (includePropertyErrors) {
+            // Only put errors in the validation summary if they're supposed to be included there
 
-               // Only put errors in the validation summary if they're supposed to be included there
-
-               output.WriteAttributeString("data-valmsg-summary", "true");
-            }
+            output.WriteAttributeString("data-valmsg-summary", "true");
          }
       }
 

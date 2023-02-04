@@ -204,7 +204,7 @@ public class HtmlHelper {
 
       // The ordering of these 3 checks (and the early exits) is for performance reasons.
 
-      if (!this.ViewContext.UnobtrusiveJavaScriptEnabled) {
+      if (!this.ViewContext.ClientValidationEnabled) {
          return results;
       }
 
