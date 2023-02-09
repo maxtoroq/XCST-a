@@ -24,6 +24,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
 namespace Xcst.Web.Mvc;
@@ -31,7 +32,7 @@ namespace Xcst.Web.Mvc;
 /// <exclude/>
 [EditorBrowsable(EditorBrowsableState.Never)]
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
-public class FileExtensionsAttribute : ValidationAttribute, IClientValidatable {
+public class FileExtensionsAttribute : ValidationAttribute, IClientModelValidator {
 
    public string
    Extensions { get; }
@@ -92,22 +93,28 @@ public class FileExtensionsAttribute : ValidationAttribute, IClientValidatable {
    ValidateExtension(string fileName) {
 
       try {
-         return ExtensionsParsed.Contains(Path.GetExtension(fileName).ToLowerInvariant());
+         return this.ExtensionsParsed.Contains(Path.GetExtension(fileName).ToLowerInvariant());
       } catch (ArgumentException) {
          return false;
       }
    }
 
-   public IEnumerable<ModelClientValidationRule>
-   GetClientValidationRules(ModelMetadata metadata, ControllerContext context) {
+   public void
+   AddValidation(ClientModelValidationContext context) {
 
-      var rule = new ModelClientValidationRule {
-         ValidationType = "extension",
-         ErrorMessage = FormatErrorMessage(metadata.GetDisplayName())
-      };
+      MergeAttribute(context.Attributes, "data-val", "true");
+      MergeAttribute(context.Attributes, "data-val-extension", FormatErrorMessage(context.ModelMetadata.GetDisplayName()));
+      MergeAttribute(context.Attributes, "data-val-extension-extension", this.ExtensionsNormalized);
+   }
 
-      rule.ValidationParameters["extension"] = this.ExtensionsNormalized;
+   static bool
+   MergeAttribute(IDictionary<string, string> attributes, string key, string value) {
 
-      yield return rule;
+      if (attributes.ContainsKey(key)) {
+         return false;
+      }
+
+      attributes.Add(key, value);
+      return true;
    }
 }

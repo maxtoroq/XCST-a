@@ -1,16 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using Xcst.Web.Mvc;
-using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
+using Xcst.Web.Mvc;
 using TestAssert = NUnit.Framework.Assert;
 
 namespace Xcst.Web.Tests;
 
 static partial class TestsHelper {
+
+   static IEnumerable<string>
+   GetPackageAssemblyReferences(string assemblyPath) => new string[] {
+      Path.Combine(assemblyPath, "System.Collections.Specialized.dll"),
+      Path.Combine(assemblyPath, "System.Dynamic.Runtime.dll"),
+      Path.Combine(assemblyPath, "System.Linq.Expressions.dll"),
+      Path.Combine(assemblyPath, "System.ObjectModel.dll"),
+      typeof(Microsoft.CSharp.RuntimeBinder.RuntimeBinderException).Assembly.Location,
+      typeof(Microsoft.AspNetCore.Http.HttpContext).Assembly.Location,
+      typeof(Microsoft.AspNetCore.Http.IFormFile).Assembly.Location,
+      typeof(Microsoft.AspNetCore.Http.QueryCollection).Assembly.Location,
+      typeof(Microsoft.Extensions.Primitives.StringValues).Assembly.Location,
+      typeof(Microsoft.AspNetCore.Mvc.HiddenInputAttribute).Assembly.Location,
+      typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelMetadata).Assembly.Location,
+      typeof(Microsoft.AspNetCore.Mvc.ModelBinding.QueryStringValueProvider).Assembly.Location,
+      typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location,
+      typeof(TestAssert).Assembly.Location,
+      Assembly.GetExecutingAssembly().Location
+   };
 
    static XcstViewPage
    CreatePackage(Type packageType) {
@@ -29,10 +49,12 @@ static partial class TestsHelper {
       var services = new ServiceCollection();
       services
          .AddOptions()
+         .AddLogging()
          .AddMvcCore(opts => {
             opts.ModelMetadataDetailsProviders.Add(new Xcst.Web.Mvc.ModelBinding.MetadataDetailsProvider());
          })
-         .AddDataAnnotations();
+         .AddDataAnnotations()
+         .AddViews();
 
       services.AddSingleton(antiforgeryMock.Object);
 

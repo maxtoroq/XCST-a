@@ -17,8 +17,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Xcst.Web.Mvc.ModelBinding;
+using MvcOptions = Microsoft.AspNetCore.Mvc.MvcOptions;
 
 namespace Xcst.Web.Mvc;
 
@@ -81,7 +85,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    ViewData {
       get {
          if (_viewData is null) {
-            SetViewData(new ViewDataDictionary(MetadataProvider));
+            SetViewData(new ViewDataDictionary(MetadataProvider, ModelState));
          }
          return _viewData!;
       }
@@ -117,14 +121,14 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    }
 
    public ModelStateDictionary
-   ModelState => ViewData.ModelState;
+   ModelState => ViewContext.ActionContext.ModelState;
 
    public TempDataDictionary
    TempData {
       get {
          if (_tempData is null) {
             _tempData = new TempDataDictionary();
-            _tempData.Load(ViewContext, ViewContext.TempDataProvider);
+            _tempData.Load(ViewContext.ActionContext, ViewContext.TempDataProvider);
          }
 
          return _tempData;
@@ -153,68 +157,76 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       base.RedirectPermanent(url);
    }
 
-   public bool
-   TryBind(
-         object value, Type? type = null, string? prefix = null, string[]? includeProperties = null,
-         string[]? excludeProperties = null, IValueProvider? valueProvider = null) {
+   public async Task<bool>
+   TryUpdateModelAsync(
+         object model, Type? modelType = null, string? prefix = null, IValueProvider? valueProvider = null) {
 
-      if (value is null) throw new ArgumentNullException(nameof(value));
+      var modelBinderFactory = this.HttpContext.RequestServices
+         .GetRequiredService<IModelBinderFactory>();
 
-      type ??= value.GetType();
-      valueProvider ??= ValueProviderFactories.Factories.GetValueProvider(this.ViewContext);
+      var objectValidator = this.HttpContext.RequestServices
+         .GetRequiredService<IObjectModelValidator>();
 
-      var bindingContext = new ModelBindingContext {
-         Model = value,
-         ModelMetadata = this.MetadataProvider.GetMetadataForType(type),
-         ModelName = prefix,
-         ModelState = this.ModelState,
-         PropertyFilter = p => isPropertyAllowed(p, includeProperties, excludeProperties),
-         ValueProvider = valueProvider
+      var mvcOptions = this.HttpContext.RequestServices
+         .GetRequiredService<IOptions<MvcOptions>>();
+
+      ArgumentNullException.ThrowIfNull(model);
+
+      var actionContext = this.ViewContext.ActionContext;
+
+      modelType ??= model.GetType();
+
+      valueProvider ??= await CompositeValueProvider
+         .CreateAsync(actionContext, mvcOptions.Value.ValueProviderFactories.ToArray());
+
+      var metadataForType = this.MetadataProvider.GetMetadataForType(modelType);
+
+      if (metadataForType.BoundConstructor != null) {
+         throw new NotSupportedException(
+            $"{nameof(TryUpdateModelAsync)} cannot update a record type model."
+            + $" If a '{modelType}' must be updated, include it in an object type.");
+      }
+
+      var modelBindingContext = DefaultModelBindingContext
+         .CreateBindingContext(actionContext, valueProvider, metadataForType, null, prefix ?? String.Empty);
+      modelBindingContext.Model = model;
+      //modelBindingContext.PropertyFilter = propertyFilter;
+
+      var context = new ModelBinderFactoryContext {
+         Metadata = metadataForType,
+         BindingInfo = new BindingInfo {
+            BinderModelName = metadataForType.BinderModelName,
+            BinderType = metadataForType.BinderType,
+            BindingSource = metadataForType.BindingSource,
+            PropertyFilterProvider = metadataForType.PropertyFilterProvider
+         },
+         CacheToken = metadataForType
       };
 
-      var binder = ModelBinders.Binders.GetBinder(type);
+      await modelBinderFactory.CreateBinder(context)
+         .BindModelAsync(modelBindingContext);
 
-      binder.BindModel(this.ViewContext, bindingContext);
+      var result = modelBindingContext.Result;
 
-      return this.ModelState.IsValid;
-
-      static bool isPropertyAllowed(string propertyName, string[]? includeProperties, string[]? excludeProperties) {
-
-         // We allow a property to be bound if its both in the include list AND not in the exclude list.
-         // An empty include list implies all properties are allowed.
-         // An empty exclude list implies no properties are disallowed.
-
-         var includeProperty = (includeProperties is null) || (includeProperties.Length == 0) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
-         var excludeProperty = (excludeProperties != null) && excludeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
-         return includeProperty && !excludeProperty;
+      if (result.IsModelSet) {
+         objectValidator.Validate(actionContext, modelBindingContext.ValidationState, modelBindingContext.ModelName, result.Model);
+         return this.ModelState.IsValid;
       }
+
+      return false;
    }
 
    public bool
-   TryValidate(object value, string? prefix = null) {
+   TryValidateModel(object model, string? prefix = null) {
 
-      if (value is null) throw new ArgumentNullException(nameof(value));
+      ArgumentNullException.ThrowIfNull(model);
 
-      var metadata = this.MetadataProvider.GetMetadataForType(value.GetType());
+      var objectValidator = this.HttpContext.RequestServices
+         .GetRequiredService<IObjectModelValidator>();
 
-      foreach (var validationResult in ModelValidator.GetModelValidator(metadata, this.ViewContext).Validate(value)) {
-         this.ModelState.AddModelError(createSubPropertyName(prefix, validationResult.MemberName), validationResult.Message);
-      }
+      objectValidator.Validate(this.ViewContext.ActionContext, null, prefix ?? String.Empty, model);
 
       return this.ModelState.IsValid;
-
-      static string createSubPropertyName(string? prefix, string propertyName) {
-
-         if (String.IsNullOrEmpty(prefix)) {
-            return propertyName;
-         }
-
-         if (String.IsNullOrEmpty(propertyName)) {
-            return prefix ?? String.Empty;
-         }
-
-         return (prefix + "." + propertyName);
-      }
    }
 
    public override async Task
@@ -223,7 +235,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       try {
          await RenderViewPageAsync();
       } finally {
-         _tempData?.Save(this.ViewContext, this.ViewContext.TempDataProvider);
+         _tempData?.Save(this.ViewContext.ActionContext, this.ViewContext.TempDataProvider);
       }
    }
 
@@ -262,7 +274,7 @@ public abstract class XcstViewPage<TModel> : XcstViewPage {
    ViewData {
       get {
          if (_viewData is null) {
-            SetViewData(new ViewDataDictionary<TModel>(MetadataProvider));
+            SetViewData(new ViewDataDictionary<TModel>(MetadataProvider, ModelState));
          }
          return _viewData!;
       }

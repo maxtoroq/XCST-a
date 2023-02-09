@@ -1,12 +1,11 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Xcst.Web.Builder;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
-using Xcst.Web.Builder;
 
 namespace aspnetcore;
 
@@ -17,14 +16,16 @@ public class Startup {
    public void
    ConfigureServices(IServiceCollection services) {
 
-      services.AddMvcCore(opts => {
-         opts.ModelMetadataDetailsProviders.Add(new Xcst.Web.Mvc.ModelBinding.MetadataDetailsProvider());
-      }).AddDataAnnotations();
+      services
+         .AddMvcCore(opts => {
+            opts.ModelMetadataDetailsProviders.Add(new Xcst.Web.Mvc.ModelBinding.MetadataDetailsProvider());
+         })
+         .AddDataAnnotations()
+         .AddViews();
 
       services.AddAntiforgery();
       //services.AddDistributedMemoryCache();
       //services.AddSession();
-      //services.AddHttpContextAccessor();
    }
 
    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

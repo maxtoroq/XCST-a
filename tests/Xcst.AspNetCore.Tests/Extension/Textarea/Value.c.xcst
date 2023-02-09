@@ -11,6 +11,7 @@
    </c:type>
 
    <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { p = "property" }'>
             <a:textarea for='p'/>

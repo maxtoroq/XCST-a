@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
 
@@ -110,7 +111,7 @@ public static class ValidationInstructions {
          output.WriteString(validationMessage);
 
       } else if (modelError != null) {
-         output.WriteString(GetUserErrorMessageOrDefault(modelError, modelState));
+         output.WriteString(GetModelErrorMessageOrDefault(modelError, modelState!, modelExplorer));
       }
 
       output.WriteEndElement();
@@ -173,7 +174,7 @@ public static class ValidationInstructions {
       foreach (var modelState in modelStates) {
          foreach (var modelError in modelState.Errors) {
 
-            var errorText = GetUserErrorMessageOrDefault(modelError, modelState: null);
+            var errorText = GetModelErrorMessageOrDefault(modelError);
 
             if (!String.IsNullOrEmpty(errorText)) {
 
@@ -198,7 +199,7 @@ public static class ValidationInstructions {
 
    // Returns non-null list of model states, which caller will render in order provided.
 
-   static IEnumerable<ModelState>
+   static IEnumerable<ModelStateEntry>
    GetModelStateList(HtmlHelper htmlHelper, bool includePropertyErrors) {
 
       var viewData = htmlHelper.ViewData;
@@ -208,49 +209,50 @@ public static class ValidationInstructions {
          if (viewData.ModelState.TryGetValue(viewData.TemplateInfo.HtmlFieldPrefix, out var ms)
             && ms != null) {
 
-            return new ModelState[] { ms };
+            return new ModelStateEntry[] { ms };
          }
 
-         return new ModelState[0];
-
-      } else {
-
-         // Sort modelStates to respect the ordering in the metadata.
-         // ModelState doesn't refer to ModelMetadata, but we can correlate via the property name.
-
-         var ordering = new Dictionary<string, int>();
-         var metadata = viewData.ModelMetadata;
-
-         if (metadata != null) {
-            foreach (var m in metadata.Properties) {
-               ordering[m.PropertyName] = m.Order;
-            }
-         }
-
-         return
-            from kv in viewData.ModelState
-            let name = kv.Key
-            orderby ordering.GetOrDefault(name, ModelMetadata.DefaultOrder)
-            select kv.Value;
+         return Array.Empty<ModelStateEntry>();
       }
+
+      // Sort modelStates to respect the ordering in the metadata.
+      // ModelState doesn't refer to ModelMetadata, but we can correlate via the property name.
+
+      var ordering = new Dictionary<string, int>();
+      var metadata = viewData.ModelMetadata;
+
+      if (metadata != null) {
+         foreach (var m in metadata.Properties) {
+            ordering[m.PropertyName!] = m.Order;
+         }
+      }
+
+      return
+         from kv in viewData.ModelState
+         let name = kv.Key
+         orderby ordering.GetOrDefault(name, ModelMetadata.DefaultOrder)
+         select kv.Value;
    }
 
-   static string?
-   GetUserErrorMessageOrDefault(ModelError error, ModelState? modelState) {
+   static string
+   GetModelErrorMessageOrDefault(ModelError error) {
 
       if (!String.IsNullOrEmpty(error.ErrorMessage)) {
          return error.ErrorMessage;
       }
 
-      if (modelState is null) {
-         return null;
+      return String.Empty;
+   }
+
+   static string?
+   GetModelErrorMessageOrDefault(ModelError error, ModelStateEntry modelState, ModelExplorer modelExplorer) {
+
+      if (!String.IsNullOrEmpty(error.ErrorMessage)) {
+         return error.ErrorMessage;
       }
 
-      var attemptedValue = modelState.Value?.AttemptedValue;
+      var arg = modelState.AttemptedValue ?? "null";
 
-      var messageFormat = XcstWebConfiguration.Instance.EditorTemplates.DefaultValidationMessage?.Invoke()
-         ?? "The value '{0}' is invalid.";
-
-      return String.Format(CultureInfo.CurrentCulture, messageFormat, attemptedValue);
+      return modelExplorer.Metadata.ModelBindingMessageProvider.ValueIsInvalidAccessor(arg);
    }
 }

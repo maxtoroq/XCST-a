@@ -5,9 +5,9 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Xcst.Web.Mvc.ExpressionUtil;
-using Xcst.Web.Mvc.Properties;
 
 namespace Xcst.Web.Mvc;
 
@@ -61,7 +61,7 @@ static class ExpressionMetadataProvider {
       }
 
       if (!legalExpression) {
-         throw new InvalidOperationException(MvcResources.TemplateHelpers_TemplateLimitations);
+         throw new InvalidOperationException("Templates can be used only with field access, property access, single-dimension array index, or single-parameter custom indexer expressions.");
       }
 
       object? modelAccessor(object container) {

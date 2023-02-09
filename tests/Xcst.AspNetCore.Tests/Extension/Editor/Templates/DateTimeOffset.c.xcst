@@ -11,7 +11,7 @@
    </c:type>
 
    <c:template name='c:initial-template'>
-      <c:set ref='this.ViewContext.ClientValidationEnabled' value='false'/>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <a:model value='new Foo()'>
          <a:editor for='d'/>
       </a:model>

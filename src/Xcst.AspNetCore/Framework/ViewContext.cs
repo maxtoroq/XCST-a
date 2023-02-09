@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
 namespace Xcst.Web.Mvc;
 
-public class ViewContext : ControllerContext {
+public class ViewContext {
 
    // Some values have to be stored in HttpContext.Items in order to be propagated between calls
    // to RenderPartial(), RenderAction(), etc.
@@ -19,6 +21,45 @@ public class ViewContext : ControllerContext {
 
    FormContext
    _defaultFormContext = new();
+
+   HttpContext?
+   _httpContext;
+
+   ActionContext?
+   _actionContext;
+
+   ITempDataProvider?
+   _tempDataProvider;
+
+   public HttpContext
+   HttpContext {
+      get => _httpContext ??= new EmptyHttpContext();
+      set => _httpContext = value;
+   }
+
+   public ActionContext
+   ActionContext => _actionContext ??= new() {
+      HttpContext = HttpContext,
+      RouteData = new RouteData()
+   };
+
+   public virtual FormContext
+   FormContext {
+      get {
+         if (HttpContext.Items.TryGetValue(_formContextKey, out var formCtxObj)
+            && formCtxObj is FormContext formCtx) {
+            return formCtx;
+         }
+         return _defaultFormContext;
+      }
+      set => HttpContext.Items[_formContextKey] = value;
+   }
+
+   public ITempDataProvider
+   TempDataProvider {
+      get => _tempDataProvider ??= CreateTempDataProvider();
+      set => _tempDataProvider = value;
+   }
 
    public virtual bool
    ClientValidationEnabled { get; set; } = true;
@@ -41,29 +82,26 @@ public class ViewContext : ControllerContext {
    public Html5DateRenderingMode
    Html5DateRenderingMode { get; set; }
 
-   public virtual FormContext
-   FormContext {
-      get {
-         if (HttpContext.Items.TryGetValue(_formContextKey, out var formCtxObj)
-            && formCtxObj is FormContext formCtx) {
-            return formCtx;
-         }
-         return _defaultFormContext;
-      }
-      set => HttpContext.Items[_formContextKey] = value;
-   }
-
    // parameterless constructor used for mocking
    public
    ViewContext() { }
 
    public
-   ViewContext(HttpContext httpContext)
-      : base(httpContext) { }
+   ViewContext(HttpContext httpContext) {
+
+      ArgumentNullException.ThrowIfNull(httpContext);
+
+      _httpContext = httpContext;
+   }
 
    public
-   ViewContext(ViewContext viewContext)
-      : base(viewContext) {
+   ViewContext(ViewContext viewContext) {
+
+      ArgumentNullException.ThrowIfNull(viewContext);
+
+      _httpContext = viewContext._httpContext;
+      _actionContext = viewContext._actionContext;
+      _tempDataProvider = viewContext._tempDataProvider;
 
       this.ClientValidationEnabled = viewContext.ClientValidationEnabled;
       this.ValidationMessageElement = viewContext.ValidationMessageElement;
@@ -74,6 +112,23 @@ public class ViewContext : ControllerContext {
    internal FormContext?
    GetFormContextForClientValidation() =>
       (this.ClientValidationEnabled) ? this.FormContext : null;
+
+   ITempDataProvider
+   CreateTempDataProvider() {
+
+      // The factory can be customized in order to create an ITempDataProvider for the controller.
+
+      var tempDataProviderFactory = this.HttpContext.RequestServices.GetService<ITempDataProviderFactory>();
+
+      if (tempDataProviderFactory != null) {
+         return tempDataProviderFactory.CreateInstance();
+      }
+
+      // Note that getting a service from the current cache will return the same instance for every controller.
+
+      return this.HttpContext.RequestServices.GetService<ITempDataProvider>()
+         ?? new SessionStateTempDataProvider();
+   }
 }
 
 /// <summary>

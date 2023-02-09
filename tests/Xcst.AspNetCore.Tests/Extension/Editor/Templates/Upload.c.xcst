@@ -9,6 +9,7 @@
    </c:type>
 
    <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { f = @"c:\foo.txt" }' helper-name='htm'>
             <a:editor for='f'/>

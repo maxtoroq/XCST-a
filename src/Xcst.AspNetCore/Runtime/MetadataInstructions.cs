@@ -43,7 +43,7 @@ public static class MetadataInstructions {
    DisplayNameFor<TModel, TProperty>(HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression) {
 
       var modelExplorer = (typeof(IEnumerable<TModel>).IsAssignableFrom(typeof(TModel))) ?
-          ExpressionMetadataProvider.FromLambdaExpression(expression, new ViewDataDictionary<TModel>(html.ViewData.MetadataProvider))
+          ExpressionMetadataProvider.FromLambdaExpression(expression, new ViewDataDictionary<TModel>(html.ViewData.MetadataProvider, html.ViewData.ModelState))
           : ExpressionMetadataProvider.FromLambdaExpression(expression, html.ViewData);
 
       var expressionString = ExpressionHelper.GetExpressionText(expression);

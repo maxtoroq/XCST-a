@@ -4,21 +4,18 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='System'/>
-
    <c:type name='Foo'>
-      <c:member name='d' as='DateTime' value='new DateTime()' data-type='Time'/>
+      <c:member name='f' a:file-extensions='pdf' a:file-extensions-message=''/>
    </c:type>
 
    <c:template name='c:initial-template'>
-      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <a:model value='new Foo()'>
-         <a:editor for='d'/>
+         <a:input type='file' for='f'/>
       </a:model>
    </c:template>
 
    <c:template name='expected'>
-      <input type='time' id='d' name='d' value='00:00:00.000' class='text-box single-line'/>
+      <input type='file' id='f' name='f' data-val='true' data-val-extension-extension='pdf' data-val-extension=''/>
    </c:template>
 
 </c:module>

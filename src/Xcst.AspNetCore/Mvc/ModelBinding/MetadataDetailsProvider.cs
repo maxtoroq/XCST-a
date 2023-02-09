@@ -15,6 +15,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 
 namespace Xcst.Web.Mvc.ModelBinding;
@@ -123,6 +125,23 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
          && obj is string str) {
 
          return str;
+      }
+
+      return null;
+   }
+
+   internal static string?
+   GetDisplayName(MemberInfo member) {
+
+      var display = member.GetCustomAttribute<DisplayAttribute>(inherit: false);
+
+      if (display != null) {
+
+         var name = display.GetName();
+
+         if (!String.IsNullOrEmpty(name)) {
+            return name;
+         }
       }
 
       return null;

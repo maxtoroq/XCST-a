@@ -9,6 +9,7 @@
    </c:type>
 
    <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <a:model as='ColorModel'>
          <a:editor for='colors'>
             <a:with-options>

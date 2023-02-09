@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace Xcst.Web.Mvc.ModelBinding;
 
 public static class MetadataExtensions {

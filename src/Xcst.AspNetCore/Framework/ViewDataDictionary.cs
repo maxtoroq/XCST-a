@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Xcst.Web.Mvc.Properties;
 
 namespace Xcst.Web.Mvc;
 
@@ -93,18 +93,13 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    internal IDictionary<string, object?>
    InnerDictionary => _innerDictionary;
 
-   public
-   ViewDataDictionary(IModelMetadataProvider metadataProvider)
-      : this(default(object), metadataProvider) { }
-
    [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "See note on SetModel() method.")]
    public
-   ViewDataDictionary(object? model, IModelMetadataProvider metadataProvider) {
+   ViewDataDictionary(IModelMetadataProvider metadataProvider, ModelStateDictionary modelState) {
 
-      this.Model = model;
       this.MetadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
       _innerDictionary = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
-      _modelState = new ModelStateDictionary();
+      _modelState = modelState;
    }
 
    [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "See note on SetModel() method.")]
@@ -179,7 +174,7 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    public ViewDataInfo?
    GetViewDataInfo(string expression) {
 
-      if (String.IsNullOrEmpty(expression)) throw new ArgumentException(MvcResources.Common_NullOrEmpty, nameof(expression));
+      ArgumentNullException.ThrowIfNullOrEmpty(expression);
 
       return ViewDataEvaluator.Eval(this, expression);
    }
@@ -506,12 +501,8 @@ public class ViewDataDictionary<TModel> : ViewDataDictionary {
    }
 
    public
-   ViewDataDictionary(IModelMetadataProvider metadataProvider)
-      : base(default(TModel), metadataProvider) { }
-
-   public
-   ViewDataDictionary(TModel model, IModelMetadataProvider metadataProvider)
-      : base(model, metadataProvider) { }
+   ViewDataDictionary(IModelMetadataProvider metadataProvider, ModelStateDictionary modelState)
+      : base(metadataProvider, modelState) { }
 
    public
    ViewDataDictionary(ViewDataDictionary viewDataDictionary)
@@ -527,17 +518,10 @@ public class ViewDataDictionary<TModel> : ViewDataDictionary {
       } else {
 
          var errorMessage = (value != null) ?
-            String.Format(CultureInfo.CurrentCulture, MvcResources.ViewDataDictionary_WrongTModelType, value.GetType(), typeof(TModel))
-            : String.Format(CultureInfo.CurrentCulture, MvcResources.ViewDataDictionary_ModelCannotBeNull, typeof(TModel));
+            $"The model item passed into the dictionary is of type '{value.GetType()}', but this dictionary requires a model item of type '{typeof(TModel)}'."
+            : $"The model item passed into the dictionary is null, but this dictionary requires a non-null model item of type '{typeof(TModel)}'.";
 
          throw new InvalidOperationException(errorMessage);
       }
    }
-}
-
-public interface IViewDataContainer {
-
-   [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is the mechanism by which the ViewPage / ViewUserControl get their ViewDataDictionary objects.")]
-   ViewDataDictionary
-   ViewData { get; set; }
 }

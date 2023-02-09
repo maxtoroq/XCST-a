@@ -11,6 +11,7 @@
    </c:type>
 
    <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <!-- value overrides selected of static option -->
          <a:select name='color' value='"red"' class='a'>

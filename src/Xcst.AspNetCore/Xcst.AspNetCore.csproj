@@ -22,29 +22,12 @@
     <PackageReference Include="Xcst.Runtime" Version="2.0.4" />
   </ItemGroup>
   <ItemGroup>
+    <Using Include="Microsoft.AspNetCore.Mvc.ActionContext" Alias="ActionContext" />
     <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorer" Alias="ModelExplorer" />
     <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorerExtensions" Static="true" />
-    <Using Include="Microsoft.AspNetCore.Mvc.ModelBinding.ModelMetadata" Alias="ModelMetadata" />
-    <Using Include="Microsoft.AspNetCore.Mvc.ModelBinding.IModelMetadataProvider" Alias="IModelMetadataProvider" />
-    <Using Include="Microsoft.AspNetCore.Mvc.ModelBinding.ModelMetadataProviderExtensions" Static="true" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\schemas\xcst-app.rng" Visible="false" PackagePath="schemas" />
     <Content Include="..\..\schemas\xcst-app.xsd" Visible="false" PackagePath="schemas" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Framework\Common\MvcResources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>MvcResources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Framework\Common\MvcResources.resx">
-      <SubType>Designer</SubType>
-      <CustomToolNamespace>Xcst.Web.Mvc.Properties</CustomToolNamespace>
-      <LastGenOutput>MvcResources.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>

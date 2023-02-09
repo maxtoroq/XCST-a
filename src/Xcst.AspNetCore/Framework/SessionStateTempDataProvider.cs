@@ -29,12 +29,12 @@ public class SessionStateTempDataProvider : ITempDataProvider {
          .GetType("Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure.DefaultTempDataSerializer", throwOnError: true)!)!;
 
    public virtual IDictionary<string, object?>
-   LoadTempData(ControllerContext controllerContext) {
+   LoadTempData(ActionContext actionContext) {
 
-      if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
+      if (actionContext is null) throw new ArgumentNullException(nameof(actionContext));
 
       // Accessing Session property will throw if the session middleware is not enabled.
-      var session = controllerContext.HttpContext.Session;
+      var session = actionContext.HttpContext.Session;
 
       if (session.TryGetValue(TempDataSessionStateKey, out var value)) {
          // If we got it from Session, remove it so that no other request gets it
@@ -47,12 +47,12 @@ public class SessionStateTempDataProvider : ITempDataProvider {
    }
 
    public virtual void
-   SaveTempData(ControllerContext controllerContext, IDictionary<string, object?> values) {
+   SaveTempData(ActionContext actionContext, IDictionary<string, object?> values) {
 
-      if (controllerContext is null) throw new ArgumentNullException(nameof(controllerContext));
+      if (actionContext is null) throw new ArgumentNullException(nameof(actionContext));
 
       // Accessing Session property will throw if the session middleware is not enabled.
-      var session = controllerContext.HttpContext.Session;
+      var session = actionContext.HttpContext.Session;
       var hasValues = (values != null && values.Count > 0);
 
       if (hasValues) {

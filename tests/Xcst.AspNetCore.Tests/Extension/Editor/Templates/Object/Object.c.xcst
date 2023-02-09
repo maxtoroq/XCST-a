@@ -5,11 +5,11 @@
    extension-element-prefixes='a'>
 
    <c:type name='Foo'>
-      <c:member name='a' as='string' display='yes'/>
-      <c:member name='b' as='string' display='no'/>
-      <c:member name='c' as='string' display='edit-only'/>
-      <c:member name='d' as='string' display='view-only'/>
-      <c:member name='e' as='string' display='hidden'/>
+      <c:member name='a' as='string?' display='yes'/>
+      <c:member name='b' as='string?' display='no'/>
+      <c:member name='c' as='string?' display='edit-only'/>
+      <c:member name='d' as='string?' display='view-only'/>
+      <c:member name='e' as='string?' display='hidden'/>
    </c:type>
 
    <c:template name='c:initial-template'>

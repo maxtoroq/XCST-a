@@ -200,42 +200,29 @@ static partial class TestsHelper {
 
       var references = new[] {
          // XCST dependencies
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "mscorlib.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Collections.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Core.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Runtime.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Runtime.Extensions.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Xml.ReaderWriter.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Xml.XDocument.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "netstandard.dll")),
-         MetadataReference.CreateFromFile(typeof(System.Object).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(System.Uri).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(System.Collections.Generic.List<>).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(System.Xml.XmlWriter).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(System.Xml.Linq.XDocument).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(System.Diagnostics.Trace).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(System.IServiceProvider).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(System.ComponentModel.DescriptionAttribute).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(Newtonsoft.Json.JsonWriter).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(Xcst.IXcstPackage).Assembly.Location),
-         // Tests dependencies
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Collections.Specialized.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Dynamic.Runtime.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Linq.Expressions.dll")),
-         MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.ObjectModel.dll")),
-         MetadataReference.CreateFromFile(typeof(Microsoft.CSharp.RuntimeBinder.RuntimeBinderException).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Http.HttpContext).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Http.IFormFile).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(Microsoft.Extensions.Primitives.StringValues).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Mvc.HiddenInputAttribute).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelMetadata).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location),
-         MetadataReference.CreateFromFile(typeof(TestAssert).Assembly.Location),
-         MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location)
-      };
+         Path.Combine(assemblyPath, "mscorlib.dll"),
+         Path.Combine(assemblyPath, "System.dll"),
+         Path.Combine(assemblyPath, "System.Collections.dll"),
+         Path.Combine(assemblyPath, "System.Core.dll"),
+         Path.Combine(assemblyPath, "System.Runtime.dll"),
+         Path.Combine(assemblyPath, "System.Runtime.Extensions.dll"),
+         Path.Combine(assemblyPath, "System.Xml.ReaderWriter.dll"),
+         Path.Combine(assemblyPath, "System.Xml.XDocument.dll"),
+         Path.Combine(assemblyPath, "netstandard.dll"),
+         typeof(System.Object).Assembly.Location,
+         typeof(System.Uri).Assembly.Location,
+         typeof(System.Collections.Generic.List<>).Assembly.Location,
+         typeof(System.Linq.Enumerable).Assembly.Location,
+         typeof(System.Xml.XmlWriter).Assembly.Location,
+         typeof(System.Xml.Linq.XDocument).Assembly.Location,
+         typeof(System.Diagnostics.Trace).Assembly.Location,
+         typeof(System.IServiceProvider).Assembly.Location,
+         typeof(System.ComponentModel.DescriptionAttribute).Assembly.Location,
+         typeof(System.ComponentModel.DataAnnotations.ValidationAttribute).Assembly.Location,
+         typeof(Newtonsoft.Json.JsonWriter).Assembly.Location,
+         typeof(Xcst.IXcstPackage).Assembly.Location
+      }.Concat(GetPackageAssemblyReferences(assemblyPath))
+         .Select(p => MetadataReference.CreateFromFile(p));
 
       var specificDiagnosticOptions = (disableWarning != null) ?
          disableWarning.Split(' ').Select(p => new KeyValuePair<string, ReportDiagnostic>(p, ReportDiagnostic.Suppress)).ToArray()

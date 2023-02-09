@@ -461,7 +461,7 @@ public static class InputInstructions {
          && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
       HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
-      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer?.Metadata), output);
+      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer), output);
 
       // name cannnot be overridden, and class was already written
       // explicit value cannot be overridden

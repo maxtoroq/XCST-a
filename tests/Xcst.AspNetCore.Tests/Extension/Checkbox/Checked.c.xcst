@@ -9,7 +9,7 @@
    </c:type>
 
    <c:template name='c:initial-template'>
-      <c:set ref='this.ViewContext.ClientValidationEnabled' value='false'/>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { p = true }'>
             <a:checkbox for='p' class='a'/>

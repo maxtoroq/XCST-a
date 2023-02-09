@@ -5,43 +5,10 @@ using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Xcst.Web.Mvc.Properties;
 
 namespace Xcst.Web.Mvc.ModelBinding;
 
-[Serializable]
-public class ValueProviderResult {
-
-   static readonly CultureInfo
-   _staticCulture = CultureInfo.InvariantCulture;
-
-   CultureInfo?
-   _instanceCulture;
-
-   public string?
-   AttemptedValue { get; protected set; }
-
-   public CultureInfo
-   Culture {
-      get => _instanceCulture ??= _staticCulture;
-      protected set => _instanceCulture = value;
-   }
-
-   public object?
-   RawValue { get; protected set; }
-
-   // default constructor so that subclassed types can set the properties themselves
-
-   protected
-   ValueProviderResult() { }
-
-   public
-   ValueProviderResult(object? rawValue, string? attemptedValue, CultureInfo culture) {
-
-      this.RawValue = rawValue;
-      this.AttemptedValue = attemptedValue;
-      this.Culture = culture;
-   }
+class ValueProviderResult {
 
    [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Conversion failure is not fatal")]
    static object?
@@ -96,9 +63,8 @@ public class ValueProviderResult {
             return Enum.ToObject(destinationType, i);
          }
 
-         var message = String.Format(CultureInfo.CurrentCulture, MvcResources.ValueProviderResult_NoConverterExists, value.GetType().FullName, destinationType.FullName);
-
-         throw new InvalidOperationException(message);
+         throw new InvalidOperationException(
+            $"The parameter conversion from type '{value.GetType()}' to type '{destinationType}' failed because no type converter can convert between these types.");
       }
 
       try {
@@ -111,27 +77,13 @@ public class ValueProviderResult {
 
       } catch (Exception ex) {
 
-         var message = String.Format(CultureInfo.CurrentCulture, MvcResources.ValueProviderResult_ConversionThrew, value.GetType().FullName, destinationType.FullName);
-
-         throw new InvalidOperationException(message, ex);
+         throw new InvalidOperationException(
+            $"The parameter conversion from type '{value.GetType()}' to type '{destinationType}' failed. See the inner exception for more information.",
+            ex);
       }
    }
 
-   public object?
-   ConvertTo(Type type) =>
-      ConvertTo(type, culture: null);
-
-   public virtual object?
-   ConvertTo(Type type, CultureInfo? culture) {
-
-      if (type is null) throw new ArgumentNullException(nameof(type));
-
-      var cultureToUse = culture ?? this.Culture;
-
-      return UnwrapPossibleArrayType(cultureToUse, this.RawValue, type);
-   }
-
-   static object?
+   internal static object?
    UnwrapPossibleArrayType(CultureInfo culture, object? value, Type destinationType) {
 
       if (value is null

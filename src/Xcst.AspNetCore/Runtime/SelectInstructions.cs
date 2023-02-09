@@ -192,7 +192,7 @@ public static class SelectInstructions {
          && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
       var validationAttribs = htmlHelper
-         .GetUnobtrusiveValidationAttributes(name, modelExplorer?.Metadata, excludeMinMaxLength: !allowMultiple);
+         .GetUnobtrusiveValidationAttributes(name, modelExplorer, excludeMinMaxLength: !allowMultiple);
 
       HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
       HtmlAttributeHelper.WriteAttributes(validationAttribs, output);

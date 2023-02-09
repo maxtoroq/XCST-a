@@ -6,8 +6,8 @@
 
    <c:import-namespace ns='System.Collections.Generic'/>
    <c:import-namespace ns='Microsoft.Extensions.Primitives'/>
-   <c:import-namespace ns='Xcst.Web.Mvc'/>
-   <c:import-namespace ns='Xcst.Web.Mvc.ModelBinding'/>
+   <c:import-namespace ns='Microsoft.AspNetCore.Http'/>
+   <c:import-namespace ns='Microsoft.AspNetCore.Mvc.ModelBinding'/>
 
    <c:type name='Foo'>
       <c:member name='color' as='string' a:bind='no'/>
@@ -18,17 +18,18 @@
       <c:script>
          <![CDATA[
          
-         var valueProvider = new NameValueCollectionValueProvider(
-            new KeyValuePair<string, StringValues>[] {
-               new("color", "red"),
-               new("animal", "dog")
-            },
+         var valueProvider = new QueryStringValueProvider(
+            BindingSource.Query,
+            new QueryCollection(new Dictionary<string, StringValues> {
+               { "color", "red" },
+               { "animal", "dog" }
+            }),
             null
          );
          
          var foo = new Foo();
          
-         TryBind(foo, valueProvider: valueProvider);
+         _ = TryUpdateModelAsync(foo, valueProvider: valueProvider).Result;
          
          Assert.IsNull(foo.color);
          Assert.AreEqual("dog", foo.animal);

@@ -5,10 +5,10 @@
    extension-element-prefixes='a'>
 
    <c:type name='Order'>
-      <c:member name='FirstName' as='string' group='Personal'/>
-      <c:member name='LastName' as='string' group='Personal'/>
-      <c:member name='AddressLine1' as='string' group='Address'/>
-      <c:member name='AddressLine2' as='string' group='Address'/>
+      <c:member name='FirstName' as='string?' group='Personal'/>
+      <c:member name='LastName' as='string?' group='Personal'/>
+      <c:member name='AddressLine1' as='string?' group='Address'/>
+      <c:member name='AddressLine2' as='string?' group='Address'/>
    </c:type>
 
    <c:template name='c:initial-template'>

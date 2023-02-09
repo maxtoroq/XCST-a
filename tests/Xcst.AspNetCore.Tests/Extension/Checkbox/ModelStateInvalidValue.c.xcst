@@ -4,12 +4,9 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='System.Globalization'/>
-   <c:import-namespace ns='Xcst.Web.Mvc.ModelBinding'/>
-
    <c:template name='c:initial-template'>
-      <c:set ref='this.ViewContext.ClientValidationEnabled' value='false'/>
-      <c:void value='this.ModelState.SetModelValue("foo", new ValueProviderResult("xxx", "", CultureInfo.CurrentCulture))'/>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <c:void value='ModelState.SetModelValue("foo", "xxx", "")'/>
       <div>
          <a:checkbox name='foo'/>
       </div>

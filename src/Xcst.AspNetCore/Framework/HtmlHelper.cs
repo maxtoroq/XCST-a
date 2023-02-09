@@ -5,11 +5,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using Xcst.Web.Mvc.Properties;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
 using Xcst.Web.Runtime;
 using RouteValueDictionary = Microsoft.AspNetCore.Routing.RouteValueDictionary;
 
@@ -41,6 +41,9 @@ public class HtmlHelper {
    DynamicViewDataDictionary?
    _viewBag;
 
+   DefaultValidationHtmlAttributeProvider?
+   _validationAttributeProvider;
+
    public static string
    IdAttributeDotReplacement {
       get {
@@ -57,7 +60,7 @@ public class HtmlHelper {
       _viewBag ??= new DynamicViewDataDictionary(() => ViewData);
 
    public ViewContext
-   ViewContext { get; private set; }
+   ViewContext { get; }
 
    public ViewDataDictionary
    ViewData => ViewDataContainer.ViewData;
@@ -71,18 +74,16 @@ public class HtmlHelper {
    public ModelMetadata
    ModelMetadata => ViewData.ModelMetadata;
 
-   internal Func<string, ModelMetadata?, IEnumerable<ModelClientValidationRule>>
-   ClientValidationRuleFactory { get; set; }
+   private DefaultValidationHtmlAttributeProvider
+   ValidationAttributeProvider =>
+      _validationAttributeProvider ??=
+         ActivatorUtilities.CreateInstance<DefaultValidationHtmlAttributeProvider>(ViewContext.HttpContext.RequestServices);
 
    public
    HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer) {
 
       this.ViewContext = viewContext ?? throw new ArgumentNullException(nameof(viewContext));
       this.ViewDataContainer = viewDataContainer ?? throw new ArgumentNullException(nameof(viewDataContainer));
-      this.ClientValidationRuleFactory = (name, metadata) =>
-         ModelValidatorProviders.Providers
-            .GetValidators(metadata ?? ExpressionMetadataProvider.FromStringExpression(name, this.ViewData).Metadata, this.ViewContext)
-            .SelectMany(v => v.GetClientValidationRules());
    }
 
    /// <summary>
@@ -177,28 +178,48 @@ public class HtmlHelper {
    GetModelStateValue(string key, Type destinationType) {
 
       if (this.ViewData.ModelState.TryGetValue(key, out var modelState)
-         && modelState.Value != null) {
+         && modelState.RawValue != null) {
 
-         return modelState.Value.ConvertTo(destinationType, culture: null);
+         return ConvertTo(modelState.RawValue, destinationType, culture: null);
       }
 
       return null;
+
+      static object? ConvertTo(object? value, Type type, CultureInfo? culture) {
+
+         if (value == null) {
+
+            if (!type.IsValueType) {
+               return null;
+            }
+
+            return Activator.CreateInstance(type);
+         }
+
+         if (type.IsAssignableFrom(value.GetType())) {
+            return value;
+         }
+
+         culture ??= CultureInfo.InvariantCulture;
+
+         return ModelBinding.ValueProviderResult.UnwrapPossibleArrayType(culture, value, type);
+      }
    }
 
    public IDictionary<string, object>
    GetUnobtrusiveValidationAttributes(string name) =>
-      GetUnobtrusiveValidationAttributes(name, metadata: null);
+      GetUnobtrusiveValidationAttributes(name, modelExplorer: null);
 
    // Only render attributes if unobtrusive client-side validation is enabled, and then only if we've
    // never rendered validation for a field with this name in this form. Also, if there's no form context,
    // then we can't render the attributes (we'd have no <form> to attach them to).
 
    public IDictionary<string, object>
-   GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata) =>
-      GetUnobtrusiveValidationAttributes(name, metadata, false);
+   GetUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer) =>
+      GetUnobtrusiveValidationAttributes(name, modelExplorer, false);
 
    internal IDictionary<string, object>
-   GetUnobtrusiveValidationAttributes(string name, ModelMetadata? metadata, bool excludeMinMaxLength) {
+   GetUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength) {
 
       var results = new Dictionary<string, object>();
 
@@ -222,16 +243,16 @@ public class HtmlHelper {
 
       formContext.RenderedField(fullName, true);
 
-      var clientRules = this.ClientValidationRuleFactory.Invoke(name, metadata);
+      modelExplorer ??= ExpressionMetadataProvider.FromStringExpression(name, this.ViewData, this.ViewData.MetadataProvider);
 
-      if (excludeMinMaxLength) {
+      var attributes = new Dictionary<string, string>();
 
-         clientRules = clientRules
-            .Where(p => !(p is ModelClientValidationMinLengthRule
-               || p is ModelClientValidationMaxLengthRule));
+      this.ValidationAttributeProvider
+         .AddValidationAttributes(this.ViewContext.ActionContext, modelExplorer, attributes, excludeMinMaxLength);
+
+      foreach (var pair in attributes) {
+         results[pair.Key] = pair.Value;
       }
-
-      UnobtrusiveValidationAttributesGenerator.GetValidationAttributes(clientRules, results);
 
       return results;
    }
@@ -405,90 +426,19 @@ public class HtmlHelper<TModel> : HtmlHelper {
    }
 }
 
+public interface IViewDataContainer {
+
+   [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is the mechanism by which the ViewPage / ViewUserControl get their ViewDataDictionary objects.")]
+   ViewDataDictionary
+   ViewData { get; set; }
+}
+
 public enum InputType {
    CheckBox,
    Hidden,
    Password,
    Radio,
    Text
-}
-
-static class UnobtrusiveValidationAttributesGenerator {
-
-   public static void
-   GetValidationAttributes(IEnumerable<ModelClientValidationRule> clientRules, IDictionary<string, object> results) {
-
-      if (clientRules is null) throw new ArgumentNullException(nameof(clientRules));
-      if (results is null) throw new ArgumentNullException(nameof(results));
-
-      var rulesRendered = false;
-
-      foreach (ModelClientValidationRule rule in clientRules) {
-
-         rulesRendered = true;
-         var ruleName = "data-val-" + rule.ValidationType;
-
-         ValidateUnobtrusiveValidationRule(rule, results, ruleName);
-
-         results.Add(ruleName, rule.ErrorMessage ?? String.Empty);
-         ruleName += "-";
-
-         foreach (var kvp in rule.ValidationParameters) {
-            results.Add(ruleName + kvp.Key, kvp.Value ?? String.Empty);
-         }
-      }
-
-      if (rulesRendered) {
-         results.Add("data-val", "true");
-      }
-   }
-
-   static void
-   ValidateUnobtrusiveValidationRule(ModelClientValidationRule rule, IDictionary<string, object> resultsDictionary, string dictionaryKey) {
-
-      if (String.IsNullOrWhiteSpace(rule.ValidationType)) {
-         throw new InvalidOperationException(
-            String.Format(
-               CultureInfo.CurrentCulture,
-               MvcResources.UnobtrusiveJavascript_ValidationTypeCannotBeEmpty,
-               rule.GetType().FullName));
-      }
-
-      if (resultsDictionary.ContainsKey(dictionaryKey)) {
-         throw new InvalidOperationException(
-            String.Format(
-               CultureInfo.CurrentCulture,
-               MvcResources.UnobtrusiveJavascript_ValidationTypeMustBeUnique,
-               rule.ValidationType));
-      }
-
-      if (rule.ValidationType.Any(c => !Char.IsLower(c))) {
-         throw new InvalidOperationException(
-            String.Format(CultureInfo.CurrentCulture, MvcResources.UnobtrusiveJavascript_ValidationTypeMustBeLegal,
-               rule.ValidationType,
-               rule.GetType().FullName));
-      }
-
-      foreach (var key in rule.ValidationParameters.Keys) {
-
-         if (String.IsNullOrWhiteSpace(key)) {
-            throw new InvalidOperationException(
-               String.Format(
-                  CultureInfo.CurrentCulture,
-                  MvcResources.UnobtrusiveJavascript_ValidationParameterCannotBeEmpty,
-                  rule.GetType().FullName));
-         }
-
-         if (!Char.IsLower(key.First()) || key.Any(c => !Char.IsLower(c) && !Char.IsDigit(c))) {
-            throw new InvalidOperationException(
-               String.Format(
-                  CultureInfo.CurrentCulture,
-                  MvcResources.UnobtrusiveJavascript_ValidationParameterMustBeLegal,
-                  key,
-                  rule.GetType().FullName));
-         }
-      }
-   }
 }
 
 static class TagBuilder {

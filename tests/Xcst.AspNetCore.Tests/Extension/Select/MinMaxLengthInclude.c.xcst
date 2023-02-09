@@ -7,8 +7,8 @@
    <c:import-namespace ns='Xcst.Web.Mvc'/>
 
    <c:type name='ModelType'>
-      <c:member name='foo' as='string[]' min-length='2'/>
-      <c:member name='bar' as='string[]' max-length='2'/>
+      <c:member name='foo' as='string[]?' min-length='2'/>
+      <c:member name='bar' as='string[]?' max-length='2'/>
    </c:type>
 
    <c:template name='c:initial-template'>

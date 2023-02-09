@@ -38,7 +38,7 @@ partial class _Page_contact : IPageInit {
 
       if (IsPost
          && await Antiforgery.IsRequestValidAsync()
-         && TryBind(contact)
+         && await TryUpdateModelAsync(contact)
          && SendMail(contact)) {
 
          sent = true;

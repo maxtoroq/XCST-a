@@ -179,26 +179,51 @@
    <template name='src:type-attribute-extra'>
       <param name='el' as='XElement' required='yes'/>
 
-      <variable name='excluded' value='(
-         from mem in el.Elements(c + "member")
-         let bindAttr = mem.Attribute(a + "bind")
-         where bindAttr != null
-            &amp;&amp; xcst_boolean(bindAttr) == false
-         select xcst_name(mem.Attribute("name")!)).ToArray()'/>
-
-      <if test='excluded.Length > 0'>
-         <code:attribute>
-            <code:type-reference name='Bind'
-               namespace='{(this.TargetRuntime >= 2m ? "Xcst.Web.Mvc.ModelBinding" : "System.Web.Mvc")}'/>
-            <code:initializer>
-               <code:member-initializer name='Exclude'>
-                  <code:string literal='true'>
-                     <value-of value='excluded' separator=','/>
-                  </code:string>
-               </code:member-initializer>
-            </code:initializer>
-         </code:attribute>
-      </if>
+      <choose>
+         <when test='this.TargetRuntime >= 2m'>
+            <variable name='members' value='el.Elements(c + "member").ToArray()'/>
+            <variable name='included' value='(
+               from mem in members
+               let bindAttr = mem.Attribute(a + "bind")
+               where bindAttr is null
+                  || xcst_boolean(bindAttr) == true
+               select xcst_name(mem.Attribute("name")!))
+               .ToArray()'/>
+            <if test='included.Length &lt; members.Length'>
+               <code:attribute>
+                  <code:type-reference name='Bind' namespace='Microsoft.AspNetCore.Mvc'/>
+                  <code:arguments>
+                     <for-each name='mem' in='included'>
+                        <code:string literal='true'>
+                           <value-of value='mem'/>
+                        </code:string>
+                     </for-each>
+                  </code:arguments>
+               </code:attribute>
+            </if>
+         </when>
+         <otherwise>
+            <variable name='excluded' value='(
+               from mem in el.Elements(c + "member")
+               let bindAttr = mem.Attribute(a + "bind")
+               where bindAttr != null
+                  &amp;&amp; xcst_boolean(bindAttr) == false
+               select xcst_name(mem.Attribute("name")!))
+               .ToArray()'/>
+            <if test='excluded.Length > 0'>
+               <code:attribute>
+                  <code:type-reference name='Bind' namespace='System.Web.Mvc'/>
+                  <code:initializer>
+                     <code:member-initializer name='Exclude'>
+                        <code:string literal='true'>
+                           <value-of value='excluded' separator=','/>
+                        </code:string>
+                     </code:member-initializer>
+                  </code:initializer>
+               </code:attribute>
+            </if>
+         </otherwise>
+      </choose>
    </template>
 
    <template name='src:member-attribute-extra'>

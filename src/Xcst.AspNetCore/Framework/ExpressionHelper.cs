@@ -7,7 +7,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Xcst.Web.Mvc.ExpressionUtil;
-using Xcst.Web.Mvc.Properties;
 
 namespace Xcst.Web.Mvc;
 
@@ -91,11 +90,7 @@ public static class ExpressionHelper {
       } catch (InvalidOperationException ex) {
 
          throw new InvalidOperationException(
-            String.Format(
-               CultureInfo.CurrentCulture,
-               MvcResources.ExpressionHelper_InvalidIndexerExpression,
-               expression,
-               parameters[0].Name),
+            $"The expression compiler was unable to evaluate the indexer expression '{expression}' because it references the model parameter '{parameters[0].Name}' which is unavailable.",
             ex);
       }
 

@@ -64,9 +64,9 @@ public class TempDataDictionary : IDictionary<string, object?> {
       _retainedKeys.Add(key);
 
    public void
-   Load(ControllerContext controllerContext, ITempDataProvider tempDataProvider) {
+   Load(ActionContext actionContext, ITempDataProvider tempDataProvider) {
 
-      var providerDictionary = tempDataProvider.LoadTempData(controllerContext);
+      var providerDictionary = tempDataProvider.LoadTempData(actionContext);
 
       _data = (providerDictionary != null) ?
          new Dictionary<string, object?>(providerDictionary, StringComparer.OrdinalIgnoreCase)
@@ -83,7 +83,7 @@ public class TempDataDictionary : IDictionary<string, object?> {
    }
 
    public void
-   Save(ControllerContext controllerContext, ITempDataProvider tempDataProvider) {
+   Save(ActionContext actionContext, ITempDataProvider tempDataProvider) {
 
       // Frequently called so ensure delegate is stateless
 
@@ -93,7 +93,7 @@ public class TempDataDictionary : IDictionary<string, object?> {
              && !tempData._retainedKeys.Contains(key);
       }, this);
 
-      tempDataProvider.SaveTempData(controllerContext, _data);
+      tempDataProvider.SaveTempData(actionContext, _data);
    }
 
    static void
@@ -227,10 +227,10 @@ public class TempDataDictionary : IDictionary<string, object?> {
 public interface ITempDataProvider {
 
    IDictionary<string, object?>
-   LoadTempData(ControllerContext controllerContext);
+   LoadTempData(ActionContext actionContext);
 
    void
-   SaveTempData(ControllerContext controllerContext, IDictionary<string, object?> values);
+   SaveTempData(ActionContext actionContext, IDictionary<string, object?> values);
 }
 
 /// <summary>

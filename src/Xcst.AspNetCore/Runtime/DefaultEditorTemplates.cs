@@ -27,7 +27,6 @@ using Xcst.Runtime;
 using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
 using Xcst.Web.Mvc.ModelBinding;
-using Xcst.Web.Mvc.Properties;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
 namespace Xcst.Web.Runtime;
@@ -253,7 +252,7 @@ static class DefaultEditorTemplates {
 
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "editor-label");
-               LabelInstructions.LabelHelper(html, labelWriter, propertyExplorer, propertyMeta.PropertyName);
+               LabelInstructions.LabelHelper(html, labelWriter, propertyExplorer, propertyMeta.PropertyName!);
                labelWriter.WriteEndElement();
 
                fieldWriter = fieldsetWriter
@@ -277,7 +276,7 @@ static class DefaultEditorTemplates {
 
             if (!propertyMeta.HideSurroundingHtml) {
                fieldWriter!.WriteString(" ");
-               ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyExplorer, propertyMeta.PropertyName, null, null, null);
+               ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyExplorer, propertyMeta.PropertyName!, null, null, null);
                fieldWriter.WriteEndElement(); // </div>
             }
          }
@@ -497,17 +496,17 @@ static class DefaultEditorTemplates {
    TriStateValues(bool? value) =>
       new List<SelectListItem> {
          new SelectListItem {
-            Text = MvcResources.Common_TriState_NotSet,
+            Text = "Not Set",
             Value = String.Empty,
             Selected = !value.HasValue
          },
          new SelectListItem {
-            Text = MvcResources.Common_TriState_True,
+            Text = "True",
             Value = "true",
             Selected = value.HasValue && value.Value
          },
          new SelectListItem {
-            Text = MvcResources.Common_TriState_False,
+            Text = "False",
             Value = "false",
             Selected = value.HasValue && !value.Value
          }
@@ -547,7 +546,7 @@ static class DefaultEditorTemplates {
 
          var text = (formatString != null && !applyFormatInEdit) ?
             output.SimpleContent.Format(formatString, enumValue)
-            : DisplayNameUtil.GetFieldDisplayName(field);
+            : MetadataDetailsProvider.GetDisplayName(field) ?? field.Name;
 
          selectList.Add(new SelectListItem {
             Value = value,

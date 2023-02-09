@@ -5,12 +5,12 @@
    extension-element-prefixes='a'>
 
    <c:template name='c:initial-template'>
-      <c:set ref='this.ViewData["foo"]' value='"foo"'/>
+      <c:set ref='ViewData["foo"]' value='"foo"'/>
       <a:model value='new object()' helper-name='htm'>
          <c:set ref='htm.ViewData["foo"]' value='"foox"'/>
          <c:set ref='htm.ViewData["bar"]' value='"bar"'/>
-         <c:void value='Assert.IsTrue(this.ViewData.Count != htm.ViewData.Count)'/>
-         <c:void value='Assert.IsTrue(this.ViewData["foo"] != htm.ViewData["foo"])'/>
+         <c:void value='Assert.IsTrue(ViewData.Count != htm.ViewData.Count)'/>
+         <c:void value='Assert.IsTrue(ViewData["foo"] != htm.ViewData["foo"])'/>
       </a:model>
    </c:template>
 

@@ -5,10 +5,10 @@
    extension-element-prefixes='a'>
 
    <c:type name='Foo'>
-      <c:member name='SomeField' as='string'/>
-      <c:member name='DontDisplay' as='string' display='no'/>
+      <c:member name='SomeField' as='string?'/>
+      <c:member name='DontDisplay' as='string?' display='no'/>
       <c:member name='Complex'>
-         <c:member name='ComplexField' as='string'/>
+         <c:member name='ComplexField' as='string?'/>
       </c:member>
    </c:type>
 

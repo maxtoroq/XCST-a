@@ -140,7 +140,7 @@ public static class TextAreaInstructions {
          : null;
 
       HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
-      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer.Metadata), output);
+      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer), output);
 
       // name cannnot be overridden, and class was already written
       // explicit rows and cols cannot be overridden
@@ -152,7 +152,7 @@ public static class TextAreaInstructions {
          output,
          excludeFn: n => n == "name" || n == "class" || (explicitRowsAndCols && (n == "rows" || n == "cols")));
 
-      var value = (modelState?.Value != null) ? modelState.Value.AttemptedValue
+      var value = (modelState != null) ? modelState.AttemptedValue
          : (modelExplorer.Model != null) ? Convert.ToString(modelExplorer.Model, CultureInfo.CurrentCulture)
          : String.Empty;
 
