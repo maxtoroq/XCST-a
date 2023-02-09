@@ -25,9 +25,14 @@
       </c:override>
    </c:use-package>
 
-   <c:template name='c:initial-template'>
-      <c:call-template name='layout'/>
-   </c:template>
+   <c:function name='layout'>
+      <c:param name='tunnelParams' value='null' as='object?'/>
+
+      <c:set ref='Response.ContentType'>text/html</c:set>
+      <c:result-document output='Response.BodyWriter.AsStream()'>
+         <c:call-template name='layout' tunnel-params='tunnelParams'/>
+      </c:result-document>
+   </c:function>
 
    <c:template name='head'/>
 
@@ -35,12 +40,9 @@
 
    <c:template name='scripts'/>
 
-   <c:function name='layout'>
-      <c:param name='tunnelParams' value='null' as='object?'/>
-
-      <c:result-document output='Response.BodyWriter.AsStream()'>
-         <c:call-template name='layout' tunnel-params='tunnelParams'/>
-      </c:result-document>
-   </c:function>
+   <c:template name='c:initial-template'>
+      <c:set ref='Response.ContentType'>text/html</c:set>
+      <c:call-template name='layout'/>
+   </c:template>
 
 </c:module>

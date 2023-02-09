@@ -169,12 +169,19 @@ public abstract class XcstPage {
    public virtual async Task
    RenderPageAsync() {
 
+      if (this is IPageInit pInit) {
+
+         await XcstEvaluator.Using(pInit)
+            .CallFunction(async p => await p.InitAsync())
+            .Evaluate();
+
+         return;
+      }
+
       XcstEvaluator.Using((object)this)
          .CallInitialTemplate()
          .OutputTo(this.Response.BodyWriter.AsStream())
          .Run();
-
-      await Task.CompletedTask;
    }
 
    protected virtual void
@@ -193,4 +200,10 @@ public abstract class XcstPage {
       public string?
       AuthenticationSchemes { get; set; }
    }
+}
+
+public interface IPageInit : IXcstPackage {
+
+   Task
+   InitAsync();
 }

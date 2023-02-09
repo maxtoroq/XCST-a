@@ -1,5 +1,6 @@
 ﻿using System.Net.Mail;
 using System.Threading.Tasks;
+using Xcst.Web;
 
 namespace aspnetcore;
 
