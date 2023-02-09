@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
 namespace Xcst.Web.Mvc;
@@ -28,9 +27,6 @@ public class ViewContext {
    ActionContext?
    _actionContext;
 
-   ITempDataProvider?
-   _tempDataProvider;
-
    public HttpContext
    HttpContext {
       get => _httpContext ??= new EmptyHttpContext();
@@ -53,12 +49,6 @@ public class ViewContext {
          return _defaultFormContext;
       }
       set => HttpContext.Items[_formContextKey] = value;
-   }
-
-   public ITempDataProvider
-   TempDataProvider {
-      get => _tempDataProvider ??= CreateTempDataProvider();
-      set => _tempDataProvider = value;
    }
 
    public virtual bool
@@ -101,7 +91,6 @@ public class ViewContext {
 
       _httpContext = viewContext._httpContext;
       _actionContext = viewContext._actionContext;
-      _tempDataProvider = viewContext._tempDataProvider;
 
       this.ClientValidationEnabled = viewContext.ClientValidationEnabled;
       this.ValidationMessageElement = viewContext.ValidationMessageElement;
@@ -112,23 +101,6 @@ public class ViewContext {
    internal FormContext?
    GetFormContextForClientValidation() =>
       (this.ClientValidationEnabled) ? this.FormContext : null;
-
-   ITempDataProvider
-   CreateTempDataProvider() {
-
-      // The factory can be customized in order to create an ITempDataProvider for the controller.
-
-      var tempDataProviderFactory = this.HttpContext.RequestServices.GetService<ITempDataProviderFactory>();
-
-      if (tempDataProviderFactory != null) {
-         return tempDataProviderFactory.CreateInstance();
-      }
-
-      // Note that getting a service from the current cache will return the same instance for every controller.
-
-      return this.HttpContext.RequestServices.GetService<ITempDataProvider>()
-         ?? new SessionStateTempDataProvider();
-   }
 }
 
 /// <summary>

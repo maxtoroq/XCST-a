@@ -24,8 +24,6 @@ public class Startup {
          .AddViews();
 
       services.AddAntiforgery();
-      //services.AddDistributedMemoryCache();
-      //services.AddSession();
    }
 
    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,8 +35,6 @@ public class Startup {
       }
 
       app.UseStaticFiles();
-      //app.UseSession();
-
       app.UseXcstPrecompiledPages(new[] { GetType().Assembly }, config => ConfigureXcstWeb(config));
    }
 

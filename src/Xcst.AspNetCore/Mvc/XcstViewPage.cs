@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Xcst.Web.Mvc.ModelBinding;
 using MvcOptions = Microsoft.AspNetCore.Mvc.MvcOptions;
 
 namespace Xcst.Web.Mvc;
@@ -45,9 +44,6 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    HtmlHelper?
    _html;
-
-   TempDataDictionary?
-   _tempData;
 
    public override HttpContext
    HttpContext {
@@ -123,38 +119,9 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
 
-   public TempDataDictionary
-   TempData {
-      get {
-         if (_tempData is null) {
-            _tempData = new TempDataDictionary();
-            _tempData.Load(ViewContext.ActionContext, ViewContext.TempDataProvider);
-         }
-
-         return _tempData;
-      }
-      set => _tempData = value;
-   }
-
    internal virtual void
    SetViewData(ViewDataDictionary viewData) {
       _viewData = viewData;
-   }
-
-   public override void
-   Redirect(string url) {
-
-      _tempData?.Keep();
-
-      base.Redirect(url);
-   }
-
-   public override void
-   RedirectPermanent(string url) {
-
-      _tempData?.Keep();
-
-      base.RedirectPermanent(url);
    }
 
    public async Task<bool>
@@ -230,14 +197,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    }
 
    public override async Task
-   RenderPageAsync() {
-
-      try {
-         await RenderViewPageAsync();
-      } finally {
-         _tempData?.Save(this.ViewContext.ActionContext, this.ViewContext.TempDataProvider);
-      }
-   }
+   RenderPageAsync() => await RenderViewPageAsync();
 
    protected virtual async Task
    RenderViewPageAsync() => await base.RenderPageAsync();
@@ -253,10 +213,6 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
          if (_viewData != null) {
             viewPage.ViewData = new ViewDataDictionary(_viewData);
-         }
-
-         if (_tempData != null) {
-            viewPage.TempData = _tempData;
          }
       }
    }
