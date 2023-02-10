@@ -24,7 +24,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Xcst.Runtime;
-using Xcst.Web.Configuration;
+using Xcst.Web.Builder;
 using Xcst.Web.Mvc;
 using Xcst.Web.Mvc.ModelBinding;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
@@ -483,7 +483,7 @@ static class DefaultEditorTemplates {
    internal static string?
    GetEditorCssClass(EditorInfo editorInfo, string? defaultCssClass) {
 
-      var customFn = XcstWebConfiguration.Instance.EditorTemplates.EditorCssClass;
+      var customFn = XcstWebOptions.Instance.EditorCssClass;
 
       if (customFn != null) {
          return customFn.Invoke(editorInfo, defaultCssClass);

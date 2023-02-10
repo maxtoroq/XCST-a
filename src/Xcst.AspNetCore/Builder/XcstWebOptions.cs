@@ -12,30 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Xcst.Web.Mvc;
 
-namespace Xcst.Web.Configuration;
+namespace Xcst.Web.Builder;
 
-public class EditorInfo {
+public sealed class XcstWebOptions {
 
-   public string
-   TemplateName { get; }
+   internal static XcstWebOptions
+   Instance { get; } = new();
 
-   public string
-   TagName { get; }
+   public Func<EditorInfo, string?, string?>?
+   EditorCssClass { get; set; }
 
-   public InputType
-   InputType { get; }
+   public Func<string, ViewContext, XcstViewPage?>?
+   EditorTemplateFactory { get; set; }
 
-   internal
-   EditorInfo(string templateName, string tagName)
-      : this(templateName, tagName, (Xcst.Web.Mvc.InputType)(-1)) { }
+   public Func<string, ViewContext, XcstViewPage?>?
+   DisplayTemplateFactory { get; set; }
 
-   internal
-   EditorInfo(string templateName, string tagName, InputType inputType) {
-
-      this.TemplateName = templateName;
-      this.TagName = tagName;
-      this.InputType = inputType;
-   }
+   private
+   XcstWebOptions() { }
 }

@@ -15,7 +15,6 @@
 using System;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
-using Xcst.Web.Configuration;
 
 namespace Xcst.Web.Builder;
 
@@ -33,13 +32,13 @@ public static class PrecompiledPageBuilderExtensions {
    }
 
    public static IApplicationBuilder
-   UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules, Action<XcstWebConfiguration> config) {
+   UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules, Action<XcstWebOptions> config) {
 
       if (config is null) throw new ArgumentNullException(nameof(config));
 
       UseXcstPrecompiledPages(app, appModules);
 
-      config(XcstWebConfiguration.Instance);
+      config(XcstWebOptions.Instance);
 
       return app;
    }

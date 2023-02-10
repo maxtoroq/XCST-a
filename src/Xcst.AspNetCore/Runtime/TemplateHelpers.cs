@@ -24,7 +24,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xcst.Runtime;
-using Xcst.Web.Configuration;
+using Xcst.Web.Builder;
 using Xcst.Web.Mvc;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
@@ -285,13 +285,13 @@ static class TemplateHelpers {
          metadata.DataTypeName
       };
 
-      var config = XcstWebConfiguration.Instance;
+      var config = XcstWebOptions.Instance;
 
       foreach (var viewName in getViewNames(metadata, templateHints)) {
 
          var viewPage = ((mode == DataBoundControlMode.ReadOnly) ?
-            config.DisplayTemplates.TemplateFactory
-            : config.EditorTemplates.TemplateFactory)?.Invoke(viewName, html.ViewContext);
+            config.DisplayTemplateFactory
+            : config.EditorTemplateFactory)?.Invoke(viewName, html.ViewContext);
 
          if (viewPage != null) {
             RenderViewPage(html, output, viewData, viewPage);

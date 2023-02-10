@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Xcst.Runtime;
-using Xcst.Web.Configuration;
+using Xcst.Web.Builder;
 using Xcst.Web.Mvc;
 using Xcst.Web.Mvc.ModelBinding;
 

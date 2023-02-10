@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xcst.Web.Builder;
-using Xcst.Web.Configuration;
 using Xcst.Web.Mvc;
 
 namespace aspnetcore;
@@ -35,16 +34,16 @@ public class Startup {
       }
 
       app.UseStaticFiles();
-      app.UseXcstPrecompiledPages(new[] { GetType().Assembly }, config => ConfigureXcstWeb(config));
+      app.UseXcstPrecompiledPages(new[] { GetType().Assembly }, opts => ConfigureXcstWeb(opts));
    }
 
    static void
-   ConfigureXcstWeb(XcstWebConfiguration config) {
+   ConfigureXcstWeb(XcstWebOptions opts) {
 
-      config.DisplayTemplates.TemplateFactory = LoadDisplayTemplate;
-      config.EditorTemplates.TemplateFactory = LoadEditorTemplate;
+      opts.DisplayTemplateFactory = LoadDisplayTemplate;
+      opts.EditorTemplateFactory = LoadEditorTemplate;
 
-      config.EditorTemplates.EditorCssClass = (info, defaultClass) =>
+      opts.EditorCssClass = (info, defaultClass) =>
          (info.InputType == InputType.Text
             || info.InputType == InputType.Password
             || info.TagName != "input") ? "form-control"
