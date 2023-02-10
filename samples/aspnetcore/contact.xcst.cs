@@ -32,7 +32,7 @@ partial class _Page_contact : IPageInit {
    }
 
    public async Task
-   InitAsync() {
+   Init() {
 
       var contact = new Contact();
       var sent = false;

@@ -172,7 +172,7 @@ public abstract class XcstPage {
       if (this is IPageInit pInit) {
 
          await XcstEvaluator.Using(pInit)
-            .CallFunction(async p => await p.InitAsync())
+            .CallFunction(async p => await p.Init())
             .Evaluate();
 
          return;
@@ -205,5 +205,5 @@ public abstract class XcstPage {
 public interface IPageInit : IXcstPackage {
 
    Task
-   InitAsync();
+   Init();
 }
