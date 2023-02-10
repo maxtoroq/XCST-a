@@ -196,11 +196,11 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       return this.ModelState.IsValid;
    }
 
-   public override async Task
-   RenderPageAsync() => await RenderViewPageAsync();
+   public override Task
+   RenderPageAsync() => RenderViewPageAsync();
 
-   protected virtual async Task
-   RenderViewPageAsync() => await base.RenderPageAsync();
+   protected virtual Task
+   RenderViewPageAsync() => base.RenderPageAsync();
 
    protected override void
    CopyState(XcstPage page) {

@@ -50,13 +50,13 @@ public class AntiforgeryHelper {
    GetTokens() =>
       _antiforgery.GetTokens(this.HttpContext);
 
-   public async Task<bool>
+   public Task<bool>
    IsRequestValidAsync() =>
-      await _antiforgery.IsRequestValidAsync(this.HttpContext);
+      _antiforgery.IsRequestValidAsync(this.HttpContext);
 
-   public async Task
+   public Task
    ValidateRequestAsync() =>
-      await _antiforgery.ValidateRequestAsync(this.HttpContext);
+      _antiforgery.ValidateRequestAsync(this.HttpContext);
 
    public void
    SetCookieTokenAndHeader() =>
