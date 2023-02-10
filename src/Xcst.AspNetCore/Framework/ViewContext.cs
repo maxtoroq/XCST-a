@@ -29,7 +29,9 @@ public class ViewContext {
 
    public HttpContext
    HttpContext {
-      get => _httpContext ??= new EmptyHttpContext();
+#pragma warning disable CS8603
+      get => _httpContext;
+#pragma warning restore CS8603
       set => _httpContext = value;
    }
 
