@@ -3,7 +3,7 @@
 
    <c:import-namespace ns='System'/>
 
-   <c:variable name='siteTitle'>XCST on ASP.NET Core 5</c:variable>
+   <c:variable name='siteTitle'>XCST on ASP.NET Core</c:variable>
    <c:variable name='pageTitle' as='string' visibility='abstract'/>
 
    <c:template name='layout' visibility='public' expand-text='yes'>

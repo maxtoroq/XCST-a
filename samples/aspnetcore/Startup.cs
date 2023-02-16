@@ -44,8 +44,7 @@ public class Startup {
       opts.EditorTemplateFactory = LoadEditorTemplate;
 
       opts.EditorCssClass = (info, defaultClass) =>
-         (info.InputType == InputType.Text
-            || info.InputType == InputType.Password
+         (info.InputType is InputType.Text or InputType.Password
             || info.TagName != "input") ? "form-control"
             : null;
    }
