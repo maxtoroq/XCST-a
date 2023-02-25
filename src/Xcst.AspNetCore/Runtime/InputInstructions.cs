@@ -120,7 +120,7 @@ public static class InputInstructions {
          format: null,
          htmlAttributes: htmlAttributes);
 
-      var fullName = Name(htmlHelper, name);
+      var fullName = htmlHelper.Name(name);
 
       // Render an additional <input type="hidden".../> for checkboxes. This
       // addresses scenarios where unchecked checkboxes are not sent in the request.
@@ -346,7 +346,7 @@ public static class InputInstructions {
    InputHelper(HtmlHelper htmlHelper, XcstWriter output, InputType inputType, ModelExplorer? modelExplorer, string name, object? value,
          bool useViewData, bool isChecked, bool setId, bool isExplicitValue, string? format, HtmlAttribs? htmlAttributes) {
 
-      var fullName = Name(htmlHelper, name);
+      var fullName = htmlHelper.Name(name);
 
       if (String.IsNullOrEmpty(fullName)) {
          throw new ArgumentNullException(nameof(name));
@@ -473,20 +473,4 @@ public static class InputInstructions {
 
       output.WriteEndElement();
    }
-
-   //////////////////////////
-   // Name
-   //////////////////////////
-
-   public static string
-   Name(HtmlHelper html, string name) =>
-      html.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
-
-   public static string
-   NameFor<TModel, TProperty>(HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression) =>
-      Name(html, ExpressionHelper.GetExpressionText(expression));
-
-   public static string
-   NameForModel(HtmlHelper html) =>
-      Name(html, String.Empty);
 }

@@ -273,10 +273,11 @@ public class HtmlHelper {
       this.ViewData.TemplateInfo.GetFullHtmlFieldId(name);
 
    public string
-   NameForModel() => InputInstructions.NameForModel(this);
+   NameForModel() => Name(String.Empty);
 
    public string
-   Name(string name) => InputInstructions.Name(this, name);
+   Name(string name) =>
+      this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
 
    public string
    ValueForModel() {
@@ -405,7 +406,7 @@ public class HtmlHelper<TModel> : HtmlHelper {
 
    public string
    NameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
-      InputInstructions.NameFor(this, expression);
+      Name(ExpressionHelper.GetExpressionText(expression));
 
    public string
    ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {

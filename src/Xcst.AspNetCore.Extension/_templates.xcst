@@ -277,11 +277,8 @@
                   <if test='useFor || forModel'>For</if>
                   <if test='forModel'>Model</if>
                </attribute>
-               <call-template name='app:helper-type'>
-                  <with-param name='name'>InputInstructions</with-param>
-               </call-template>
+               <call-template name='app:html-helper'/>
                <code:arguments>
-                  <call-template name='app:html-helper'/>
                   <choose>
                      <when test='useFor'>
                         <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
