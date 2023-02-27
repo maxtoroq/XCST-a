@@ -11,9 +11,7 @@
    </c:template>
 
    <c:template name='expected'>
-      <textarea id='a' name='a' data-foo='foo'>
-         <c:value-of value='System.Environment.NewLine'/>
-      </textarea>
+      <textarea id='a' name='a' data-foo='foo'/>
    </c:template>
 
 </c:module>

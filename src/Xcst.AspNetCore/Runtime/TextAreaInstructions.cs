@@ -104,7 +104,9 @@ public static class TextAreaInstructions {
       // The first newline is always trimmed when a TextArea is rendered, so we add an extra one
       // in case the value being rendered is something like "\r\nHello".
 
-      var text = (innerHtmlPrefix ?? Environment.NewLine) + value;
+      var text = (!String.IsNullOrEmpty(value)) ?
+         (innerHtmlPrefix ?? Environment.NewLine) + value
+         : value ?? String.Empty;
 
       return new TextareaDisposable(output, text);
    }
