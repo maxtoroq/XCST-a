@@ -19,16 +19,20 @@
          <xs:documentation>Creates an &lt;input&gt; element.</xs:documentation>
       </xs:annotation>
       <xs:complexType>
-         <xs:attributeGroup ref="a:_input-for-name-value-attribs" />
-         <xs:attribute name="type">
-            <xs:simpleType>
-               <xs:union memberTypes="a:input-type a:avt-expr" />
-            </xs:simpleType>
-         </xs:attribute>
-         <xs:attribute name="format" type="a:avt" />
-         <xs:attributeGroup ref="a:_text-box-attribs" />
-         <xs:attributeGroup ref="a:_input-attribs" />
-         <xs:attributeGroup ref="a:_html-attribs" />
+         <xs:complexContent>
+            <xs:extension base="a:sequence-constructor">
+               <xs:attributeGroup ref="a:_input-for-name-value-attribs" />
+               <xs:attribute name="type">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:input-type a:avt-expr" />
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="format" type="a:avt" />
+               <xs:attributeGroup ref="a:_text-box-attribs" />
+               <xs:attributeGroup ref="a:_input-attribs" />
+               <xs:attributeGroup ref="a:_html-attribs" />
+            </xs:extension>
+         </xs:complexContent>
       </xs:complexType>
    </xs:element>
    <xs:element name="hidden" substitutionGroup="a:extension-instruction">
@@ -36,9 +40,13 @@
          <xs:documentation>Creates an &lt;input&gt; element of type 'hidden'.</xs:documentation>
       </xs:annotation>
       <xs:complexType>
-         <xs:attributeGroup ref="a:_input-for-name-value-attribs" />
-         <xs:attributeGroup ref="a:_input-attribs-except-autofocus" />
-         <xs:attributeGroup ref="a:_html-attribs" />
+         <xs:complexContent>
+            <xs:extension base="a:sequence-constructor">
+               <xs:attributeGroup ref="a:_input-for-name-value-attribs" />
+               <xs:attributeGroup ref="a:_input-attribs-except-autofocus" />
+               <xs:attributeGroup ref="a:_html-attribs" />
+            </xs:extension>
+         </xs:complexContent>
       </xs:complexType>
    </xs:element>
    <xs:element name="textarea" substitutionGroup="a:extension-instruction">
@@ -46,20 +54,24 @@
          <xs:documentation>Creates a &lt;textarea&gt; element.</xs:documentation>
       </xs:annotation>
       <xs:complexType>
-         <xs:attributeGroup ref="a:_input-for-name-value-attribs" />
-         <xs:attribute name="rows">
-            <xs:simpleType>
-               <xs:union memberTypes="a:integer a:avt-expr" />
-            </xs:simpleType>
-         </xs:attribute>
-         <xs:attribute name="cols">
-            <xs:simpleType>
-               <xs:union memberTypes="a:integer a:avt-expr" />
-            </xs:simpleType>
-         </xs:attribute>
-         <xs:attributeGroup ref="a:_text-box-attribs" />
-         <xs:attributeGroup ref="a:_input-attribs" />
-         <xs:attributeGroup ref="a:_html-attribs" />
+         <xs:complexContent>
+            <xs:extension base="a:sequence-constructor">
+               <xs:attributeGroup ref="a:_input-for-name-value-attribs" />
+               <xs:attribute name="rows">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:integer a:avt-expr" />
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="cols">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:integer a:avt-expr" />
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attributeGroup ref="a:_text-box-attribs" />
+               <xs:attributeGroup ref="a:_input-attribs" />
+               <xs:attributeGroup ref="a:_html-attribs" />
+            </xs:extension>
+         </xs:complexContent>
       </xs:complexType>
    </xs:element>
    <xs:element name="checkbox" substitutionGroup="a:extension-instruction">
@@ -67,15 +79,19 @@
          <xs:documentation>Creates an &lt;input&gt; element of type 'checkbox'.</xs:documentation>
       </xs:annotation>
       <xs:complexType>
-         <xs:attribute name="for" type="a:expression" />
-         <xs:attribute name="name" type="a:avt" />
-         <xs:attribute name="checked">
-            <xs:simpleType>
-               <xs:union memberTypes="a:boolean a:avt-expr" />
-            </xs:simpleType>
-         </xs:attribute>
-         <xs:attributeGroup ref="a:_input-attribs" />
-         <xs:attributeGroup ref="a:_html-attribs" />
+         <xs:complexContent>
+            <xs:extension base="a:sequence-constructor">
+               <xs:attribute name="for" type="a:expression" />
+               <xs:attribute name="name" type="a:avt" />
+               <xs:attribute name="checked">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:boolean a:avt-expr" />
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attributeGroup ref="a:_input-attribs" />
+               <xs:attributeGroup ref="a:_html-attribs" />
+            </xs:extension>
+         </xs:complexContent>
       </xs:complexType>
    </xs:element>
    <xs:element name="radio" substitutionGroup="a:extension-instruction">
@@ -83,16 +99,20 @@
          <xs:documentation>Creates an &lt;input&gt; element of type 'radio'.</xs:documentation>
       </xs:annotation>
       <xs:complexType>
-         <xs:attribute name="value" use="required" type="a:expression" />
-         <xs:attribute name="for" type="a:expression" />
-         <xs:attribute name="name" type="a:avt" />
-         <xs:attribute name="checked">
-            <xs:simpleType>
-               <xs:union memberTypes="a:boolean a:avt-expr" />
-            </xs:simpleType>
-         </xs:attribute>
-         <xs:attributeGroup ref="a:_input-attribs" />
-         <xs:attributeGroup ref="a:_html-attribs" />
+         <xs:complexContent>
+            <xs:extension base="a:sequence-constructor">
+               <xs:attribute name="value" use="required" type="a:expression" />
+               <xs:attribute name="for" type="a:expression" />
+               <xs:attribute name="name" type="a:avt" />
+               <xs:attribute name="checked">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:boolean a:avt-expr" />
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attributeGroup ref="a:_input-attribs" />
+               <xs:attributeGroup ref="a:_html-attribs" />
+            </xs:extension>
+         </xs:complexContent>
       </xs:complexType>
    </xs:element>
    <xs:element name="antiforgery" substitutionGroup="a:extension-instruction">
@@ -177,10 +197,13 @@
          <xs:documentation>Creates a &lt;label&gt; element.</xs:documentation>
       </xs:annotation>
       <xs:complexType>
-         <xs:attribute name="for" type="a:expression" />
-         <xs:attribute name="name" type="a:avt" />
-         <xs:attribute name="text" type="a:avt" />
-         <xs:attributeGroup ref="a:_html-attribs" />
+         <xs:complexContent>
+            <xs:extension base="a:sequence-constructor">
+               <xs:attribute name="for" type="a:expression" />
+               <xs:attribute name="name" type="a:avt" />
+               <xs:attributeGroup ref="a:_html-attribs" />
+            </xs:extension>
+         </xs:complexContent>
       </xs:complexType>
    </xs:element>
    <xs:element name="validation-summary" substitutionGroup="a:extension-instruction">
@@ -202,10 +225,13 @@
          <xs:documentation>Creates a &lt;span&gt; element with a validation message if it exists.</xs:documentation>
       </xs:annotation>
       <xs:complexType>
-         <xs:attribute name="for" type="a:expression" />
-         <xs:attribute name="name" type="a:avt" />
-         <xs:attribute name="message" type="a:avt" />
-         <xs:attributeGroup ref="a:_html-attribs" />
+         <xs:complexContent>
+            <xs:extension base="a:sequence-constructor">
+               <xs:attribute name="for" type="a:expression" />
+               <xs:attribute name="name" type="a:avt" />
+               <xs:attributeGroup ref="a:_html-attribs" />
+            </xs:extension>
+         </xs:complexContent>
       </xs:complexType>
    </xs:element>
    <xs:attributeGroup name="_html-attribs">

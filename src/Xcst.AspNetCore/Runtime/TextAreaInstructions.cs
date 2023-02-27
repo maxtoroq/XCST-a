@@ -30,43 +30,9 @@ using HtmlAttribs = IDictionary<string, object>;
 /// <exclude/>
 public static class TextAreaInstructions {
 
-   // These values are similar to the defaults used by WebForms
-   // when using <asp:TextBox TextMode="MultiLine"> without specifying
-   // the Rows and Columns attributes.
-
-   const int
-   TextAreaRows = 2;
-
-   const int
-   TextAreaColumns = 20;
-
-   static Dictionary<string, object>
-   implicitRowsAndColumns = new() {
-      { "rows", TextAreaRows.ToString(CultureInfo.InvariantCulture) },
-      { "cols", TextAreaColumns.ToString(CultureInfo.InvariantCulture) },
-   };
-
-   static Dictionary<string, object>
-   GetRowsAndColumnsDictionary(int rows, int columns) {
-
-      if (rows < 0) throw new ArgumentOutOfRangeException(nameof(rows), "The value must be greater than or equal to zero.");
-      if (columns < 0) throw new ArgumentOutOfRangeException(nameof(columns), "The value must be greater than or equal to zero.");
-
-      var result = new Dictionary<string, object>();
-
-      if (rows > 0) {
-         result.Add("rows", rows.ToString(CultureInfo.InvariantCulture));
-      }
-
-      if (columns > 0) {
-         result.Add("cols", columns.ToString(CultureInfo.InvariantCulture));
-      }
-
-      return result;
-   }
-
-   public static void
-   TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null, HtmlAttribs? htmlAttributes = null) {
+   public static IDisposable
+   TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null,
+         int? rows = null, int? cols = null, HtmlAttribs? htmlAttributes = null) {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, htmlHelper.ViewData);
 
@@ -74,51 +40,26 @@ public static class TextAreaInstructions {
          modelExplorer = new ModelExplorer(htmlHelper.ViewData.MetadataProvider, modelExplorer.Container, modelExplorer.Metadata, value);
       }
 
-      TextAreaHelper(htmlHelper, output, modelExplorer, name, implicitRowsAndColumns, htmlAttributes);
-   }
-
-   public static void
-   TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value, int rows, int columns, HtmlAttribs? htmlAttributes = null) {
-
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, htmlHelper.ViewData);
-
-      if (value != null) {
-         modelExplorer = new ModelExplorer(htmlHelper.ViewData.MetadataProvider, modelExplorer.Container, modelExplorer.Metadata, value);
-      }
-
-      var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
-      TextAreaHelper(htmlHelper, output, modelExplorer, name, rowsAndColumns, htmlAttributes);
+      return TextAreaHelper(htmlHelper, output, modelExplorer, name, rows, cols, htmlAttributes);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-   public static void
-   TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, HtmlAttribs? htmlAttributes = null) {
+   public static IDisposable
+   TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression,
+         int? rows = null, int? cols = null, HtmlAttribs? htmlAttributes = null) {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      TextAreaHelper(htmlHelper, output, modelExplorer, expressionString, implicitRowsAndColumns, htmlAttributes);
-   }
-
-   [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-   public static void
-   TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, int rows, int columns, HtmlAttribs? htmlAttributes = null) {
-
-      if (expression is null) throw new ArgumentNullException(nameof(expression));
-
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
-      var expressionString = ExpressionHelper.GetExpressionText(expression);
-      var rowsAndColumns = GetRowsAndColumnsDictionary(rows, columns);
-
-      TextAreaHelper(htmlHelper, output, modelExplorer, expressionString, rowsAndColumns, htmlAttributes);
+      return TextAreaHelper(htmlHelper, output, modelExplorer, expressionString, rows, cols, htmlAttributes);
    }
 
    [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "If this fails, it is because the string-based version had an empty 'name' parameter")]
-   internal static void
-   TextAreaHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer modelExplorer, string name, IDictionary<string, object> rowsAndColumns,
-         HtmlAttribs? htmlAttributes, string? innerHtmlPrefix = null) {
+   internal static IDisposable
+   TextAreaHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer modelExplorer, string name,
+         int? rows, int? cols, HtmlAttribs? htmlAttributes, string? innerHtmlPrefix = null) {
 
       var fullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
 
@@ -129,7 +70,14 @@ public static class TextAreaInstructions {
       output.WriteStartElement("textarea");
       HtmlAttributeHelper.WriteId(fullName, output);
       output.WriteAttributeString("name", fullName);
-      HtmlAttributeHelper.WriteAttributes(rowsAndColumns, output);
+
+      if (rows != null) {
+         output.WriteAttributeString("rows", rows.Value.ToString(CultureInfo.InvariantCulture));
+      }
+
+      if (cols != null) {
+         output.WriteAttributeString("cols", cols.Value.ToString(CultureInfo.InvariantCulture));
+      }
 
       htmlHelper.ViewData.ModelState.TryGetValue(fullName, out var modelState);
 
@@ -143,14 +91,11 @@ public static class TextAreaInstructions {
       HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer), output);
 
       // name cannnot be overridden, and class was already written
-      // explicit rows and cols cannot be overridden
-
-      var explicitRowsAndCols = rowsAndColumns != implicitRowsAndColumns;
 
       HtmlAttributeHelper.WriteAttributes(
          htmlAttributes,
          output,
-         excludeFn: n => n == "name" || n == "class" || (explicitRowsAndCols && (n == "rows" || n == "cols")));
+         excludeFn: n => n is "name" or "class");
 
       var value = (modelState != null) ? modelState.AttemptedValue
          : (modelExplorer.Model != null) ? Convert.ToString(modelExplorer.Model, CultureInfo.CurrentCulture)
@@ -159,7 +104,44 @@ public static class TextAreaInstructions {
       // The first newline is always trimmed when a TextArea is rendered, so we add an extra one
       // in case the value being rendered is something like "\r\nHello".
 
-      output.WriteString((innerHtmlPrefix ?? Environment.NewLine) + value);
-      output.WriteEndElement();
+      var text = (innerHtmlPrefix ?? Environment.NewLine) + value;
+
+      return new TextareaDisposable(output, text);
+   }
+}
+
+class TextareaDisposable : ElementEndingDisposable {
+
+   readonly XcstWriter
+   _output;
+
+   readonly string
+   _text;
+
+   bool
+   _disposed;
+
+   internal
+   TextareaDisposable(XcstWriter output, string text)
+      : base(output, true) {
+
+      _output = output;
+      _text = text;
+   }
+
+   protected override void
+   Dispose(bool disposing) {
+
+      if (_disposed) {
+         return;
+      }
+
+      if (disposing) {
+         _output.WriteString(_text);
+      }
+
+      base.Dispose(disposing);
+
+      _disposed = true;
    }
 }

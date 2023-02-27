@@ -4,10 +4,14 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:template name='foo'>
-      <a:input>
-         <a/>
+   <c:template name='c:initial-template'>
+      <a:input name='a'>
+         <c:attribute name='data-foo'>foo</c:attribute>
       </a:input>
+   </c:template>
+
+   <c:template name='expected'>
+      <input id='a' type='text' name='a' value='' data-foo='foo'/>
    </c:template>
 
 </c:module>

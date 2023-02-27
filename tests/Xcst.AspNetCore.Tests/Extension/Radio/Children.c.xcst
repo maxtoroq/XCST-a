@@ -4,10 +4,14 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:template name='foo'>
-      <a:radio value='1'>
-         <a/>
+   <c:template name='c:initial-template'>
+      <a:radio name='a' value='"abc"'>
+         <c:attribute name='data-foo'>foo</c:attribute>
       </a:radio>
+   </c:template>
+
+   <c:template name='expected'>
+      <input id='a' type='radio' name='a' value='abc' data-foo='foo'/>
    </c:template>
 
 </c:module>

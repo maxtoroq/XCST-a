@@ -100,6 +100,7 @@
             <ref name="_text-box-attribs"/>
             <ref name="_input-attribs"/>
             <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 
@@ -109,6 +110,7 @@
             <ref name="_input-for-name-value-attribs"/>
             <ref name="_input-attribs-except-autofocus"/>
             <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 
@@ -135,6 +137,7 @@
             <ref name="_text-box-attribs"/>
             <ref name="_input-attribs"/>
             <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 
@@ -161,6 +164,7 @@
             </choice>
             <ref name="_input-attribs"/>
             <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 
@@ -190,6 +194,7 @@
             </choice>
             <ref name="_input-attribs"/>
             <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 
@@ -322,12 +327,8 @@
                   </attribute>
                </optional>
             </choice>
-            <optional>
-               <attribute name="text">
-                  <ref name="avt"/>
-               </attribute>
-            </optional>
             <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 
@@ -364,12 +365,8 @@
                   </attribute>
                </optional>
             </choice>
-            <optional>
-               <attribute name="message">
-                  <ref name="avt"/>
-               </attribute>
-            </optional>
             <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 

@@ -4,8 +4,11 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:template name='foo'>
-      <a:label>foo</a:label>
+   <c:template name='c:initial-template'>
+      <c:variable name='el'>
+         <a:label name='a'/>
+      </c:variable>
+      <c:void value='Assert.AreEqual(typeof(System.Xml.Linq.XElement), CompileType(el))'/>
    </c:template>
 
 </c:module>

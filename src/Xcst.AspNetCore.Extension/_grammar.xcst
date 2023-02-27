@@ -54,14 +54,20 @@
    <template name='app:no-children'>
       <param name='el' as='XElement' required='yes'/>
 
-      <if test='!(fn_empty(el.Elements())
-            &amp;&amp; el.Nodes().OfType&lt;XText>()
-               .All(tx => trim(tx.Value).Length == 0 &amp;&amp; !xcst_preserve_whitespace(el)))'>
+      <if test='!app_element_is_empty(el)'>
          <message terminate='yes' error-code='XTSE0260' error-data='src_error_object(el)' transform-text='trim'>
             Element must be empty.
          </message>
       </if>
    </template>
+
+   <function name='app_element_is_empty' as='bool'>
+      <param name='el' as='XElement'/>
+
+      <return value='fn_empty(el.Elements())
+         &amp;&amp; el.Nodes().OfType&lt;XText>()
+            .All(tx => trim(tx.Value).Length == 0 &amp;&amp; !xcst_preserve_whitespace(el))'/>
+   </function>
 
    <function name='xcst_preserve_whitespace' as='bool'>
       <param name='el' as='XElement'/>

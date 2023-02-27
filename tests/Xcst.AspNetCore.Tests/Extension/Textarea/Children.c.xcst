@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:template name='c:initial-template'>
+      <a:textarea name='a'>
+         <c:attribute name='data-foo'>foo</c:attribute>
+      </a:textarea>
+   </c:template>
+
+   <c:template name='expected'>
+      <textarea id='a' name='a' data-foo='foo'>
+         <c:value-of value='System.Environment.NewLine'/>
+      </textarea>
+   </c:template>
+
+</c:module>

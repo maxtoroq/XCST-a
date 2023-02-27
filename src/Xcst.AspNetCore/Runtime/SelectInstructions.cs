@@ -199,7 +199,7 @@ public static class SelectInstructions {
 
       // name cannnot be overridden, and class was already written
 
-      HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "name" || n == "class");
+      HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n is "name" or "class");
 
       WriteOptions(optionLabel, selectList, output);
 

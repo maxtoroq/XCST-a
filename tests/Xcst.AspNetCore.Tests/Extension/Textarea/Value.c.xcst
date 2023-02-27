@@ -13,10 +13,15 @@
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
+         <a:model value='new Foo()'>
+            <a:textarea name='p'>text</a:textarea>
+         </a:model>
          <a:model value='new Foo { p = "property" }'>
             <a:textarea for='p'/>
             <a:textarea name='p'/>
+            <a:textarea name='p'>text</a:textarea>
             <a:textarea name='p' value='"explicit"'/>
+            <a:textarea name='p' value='"explicit"'>text</a:textarea>
          </a:model>
          <a:model value='"model"' field-prefix='p'>
             <a:textarea/>
@@ -31,13 +36,16 @@
 
    <c:template name='expected' expand-text='yes'>
       <div>
-         <textarea id='p' name='p' cols='20' rows='2'>{Environment.NewLine}property</textarea>
-         <textarea id='p' name='p' cols='20' rows='2'>{Environment.NewLine}property</textarea>
-         <textarea id='p' name='p' cols='20' rows='2'>{Environment.NewLine}explicit</textarea>
-         <textarea id='p' name='p' cols='20' rows='2'>{Environment.NewLine}model</textarea>
-         <textarea id='p' name='p' cols='20' rows='2'>{Environment.NewLine}explicit</textarea>
-         <textarea id='x_p' name='x.p' cols='20' rows='2'>{Environment.NewLine}property</textarea>
-         <textarea id='x_p' name='x.p' cols='20' rows='2'>{Environment.NewLine}property</textarea>
+         <textarea id='p' name='p'>text{Environment.NewLine}</textarea>
+         <textarea id='p' name='p'>{Environment.NewLine}property</textarea>
+         <textarea id='p' name='p'>{Environment.NewLine}property</textarea>
+         <textarea id='p' name='p'>text{Environment.NewLine}property</textarea>
+         <textarea id='p' name='p'>{Environment.NewLine}explicit</textarea>
+         <textarea id='p' name='p'>text{Environment.NewLine}explicit</textarea>
+         <textarea id='p' name='p'>{Environment.NewLine}model</textarea>
+         <textarea id='p' name='p'>{Environment.NewLine}explicit</textarea>
+         <textarea id='x_p' name='x.p'>{Environment.NewLine}property</textarea>
+         <textarea id='x_p' name='x.p'>{Environment.NewLine}property</textarea>
       </div>
    </c:template>
 

@@ -25,6 +25,12 @@ public partial class ExtensionPackage {
    public string
    ExtensionNamespace => a.NamespaceName;
 
+   private bool
+   V1 => TargetRuntime < 2m;
+
+   private bool
+   V2_OR_GREATER => TargetRuntime >= 2m;
+
    public static void
    IsPage(System.Action<string, object?> setFn, bool isPage) {
       setFn.Invoke(_tunnelParamPrefix + "is_page", isPage);

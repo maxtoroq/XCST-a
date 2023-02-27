@@ -216,7 +216,7 @@
                         <code:arguments>
                            <code:method-call name='ObjectToDictionary'>
                               <code:type-reference name='HtmlHelper'
-                                 namespace='{(this.TargetRuntime >= 2m ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
+                                 namespace='{(V2_OR_GREATER ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
                               <code:arguments>
                                  <code:expression value='{withParamsExpr}'/>
                               </code:arguments>
@@ -361,7 +361,7 @@
             <code:type-reference name='Action' namespace='System'>
                <code:type-arguments>
                   <code:type-reference name='HtmlHelper'
-                     namespace='{(this.TargetRuntime >= 2m ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
+                     namespace='{(V2_OR_GREATER ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
                   <copy-of value='select(newOutput, code + "type-reference")'/>
                </code:type-arguments>
             </code:type-reference>

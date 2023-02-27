@@ -56,7 +56,8 @@ static class DefaultEditorTemplates {
          var className = GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputInstructions.CheckBox(html, package, seqOutput, String.Empty, value.GetValueOrDefault(), htmlAttributes: htmlAttributes);
+         InputInstructions.CheckBox(html, package, seqOutput, String.Empty, value.GetValueOrDefault(), htmlAttributes: htmlAttributes)
+            .Dispose();
       }
    }
 
@@ -156,7 +157,8 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(new EditorInfo("HiddenInput", "input", InputType.Hidden), null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      InputInstructions.Input(html, output, String.Empty, model, type: "hidden", htmlAttributes: htmlAttributes);
+      InputInstructions.Input(html, output, String.Empty, model, type: "hidden", htmlAttributes: htmlAttributes)
+         .Dispose();
    }
 
    public static void
@@ -168,7 +170,8 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(new EditorInfo("MultilineText", "textarea"), "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      TextAreaInstructions.TextArea(html, output, String.Empty, value, 0, 0, htmlAttributes);
+      TextAreaInstructions.TextArea(html, output, String.Empty, value, htmlAttributes: htmlAttributes)
+         .Dispose();
    }
 
    static IDictionary<string, object>
@@ -252,7 +255,10 @@ static class DefaultEditorTemplates {
 
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "editor-label");
-               LabelInstructions.LabelHelper(html, labelWriter, propertyExplorer, propertyMeta.PropertyName!);
+
+               LabelInstructions.LabelHelper(html, labelWriter, propertyExplorer, propertyMeta.PropertyName!)
+                  .Dispose();
+
                labelWriter.WriteEndElement();
 
                fieldWriter = fieldsetWriter
@@ -275,8 +281,12 @@ static class DefaultEditorTemplates {
             );
 
             if (!propertyMeta.HideSurroundingHtml) {
+
                fieldWriter!.WriteString(" ");
-               ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyExplorer, propertyMeta.PropertyName!, null, null, null);
+
+               ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyExplorer, propertyMeta.PropertyName!, default, default)
+                  .Dispose();
+
                fieldWriter.WriteEndElement(); // </div>
             }
          }
@@ -295,7 +305,8 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      InputInstructions.Input(html, output, String.Empty, value: null, type: "password", htmlAttributes: htmlAttributes);
+      InputInstructions.Input(html, output, String.Empty, value: null, type: "password", htmlAttributes: htmlAttributes)
+         .Dispose();
    }
 
    public static void
@@ -477,7 +488,8 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, inputType: inputType, addMetadataAttributes: true);
 
-      InputInstructions.Input(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes);
+      InputInstructions.Input(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes)
+         .Dispose();
    }
 
    internal static string?

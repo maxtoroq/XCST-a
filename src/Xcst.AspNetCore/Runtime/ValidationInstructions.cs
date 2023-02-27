@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -33,32 +32,34 @@ using HtmlAttribs = IDictionary<string, object>;
 public static class ValidationInstructions {
 
    [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
-   public static void
-   ValidationMessage(HtmlHelper htmlHelper, XcstWriter output, string modelName, string? validationMessage = null, HtmlAttribs? htmlAttributes = null,
-         string? tag = null) {
+   public static ElementEndingDisposable
+   ValidationMessage(HtmlHelper htmlHelper, XcstWriter output, string modelName, bool hasDefaultText = false,
+         HtmlAttribs? htmlAttributes = null) {
 
       if (modelName is null) throw new ArgumentNullException(nameof(modelName));
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(modelName, htmlHelper.ViewData);
 
-      ValidationMessageHelper(htmlHelper, output, modelExplorer, modelName, validationMessage, htmlAttributes, tag);
+      return ValidationMessageHelper(htmlHelper, output, modelExplorer, modelName, hasDefaultText, htmlAttributes);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-   public static void
-   ValidationMessageFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string? validationMessage = null,
-         HtmlAttribs? htmlAttributes = null, string? tag = null) {
+   public static ElementEndingDisposable
+   ValidationMessageFor<TModel, TProperty>(
+         HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, bool hasDefaultText = false,
+         HtmlAttribs? htmlAttributes = null) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      ValidationMessageHelper(htmlHelper, output, modelExplorer, expressionString, validationMessage, htmlAttributes, tag);
+      return ValidationMessageHelper(htmlHelper, output, modelExplorer, expressionString, hasDefaultText, htmlAttributes);
    }
 
    [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Normalization to lowercase is a common requirement for JavaScript and HTML values")]
-   internal static void
-   ValidationMessageHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer modelExplorer, string expression, string? validationMessage,
-         HtmlAttribs? htmlAttributes, string? tag) {
+   internal static ElementEndingDisposable
+   ValidationMessageHelper(
+         HtmlHelper htmlHelper, XcstWriter output, ModelExplorer modelExplorer, string expression, bool hasDefaultText,
+         HtmlAttribs? htmlAttributes) {
 
       var viewData = htmlHelper.ViewData;
 
@@ -68,7 +69,7 @@ public static class ValidationInstructions {
       if (!viewData.ModelState.ContainsKey(modelName)
          && formContext is null) {
 
-         return;
+         return new ElementEndingDisposable(output, elementStarted: false);
       }
 
       var modelState = viewData.ModelState[modelName];
@@ -80,12 +81,10 @@ public static class ValidationInstructions {
       if (modelError is null
          && formContext is null) {
 
-         return;
+         return new ElementEndingDisposable(output, elementStarted: false);
       }
 
-      if (String.IsNullOrEmpty(tag)) {
-         tag = htmlHelper.ViewContext.ValidationMessageElement;
-      }
+      var tag = htmlHelper.ViewContext.ValidationMessageElement;
 
       var validationClass = (modelError != null) ?
          HtmlHelper.ValidationMessageCssClassName
@@ -96,7 +95,7 @@ public static class ValidationInstructions {
 
       if (formContext != null) {
 
-         var replaceValidationMessageContents = String.IsNullOrEmpty(validationMessage);
+         var replaceValidationMessageContents = !hasDefaultText;
 
          output.WriteAttributeString("data-valmsg-for", modelName);
          output.WriteAttributeString("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
@@ -106,14 +105,11 @@ public static class ValidationInstructions {
 
       HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "class");
 
-      if (!String.IsNullOrEmpty(validationMessage)) {
-         output.WriteString(validationMessage);
-
-      } else if (modelError != null) {
+      if (!hasDefaultText && modelError != null) {
          output.WriteString(GetModelErrorMessageOrDefault(modelError, modelState!, modelExplorer));
       }
 
-      output.WriteEndElement();
+      return new ElementEndingDisposable(output);
    }
 
    public static void
