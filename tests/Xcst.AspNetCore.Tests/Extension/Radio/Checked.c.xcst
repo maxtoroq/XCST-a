@@ -23,11 +23,6 @@
             <!-- explicit checked -->
             <a:radio name='p' value='"foo"' checked='yes' class='e'/>
             <a:radio name='p' value='"property"' checked='no' class='f'/>
-            <a:radio name='p' value='"property"' checked='no' attributes='new { @checked = "checked" }' class='g'/>
-
-            <!-- checked attribute -->
-            <a:radio for='p' value='"foo"' attributes='new { @checked = "checked" }' class='h'/>
-            <a:radio name='p' value='"foo"' attributes='new { @checked = "checked" }' class='i'/>
          </a:model>
          <a:model value='"model"' field-prefix='p'>
             <!-- different value -->
@@ -39,10 +34,6 @@
             <!-- explicit checked -->
             <a:radio value='"foo"' checked='yes' class='l'/>
             <a:radio value='"model"' checked='no' class='m'/>
-            <a:radio value='"model"' checked='no' attributes='new { @checked = "checked" }' class='n'/>
-
-            <!-- checked attribute -->
-            <a:radio value='"foo"' attributes='new { @checked = "checked" }' class='o'/>
          </a:model>
          <a:model value='new Foo { p = "property" }' field-prefix='x'>
             <a:radio for='p' value='"property"' class='p'/>
@@ -59,15 +50,10 @@
          <input type='radio' id='p' name='p' value='property' checked='checked' class='d'/>
          <input type='radio' id='p' name='p' value='foo' checked='checked' class='e'/>
          <input type='radio' id='p' name='p' value='property' class='f'/>
-         <input type='radio' id='p' name='p' value='property' class='g'/>
-         <input type='radio' id='p' name='p' value='foo' class='h'/>
-         <input type='radio' id='p' name='p' value='foo' checked='checked' class='i'/>
          <input type='radio' id='p' name='p' value='foo' class='j'/>
          <input type='radio' id='p' name='p' value='model' checked='checked' class='k'/>
          <input type='radio' id='p' name='p' value='foo' checked='checked' class='l'/>
          <input type='radio' id='p' name='p' value='model' class='m'/>
-         <input type='radio' id='p' name='p' value='model' class='n'/>
-         <input type='radio' id='p' name='p' value='foo' class='o'/>
          <input type='radio' id='x_p' name='x.p' value='property' checked='checked' class='p'/>
          <input type='radio' id='x_p' name='x.p' value='property' checked='checked' class='q'/>
       </div>

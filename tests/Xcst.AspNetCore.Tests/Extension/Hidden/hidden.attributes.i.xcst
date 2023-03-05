@@ -5,9 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:antiforgery>
-         <a/>
-      </a:antiforgery>
+      <a:hidden attributes='new object()'/>
    </c:template>
 
 </c:module>

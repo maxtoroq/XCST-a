@@ -4,8 +4,12 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:template name='foo'>
-      <a:radio value='1' attributes=''/>
+   <c:template name='c:initial-template'>
+      <a:select name='color'/>
+   </c:template>
+
+   <c:template name='expected'>
+      <select name="color" id="color"/>
    </c:template>
 
 </c:module>

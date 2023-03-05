@@ -17,7 +17,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -25,14 +24,12 @@ using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Runtime;
 
-using HtmlAttribs = IDictionary<string, object>;
-
 /// <exclude/>
 public static class TextAreaInstructions {
 
-   public static IDisposable
+   public static TextareaDisposable
    TextArea(HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null,
-         int? rows = null, int? cols = null, HtmlAttribs? htmlAttributes = null) {
+         string? @class = null) {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, htmlHelper.ViewData);
 
@@ -40,26 +37,26 @@ public static class TextAreaInstructions {
          modelExplorer = new ModelExplorer(htmlHelper.ViewData.MetadataProvider, modelExplorer.Container, modelExplorer.Metadata, value);
       }
 
-      return TextAreaHelper(htmlHelper, output, modelExplorer, name, rows, cols, htmlAttributes);
+      return TextAreaHelper(htmlHelper, output, modelExplorer, name, @class);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-   public static IDisposable
+   public static TextareaDisposable
    TextAreaFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression,
-         int? rows = null, int? cols = null, HtmlAttribs? htmlAttributes = null) {
+         string? @class = null) {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return TextAreaHelper(htmlHelper, output, modelExplorer, expressionString, rows, cols, htmlAttributes);
+      return TextAreaHelper(htmlHelper, output, modelExplorer, expressionString, @class);
    }
 
    [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "If this fails, it is because the string-based version had an empty 'name' parameter")]
-   internal static IDisposable
+   internal static TextareaDisposable
    TextAreaHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer modelExplorer, string name,
-         int? rows, int? cols, HtmlAttribs? htmlAttributes, string? innerHtmlPrefix = null) {
+         string? @class, string? innerHtmlPrefix = null) {
 
       var fullName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
 
@@ -71,31 +68,14 @@ public static class TextAreaInstructions {
       HtmlAttributeHelper.WriteId(fullName, output);
       output.WriteAttributeString("name", fullName);
 
-      if (rows != null) {
-         output.WriteAttributeString("rows", rows.Value.ToString(CultureInfo.InvariantCulture));
-      }
-
-      if (cols != null) {
-         output.WriteAttributeString("cols", cols.Value.ToString(CultureInfo.InvariantCulture));
-      }
-
       htmlHelper.ViewData.ModelState.TryGetValue(fullName, out var modelState);
-
-      // If there are any errors for a named field, we add the css attribute.
 
       var cssClass = (modelState?.Errors.Count > 0) ?
          HtmlHelper.ValidationInputCssClassName
          : null;
 
-      HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
+      HtmlAttributeHelper.WriteCssClass(@class, cssClass, output);
       HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer), output);
-
-      // name cannnot be overridden, and class was already written
-
-      HtmlAttributeHelper.WriteAttributes(
-         htmlAttributes,
-         output,
-         excludeFn: n => n is "name" or "class");
 
       var value = (modelState != null) ? modelState.AttemptedValue
          : (modelExplorer.Model != null) ? Convert.ToString(modelExplorer.Model, CultureInfo.CurrentCulture)
@@ -112,13 +92,16 @@ public static class TextAreaInstructions {
    }
 }
 
-class TextareaDisposable : ElementEndingDisposable {
+public class TextareaDisposable : ElementEndingDisposable {
 
    readonly XcstWriter
    _output;
 
    readonly string
    _text;
+
+   bool
+   _eoc;
 
    bool
    _disposed;
@@ -131,6 +114,17 @@ class TextareaDisposable : ElementEndingDisposable {
       _text = text;
    }
 
+   public void
+   EndOfConstructor() {
+      _eoc = true;
+   }
+
+   public TextareaDisposable
+   NoConstructor() {
+      _eoc = true;
+      return this;
+   }
+
    protected override void
    Dispose(bool disposing) {
 
@@ -138,7 +132,12 @@ class TextareaDisposable : ElementEndingDisposable {
          return;
       }
 
-      if (disposing) {
+      // don't write text when end of constructor is not reached
+      // e.g. an exception occurred, c:return, etc.
+
+      if (disposing
+         && _eoc) {
+
          _output.WriteString(_text);
       }
 

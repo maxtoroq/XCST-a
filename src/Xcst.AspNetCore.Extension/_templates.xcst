@@ -174,6 +174,7 @@
                   <code:string literal='true'>htmlAttributes</code:string>
                   <call-template name='app:html-attributes-param'>
                      <with-param name='el' value='el'/>
+                     <with-param name='attributesAttr' value='el.Attribute("attributes")'/>
                      <with-param name='classAttr' value='null'/>
                      <with-param name='boolAttribs' value='boolAttribs'/>
                      <with-param name='omitParam' value='true'/>
@@ -330,7 +331,7 @@
                </code:arguments>
             </code:method-call>
          </code:add>
-         <call-template name='app:options'>
+         <call-template name='option-list'>
             <with-param name='el' value='el'/>
          </call-template>
       </code:collection-initializer>

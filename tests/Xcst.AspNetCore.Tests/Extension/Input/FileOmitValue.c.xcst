@@ -15,7 +15,6 @@
             <a:input type='file' for='f'/>
             <a:input type='file' name='f'/>
             <a:input type='file' name='f' value='"explicit"'/>
-            <a:input type='file' name='f' attributes='new { value = "attrib" }'/>
          </a:model>
          <a:model value='"model"' field-prefix='f'>
             <a:input type='file'/>
@@ -29,7 +28,6 @@
          <input type='file' id='f' name='f'/>
          <input type='file' id='f' name='f'/>
          <input type='file' id='f' name='f'/>
-         <input type='file' id='f' name='f' value='attrib'/>
          <input type='file' id='f' name='f'/>
          <input type='file' id='f' name='f'/>
       </div>

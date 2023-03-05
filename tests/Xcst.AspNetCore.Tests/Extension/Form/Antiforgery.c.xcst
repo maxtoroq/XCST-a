@@ -5,20 +5,11 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='System.Xml.Linq'/>
-
    <c:template name='c:initial-template'>
       <div>
-         <c:variable name='form1' as='XElement'>
-            <a:form method='post' model-type='object' antiforgery='yes'>
-               <p/>
-            </a:form>
-         </c:variable>
-         <c:variable name='hidden' value='form1.LastNode as XElement'/>
-         <c:if test='hidden != null'>
-            <c:void value='hidden.SetAttributeValue("value", "")'/>
-         </c:if>
-         <c:copy-of value='form1'/>
+         <a:form method='post' model-type='object' antiforgery='yes'>
+            <p/>
+         </a:form>
          <a:form method='post' model-type='object' antiforgery='no'>
             <p/>
          </a:form>

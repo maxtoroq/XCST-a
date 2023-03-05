@@ -26,40 +26,38 @@ using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Runtime;
 
-using HtmlAttribs = IDictionary<string, object>;
-
 /// <exclude/>
 public static class ValidationInstructions {
 
    [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames", Justification = "'validationMessage' refers to the message that will be rendered by the ValidationMessage helper.")]
    public static ElementEndingDisposable
    ValidationMessage(HtmlHelper htmlHelper, XcstWriter output, string modelName, bool hasDefaultText = false,
-         HtmlAttribs? htmlAttributes = null) {
+         string? @class = null) {
 
       if (modelName is null) throw new ArgumentNullException(nameof(modelName));
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(modelName, htmlHelper.ViewData);
 
-      return ValidationMessageHelper(htmlHelper, output, modelExplorer, modelName, hasDefaultText, htmlAttributes);
+      return ValidationMessageHelper(htmlHelper, output, modelExplorer, modelName, hasDefaultText, @class);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
    public static ElementEndingDisposable
    ValidationMessageFor<TModel, TProperty>(
          HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, bool hasDefaultText = false,
-         HtmlAttribs? htmlAttributes = null) {
+         string? @class = null) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return ValidationMessageHelper(htmlHelper, output, modelExplorer, expressionString, hasDefaultText, htmlAttributes);
+      return ValidationMessageHelper(htmlHelper, output, modelExplorer, expressionString, hasDefaultText, @class);
    }
 
    [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Normalization to lowercase is a common requirement for JavaScript and HTML values")]
    internal static ElementEndingDisposable
    ValidationMessageHelper(
          HtmlHelper htmlHelper, XcstWriter output, ModelExplorer modelExplorer, string expression, bool hasDefaultText,
-         HtmlAttribs? htmlAttributes) {
+         string? @class) {
 
       var viewData = htmlHelper.ViewData;
 
@@ -91,7 +89,7 @@ public static class ValidationInstructions {
          : HtmlHelper.ValidationMessageValidCssClassName;
 
       output.WriteStartElement(tag);
-      HtmlAttributeHelper.WriteClass(validationClass, htmlAttributes, output);
+      HtmlAttributeHelper.WriteCssClass(@class, validationClass, output);
 
       if (formContext != null) {
 
@@ -101,10 +99,6 @@ public static class ValidationInstructions {
          output.WriteAttributeString("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
       }
 
-      // class was already written
-
-      HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "class");
-
       if (!hasDefaultText && modelError != null) {
          output.WriteString(GetModelErrorMessageOrDefault(modelError, modelState!, modelExplorer));
       }
@@ -112,9 +106,9 @@ public static class ValidationInstructions {
       return new ElementEndingDisposable(output);
    }
 
-   public static void
-   ValidationSummary(HtmlHelper htmlHelper, XcstWriter output, bool includePropertyErrors = false, string? message = null, HtmlAttribs? htmlAttributes = null,
-         string? headingTag = null) {
+   public static ValidationSummaryDisposable
+   ValidationSummary(HtmlHelper htmlHelper, XcstWriter output, bool includePropertyErrors = false,
+         string? @class = null) {
 
       if (htmlHelper is null) throw new ArgumentNullException(nameof(htmlHelper));
 
@@ -125,7 +119,7 @@ public static class ValidationInstructions {
          if (!htmlHelper.ViewContext.ClientValidationEnabled
             || !includePropertyErrors) {
 
-            return;
+            return new ValidationSummaryDisposable(output, null);
          }
       }
 
@@ -134,62 +128,48 @@ public static class ValidationInstructions {
          : HtmlHelper.ValidationSummaryCssClassName;
 
       output.WriteStartElement("div");
-      HtmlAttributeHelper.WriteClass(validationClass, htmlAttributes, output);
+      HtmlAttributeHelper.WriteCssClass(@class, validationClass, output);
 
-      if (formContext != null) {
+      if (formContext != null
+         && includePropertyErrors) {
 
-         if (includePropertyErrors) {
-
-            // Only put errors in the validation summary if they're supposed to be included there
-
-            output.WriteAttributeString("data-valmsg-summary", "true");
-         }
+         // Only put errors in the validation summary if they're supposed to be included there
+         output.WriteAttributeString("data-valmsg-summary", "true");
       }
 
-      // class was already written
+      void listBuilder(XcstWriter output) {
 
-      HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n == "class");
+         output.WriteStartElement("ul");
 
-      if (!String.IsNullOrEmpty(message)) {
+         var empty = true;
+         var modelStates = GetModelStateList(htmlHelper, includePropertyErrors);
 
-         if (String.IsNullOrEmpty(headingTag)) {
-            headingTag = htmlHelper.ViewContext.ValidationSummaryMessageElement;
-         }
+         foreach (var modelState in modelStates) {
+            foreach (var modelError in modelState.Errors) {
 
-         output.WriteStartElement(headingTag!);
-         output.WriteString(message);
-         output.WriteEndElement();
-      }
+               var errorText = GetModelErrorMessageOrDefault(modelError);
 
-      output.WriteStartElement("ul");
+               if (!String.IsNullOrEmpty(errorText)) {
 
-      var empty = true;
-      var modelStates = GetModelStateList(htmlHelper, includePropertyErrors);
+                  empty = false;
 
-      foreach (var modelState in modelStates) {
-         foreach (var modelError in modelState.Errors) {
-
-            var errorText = GetModelErrorMessageOrDefault(modelError);
-
-            if (!String.IsNullOrEmpty(errorText)) {
-
-               empty = false;
-
-               output.WriteStartElement("li");
-               output.WriteString(errorText);
-               output.WriteEndElement();
+                  output.WriteStartElement("li");
+                  output.WriteString(errorText);
+                  output.WriteEndElement();
+               }
             }
          }
-      }
 
-      if (empty) {
-         output.WriteStartElement("li");
-         output.WriteAttributeString("style", "display:none");
-         output.WriteEndElement();
-      }
+         if (empty) {
+            output.WriteStartElement("li");
+            output.WriteAttributeString("style", "display:none");
+            output.WriteEndElement();
+         }
 
-      output.WriteEndElement(); // </ul>
-      output.WriteEndElement(); // </div>
+         output.WriteEndElement(); // </ul>
+      };
+
+      return new ValidationSummaryDisposable(output, listBuilder);
    }
 
    // Returns non-null list of model states, which caller will render in order provided.
@@ -249,5 +229,60 @@ public static class ValidationInstructions {
       var arg = modelState.AttemptedValue ?? "null";
 
       return modelExplorer.Metadata.ModelBindingMessageProvider.ValueIsInvalidAccessor(arg);
+   }
+}
+
+public class ValidationSummaryDisposable : ElementEndingDisposable {
+
+   readonly XcstWriter
+   _output;
+
+   readonly Action<XcstWriter>?
+   _listBuilder;
+
+   bool
+   _eoc;
+
+   bool
+   _disposed;
+
+   internal
+   ValidationSummaryDisposable(XcstWriter output, Action<XcstWriter>? listBuilder)
+      : base(output, listBuilder != null) {
+
+      _output = output;
+      _listBuilder = listBuilder;
+   }
+
+   public void
+   EndOfConstructor() {
+      _eoc = true;
+   }
+
+   public ValidationSummaryDisposable
+   NoConstructor() {
+      _eoc = this.ElementStarted;
+      return this;
+   }
+
+   protected override void
+   Dispose(bool disposing) {
+
+      if (_disposed) {
+         return;
+      }
+
+      // don't write list when end of constructor is not reached
+      // e.g. an exception occurred, c:return, etc.
+
+      if (disposing
+         && _eoc) {
+
+         _listBuilder?.Invoke(_output);
+      }
+
+      base.Dispose(disposing);
+
+      _disposed = true;
    }
 }

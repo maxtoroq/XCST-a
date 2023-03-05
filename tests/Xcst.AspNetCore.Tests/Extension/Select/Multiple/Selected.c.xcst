@@ -20,7 +20,9 @@
             <a:option selected='true'>green</a:option>
          </a:select>
          <!-- value overrides selected of dynamic option -->
-         <a:select name='color' value='new[] { "red", "blue" }' options='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue", Selected = true }, new SelectListItem { Text = "green", Selected = true } }' multiple='yes' class='b'/>
+         <a:select name='color' value='new[] { "red", "blue" }'
+            options='new SelectListItem[] { new() { Text = "red" }, new() { Text = "blue", Selected = true }, new() { Text = "green", Selected = true } }'
+            multiple='yes' class='b'/>
          <!-- model selected -->
          <a:model value='new[] { "red", "blue" }' field-prefix='color'>
             <a:select multiple='yes' class='c'>

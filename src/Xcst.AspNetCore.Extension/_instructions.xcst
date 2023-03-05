@@ -84,7 +84,7 @@
 
    <template name='app:html-attributes-param'>
       <param name='el' as='XElement' required='yes'/>
-      <param name='attributesAttr' value='el.Attribute("attributes")' as='XAttribute?'/>
+      <param name='attributesAttr' value='(V1) ? el.Attribute("attributes") : null' as='XAttribute?'/>
       <param name='classAttr' value='el.Attribute("class")' as='XAttribute?'/>
       <param name='mergeAttribs' value='System.Array.Empty&lt;XAttribute>()' as='XAttribute[]'/>
       <param name='boolAttribs' value='System.Array.Empty&lt;XAttribute>()' as='XAttribute[]'/>

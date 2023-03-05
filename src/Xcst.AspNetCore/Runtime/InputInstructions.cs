@@ -17,7 +17,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -27,8 +26,6 @@ using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Runtime;
 
-using HtmlAttribs = IDictionary<string, object>;
-
 /// <exclude/>
 public static class InputInstructions {
 
@@ -36,46 +33,46 @@ public static class InputInstructions {
    // CheckBox
    //////////////////////////
 
-   public static IDisposable
-   CheckBox(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, HtmlAttribs? htmlAttributes = null) =>
-      CheckBoxHelper(htmlHelper, package, output, default(ModelExplorer), name, isChecked: null, htmlAttributes: htmlAttributes);
+   public static CheckBoxDisposable
+   CheckBox(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, HtmlAttributeDictionary? htmlAttributes = null) =>
+      CheckBoxHelper(htmlHelper, package, output, modelExplorer: null, name, isChecked: null, htmlAttributes);
 
-   public static IDisposable
-   CheckBox(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, bool isChecked, HtmlAttribs? htmlAttributes = null) =>
-      CheckBoxHelper(htmlHelper, package, output, default(ModelExplorer), name, isChecked, htmlAttributes);
+   public static CheckBoxDisposable
+   CheckBox(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, string name, bool isChecked, HtmlAttributeDictionary? htmlAttributes = null) =>
+      CheckBoxHelper(htmlHelper, package, output, modelExplorer: null, name, isChecked, htmlAttributes);
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-   public static IDisposable
+   public static CheckBoxDisposable
    CheckBoxFor<TModel>(HtmlHelper<TModel> htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output,
-         Expression<Func<TModel, bool>> expression, HtmlAttribs? htmlAttributes = null) {
+         Expression<Func<TModel, bool>> expression, HtmlAttributeDictionary? htmlAttributes = null) {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return CheckBoxForMetadata(htmlHelper, package, output, modelExplorer, expressionString, /*isChecked: */null, htmlAttributes);
+      return CheckBoxForModelExplorer(htmlHelper, package, output, modelExplorer, expressionString, isChecked: null, htmlAttributes);
    }
 
-   public static IDisposable
-   CheckBoxForModel(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, HtmlAttribs? htmlAttributes = null) {
+   public static CheckBoxDisposable
+   CheckBoxForModel(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, HtmlAttributeDictionary? htmlAttributes = null) {
 
       var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      return CheckBoxForMetadata(htmlHelper, package, output, modelExplorer, /*expression: */String.Empty, /*isChecked: */null, htmlAttributes);
+      return CheckBoxForModelExplorer(htmlHelper, package, output, modelExplorer, expression: String.Empty, isChecked: null, htmlAttributes);
    }
 
-   public static IDisposable
-   CheckBoxForModel(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, bool isChecked, HtmlAttribs? htmlAttributes = null) {
+   public static CheckBoxDisposable
+   CheckBoxForModel(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, bool isChecked, HtmlAttributeDictionary? htmlAttributes = null) {
 
       var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      return CheckBoxForMetadata(htmlHelper, package, output, modelExplorer, /*expression: */String.Empty, isChecked, htmlAttributes);
+      return CheckBoxForModelExplorer(htmlHelper, package, output, modelExplorer, expression: String.Empty, isChecked, htmlAttributes);
    }
 
-   static IDisposable
-   CheckBoxForMetadata(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelExplorer? modelExplorer, string expression,
-         bool? isChecked, HtmlAttribs? htmlAttributes) {
+   static CheckBoxDisposable
+   CheckBoxForModelExplorer(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelExplorer? modelExplorer, string expression,
+         bool? isChecked, HtmlAttributeDictionary? htmlAttributes) {
 
       var model = modelExplorer?.Model;
 
@@ -90,26 +87,20 @@ public static class InputInstructions {
       return CheckBoxHelper(htmlHelper, package, output, modelExplorer, expression, isChecked, htmlAttributes);
    }
 
-   static IDisposable
-   CheckBoxHelper(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelExplorer? modelExplorer, string name, bool? isChecked, HtmlAttribs? htmlAttributes) {
+   internal static CheckBoxDisposable
+   CheckBoxHelper(HtmlHelper htmlHelper, IXcstPackage package, ISequenceWriter<XElement> output, ModelExplorer? modelExplorer, string name,
+         bool? isChecked, HtmlAttributeDictionary? htmlAttributes) {
 
       var inputWriter = DocumentWriter.CastElement(package, output);
       var hiddenWriter = DocumentWriter.CastElement(package, output);
 
       var explicitChecked = isChecked.HasValue;
 
-      if (explicitChecked
-         && htmlAttributes != null
-         && htmlAttributes.ContainsKey("checked")) {
-
-         htmlAttributes = htmlAttributes.Clone();
-         htmlAttributes.Remove("checked"); // Explicit value must override dictionary
-      }
-
       var inputDisposable = InputHelper(
          htmlHelper,
          inputWriter,
          InputType.CheckBox,
+         type: null,
          modelExplorer,
          name,
          value: "true",
@@ -118,7 +109,9 @@ public static class InputInstructions {
          setId: true,
          isExplicitValue: false,
          format: null,
-         htmlAttributes: htmlAttributes);
+         @class: htmlAttributes?.GetClassOrNull());
+
+      htmlAttributes?.WriteTo(inputWriter, excludeClass: true);
 
       var fullName = htmlHelper.Name(name);
 
@@ -135,61 +128,56 @@ public static class InputInstructions {
    //////////////////////////
 
    public static IDisposable
-   RadioButton(HtmlHelper htmlHelper, XcstWriter output, string name, object value, HtmlAttribs? htmlAttributes = null) {
+   RadioButton(HtmlHelper htmlHelper, XcstWriter output, string name, object value, string? @class = null) {
 
       if (value is null) throw new ArgumentNullException(nameof(value));
-
-      // checked attributes is implicit, so we need to ensure that the dictionary takes precedence.
-
-      if (htmlAttributes?.ContainsKey("checked") == true) {
-         return RadioButtonHelper(htmlHelper, output, /*metadata: */null, name, value, /*isChecked: */null, htmlAttributes);
-      }
 
       var isChecked = RadioButtonValueEquals(value, htmlHelper.EvalString(name));
 
-      return RadioButtonHelper(htmlHelper, output, /*metadata: */null, name, value, isChecked, htmlAttributes);
+      return RadioButtonHelper(htmlHelper, output, modelExplorer: null, name, value, isChecked, @class);
    }
 
    public static IDisposable
-   RadioButton(HtmlHelper htmlHelper, XcstWriter output, string name, object value, bool isChecked, HtmlAttribs? htmlAttributes = null) {
+   RadioButton(HtmlHelper htmlHelper, XcstWriter output, string name, object value, bool isChecked,
+         string? @class = null) {
 
       if (value is null) throw new ArgumentNullException(nameof(value));
 
-      return RadioButtonHelper(htmlHelper, output, /*metadata: */null, name, value, isChecked, htmlAttributes);
+      return RadioButtonHelper(htmlHelper, output, modelExplorer: null, name, value, isChecked, @class);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
    public static IDisposable
    RadioButtonFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, object value,
-         HtmlAttribs? htmlAttributes = null) {
+         string? @class = null) {
 
       if (value is null) throw new ArgumentNullException(nameof(value));
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return RadioButtonForMetadata(htmlHelper, output, modelExplorer, expressionString, value, /*isChecked: */null, htmlAttributes);
+      return RadioButtonForModelExplorer(htmlHelper, output, modelExplorer, expressionString, value, isChecked: null, @class);
    }
 
    public static IDisposable
-   RadioButtonForModel(HtmlHelper htmlHelper, XcstWriter output, object value, HtmlAttribs? htmlAttributes = null) {
+   RadioButtonForModel(HtmlHelper htmlHelper, XcstWriter output, object value, string? @class = null) {
 
       var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      return RadioButtonForMetadata(htmlHelper, output, modelExplorer, String.Empty, value, /*isChecked: */null, htmlAttributes);
+      return RadioButtonForModelExplorer(htmlHelper, output, modelExplorer, String.Empty, value, isChecked: null, @class);
    }
 
    public static IDisposable
-   RadioButtonForModel(HtmlHelper htmlHelper, XcstWriter output, object value, bool isChecked, HtmlAttribs? htmlAttributes = null) {
+   RadioButtonForModel(HtmlHelper htmlHelper, XcstWriter output, object value, bool isChecked, string? @class = null) {
 
       var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      return RadioButtonForMetadata(htmlHelper, output, modelExplorer, String.Empty, value, /*isChecked: */isChecked, htmlAttributes);
+      return RadioButtonForModelExplorer(htmlHelper, output, modelExplorer, String.Empty, value, isChecked, @class);
    }
 
    static IDisposable
-   RadioButtonForMetadata(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string expression, object value, bool? isChecked,
-         HtmlAttribs? htmlAttributes) {
+   RadioButtonForModelExplorer(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string expression, object value,
+         bool? isChecked, string? @class) {
 
       var model = modelExplorer?.Model;
 
@@ -199,26 +187,18 @@ public static class InputInstructions {
          isChecked = RadioButtonValueEquals(value, model.ToString());
       }
 
-      return RadioButtonHelper(htmlHelper, output, modelExplorer, expression, value, isChecked, htmlAttributes);
+      return RadioButtonHelper(htmlHelper, output, modelExplorer, expression, value, isChecked, @class);
    }
 
    static IDisposable
-   RadioButtonHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string name, object value, bool? isChecked, HtmlAttribs? htmlAttributes) {
-
-      var explicitChecked = isChecked.HasValue;
-
-      if (explicitChecked
-         && htmlAttributes != null
-         && htmlAttributes.ContainsKey("checked")) {
-
-         htmlAttributes = htmlAttributes.Clone();
-         htmlAttributes.Remove("checked"); // Explicit value must override dictionary
-      }
+   RadioButtonHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string name, object value,
+         bool? isChecked, string? @class) {
 
       return InputHelper(
          htmlHelper,
          output,
          InputType.Radio,
+         type: null,
          modelExplorer,
          name,
          value,
@@ -227,7 +207,7 @@ public static class InputInstructions {
          setId: true,
          isExplicitValue: true,
          format: null,
-         htmlAttributes: htmlAttributes);
+         @class);
    }
 
    static bool
@@ -243,31 +223,32 @@ public static class InputInstructions {
    //////////////////////////
 
    public static IDisposable
-   Input(HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null, string? type = null, string? format = null, HtmlAttribs? htmlAttributes = null) =>
-      InputImpl(htmlHelper, output, type, /*metadata: */null, name, value, /*useViewData: */null, format, htmlAttributes);
+   Input(HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null, string? type = null, string? format = null, string? @class = null) =>
+      InputImpl(htmlHelper, output, type, modelExplorer: null, name, value, useViewData: null, format, @class);
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
    public static IDisposable
-   InputFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string? type = null, string? format = null,
-         HtmlAttribs? htmlAttributes = null) {
+   InputFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, string? type = null,
+         string? format = null, string? @class = null) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var exprString = ExpressionHelper.GetExpressionText(expression);
 
-      return InputForMetadata(htmlHelper, output, type, modelExplorer, exprString, /*value: */null, format, htmlAttributes);
+      return InputForModelExplorer(htmlHelper, output, type, modelExplorer, exprString, value: null, format, @class);
    }
 
    public static IDisposable
-   InputForModel(HtmlHelper htmlHelper, XcstWriter output, object? value = null, string? type = null, string? format = null, HtmlAttribs? htmlAttributes = null) {
+   InputForModel(HtmlHelper htmlHelper, XcstWriter output, object? value = null, string? type = null,
+         string? format = null, string? @class = null) {
 
       var modelExplorer = htmlHelper.ViewData.ModelExplorer;
 
-      return InputForMetadata(htmlHelper, output, type, modelExplorer, /*expression: */String.Empty, value, format, htmlAttributes);
+      return InputForModelExplorer(htmlHelper, output, type, modelExplorer, expression: String.Empty, value, format, @class);
    }
 
    static IDisposable
-   InputForMetadata(HtmlHelper htmlHelper, XcstWriter output, string? type, ModelExplorer? modelExplorer, string expression, object? value,
-         string? format, HtmlAttribs? htmlAttributes) {
+   InputForModelExplorer(HtmlHelper htmlHelper, XcstWriter output, string? type, ModelExplorer? modelExplorer, string expression, object? value,
+         string? format, string? @class) {
 
       if (value is null
          && modelExplorer != null
@@ -276,23 +257,15 @@ public static class InputInstructions {
          value = modelExplorer.Model;
       }
 
-      return InputImpl(htmlHelper, output, type, modelExplorer, expression, value, /*useViewData: */false, format, htmlAttributes);
+      return InputImpl(htmlHelper, output, type, modelExplorer, expression, value, useViewData: false, format, @class);
    }
 
    static IDisposable
    InputImpl(HtmlHelper htmlHelper, XcstWriter output, string? type, ModelExplorer? modelExplorer, string expression, object? value,
-         bool? useViewData, string? format, HtmlAttribs? htmlAttributes) {
+         bool? useViewData, string? format, string? @class) {
 
       var inputType = GetInputType(type);
       var checkBoxOrRadio = inputType is InputType.CheckBox or InputType.Radio;
-
-      if (type != null
-         && (inputType is null || checkBoxOrRadio)
-         && (htmlAttributes is null || !htmlAttributes.ContainsKey("type"))) {
-
-         htmlAttributes = htmlAttributes?.Clone() ?? new HtmlAttributeDictionary();
-         htmlAttributes["type"] = type;
-      }
 
       if (checkBoxOrRadio) {
          // Don't want Input() to behave like RadioButton() or CheckBox()
@@ -312,15 +285,16 @@ public static class InputInstructions {
          htmlHelper,
          output,
          inputType ?? InputType.Text,
-         modelExplorer: modelExplorer,
+         type,
+         modelExplorer,
          name: expression,
-         value: value,
+         value,
          useViewData: useViewData.Value,
          isChecked: false,
          setId: true,
          isExplicitValue: true,
-         format: format,
-         htmlAttributes: htmlAttributes);
+         format,
+         @class);
    }
 
    static InputType?
@@ -335,8 +309,8 @@ public static class InputInstructions {
       };
 
    static IDisposable
-   InputHelper(HtmlHelper htmlHelper, XcstWriter output, InputType inputType, ModelExplorer? modelExplorer, string name, object? value,
-         bool useViewData, bool isChecked, bool setId, bool isExplicitValue, string? format, HtmlAttribs? htmlAttributes) {
+   InputHelper(HtmlHelper htmlHelper, XcstWriter output, InputType inputType, string? type, ModelExplorer? modelExplorer, string name, object? value,
+         bool useViewData, bool isChecked, bool setId, bool isExplicitValue, string? format, string? @class) {
 
       var fullName = htmlHelper.Name(name);
 
@@ -350,14 +324,11 @@ public static class InputInstructions {
          HtmlAttributeHelper.WriteId(fullName, output);
       }
 
-      var defaultType = HtmlHelper.GetInputTypeString(inputType);
-
-      output.WriteAttributeString("type", defaultType);
+      output.WriteAttributeString("type", type ?? HtmlHelper.GetInputTypeString(inputType));
       output.WriteAttributeString("name", fullName);
 
       var valueParameter = htmlHelper.FormatValue(value, format);
       var usedModelState = false;
-      var valueWritten = false;
 
       switch (inputType) {
          case InputType.CheckBox:
@@ -397,7 +368,6 @@ public static class InputInstructions {
             }
 
             output.WriteAttributeString("value", valueParameter);
-            valueWritten = true;
 
             HtmlAttributeHelper.WriteBoolean("checked", isChecked, output);
 
@@ -407,22 +377,11 @@ public static class InputInstructions {
 
             if (value != null) {
                output.WriteAttributeString("value", valueParameter);
-               valueWritten = true;
             }
 
             break;
 
          default:
-
-            string type;
-
-            if (htmlAttributes != null
-               && htmlAttributes.TryGetValue("type", out var t)) {
-
-               type = t.ToString();
-            } else {
-               type = defaultType;
-            }
 
             var writeValue = true;
 
@@ -441,7 +400,6 @@ public static class InputInstructions {
                   ?? ((useViewData) ? htmlHelper.EvalString(fullName, format) : valueParameter);
 
                output.WriteAttributeString("value", valueAttr);
-               valueWritten = true;
             }
 
             break;
@@ -452,22 +410,14 @@ public static class InputInstructions {
       var cssClass = (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out var modelState)
          && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
-      HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
+      HtmlAttributeHelper.WriteCssClass(@class, cssClass, output);
       HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer), output);
-
-      // name cannnot be overridden, and class was already written
-      // explicit value cannot be overridden
-
-      HtmlAttributeHelper.WriteAttributes(
-         htmlAttributes,
-         output,
-         excludeFn: n => n is "name" or "class" || (isExplicitValue && valueWritten && (n == "value")));
 
       return new ElementEndingDisposable(output);
    }
 }
 
-class CheckBoxDisposable : IDisposable {
+public class CheckBoxDisposable : IDisposable {
 
    readonly IDisposable
    _checkBoxOutput;
@@ -477,6 +427,9 @@ class CheckBoxDisposable : IDisposable {
 
    readonly string
    _fullName;
+
+   bool
+   _eoc;
 
    bool
    _disposed;
@@ -489,6 +442,27 @@ class CheckBoxDisposable : IDisposable {
    }
 
    public void
+   EndOfConstructor() {
+      _eoc = true;
+   }
+
+   public CheckBoxDisposable
+   NoConstructor() {
+      _eoc = true;
+      return this;
+   }
+
+   void
+   WriteHiddenInput() {
+
+      _hiddenOutput.WriteStartElement("input");
+      _hiddenOutput.WriteAttributeString("type", "hidden");
+      _hiddenOutput.WriteAttributeString("name", _fullName);
+      _hiddenOutput.WriteAttributeString("value", "false");
+      _hiddenOutput.WriteEndElement();
+   }
+
+   public void
    Dispose() {
 
       if (_disposed) {
@@ -497,11 +471,12 @@ class CheckBoxDisposable : IDisposable {
 
       _checkBoxOutput.Dispose();
 
-      _hiddenOutput.WriteStartElement("input");
-      _hiddenOutput.WriteAttributeString("type", "hidden");
-      _hiddenOutput.WriteAttributeString("name", _fullName);
-      _hiddenOutput.WriteAttributeString("value", "false");
-      _hiddenOutput.WriteEndElement();
+      // don't write hidden input when end of constructor is not reached
+      // e.g. an exception occurred, c:return, etc.
+
+      if (_eoc) {
+         WriteHiddenInput();
+      }
 
       _disposed = true;
    }

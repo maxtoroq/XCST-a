@@ -39,48 +39,40 @@ public static class HtmlAttributeHelper {
       }
    }
 
-   public static void
-   WriteClass(string? cssClass, IDictionary<string, object>? htmlAttributes, XcstWriter output) {
+   internal static void
+   WriteCssClass(string? userClass, string? libClass, XcstWriter output) {
 
-      // NOTE: For backcompat, the dictionary class must be a non-null string to be joined
-      // with the library class, otherwise it's ignored. If there's no library class,
-      // the dictionary class can be null, resulting in an empty attribute.
+      // NOTE: For backcompat, userClass must be a non-null string to be joined
+      // with libClass, otherwise it's ignored. If there's no libClass,
+      // userClass can be null, resulting in an empty attribute.
       // 
-      // The library class must not be null or empty, which allows you to call this method
+      // libClass must not be null or empty, which allows you to call this method
       // without having to make that check.
       // 
       // See also HtmlAttributeDictionary.SetAttributes
 
-      var cssClassHasValue = !String.IsNullOrEmpty(cssClass);
-      object? dictClass = null;
+      var libClassHasValue = !String.IsNullOrEmpty(libClass);
+      var userClassHasValue = userClass != null;
 
-      var dictHasClass = htmlAttributes != null
-         && htmlAttributes.TryGetValue("class", out dictClass);
+      if (libClassHasValue
+         || userClassHasValue) {
 
-      if (cssClassHasValue
-         || dictHasClass) {
-
-         var joinedClass = (cssClassHasValue && dictClass is string s) ?
-            s + " " + cssClass
-            : (cssClassHasValue) ? cssClass!
-            : output.SimpleContent.Convert(dictClass);
+         var joinedClass =
+            (libClassHasValue && userClassHasValue) ? userClass + " " + libClass
+            : (libClassHasValue) ? libClass
+            : userClass;
 
          output.WriteAttributeString("class", joinedClass);
       }
    }
 
-   public static void
-   WriteAttributes(IDictionary<string, object>? htmlAttributes, XcstWriter output, Func<string, bool>? excludeFn = null) {
+   internal static void
+   WriteAttributes(IDictionary<string, object>? htmlAttributes, XcstWriter output) {
 
       if (htmlAttributes != null) {
 
          foreach (var item in htmlAttributes) {
-
-            if (excludeFn is null
-               || !excludeFn.Invoke(item.Key)) {
-
-               WriteAttribute(item.Key, item.Value, output);
-            }
+            WriteAttribute(item.Key, item.Value, output);
          }
       }
    }

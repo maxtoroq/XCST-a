@@ -5,11 +5,11 @@
    extension-element-prefixes='a'>
 
    <c:template name='c:initial-template'>
-      <a:select name='color' options='new string[0]'/>
+      <a:validation-message name='a' class='foo'/>
    </c:template>
 
    <c:template name='expected'>
-      <select name="color" id="color"/>
+      <span class='foo field-validation-valid' data-valmsg-for='a' data-valmsg-replace='true'/>
    </c:template>
 
 </c:module>

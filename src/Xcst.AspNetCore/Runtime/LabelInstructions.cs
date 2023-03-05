@@ -17,7 +17,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
@@ -25,36 +24,35 @@ using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Runtime;
 
-using HtmlAttribs = IDictionary<string, object>;
-
 /// <exclude/>
 public static class LabelInstructions {
 
    public static IDisposable
-   Label(HtmlHelper html, XcstWriter output, string expression, bool hasDefaultText = false, HtmlAttribs? htmlAttributes = null) {
+   Label(HtmlHelper html, XcstWriter output, string expression, bool hasDefaultText = false,
+         string? @class = null) {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, html.ViewData);
 
-      return LabelHelper(html, output, modelExplorer, expression, hasDefaultText, htmlAttributes);
+      return LabelHelper(html, output, modelExplorer, expression, hasDefaultText, @class);
    }
 
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
    public static IDisposable
    LabelFor<TModel, TValue>(HtmlHelper<TModel> html, XcstWriter output, Expression<Func<TModel, TValue>> expression, bool hasDefaultText = false,
-         HtmlAttribs? htmlAttributes = null) {
+         string? @class = null) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, html.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return LabelHelper(html, output, modelExplorer, expressionString, hasDefaultText, htmlAttributes);
+      return LabelHelper(html, output, modelExplorer, expressionString, hasDefaultText, @class);
    }
 
    public static IDisposable
-   LabelForModel(HtmlHelper html, XcstWriter output, bool hasDefaultText = false, HtmlAttribs? htmlAttributes = null) =>
-      LabelHelper(html, output, html.ViewData.ModelExplorer, String.Empty, hasDefaultText, htmlAttributes);
+   LabelForModel(HtmlHelper html, XcstWriter output, bool hasDefaultText = false, string? @class = null) =>
+      LabelHelper(html, output, html.ViewData.ModelExplorer, String.Empty, hasDefaultText, @class);
 
    internal static IDisposable
-   LabelHelper(HtmlHelper html, XcstWriter output, ModelExplorer modelExplorer, string expression, bool hasDefaultText = false, HtmlAttribs? htmlAttributes = null) {
+   LabelHelper(HtmlHelper html, XcstWriter output, ModelExplorer modelExplorer, string expression, bool hasDefaultText, string? @class) {
 
       var htmlFieldName = expression;
       var fullFieldName = html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName);
@@ -62,7 +60,7 @@ public static class LabelInstructions {
 
       output.WriteStartElement("label");
       output.WriteAttributeString("for", id);
-      HtmlAttributeHelper.WriteAttributes(htmlAttributes, output);
+      HtmlAttributeHelper.WriteCssClass(@class, null, output);
 
       if (!hasDefaultText) {
 

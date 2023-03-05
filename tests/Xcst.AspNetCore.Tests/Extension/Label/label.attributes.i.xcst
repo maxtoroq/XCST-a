@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:label attributes=''/>
+      <a:label attributes='new object()'/>
    </c:template>
 
 </c:module>

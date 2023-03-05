@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:template name='c:initial-template'>
+      <a:select name='a'>
+         <c:attribute name='data-foo'>foo</c:attribute>
+         <a:option value='"opt1"'>Option 1</a:option>
+         <optgroup label='Option Group 1'>
+            <a:option value='"opt2"'>Option 2</a:option>
+            <option>Option 3</option>
+         </optgroup>
+      </a:select>
+   </c:template>
+
+   <c:template name='expected'>
+      <select id='a' name='a' data-foo='foo'>
+         <option value='opt1'>Option 1</option>
+         <optgroup label='Option Group 1'>
+            <option value='opt2'>Option 2</option>
+            <option>Option 3</option>
+         </optgroup>
+      </select>
+   </c:template>
+
+</c:module>

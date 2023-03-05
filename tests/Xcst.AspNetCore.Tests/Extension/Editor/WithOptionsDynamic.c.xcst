@@ -14,7 +14,7 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <a:model as='ColorModel'>
          <a:editor for='color'>
-            <a:with-options options='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue" } }'/>
+            <a:with-options options='new SelectListItem[] { new() { Text = "red" }, new() { Text = "blue" } }'/>
          </a:editor>
       </a:model>
    </c:template>

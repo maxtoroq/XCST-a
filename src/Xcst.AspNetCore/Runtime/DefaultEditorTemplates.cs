@@ -37,7 +37,7 @@ static class DefaultEditorTemplates {
    BooleanTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
-      bool? value = null;
+      var value = default(bool?);
 
       if (viewData.Model != null) {
          value = Convert.ToBoolean(viewData.Model, CultureInfo.InvariantCulture);
@@ -49,14 +49,31 @@ static class DefaultEditorTemplates {
          var className = GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
-         SelectInstructions.Select(html, output, String.Empty, TriStateValues(value), htmlAttributes: htmlAttributes);
+         using (var disp = SelectInstructions.Select(
+               html,
+               output,
+               String.Empty,
+               selectList: TriStateValues(value),
+               @class: htmlAttributes.GetClassOrNull())) {
+
+            htmlAttributes.WriteTo(output, excludeClass: true);
+            disp.EndOfConstructor();
+         }
 
       } else {
 
          var className = GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputInstructions.CheckBox(html, package, seqOutput, String.Empty, value.GetValueOrDefault(), htmlAttributes: htmlAttributes)
+         InputInstructions.CheckBoxHelper(
+               html,
+               package,
+               seqOutput,
+               modelExplorer: null,
+               name: String.Empty,
+               value.GetValueOrDefault(),
+               htmlAttributes)
+            .NoConstructor()
             .Dispose();
       }
    }
@@ -157,8 +174,16 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(new EditorInfo("HiddenInput", "input", InputType.Hidden), null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      InputInstructions.Input(html, output, String.Empty, model, type: "hidden", htmlAttributes: htmlAttributes)
-         .Dispose();
+      using (InputInstructions.Input(
+            html,
+            output,
+            name: String.Empty,
+            model,
+            type: "hidden",
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+      }
    }
 
    public static void
@@ -170,11 +195,19 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(new EditorInfo("MultilineText", "textarea"), "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      TextAreaInstructions.TextArea(html, output, String.Empty, value, htmlAttributes: htmlAttributes)
-         .Dispose();
+      using (var disp = TextAreaInstructions.TextArea(
+            html,
+            output,
+            name: String.Empty,
+            value,
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+         disp.EndOfConstructor();
+      }
    }
 
-   static IDictionary<string, object>
+   static HtmlAttributeDictionary
    CreateHtmlAttributes(HtmlHelper html, string? className, string? inputType = null,
          bool addMetadataAttributes = false) {
 
@@ -256,7 +289,7 @@ static class DefaultEditorTemplates {
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "editor-label");
 
-               LabelInstructions.LabelHelper(html, labelWriter, propertyExplorer, propertyMeta.PropertyName!)
+               LabelInstructions.LabelHelper(html, labelWriter, propertyExplorer, propertyMeta.PropertyName!, default, default)
                   .Dispose();
 
                labelWriter.WriteEndElement();
@@ -305,8 +338,16 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      InputInstructions.Input(html, output, String.Empty, value: null, type: "password", htmlAttributes: htmlAttributes)
-         .Dispose();
+      using (InputInstructions.Input(
+            html,
+            output,
+            name: String.Empty,
+            value: null,
+            type: "password",
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+      }
    }
 
    public static void
@@ -405,13 +446,25 @@ static class DefaultEditorTemplates {
       string? optionLabel = null;
 
       var options = Options(viewData);
-      var optionList = options as OptionList;
 
-      if (optionList?.AddBlankOption == true) {
+      if (options is OptionList and { AddBlankOption: true }) {
          optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
       }
 
-      SelectInstructions.SelectHelper(html, output, viewData.ModelExplorer, String.Empty, options, optionLabel, multiple: false, htmlAttributes: htmlAttributes);
+      using (var disp = SelectInstructions.SelectHelper(
+            html,
+            output,
+            viewData.ModelExplorer,
+            String.Empty,
+            value: null,
+            options,
+            optionLabel,
+            multiple: false,
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+         disp.EndOfConstructor();
+      }
    }
 
    public static void
@@ -425,7 +478,20 @@ static class DefaultEditorTemplates {
 
       var options = Options(viewData);
 
-      SelectInstructions.SelectHelper(html, output, viewData.ModelExplorer, String.Empty, options, optionLabel: null, multiple: true, htmlAttributes: htmlAttributes);
+      using (var disp = SelectInstructions.SelectHelper(
+            html,
+            output,
+            viewData.ModelExplorer,
+            String.Empty,
+            value: null,
+            options,
+            optionLabel: null,
+            multiple: true,
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+         disp.EndOfConstructor();
+      }
    }
 
    public static void
@@ -452,7 +518,20 @@ static class DefaultEditorTemplates {
       var options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
       var optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
 
-      SelectInstructions.SelectHelper(html, output, viewData.ModelExplorer, String.Empty, options, optionLabel, multiple: false, htmlAttributes: htmlAttributes);
+      using (var disp = SelectInstructions.SelectHelper(
+            html,
+            output,
+            viewData.ModelExplorer,
+            String.Empty,
+            value: null,
+            options,
+            optionLabel,
+            multiple: false,
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+         disp.EndOfConstructor();
+      }
    }
 
    static void
@@ -486,10 +565,18 @@ static class DefaultEditorTemplates {
       var value = html.ViewData.TemplateInfo.FormattedModelValue;
 
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
-      var htmlAttributes = CreateHtmlAttributes(html, className, inputType: inputType, addMetadataAttributes: true);
+      var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      InputInstructions.Input(html, output, name: String.Empty, value: value, htmlAttributes: htmlAttributes)
-         .Dispose();
+      using (InputInstructions.Input(
+            html,
+            output,
+            name: String.Empty,
+            value,
+            type: inputType,
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+      }
    }
 
    internal static string?

@@ -8,7 +8,7 @@
    <c:import-namespace ns='Xcst.Web.Mvc'/>
 
    <c:template name='c:initial-template'>
-      <c:variable name='list' value='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue" } }'/>
+      <c:variable name='list' value='new SelectListItem[] { new() { Text = "red" }, new() { Text = "blue" } }'/>
       <div>
          <a:select name='color' options='list'/>
          <a:select name='color' options='(IEnumerable)list'/>
@@ -24,7 +24,6 @@
 
    <c:template name='expect'>
       <select name="color" id="color">
-         <option value=""/>
          <option>red</option>
          <option>blue</option>
       </select>

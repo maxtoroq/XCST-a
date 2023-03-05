@@ -30,7 +30,10 @@
       <call-template name='app:validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='required' value='new[] { "method" }'/>
-         <with-param name='optional' value='new[] { "model-value", "model-type", "id", "action", "autocomplete", "enctype", "class", "attributes", "field-prefix", "helper-name", "antiforgery" }'/>
+         <with-param name='optional' value='
+            new[] { "model-value", "model-type", "id", "action", "autocomplete", "enctype", "class", "attributes", "field-prefix", "helper-name", "antiforgery" }
+               .Where(p => p != "attributes" || V1)
+               .ToArray()'/>
       </call-template>
 
       <variable name='methodAttr' value='el.Attribute("method")'/>
@@ -46,6 +49,7 @@
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
 
       <call-template name='app:declare-doc-output'>
          <with-param name='el' value='el'/>
@@ -54,7 +58,7 @@
 
       <code:method-call name='WriteStartElement'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <copy-of value='select(docOutput, src + "reference", code)'/>
+         <copy-of value='outputRef'/>
          <code:arguments>
             <code:string literal='true'>form</code:string>
          </code:arguments>
@@ -65,12 +69,13 @@
 
             <variable name='attribs' value='attributes(el)
                .Where(p => p.Name.Namespace == XNamespace.None
-                  &amp;&amp; p.Name.LocalName is "method" or "id" or "action" or "autocomplete" or "enctype")
+                  &amp;&amp; p.Name.LocalName is "method" or "id" or "action" or "autocomplete" or "enctype" or "class")
+               .Where(p => p.Name != "class" || V2_OR_GREATER)
                .ToArray()'/>
 
             <for-each name='attr' in='attribs'>
                <code:method-call name='WriteAttributeString'>
-                  <copy-of value='select(docOutput, src + "reference", code)'/>
+                  <copy-of value='outputRef'/>
                   <code:arguments>
                      <code:string literal='true'>
                         <value-of value='attr.Name.LocalName'/>
@@ -89,21 +94,23 @@
                </code:method-call>
             </for-each>
 
-            <variable name='attributesArg' as='object?'>
-               <call-template name='app:html-attributes-param'>
-                  <with-param name='el' value='el'/>
-                  <with-param name='omitParam' value='true'/>
-               </call-template>
-               <on-empty value='default(object)'/>
-            </variable>
+            <if test='V1'>
+               <variable name='attributesArg' as='object?'>
+                  <call-template name='app:html-attributes-param'>
+                     <with-param name='el' value='el'/>
+                     <with-param name='omitParam' value='true'/>
+                  </call-template>
+                  <on-empty value='default(object)'/>
+               </variable>
 
-            <if test='attributesArg != null'>
-               <code:method-call name='WriteTo'>
-                  <copy-of value='attributesArg'/>
-                  <code:arguments>
-                     <copy-of value='select(docOutput, src + "reference", code)'/>
-                  </code:arguments>
-               </code:method-call>
+               <if test='attributesArg != null'>
+                  <code:method-call name='WriteTo'>
+                     <copy-of value='attributesArg'/>
+                     <code:arguments>
+                        <copy-of value='outputRef'/>
+                     </code:arguments>
+                  </code:method-call>
+               </if>
             </if>
 
             <call-template name='app:model-seqctor'>
@@ -114,13 +121,26 @@
             </call-template>
 
             <if test='el.Attribute("antiforgery") is XAttribute antiforgeryAttr'>
+
                <variable name='antiforgery' value='xcst_boolean(antiforgeryAttr, true)'/>
-               <choose>
-                  <when test='antiforgery == true'>
-                     <call-template name='app:antiforgery'>
+
+               <variable name='antiforgeryCall'>
+                  <code:chain>
+                     <call-template name='antiforgery'>
                         <with-param name='el' value='el'/>
                         <with-param name='output' value='docOutput' tunnel='yes'/>
                      </call-template>
+                     <if test='V2_OR_GREATER'>
+                        <code:method-call name='Dispose'>
+                           <code:chain-reference/>
+                        </code:method-call>
+                     </if>
+                  </code:chain>
+               </variable>
+
+               <choose>
+                  <when test='antiforgery == true'>
+                     <copy-of value='antiforgeryCall'/>
                   </when>
                   <when test='antiforgery is null'>
                      <code:if line-hidden='true'>
@@ -129,10 +149,7 @@
                            <with-param name='avt' value='antiforgeryAttr'/>
                         </call-template>
                         <code:block>
-                           <call-template name='app:antiforgery'>
-                              <with-param name='el' value='el'/>
-                              <with-param name='output' value='docOutput' tunnel='yes'/>
-                           </call-template>
+                           <copy-of value='antiforgeryCall'/>
                         </code:block>
                      </code:if>
                   </when>
@@ -141,7 +158,7 @@
          </code:block>
          <code:finally line-hidden='true'>
             <code:method-call name='WriteEndElement'>
-               <copy-of value='select(docOutput, src + "reference", code)'/>
+               <copy-of value='outputRef'/>
             </code:method-call>
          </code:finally>
       </code:try>

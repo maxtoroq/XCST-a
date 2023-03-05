@@ -115,11 +115,10 @@
          </xs:complexContent>
       </xs:complexType>
    </xs:element>
-   <xs:element name="antiforgery" substitutionGroup="a:extension-instruction">
+   <xs:element name="antiforgery" substitutionGroup="a:extension-instruction" type="a:sequence-constructor">
       <xs:annotation>
          <xs:documentation>Creates an &lt;input&gt; element of type 'hidden' containing the antiforgery token.</xs:documentation>
       </xs:annotation>
-      <xs:complexType />
    </xs:element>
    <xs:element name="select" substitutionGroup="a:extension-instruction">
       <xs:annotation>
@@ -127,8 +126,9 @@
       </xs:annotation>
       <xs:complexType>
          <xs:complexContent>
-            <xs:extension base="a:_options">
+            <xs:extension base="a:sequence-constructor">
                <xs:attributeGroup ref="a:_input-for-name-value-attribs" />
+               <xs:attribute name="options" type="a:options-expr" />
                <xs:attribute name="multiple" type="a:boolean" />
                <xs:attributeGroup ref="a:_input-attribs" />
                <xs:attributeGroup ref="a:_html-attribs" />
@@ -136,13 +136,7 @@
          </xs:complexContent>
       </xs:complexType>
    </xs:element>
-   <xs:complexType name="_options">
-      <xs:sequence>
-         <xs:element minOccurs="0" maxOccurs="unbounded" ref="a:option" />
-      </xs:sequence>
-      <xs:attribute name="options" type="a:options-expr" />
-   </xs:complexType>
-   <xs:element name="option">
+   <xs:element name="option" substitutionGroup="a:extension-instruction">
       <xs:annotation>
          <xs:documentation>Creates an &lt;option&gt; element.</xs:documentation>
       </xs:annotation>
@@ -208,16 +202,19 @@
    </xs:element>
    <xs:element name="validation-summary" substitutionGroup="a:extension-instruction">
       <xs:annotation>
-         <xs:documentation>Creates an unordered list (&lt;ul&gt; element) of validation messages.</xs:documentation>
+         <xs:documentation>Creates a &lt;div&gt; element that includes an unordered list (&lt;ul&gt; element) of validation messages.</xs:documentation>
       </xs:annotation>
       <xs:complexType>
-         <xs:attribute name="include-member-errors">
-            <xs:simpleType>
-               <xs:union memberTypes="a:boolean a:avt-expr" />
-            </xs:simpleType>
-         </xs:attribute>
-         <xs:attribute name="message" type="a:avt" />
-         <xs:attributeGroup ref="a:_html-attribs" />
+         <xs:complexContent>
+            <xs:extension base="a:sequence-constructor">
+               <xs:attribute name="include-member-errors">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:boolean a:avt-expr" />
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attributeGroup ref="a:_html-attribs" />
+            </xs:extension>
+         </xs:complexContent>
       </xs:complexType>
    </xs:element>
    <xs:element name="validation-message" substitutionGroup="a:extension-instruction">
@@ -236,7 +233,6 @@
    </xs:element>
    <xs:attributeGroup name="_html-attribs">
       <xs:attribute name="class" type="a:avt" />
-      <xs:attribute name="attributes" type="a:expr-obj-dict" />
    </xs:attributeGroup>
    <xs:element name="editor" substitutionGroup="a:extension-instruction">
       <xs:annotation>
@@ -293,12 +289,12 @@
          <xs:documentation>Defines options for a model's member form control.</xs:documentation>
       </xs:annotation>
       <xs:complexType>
-         <xs:complexContent>
-            <xs:extension base="a:_options">
-               <xs:attribute name="for" type="a:expression" />
-               <xs:attribute name="name" type="a:avt" />
-            </xs:extension>
-         </xs:complexContent>
+         <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="a:option" />
+         </xs:sequence>
+         <xs:attribute name="for" type="a:expression" />
+         <xs:attribute name="name" type="a:avt" />
+         <xs:attribute name="options" type="a:options-expr" />
       </xs:complexType>
    </xs:element>
    <xs:element name="member-template">

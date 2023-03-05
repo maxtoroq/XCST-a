@@ -36,7 +36,7 @@ static class DefaultDisplayTemplates {
       var output = DocumentWriter.CastElement(package, seqOutput);
       var viewData = html.ViewData;
 
-      bool? value = null;
+      var value = default(bool?);
 
       if (viewData.Model != null) {
          value = Convert.ToBoolean(viewData.Model, CultureInfo.InvariantCulture);
@@ -48,11 +48,11 @@ static class DefaultDisplayTemplates {
 
          var className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
 
-         HtmlAttributeHelper.WriteClass(className, null, output);
+         HtmlAttributeHelper.WriteCssClass(null, className, output);
          HtmlAttributeHelper.WriteBoolean("disabled", true, output);
 
          foreach (var item in DefaultEditorTemplates.TriStateValues(value)) {
-            SelectInstructions.WriteOption(item, output);
+            SelectInstructions.WriteOption(item, null, output);
          }
 
          output.WriteEndElement();
@@ -64,7 +64,7 @@ static class DefaultDisplayTemplates {
 
          var className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
 
-         HtmlAttributeHelper.WriteClass(className, null, output);
+         HtmlAttributeHelper.WriteCssClass(null, className, output);
          HtmlAttributeHelper.WriteBoolean("disabled", true, output);
          HtmlAttributeHelper.WriteBoolean("checked", value.GetValueOrDefault(), output);
 

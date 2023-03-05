@@ -5,11 +5,13 @@
    extension-element-prefixes='a'>
 
    <c:template name='c:initial-template'>
-      <a:select name='color' options='new string[0]'/>
+      <a:antiforgery>
+         <c:attribute name='data-foo'>foo</c:attribute>
+      </a:antiforgery>
    </c:template>
 
    <c:template name='expected'>
-      <select name="color" id="color"/>
+      <input type='hidden' name='__RequestVerificationToken' value='' data-foo='foo'/>
    </c:template>
 
 </c:module>

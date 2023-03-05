@@ -6,9 +6,13 @@
    extension-element-prefixes='a'>
 
    <c:import-namespace ns='System'/>
+   <c:import-namespace ns='System.Collections.Generic'/>
    <c:import-namespace ns='System.Globalization'/>
+   <c:import-namespace ns='System.Linq'/>
 
-   <c:param name='htmlAttributes'/>
+   <c:param name='htmlAttributes' as='IDictionary&lt;string, object>?'/>
+
+   <c:variable name='@class' value='htmlAttributes?.TryGetValue("class", out var @class) == true ? $" {@class}" : null' as='string?'/>
 
    <c:template name='c:initial-template' visibility='public'>
       <c:variable name='modelValue' value='(ViewData.Model != null) ?
@@ -16,7 +20,8 @@
          : default(bool?)' as='bool?'/>
       <c:choose>
          <c:when test='ViewData.ModelMetadata.IsNullableValueType'>
-            <a:select class='form-control' attributes='this.htmlAttributes'>
+            <a:select class='form-control{@class}'>
+               <c:call-template name='write-attributes-except-class'/>
                <a:option value='""' selected='{!modelValue.HasValue}'/>
                <a:option value='"true"' selected='{modelValue.HasValue &amp;&amp; modelValue.Value}'>Yes</a:option>
                <a:option value='"false"' selected='{modelValue.HasValue &amp;&amp; !modelValue.Value}'>No</a:option>
@@ -25,11 +30,21 @@
          <c:otherwise>
             <div class='form-check'>
                <label class='form-check-label'>
-                  <a:checkbox checked='{modelValue.GetValueOrDefault()}' class='form-check-input' attributes='this.htmlAttributes'/>
+                  <a:checkbox class='form-check-input{@class}' checked='{modelValue.GetValueOrDefault()}'>
+                     <c:call-template name='write-attributes-except-class'/>
+                  </a:checkbox>
                </label>
             </div>
          </c:otherwise>
       </c:choose>
+   </c:template>
+
+   <c:template name='write-attributes-except-class'>
+      <c:if test='htmlAttributes != null'>
+         <c:for-each name='pair' in='htmlAttributes.Where(p => p.Key != "class")'>
+            <c:attribute name='{pair.Key}' value='pair.Value'/>
+         </c:for-each>
+      </c:if>
    </c:template>
 
 </c:package>

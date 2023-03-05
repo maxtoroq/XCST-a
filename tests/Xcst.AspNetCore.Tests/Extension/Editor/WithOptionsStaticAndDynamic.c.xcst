@@ -14,8 +14,8 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <a:model as='ColorModel'>
          <a:editor for='color'>
-            <a:with-options options='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue" } }'>
-               <a:option value='""'>--Select a color --</a:option>
+            <a:with-options options='new SelectListItem[] { new() { Text = "red" }, new() { Text = "blue" } }'>
+               <a:option value='""'>-- Select a color --</a:option>
             </a:with-options>
          </a:editor>
       </a:model>
@@ -23,7 +23,7 @@
 
    <c:template name='expected'>
       <select name="color" id="color">
-         <option value="">--Select a color --</option>
+         <option value="">-- Select a color --</option>
          <option>red</option>
          <option>blue</option>
       </select>

@@ -112,4 +112,29 @@ public class HtmlAttributeDictionary : Dictionary<string, object> {
          HtmlAttributeHelper.WriteAttribute(item.Key, item.Value, output);
       }
    }
+
+   internal void
+   WriteTo(XcstWriter output, bool excludeClass) {
+
+      foreach (var item in this) {
+
+         if (excludeClass
+            && item.Key == "class") {
+
+            continue;
+         }
+
+         HtmlAttributeHelper.WriteAttribute(item.Key, item.Value, output);
+      }
+   }
+
+   internal string?
+   GetClassOrNull() {
+
+      if (TryGetValue("class", out var value)) {
+         return value.ToString();
+      }
+
+      return null;
+   }
 }

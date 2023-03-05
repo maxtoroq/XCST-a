@@ -15,12 +15,10 @@
             <a:checkbox for='p' class='a'/>
             <a:checkbox name='p' class='b'/>
             <a:checkbox name='p' checked='false' class='c'/>
-            <a:checkbox name='p' checked='false' attributes='new { @checked = "checked" }' class='d'/>
          </a:model>
          <a:model value='true' field-prefix='p'>
             <a:checkbox class='e'/>
             <a:checkbox checked='false' class='f'/>
-            <a:checkbox checked='false' attributes='new { @checked = "checked" }' class='g'/>
          </a:model>
          <a:model value='new Foo { p = true }' field-prefix='x'>
             <a:checkbox for='p' class='h'/>
@@ -42,16 +40,10 @@
          <input type='checkbox' id='p' name='p' value='true' class='c'/>
          <input type='hidden' name='p' value='false'/>
 
-         <input type='checkbox' id='p' name='p' value='true' class='d'/>
-         <input type='hidden' name='p' value='false'/>
-
          <input type='checkbox' id='p' name='p' value='true' checked='checked' class='e'/>
          <input type='hidden' name='p' value='false'/>
 
          <input type='checkbox' id='p' name='p' value='true' class='f'/>
-         <input type='hidden' name='p' value='false'/>
-
-         <input type='checkbox' id='p' name='p' value='true' class='g'/>
          <input type='hidden' name='p' value='false'/>
 
          <input type='checkbox' id='x_p' name='x.p' value='true' checked='checked' class='h'/>

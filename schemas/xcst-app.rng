@@ -38,6 +38,7 @@
             <ref name="input"/>
             <ref name="label"/>
             <ref name="model"/>
+            <ref name="option"/>
             <ref name="radio"/>
             <ref name="select"/>
             <ref name="textarea"/>
@@ -201,7 +202,7 @@
       <define name="antiforgery">
          <element name="antiforgery">
             <ann:documentation>Creates an &lt;input> element of type 'hidden' containing the antiforgery token.</ann:documentation>
-            <empty/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 
@@ -209,48 +210,46 @@
          <element name="select">
             <ann:documentation>Creates a &lt;select> element.</ann:documentation>
             <ref name="_input-for-name-value-attribs"/>
-            <ref name="_options"/>
-            <optional>
-               <attribute name="multiple">
-                  <ref name="boolean"/>
-               </attribute>
-            </optional>
+            <zeroOrMore>
+               <choice>
+                  <attribute name="options">
+                     <ref name="options-expr"/>
+                  </attribute>
+                  <attribute name="multiple">
+                     <ref name="boolean"/>
+                  </attribute>
+               </choice>
+            </zeroOrMore>
             <ref name="_input-attribs"/>
             <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 
-      <define name="_options">
-         <optional>
-            <attribute name="options">
-               <ref name="options-expr"/>
-            </attribute>
-         </optional>
-         <zeroOrMore>
-            <element name="option">
-               <ann:documentation>Creates an &lt;option> element.</ann:documentation>
-               <zeroOrMore>
-                  <choice>
-                     <attribute name="value">
-                        <ref name="expression"/>
-                     </attribute>
-                     <attribute name="selected">
-                        <choice>
-                           <ref name="boolean"/>
-                           <ref name="avt-expr"/>
-                        </choice>
-                     </attribute>
-                     <attribute name="disabled">
-                        <choice>
-                           <ref name="boolean"/>
-                           <ref name="avt-expr"/>
-                        </choice>
-                     </attribute>
-                  </choice>
-               </zeroOrMore>
-               <ref name="sequence-constructor"/>
-            </element>
-         </zeroOrMore>
+      <define name="option">
+         <element name="option">
+            <ann:documentation>Creates an &lt;option> element.</ann:documentation>
+            <zeroOrMore>
+               <choice>
+                  <attribute name="value">
+                     <ref name="expression"/>
+                  </attribute>
+                  <attribute name="selected">
+                     <choice>
+                        <ref name="boolean"/>
+                        <ref name="avt-expr"/>
+                     </choice>
+                  </attribute>
+                  <attribute name="disabled">
+                     <choice>
+                        <ref name="boolean"/>
+                        <ref name="avt-expr"/>
+                     </choice>
+                  </attribute>
+               </choice>
+            </zeroOrMore>
+            <ref name="sequence-constructor"/>
+         </element>
       </define>
 
       <define name="_input-for-name-value-attribs">
@@ -334,7 +333,7 @@
 
       <define name="validation-summary">
          <element name="validation-summary">
-            <ann:documentation>Creates an unordered list (&lt;ul> element) of validation messages.</ann:documentation>
+            <ann:documentation>Creates a &lt;div> element that includes an unordered list (&lt;ul> element) of validation messages.</ann:documentation>
             <zeroOrMore>
                <choice>
                   <attribute name="include-member-errors">
@@ -343,12 +342,10 @@
                         <ref name="avt-expr"/>
                      </choice>
                   </attribute>
-                  <attribute name="message">
-                     <ref name="avt"/>
-                  </attribute>
                </choice>
             </zeroOrMore>
             <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
          </element>
       </define>
 
@@ -375,9 +372,6 @@
             <choice>
                <attribute name="class">
                   <ref name="avt"/>
-               </attribute>
-               <attribute name="attributes">
-                  <ref name="expr-obj-dict"/>
                </attribute>
             </choice>
          </zeroOrMore>
@@ -487,7 +481,14 @@
                   </attribute>
                </optional>
             </choice>
-            <ref name="_options"/>
+            <optional>
+               <attribute name="options">
+                  <ref name="options-expr"/>
+               </attribute>
+            </optional>
+            <zeroOrMore>
+               <ref name="option"/>
+            </zeroOrMore>
          </element>
       </define>
 

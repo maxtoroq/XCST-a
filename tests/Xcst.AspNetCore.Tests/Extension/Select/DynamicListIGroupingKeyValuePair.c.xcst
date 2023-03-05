@@ -15,7 +15,6 @@
 
    <c:template name='expected'>
       <select name="number" id="number">
-         <option value=""/>
          <optgroup label="Odd">
             <option value="1">One</option>
             <option value="3">Three</option>

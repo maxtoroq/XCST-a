@@ -13,7 +13,6 @@
 
    <c:template name='expected'>
       <select name="number" id="number">
-         <option value=""/>
          <optgroup label="Odd">
             <option>1</option>
             <option>3</option>

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ namespace Xcst.Web.Runtime;
 /// <exclude/>
 public static class AntiforgeryInstructions {
 
-   public static void
+   public static IDisposable
    HiddenToken(HttpContext httpContext, XcstWriter output) {
 
       var antiforgery = httpContext.RequestServices.GetRequiredService<IAntiforgery>();
@@ -31,6 +32,7 @@ public static class AntiforgeryInstructions {
       output.WriteAttributeString("type", "hidden");
       output.WriteAttributeString("name", tokenSet.FormFieldName);
       output.WriteAttributeString("value", tokenSet.RequestToken);
-      output.WriteEndElement();
+
+      return new ElementEndingDisposable(output);
    }
 }

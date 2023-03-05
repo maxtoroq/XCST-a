@@ -12,7 +12,6 @@
 
    <c:template name='expected'>
       <select name="color" id="color">
-         <option value=""/>
          <option value="red">Red</option>
          <option value="blue">Blue</option>
       </select>

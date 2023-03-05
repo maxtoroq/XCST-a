@@ -7,14 +7,15 @@
    <c:import-namespace ns='Xcst.Web.Mvc'/>
 
    <c:template name='c:initial-template'>
-      <a:select name='color' options='new[] { new SelectListItem { Text = "red" }, new SelectListItem { Text = "blue" } }'>
-         <a:option value='""'>--Select a color --</a:option>
+      <a:select name='color'
+            options='new SelectListItem[] { new() { Text = "red" }, new() { Text = "blue" } }'>
+         <a:option value='""'>-- Select a color --</a:option>
       </a:select>
    </c:template>
 
    <c:template name='expected'>
       <select name="color" id="color">
-         <option value="">--Select a color --</option>
+         <option value="">-- Select a color --</option>
          <option>red</option>
          <option>blue</option>
       </select>

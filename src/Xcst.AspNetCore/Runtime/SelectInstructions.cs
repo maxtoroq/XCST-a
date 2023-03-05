@@ -27,57 +27,105 @@ using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Runtime;
 
-using HtmlAttribs = IDictionary<string, object>;
-
 /// <exclude/>
 public static class SelectInstructions {
 
-   // Select
-
-   public static void
-   Select(HtmlHelper htmlHelper, XcstWriter output, string name, IEnumerable<SelectListItem>? selectList = null,
-         bool multiple = false, HtmlAttribs? htmlAttributes = null) =>
-      SelectHelper(htmlHelper, output, default(ModelExplorer), name, selectList, default(string), multiple, htmlAttributes);
+   public static SelectDisposable
+   Select(HtmlHelper htmlHelper, XcstWriter output, string name, object? value = null, IEnumerable<SelectListItem>? selectList = null,
+         bool multiple = false, string? @class = null) =>
+      SelectHelper(htmlHelper, output, default(ModelExplorer), name, value, selectList, default(string), multiple, @class);
 
    [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users cannot use anonymous methods with the LambdaExpression type")]
    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
-   public static void
+   public static SelectDisposable
    SelectFor<TModel, TProperty>(HtmlHelper<TModel> htmlHelper, XcstWriter output, Expression<Func<TModel, TProperty>> expression, IEnumerable<SelectListItem>? selectList = null,
-         bool multiple = false, HtmlAttribs? htmlAttributes = null) {
+         bool multiple = false, string? @class = null) {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      SelectHelper(htmlHelper, output, modelExplorer, expressionString, selectList, default(string), multiple, htmlAttributes);
+      return SelectHelper(htmlHelper, output, modelExplorer, expressionString, null, selectList, default(string), multiple, @class);
    }
 
-   public static void
-   SelectForModel(HtmlHelper htmlHelper, XcstWriter output, IEnumerable<SelectListItem>? selectList = null,
-         bool multiple = false, HtmlAttribs? htmlAttributes = null) =>
+   public static SelectDisposable
+   SelectForModel(HtmlHelper htmlHelper, XcstWriter output, object? value = null, IEnumerable<SelectListItem>? selectList = null,
+         bool multiple = false, string? @class = null) =>
 
-      SelectHelper(htmlHelper, output, htmlHelper.ViewData.ModelExplorer, String.Empty, selectList, default(string), multiple, htmlAttributes);
+      SelectHelper(htmlHelper, output, htmlHelper.ViewData.ModelExplorer, String.Empty, value, selectList, default(string), multiple, @class);
 
-   internal static void
-   SelectHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string expression, IEnumerable<SelectListItem>? selectList,
-         string? optionLabel, bool multiple, HtmlAttribs? htmlAttributes) {
+   internal static SelectDisposable
+   SelectHelper(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string name, object? value, IEnumerable<SelectListItem>? selectList,
+         string? optionLabel, bool multiple, string? @class) {
 
-      if (!multiple
-         && optionLabel is null
-         && selectList != null) {
+      var viewData = htmlHelper.ViewData;
+      var fullName = viewData.TemplateInfo.GetFullHtmlFieldName(name);
 
-         var optionList = selectList as OptionList;
+      if (String.IsNullOrEmpty(fullName)) {
+         throw new ArgumentNullException(nameof(name));
+      }
 
-         if (optionList?.AddBlankOption == true) {
-            optionLabel = String.Empty;
+      var usedViewData = false;
+
+      // If we got a null selectList, try to use ViewData to get the list of items.
+
+      if (selectList is null) {
+         //selectList = GetSelectData(htmlHelper, name);
+         //usedViewData = true;
+      }
+
+      var defaultValue = (multiple) ?
+         htmlHelper.GetModelStateValue(fullName, typeof(string[]))
+         : htmlHelper.GetModelStateValue(fullName, typeof(string));
+
+      // If we haven't already used ViewData to get the entire list of items then we need to
+      // use the ViewData-supplied value before using the parameter-supplied value.
+
+      if (defaultValue is null) {
+
+         if (modelExplorer != null) {
+            defaultValue = modelExplorer.Model;
+
+         } else if (value != null) {
+            defaultValue = value;
+
+         } else {
+
+            if (!usedViewData
+               && !String.IsNullOrEmpty(name)) {
+
+               defaultValue = viewData.Eval(name);
+            }
          }
       }
 
-      SelectInternal(htmlHelper, output, modelExplorer, optionLabel, expression, selectList, multiple, htmlAttributes);
-   }
+      var selectedValues = GetSelectedValues(defaultValue, multiple);
 
-   // Helper methods
+      output.WriteStartElement("select");
+      HtmlAttributeHelper.WriteId(fullName, output);
+      output.WriteAttributeString("name", fullName);
+      HtmlAttributeHelper.WriteBoolean("multiple", multiple, output);
+
+      var cssClass = (viewData.ModelState.TryGetValue(fullName, out var modelState)
+         && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
+
+      var validationAttribs = htmlHelper
+         .GetUnobtrusiveValidationAttributes(name, modelExplorer, excludeMinMaxLength: !multiple);
+
+      HtmlAttributeHelper.WriteCssClass(@class, cssClass, output);
+      HtmlAttributeHelper.WriteAttributes(validationAttribs, output);
+
+      bool isSelected(string value, bool selectedDefault) =>
+         (selectedValues.Count > 0) ?
+            selectedValues.Contains(value)
+            : selectedDefault;
+
+      void writeList(XcstWriter output) =>
+         WriteOptions(optionLabel, selectList, isSelected, output);
+
+      return new SelectDisposable(output, writeList, isSelected);
+   }
 
    static IEnumerable<SelectListItem>
    GetSelectData(HtmlHelper htmlHelper, string name) {
@@ -91,8 +139,12 @@ public static class SelectInstructions {
       return selectList;
    }
 
-   static IEnumerable<SelectListItem>
-   GetSelectListWithDefaultValue(IEnumerable<SelectListItem> selectList, object defaultValue, bool allowMultiple) {
+   static HashSet<string>
+   GetSelectedValues(object? defaultValue, bool allowMultiple) {
+
+      if (defaultValue is null) {
+         return new HashSet<string>(0);
+      }
 
       IEnumerable defaultValues;
 
@@ -111,112 +163,56 @@ public static class SelectInstructions {
       }
 
       var values = from object value in defaultValues
-                   select Convert.ToString(value, CultureInfo.CurrentCulture);
+                   select ValueString(value);
 
       // ToString() by default returns an enum value's name.  But selectList may use numeric values.
 
-      var enumValues = from Enum value in defaultValues.OfType<Enum>()
+      var enumValues = from value in defaultValues.OfType<Enum>()
                        select value.ToString("d");
 
       values = values.Concat(enumValues);
 
-      var selectedValues = new HashSet<string>(values, StringComparer.OrdinalIgnoreCase);
-      var newSelectList = new List<SelectListItem>();
+      return new HashSet<string>(values, StringComparer.OrdinalIgnoreCase);
+   }
 
-      foreach (var item in selectList) {
+   static string
+   ValueString(object? value) =>
+      Convert.ToString(value, CultureInfo.CurrentCulture)
+         ?? String.Empty;
 
-         item.Selected = (item.Value != null) ?
-            selectedValues.Contains(item.Value)
-            : selectedValues.Contains(item.Text);
+   public static void
+   OptionHelper(HtmlHelper htmlHelper, XcstWriter output, SelectDisposable? disp,
+         object? value = null, bool selected = false, bool disabled = false, string text = "") {
 
-         newSelectList.Add(item);
+      var valueStr = ValueString(value);
+      var valueOrText = (value != null) ? valueStr : text;
+
+      output.WriteStartElement("option");
+
+      if (value != null) {
+         output.WriteAttributeString("value", valueStr);
       }
 
-      return newSelectList;
+      HtmlAttributeHelper.WriteBoolean("selected", disp?.IsSelected(valueOrText, selected) ?? selected, output);
+      HtmlAttributeHelper.WriteBoolean("disabled", disabled, output);
+      output.WriteString(text);
+      output.WriteEndElement();
    }
 
    static void
-   SelectInternal(HtmlHelper htmlHelper, XcstWriter output, ModelExplorer? modelExplorer, string? optionLabel, string name, IEnumerable<SelectListItem>? selectList,
-         bool allowMultiple, HtmlAttribs? htmlAttributes) {
-
-      var viewData = htmlHelper.ViewData;
-      var fullName = viewData.TemplateInfo.GetFullHtmlFieldName(name);
-
-      if (String.IsNullOrEmpty(fullName)) {
-         throw new ArgumentNullException(nameof(name));
-      }
-
-      var usedViewData = false;
-
-      // If we got a null selectList, try to use ViewData to get the list of items.
-
-      if (selectList is null) {
-         selectList = GetSelectData(htmlHelper, name);
-         usedViewData = true;
-      }
-
-      var defaultValue = (allowMultiple) ?
-         htmlHelper.GetModelStateValue(fullName, typeof(string[]))
-         : htmlHelper.GetModelStateValue(fullName, typeof(string));
-
-      // If we haven't already used ViewData to get the entire list of items then we need to
-      // use the ViewData-supplied value before using the parameter-supplied value.
-
-      if (defaultValue is null) {
-
-         if (modelExplorer is null) {
-
-            if (!usedViewData
-               && !String.IsNullOrEmpty(name)) {
-
-               defaultValue = viewData.Eval(name);
-            }
-
-         } else {
-            defaultValue = modelExplorer.Model;
-         }
-      }
-
-      if (defaultValue != null) {
-         selectList = GetSelectListWithDefaultValue(selectList, defaultValue, allowMultiple);
-      }
-
-      output.WriteStartElement("select");
-      HtmlAttributeHelper.WriteId(fullName, output);
-      output.WriteAttributeString("name", fullName);
-      HtmlAttributeHelper.WriteBoolean("multiple", allowMultiple, output);
-
-      // If there are any errors for a named field, we add the css attribute.
-
-      var cssClass = (viewData.ModelState.TryGetValue(fullName, out var modelState)
-         && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
-
-      var validationAttribs = htmlHelper
-         .GetUnobtrusiveValidationAttributes(name, modelExplorer, excludeMinMaxLength: !allowMultiple);
-
-      HtmlAttributeHelper.WriteClass(cssClass, htmlAttributes, output);
-      HtmlAttributeHelper.WriteAttributes(validationAttribs, output);
-
-      // name cannnot be overridden, and class was already written
-
-      HtmlAttributeHelper.WriteAttributes(htmlAttributes, output, excludeFn: n => n is "name" or "class");
-
-      WriteOptions(optionLabel, selectList, output);
-
-      output.WriteEndElement(); // </select>
-   }
-
-   static void
-   WriteOptions(string? optionLabel, IEnumerable<SelectListItem> selectList, XcstWriter output) {
+   WriteOptions(string? optionLabel, IEnumerable<SelectListItem>? selectList, Func<string, bool, bool> isSelectedFn, XcstWriter output) {
 
       // Make optionLabel the first item that gets rendered.
 
       if (optionLabel != null) {
          WriteOption(new SelectListItem {
             Text = optionLabel,
-            Value = String.Empty,
-            Selected = false
-         }, output);
+            Value = String.Empty
+         }, null, output);
+      }
+
+      if (selectList is null) {
+         return;
       }
 
       // Group items in the SelectList if requested.
@@ -242,7 +238,11 @@ public static class SelectInstructions {
          }
 
          foreach (var item in group) {
-            WriteOption(item, output);
+
+            var value = item.Value ?? item.Text ?? String.Empty;
+            var selected = isSelectedFn.Invoke(value, item.Selected);
+
+            WriteOption(item, selected, output);
          }
 
          if (optGroup != null) {
@@ -252,7 +252,7 @@ public static class SelectInstructions {
    }
 
    internal static void
-   WriteOption(SelectListItem item, XcstWriter output) {
+   WriteOption(SelectListItem item, bool? selected, XcstWriter output) {
 
       output.WriteStartElement("option");
 
@@ -260,10 +260,73 @@ public static class SelectInstructions {
          output.WriteAttributeString("value", item.Value);
       }
 
-      HtmlAttributeHelper.WriteBoolean("selected", item.Selected, output);
+      HtmlAttributeHelper.WriteBoolean("selected", selected ?? item.Selected, output);
       HtmlAttributeHelper.WriteBoolean("disabled", item.Disabled, output);
 
       output.WriteString(item.Text);
       output.WriteEndElement();
+   }
+}
+
+public class SelectDisposable : ElementEndingDisposable {
+
+   readonly XcstWriter
+   _output;
+
+   readonly Action<XcstWriter>
+   _listBuilder;
+
+   readonly Func<string, bool, bool>
+   _isSelectedFn;
+
+   bool
+   _eoc;
+
+   bool
+   _disposed;
+
+   internal
+   SelectDisposable(XcstWriter output, Action<XcstWriter> listBuilder, Func<string, bool, bool> isSelectedFn)
+      : base(output) {
+
+      _output = output;
+      _listBuilder = listBuilder;
+      _isSelectedFn = isSelectedFn;
+   }
+
+   public bool
+   IsSelected(string value, bool selectedDefault) =>
+      _isSelectedFn.Invoke(value, selectedDefault);
+
+   public void
+   EndOfConstructor() {
+      _eoc = true;
+   }
+
+   public SelectDisposable
+   NoConstructor() {
+      _eoc = this.ElementStarted;
+      return this;
+   }
+
+   protected override void
+   Dispose(bool disposing) {
+
+      if (_disposed) {
+         return;
+      }
+
+      // don't write list when end of constructor is not reached
+      // e.g. an exception occurred, c:return, etc.
+
+      if (disposing
+         && _eoc) {
+
+         _listBuilder?.Invoke(_output);
+      }
+
+      base.Dispose(disposing);
+
+      _disposed = true;
    }
 }
