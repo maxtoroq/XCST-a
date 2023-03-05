@@ -277,8 +277,20 @@
                   <if test='useFor || forModel'>For</if>
                   <if test='forModel'>Model</if>
                </attribute>
-               <call-template name='html-helper-ref'/>
+               <choose>
+                  <when test='V2_OR_GREATER'>
+                     <call-template name='html-helper-ref'/>
+                  </when>
+                  <otherwise>
+                     <call-template name='helper-type'>
+                        <with-param name='name'>InputInstructions</with-param>
+                     </call-template>
+                  </otherwise>
+               </choose>
                <code:arguments>
+                  <if test='V1'>
+                     <call-template name='html-helper-ref'/>
+                  </if>
                   <choose>
                      <when test='useFor'>
                         <variable name='param' value='aux_variable(fn_generate_id(el))'/>
