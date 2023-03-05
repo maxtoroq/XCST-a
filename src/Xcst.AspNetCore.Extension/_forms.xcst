@@ -1311,7 +1311,8 @@
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='html_attributes
-            .Concat(new[] { "for", "name", "text" }.Where(p => p != "text" || V1))
+            .Concat(new[] { "for", "name", "text" }
+            .Where(p => p != "text" || V1))
             .ToArray()'/>
       </call-template>
 
@@ -1559,7 +1560,8 @@
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='html_attributes
-            .Concat(new[] { "for", "name", "message" }.Where(p => p != "message" || V1))
+            .Concat(new[] { "for", "name", "message" }
+            .Where(p => p != "message" || V1))
             .ToArray()'/>
       </call-template>
 
