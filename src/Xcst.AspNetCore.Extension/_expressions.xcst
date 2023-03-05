@@ -17,8 +17,7 @@
 <module version='1.0' language='C#'
    xmlns='http://maxtoroq.github.io/XCST'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
-   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
-   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
@@ -72,7 +71,7 @@
       </choose>
    </template>
 
-   <template name='src:input-type'>
+   <template name='app-input-type'>
       <param name='val' as='string?' required='yes'/>
       <param name='avt' as='XAttribute?'/>
 

@@ -18,8 +18,7 @@
    xmlns='http://maxtoroq.github.io/XCST'
    xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
-   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
-   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
@@ -40,16 +39,16 @@
 
    <template match='XElement el &amp;&amp; el.Name == a + "display-name"' mode='src:expression'>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='new[] { "for", "name" }'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
       </call-template>
 
-      <call-template name='app:no-children'>
+      <call-template name='no-children'>
          <with-param name='el' value='el'/>
       </call-template>
 
@@ -63,14 +62,14 @@
             <if test='forAttr != null || forModel'>For</if>
             <if test='forModel'>Model</if>
          </attribute>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>MetadataInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -104,16 +103,16 @@
       <param name='statement' value='false' as='bool'/>
       <param name='output' as='XElement?' tunnel='yes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='new[] { "for", "name" }'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
       </call-template>
 
-      <call-template name='app:no-children'>
+      <call-template name='no-children'>
          <with-param name='el' value='el'/>
       </call-template>
 
@@ -136,17 +135,17 @@
             </choose>
             <if test='forAttr != null'>For</if>
          </attribute>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>MetadataInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <if test='statement'>
                <copy-of value='select(output, src + "reference", code)'/>
             </if>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>

@@ -15,15 +15,12 @@
  limitations under the License.
 -->
 <module version='1.0' language='C#'
-   xmlns='http://maxtoroq.github.io/XCST'
-   xmlns:code='https://maxtoroq.github.io/XCST/code'
-   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
-   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+   xmlns='http://maxtoroq.github.io/XCST'>
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
 
-   <template name='app:validate-attribs'>
+   <template name='validate-attribs'>
       <param name='el' as='XElement' required='yes'/>
       <param name='required' value='System.Array.Empty&lt;string>()' as='string[]'/>
       <param name='optional' value='System.Array.Empty&lt;string>()' as='string[]'/>
@@ -51,17 +48,17 @@
       </if>
    </template>
 
-   <template name='app:no-children'>
+   <template name='no-children'>
       <param name='el' as='XElement' required='yes'/>
 
-      <if test='!app_element_is_empty(el)'>
+      <if test='!element_is_empty(el)'>
          <message terminate='yes' error-code='XTSE0260' error-data='src_error_object(el)' transform-text='trim'>
             Element must be empty.
          </message>
       </if>
    </template>
 
-   <function name='app_element_is_empty' as='bool'>
+   <function name='element_is_empty' as='bool'>
       <param name='el' as='XElement'/>
 
       <return value='fn_empty(el.Elements())
@@ -166,7 +163,7 @@
       <return value='str'/>
    </function>
 
-   <function name='xcst_input_type' as='string?'>
+   <function name='xcsta_input_type' as='string?'>
       <param name='node' as='XObject'/>
       <param name='avt' as='bool'/>
 

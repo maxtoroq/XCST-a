@@ -18,8 +18,7 @@
    xmlns='http://maxtoroq.github.io/XCST'
    xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
-   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
-   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
@@ -27,7 +26,7 @@
    <template match='XElement el &amp;&amp; el.Name == a + "form"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='required' value='new[] { "method" }'/>
          <with-param name='optional' value='
@@ -51,7 +50,7 @@
       <variable name='docOutput' value='src_doc_output(el, output)'/>
       <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
@@ -96,7 +95,7 @@
 
             <if test='V1'>
                <variable name='attributesArg' as='object?'>
-                  <call-template name='app:html-attributes-param'>
+                  <call-template name='html-attributes-param'>
                      <with-param name='el' value='el'/>
                      <with-param name='omitParam' value='true'/>
                   </call-template>
@@ -113,7 +112,7 @@
                </if>
             </if>
 
-            <call-template name='app:model-seqctor'>
+            <call-template name='model-seqctor'>
                <with-param name='el' value='el'/>
                <with-param name='valueAttr' value='valueAttr'/>
                <with-param name='typeAttr' value='typeAttr'/>
@@ -165,12 +164,12 @@
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "form"' mode='xcst:extension-instruction'>
-      <call-template name='app:element-instruction'/>
+      <call-template name='element-instruction'/>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "model"' mode='src:statement'>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='new[] { "value", "as", "field-prefix", "helper-name" }'/>
       </call-template>
@@ -185,7 +184,7 @@
       </if>
 
       <code:block>
-         <call-template name='app:model-seqctor'>
+         <call-template name='model-seqctor'>
             <with-param name='el' value='el'/>
             <with-param name='valueAttr' value='valueAttr'/>
             <with-param name='typeAttr' value='typeAttr'/>
@@ -193,7 +192,7 @@
       </code:block>
    </template>
 
-   <template name='app:model-seqctor'>
+   <template name='model-seqctor'>
       <param name='el' as='XElement' required='yes'/>
       <param name='valueAttr' as='XAttribute?' required='yes'/>
       <param name='typeAttr' as='XAttribute?' required='yes'/>
@@ -201,7 +200,7 @@
       <variable name='newHelper'>
          <code:variable-reference name='{(el.Attribute("helper-name") is XAttribute helperNameAttr ?
             xcst_name(helperNameAttr)
-            : src_aux_variable("html") + "_" + fn_generate_id(el))}'/>
+            : aux_variable("html") + "_" + fn_generate_id(el))}'/>
       </variable>
 
       <variable name='type' as='XElement?'>
@@ -214,7 +213,7 @@
       <code:variable name='{newHelper.Attribute("name")!.Value}'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <code:method-call name='ForModel'>
-            <call-template name='app:helper-type'>
+            <call-template name='helper-type'>
                <with-param name='name'>HtmlHelperFactory</with-param>
             </call-template>
             <if test='typeAttr != null'>
@@ -223,7 +222,7 @@
                </code:type-arguments>
             </if>
             <code:arguments>
-               <call-template name='app:html-helper'/>
+               <call-template name='html-helper-ref'/>
                <choose>
                   <when test='valueAttr != null'>
                      <code:expression value='{xcst_expression(valueAttr)}'/>

@@ -18,8 +18,7 @@
    xmlns='http://maxtoroq.github.io/XCST'
    xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
-   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
-   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
@@ -29,7 +28,7 @@
 
       <variable name='editor' value='el.Name.LocalName == "editor"'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='
             new[] { "for", "name", "template", "field-name", "members", "members-names", "attributes", "with-params", "options" }
@@ -37,7 +36,7 @@
                .ToArray()'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
       </call-template>
 
@@ -58,7 +57,7 @@
       <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <variable name='htmlHelper'>
-         <call-template name='app:html-helper'/>
+         <call-template name='html-helper-ref'/>
       </variable>
 
       <code:method-call>
@@ -71,7 +70,7 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name' expand-text='yes'>{(editor ? "Editor" : "Display")}Instructions</with-param>
          </call-template>
          <code:arguments>
@@ -80,7 +79,7 @@
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -151,7 +150,7 @@
                   </code:method-call>
                </code:argument>
             </if>
-            <call-template name='app:editor-additional-view-data'>
+            <call-template name='editor-additional-view-data'>
                <with-param name='el' value='el'/>
                <with-param name='boolAttribs' value='(editor) ?
                   attributes(el).Where(p => p.Name.Namespace == XNamespace.None
@@ -163,7 +162,7 @@
       </code:method-call>
    </template>
 
-   <template name='app:editor-additional-view-data'>
+   <template name='editor-additional-view-data'>
       <param name='el' as='XElement' required='yes'/>
       <param name='boolAttribs' value='System.Array.Empty&lt;XAttribute>()' as='XAttribute[]'/>
 
@@ -172,7 +171,7 @@
             <when test='boolAttribs.Length > 0'>
                <code:collection-initializer>
                   <code:string literal='true'>htmlAttributes</code:string>
-                  <call-template name='app:html-attributes-param'>
+                  <call-template name='html-attributes-param'>
                      <with-param name='el' value='el'/>
                      <with-param name='attributesAttr' value='el.Attribute("attributes")'/>
                      <with-param name='classAttr' value='null'/>
@@ -182,14 +181,14 @@
                </code:collection-initializer>
             </when>
             <when test='el.Attribute("attributes") is XAttribute attributesAttr'>
-               <apply-templates value='attributesAttr' mode='app:editor-additional-view-data'/>
+               <apply-templates value='attributesAttr' mode='editor-additional-view-data'/>
             </when>
          </choose>
-         <apply-templates value='select(el, a + "with-options")' mode='app:editor-additional-view-data'/>
+         <apply-templates value='select(el, a + "with-options")' mode='editor-additional-view-data'/>
          <if test='el.Attribute("options") != null'>
-            <apply-templates value='el' mode='app:editor-additional-view-data'/>
+            <apply-templates value='el' mode='editor-additional-view-data'/>
          </if>
-         <apply-templates value='select(el, a + "member-template")' mode='app:editor-additional-view-data'/>
+         <apply-templates value='select(el, a + "member-template")' mode='editor-additional-view-data'/>
       </variable>
 
       <variable name='withParamsExpr' value='
@@ -236,23 +235,23 @@
       </if>
    </template>
 
-   <template match='XAttribute attr &amp;&amp; attr.Name == "attributes"' mode='app:editor-additional-view-data'>
+   <template match='XAttribute attr &amp;&amp; attr.Name == "attributes"' mode='editor-additional-view-data'>
       <code:collection-initializer>
          <code:string literal='true'>htmlAttributes</code:string>
          <code:expression value='{xcst_expression(attr)}'/>
       </code:collection-initializer>
    </template>
 
-   <template match='XElement el &amp;&amp; (el.Name == a + "with-options" || el.Attribute("options") != null)' mode='app:editor-additional-view-data'>
+   <template match='XElement el &amp;&amp; (el.Name == a + "with-options" || el.Attribute("options") != null)' mode='editor-additional-view-data'>
 
       <variable name='withOptions' value='el.Name == a + "with-options"'/>
 
       <if test='withOptions'>
-         <call-template name='app:validate-attribs'>
+         <call-template name='validate-attribs'>
             <with-param name='el' value='el'/>
             <with-param name='optional' value='new[] { "for", "name", "options" }'/>
          </call-template>
-         <call-template name='app:validate-for'>
+         <call-template name='validate-for'>
             <with-param name='el' value='el'/>
          </call-template>
       </if>
@@ -278,11 +277,11 @@
                   <if test='useFor || forModel'>For</if>
                   <if test='forModel'>Model</if>
                </attribute>
-               <call-template name='app:html-helper'/>
+               <call-template name='html-helper-ref'/>
                <code:arguments>
                   <choose>
                      <when test='useFor'>
-                        <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                        <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                         <code:lambda>
                            <code:parameters>
                               <code:parameter name='{param}'/>
@@ -337,9 +336,9 @@
       </code:collection-initializer>
    </template>
 
-   <template match='XElement el &amp;&amp; el.Name == a + "member-template"' mode='app:editor-additional-view-data'>
+   <template match='XElement el &amp;&amp; el.Name == a + "member-template"' mode='editor-additional-view-data'>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='new[] { "helper-name" }'/>
       </call-template>
@@ -353,7 +352,7 @@
       <variable name='newHelper'>
          <code:variable-reference name='{(el.Attribute("helper-name") is XAttribute helperNameAttr ?
             xcst_name(helperNameAttr)
-            : src_aux_variable("html") + "_" + fn_generate_id(el))}'/>
+            : aux_variable("html") + "_" + fn_generate_id(el))}'/>
       </variable>
 
       <code:collection-initializer>

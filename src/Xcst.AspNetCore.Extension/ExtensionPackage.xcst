@@ -16,10 +16,8 @@
 -->
 <module version='1.0' language='C#'
    xmlns='http://maxtoroq.github.io/XCST'
-   xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
-   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
-   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+   xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'>
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
@@ -57,13 +55,13 @@
    <variable name='c' as='XNamespace'>http://maxtoroq.github.io/XCST</variable>
    <variable name='a' as='XNamespace'>http://maxtoroq.github.io/XCST/application</variable>
 
-   <template name='app:helper-type' as='XElement'>
+   <template name='helper-type' as='XElement'>
       <param name='name' as='string' required='yes'/>
 
       <code:type-reference name='{name}' namespace='Xcst.Web.Runtime'/>
    </template>
 
-   <function name='src_aux_variable' as='string'>
+   <function name='aux_variable' as='string'>
       <param name='name' as='string'/>
 
       <return value='"__xcsta_" + name'/>
@@ -75,7 +73,7 @@
       <return value='ErrorData(node)'/>
    </function>
 
-   <template name='app:element-instruction' as='XElement'>
+   <template name='element-instruction' as='XElement'>
       <xcst:instruction>
          <code:type-reference name='XElement' namespace='System.Xml.Linq'/>
       </xcst:instruction>

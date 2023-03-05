@@ -16,10 +16,8 @@
 -->
 <module version='1.0' language='C#'
    xmlns='http://maxtoroq.github.io/XCST'
-   xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
-   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
-   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
@@ -40,7 +38,7 @@
                namespace='{(V2_OR_GREATER ? "Xcst.Web" : "Xcst.Web.Precompilation")}'/>
             <code:arguments>
                <code:string>
-                  <value-of value='app_page_path(relativeUri)'/>
+                  <value-of value='page_path(relativeUri)'/>
                </code:string>
             </code:arguments>
          </code:attribute>
@@ -50,8 +48,8 @@
    <template name='src:base-types'>
       <param name='el' as='XElement' required='yes'/>
 
-      <variable name='inheritsPi' value='app_inherits_directive(el)'/>
-      <variable name='modelPi' value='app_model_directive(el)'/>
+      <variable name='inheritsPi' value='inherits_directive(el)'/>
+      <variable name='modelPi' value='model_directive(el)'/>
 
       <if test='!(inheritsPi is null || modelPi is null)'>
          <message terminate='yes' error-data='src_error_object(el)' transform-text='trim'>
@@ -78,7 +76,7 @@
       <copy-of value='src_base_types?.Skip(1)'/>
    </template>
 
-   <function name='app_inherits_directive' as='XProcessingInstruction?'>
+   <function name='inherits_directive' as='XProcessingInstruction?'>
       <param name='el' as='XElement'/>
 
       <variable name='pInsts' value='el
@@ -99,7 +97,7 @@
       <return value='null'/>
    </function>
 
-   <function name='app_model_directive' as='XProcessingInstruction?'>
+   <function name='model_directive' as='XProcessingInstruction?'>
       <param name='el' as='XElement'/>
 
       <variable name='pInsts' value='el
@@ -133,17 +131,17 @@
       <if test='genLinkTo
             &amp;&amp; AppRelativeUri(el) is string relativeUri'>
          <if test='genLinkTo'>
-            <call-template name='app:link-to'>
+            <call-template name='link-to'>
                <with-param name='relativeUri' value='relativeUri'/>
             </call-template>
          </if>
       </if>
    </template>
 
-   <template name='app:link-to'>
+   <template name='link-to'>
       <param name='relativeUri' as='string' required='yes'/>
 
-      <variable name='pagePath' value='app_page_path(relativeUri)'/>
+      <variable name='pagePath' value='page_path(relativeUri)'/>
       <variable name='pageName' value='pagePath.Split(&apos;/&apos;).Last()'/>
       <variable name='isDefaultPage' value='pageName == "index"'/>
 
@@ -167,7 +165,7 @@
                      <text>LinkTo</text>
                      <if test='isDefaultPage'>Default</if>
                   </attribute>
-                  <call-template name='app:helper-type'>
+                  <call-template name='helper-type'>
                      <with-param name='name'>LinkToHelper</with-param>
                   </call-template>
                   <code:arguments>
@@ -187,7 +185,7 @@
       </code:method>
    </template>
 
-   <function name='app_page_path' as='string'>
+   <function name='page_path' as='string'>
       <param name='relativeUri' as='string'/>
 
       <return value='System.IO.Path.ChangeExtension(relativeUri, null)'/>

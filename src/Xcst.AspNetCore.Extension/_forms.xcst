@@ -18,8 +18,7 @@
    xmlns='http://maxtoroq.github.io/XCST'
    xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
-   xmlns:src='https://maxtoroq.github.io/XCST/compiled'
-   xmlns:app='https://maxtoroq.github.io/XCST/application'>
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
@@ -69,14 +68,14 @@
          input_client_attributes
          : textbox_client_attributes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='
             (hidden) ? input_attributes.Where(p => p != "autofocus").ToArray()
                : textbox_attributes.Concat(new[] { "format", "type" }).ToArray()'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
          <with-param name='attribs' value='attributes(el)
             .Where(p => p.Name == "name" || p.Name == "value")
@@ -84,7 +83,7 @@
       </call-template>
 
       <if test='V1'>
-         <call-template name='app:no-children'>
+         <call-template name='no-children'>
             <with-param name='el' value='el'/>
          </call-template>
       </if>
@@ -94,7 +93,7 @@
       <variable name='docOutput' value='src_doc_output(el, output)'/>
       <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
@@ -106,7 +105,7 @@
 
       <choose>
          <when test='V2_OR_GREATER
-               &amp;&amp; (!app_element_is_empty(el) || !fn_empty(clientAttribs))'>
+               &amp;&amp; (!element_is_empty(el) || !fn_empty(clientAttribs))'>
             <code:using>
                <call-template name='input-or-hidden'>
                   <with-param name='el' value='el'/>
@@ -117,7 +116,7 @@
                      <choose>
                         <when test='textbox_client_bool_attributes.Contains(attr.Name.LocalName)'>
                            <code:method-call name='WriteBoolean'>
-                              <call-template name='app:helper-type'>
+                              <call-template name='helper-type'>
                                  <with-param name='name'>HtmlAttributeHelper</with-param>
                               </call-template>
                               <code:arguments>
@@ -185,15 +184,15 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>InputInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -217,7 +216,7 @@
                   <code:argument name='type'>
                      <code:string literal='true'>hidden</code:string>
                   </code:argument>
-                  <call-template name='app:html-attributes-param'>
+                  <call-template name='html-attributes-param'>
                      <with-param name='el' value='el'/>
                      <with-param name='boolAttribs' value='attributes(el)
                         .Where(p => input_client_bool_attributes.Contains(p.Name.LocalName))
@@ -227,8 +226,8 @@
                <otherwise>
                   <if test='el.Attribute("type") is XAttribute typeAttr'>
                      <code:argument name='type'>
-                        <call-template name='src:input-type'>
-                           <with-param name='val' value='xcst_input_type(typeAttr, true)'/>
+                        <call-template name='app-input-type'>
+                           <with-param name='val' value='xcsta_input_type(typeAttr, true)'/>
                            <with-param name='avt' value='typeAttr'/>
                         </call-template>
                      </code:argument>
@@ -245,7 +244,7 @@
                      </code:argument>
                   </if>
                   <if test='V1'>
-                     <call-template name='app:html-attributes-param'>
+                     <call-template name='html-attributes-param'>
                         <with-param name='el' value='el'/>
                         <with-param name='mergeAttribs' value='attributes(el)
                            .Where(p => p.Name == "placeholder")
@@ -263,7 +262,7 @@
    </template>
 
    <template match='XElement el &amp;&amp; (el.Name == a + "input" || el.Name == a + "hidden")' mode='xcst:extension-instruction'>
-      <call-template name='app:element-instruction'/>
+      <call-template name='element-instruction'/>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "textarea"' mode='src:statement'>
@@ -273,14 +272,14 @@
          .Concat(new[] { "rows", "cols" })
          .ToArray()'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='textbox_attributes
             .Union(clientAttributes)
             .ToArray()'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
          <with-param name='attribs' value='attributes(el)
             .Where(p => p.Name == "name" || p.Name == "value")
@@ -288,7 +287,7 @@
       </call-template>
 
       <if test='V1'>
-         <call-template name='app:no-children'>
+         <call-template name='no-children'>
             <with-param name='el' value='el'/>
          </call-template>
       </if>
@@ -298,7 +297,7 @@
       <variable name='docOutput' value='src_doc_output(el, output)'/>
       <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
@@ -310,8 +309,8 @@
 
       <choose>
          <when test='V2_OR_GREATER
-               &amp;&amp; (!app_element_is_empty(el) || !fn_empty(clientAttribs))'>
-            <variable name='dispVar' value='src_aux_variable("txtarea_" + fn_generate_id(el))'/>
+               &amp;&amp; (!element_is_empty(el) || !fn_empty(clientAttribs))'>
+            <variable name='dispVar' value='aux_variable("txtarea_" + fn_generate_id(el))'/>
             <code:using>
                <code:variable name='{dispVar}'>
                   <call-template name='textarea'>
@@ -324,7 +323,7 @@
                      <choose>
                         <when test='textbox_client_bool_attributes.Contains(attr.Name.LocalName)'>
                            <code:method-call name='WriteBoolean'>
-                              <call-template name='app:helper-type'>
+                              <call-template name='helper-type'>
                                  <with-param name='name'>HtmlAttributeHelper</with-param>
                               </call-template>
                               <code:arguments>
@@ -413,15 +412,15 @@
             <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>TextAreaInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -490,7 +489,7 @@
                      </choose>
                   </code:argument>
                </if>
-               <call-template name='app:html-attributes-param'>
+               <call-template name='html-attributes-param'>
                   <with-param name='el' value='el'/>
                   <with-param name='mergeAttribs' value='attributes(el)
                      .Where(p => p.Name == "placeholder")
@@ -506,13 +505,13 @@
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "textarea"' mode='xcst:extension-instruction'>
-      <call-template name='app:element-instruction'/>
+      <call-template name='element-instruction'/>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "checkbox"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='input_attributes
             .Where(p => p != "value")
@@ -520,7 +519,7 @@
             .ToArray()'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
          <with-param name='attribs' value='attributes(el)
             .Where(p => p.Name == "name" || p.Name == "checked")
@@ -528,7 +527,7 @@
       </call-template>
 
       <if test='V1'>
-         <call-template name='app:no-children'>
+         <call-template name='no-children'>
             <with-param name='el' value='el'/>
          </call-template>
       </if>
@@ -537,8 +536,8 @@
 
       <choose>
          <when test='V2_OR_GREATER
-               &amp;&amp; !app_element_is_empty(el)'>
-            <variable name='dispVar' value='src_aux_variable("chkbx_" + fn_generate_id(el))'/>
+               &amp;&amp; !element_is_empty(el)'>
+            <variable name='dispVar' value='aux_variable("chkbx_" + fn_generate_id(el))'/>
             <code:using>
                <code:variable name='{dispVar}'>
                   <call-template name='checkbox'>
@@ -589,16 +588,16 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>InputInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <code:this-reference/>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -622,7 +621,7 @@
                   </if>
                </otherwise>
             </choose>
-            <call-template name='app:html-attributes-param'>
+            <call-template name='html-attributes-param'>
                <with-param name='el' value='el'/>
                <with-param name='boolAttribs' value='attributes(el)
                   .Where(p => p.Name.Namespace == XNamespace.None
@@ -635,7 +634,7 @@
 
    <template match='XElement el &amp;&amp; el.Name == a + "checkbox"' mode='xcst:extension-instruction'>
       <variable name='instruction'>
-         <call-template name="app:element-instruction"/>
+         <call-template name="element-instruction"/>
       </variable>
       <xcst:instruction>
          <code:type-reference array-dimensions='1'>
@@ -649,7 +648,7 @@
 
       <variable name='clientAttributes' value='input_client_attributes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='required' value='new[] { "value" }'/>
          <with-param name='optional' value='input_attributes
@@ -658,7 +657,7 @@
             .ToArray()'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
          <with-param name='attribs' value='attributes(el)
             .Where(p => p.Name == "name" || p.Name == "checked")
@@ -666,7 +665,7 @@
       </call-template>
 
       <if test='V1'>
-         <call-template name='app:no-children'>
+         <call-template name='no-children'>
             <with-param name='el' value='el'/>
          </call-template>
       </if>
@@ -676,7 +675,7 @@
       <variable name='docOutput' value='src_doc_output(el, output)'/>
       <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
@@ -688,7 +687,7 @@
 
       <choose>
          <when test='V2_OR_GREATER
-               &amp;&amp; (!app_element_is_empty(el) || !fn_empty(clientAttribs))'>
+               &amp;&amp; (!element_is_empty(el) || !fn_empty(clientAttribs))'>
             <code:using>
                <call-template name='radio'>
                   <with-param name='el' value='el'/>
@@ -699,7 +698,7 @@
                      <choose>
                         <when test='input_client_bool_attributes.Contains(attr.Name.LocalName)'>
                            <code:method-call name='WriteBoolean'>
-                              <call-template name='app:helper-type'>
+                              <call-template name='helper-type'>
                                  <with-param name='name'>HtmlAttributeHelper</with-param>
                               </call-template>
                               <code:arguments>
@@ -765,15 +764,15 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>InputInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -804,7 +803,7 @@
                </code:argument>
             </if>
             <if test='V1'>
-               <call-template name='app:html-attributes-param'>
+               <call-template name='html-attributes-param'>
                   <with-param name='el' value='el'/>
                   <with-param name='boolAttribs' value='attributes(el)
                      .Where(p => p.Name.Namespace == XNamespace.None
@@ -817,18 +816,18 @@
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "radio"' mode='xcst:extension-instruction'>
-      <call-template name='app:element-instruction'/>
+      <call-template name='element-instruction'/>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "antiforgery"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
       </call-template>
 
       <if test='V1'>
-         <call-template name='app:no-children'>
+         <call-template name='no-children'>
             <with-param name='el' value='el'/>
          </call-template>
       </if>
@@ -837,14 +836,14 @@
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
 
       <choose>
          <when test='V2_OR_GREATER
-               &amp;&amp; !app_element_is_empty(el)'>
+               &amp;&amp; !element_is_empty(el)'>
             <code:using>
                <call-template name='antiforgery'>
                   <with-param name='el' value='el'/>
@@ -883,7 +882,7 @@
          <choose>
             <when test='V2_OR_GREATER'>
                <code:method-reference name='HiddenToken'>
-                  <call-template name='app:helper-type'>
+                  <call-template name='helper-type'>
                      <with-param name='name'>AntiforgeryInstructions</with-param>
                   </call-template>
                </code:method-reference>
@@ -896,7 +895,7 @@
          </choose>
          <code:arguments>
             <code:chain>
-               <call-template name='app:html-helper'/>
+               <call-template name='html-helper-ref'/>
                <code:property-reference name='ViewContext'>
                   <code:chain-reference/>
                </code:property-reference>
@@ -910,7 +909,7 @@
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "antiforgery"' mode='xcst:extension-instruction'>
-      <call-template name='app:element-instruction'/>
+      <call-template name='element-instruction'/>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "select"' mode='src:statement'>
@@ -918,14 +917,14 @@
 
       <variable name='clientAttributes' value='input_client_attributes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='input_attributes
             .Concat(new[] { "options", "multiple" })
             .ToArray()'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
          <with-param name='attribs' value='attributes(el)
             .Where(p => p.Name == "name" || p.Name == "value")
@@ -937,7 +936,7 @@
       <variable name='docOutput' value='src_doc_output(el, output)'/>
       <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
@@ -949,8 +948,8 @@
 
       <choose>
          <when test='V2_OR_GREATER
-               &amp;&amp; (!app_element_is_empty(el) || !fn_empty(clientAttribs))'>
-            <variable name='dispVar' value='src_aux_variable("select_" + fn_generate_id(el))'/>
+               &amp;&amp; (!element_is_empty(el) || !fn_empty(clientAttribs))'>
+            <variable name='dispVar' value='aux_variable("select_" + fn_generate_id(el))'/>
             <variable name='dispRef'>
                <code:variable-reference name='{dispVar}'/>
             </variable>
@@ -966,7 +965,7 @@
                      <choose>
                         <when test='input_client_bool_attributes.Contains(attr.Name.LocalName)'>
                            <code:method-call name='WriteBoolean'>
-                              <call-template name='app:helper-type'>
+                              <call-template name='helper-type'>
                                  <with-param name='name'>HtmlAttributeHelper</with-param>
                               </call-template>
                               <code:arguments>
@@ -1039,15 +1038,15 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>SelectInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -1094,7 +1093,7 @@
                </code:argument>
             </if>
             <if test='V1'>
-               <call-template name='app:html-attributes-param'>
+               <call-template name='html-attributes-param'>
                   <with-param name='el' value='el'/>
                   <with-param name='boolAttribs' value='attributes(el)
                      .Where(p => p.Name.Namespace == XNamespace.None
@@ -1119,18 +1118,18 @@
       <variable name='docOutput' value='src_doc_output(el, output)'/>
       <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
 
       <code:method-call name='OptionHelper'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>SelectInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <copy-of value='select(docOutput, src + "reference", code)'/>
             <choose>
                <when test='app_select_disp_ref != null'>
@@ -1186,7 +1185,7 @@
                A long method chain on a dynamic object hurts performance.
             -->
             <code:chain>
-               <call-template name='app:helper-type'>
+               <call-template name='helper-type'>
                   <with-param name='name'>OptionList</with-param>
                </call-template>
                <choose>
@@ -1296,32 +1295,32 @@
    <template name='validate-option'>
       <param name='el' as='XElement' required='yes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='new[] { "value", "selected", "disabled" }'/>
       </call-template>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "select"' mode='xcst:extension-instruction'>
-      <call-template name='app:element-instruction'/>
+      <call-template name='element-instruction'/>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "label"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='html_attributes
             .Concat(new[] { "for", "name", "text" }.Where(p => p != "text" || V1))
             .ToArray()'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
       </call-template>
 
       <if test='V1'>
-         <call-template name='app:no-children'>
+         <call-template name='no-children'>
             <with-param name='el' value='el'/>
          </call-template>
       </if>
@@ -1330,12 +1329,12 @@
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
 
-      <variable name='isEmpty' value='app_element_is_empty(el)'/>
+      <variable name='isEmpty' value='element_is_empty(el)'/>
 
       <choose>
          <when test='V2_OR_GREATER
@@ -1387,15 +1386,15 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>LabelInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -1427,7 +1426,7 @@
                </when>
             </choose>
             <if test='V1'>
-               <call-template name='app:html-attributes-param'>
+               <call-template name='html-attributes-param'>
                   <with-param name='el' value='el'/>
                </call-template>
             </if>
@@ -1436,13 +1435,13 @@
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "label" &amp;&amp; V2_OR_GREATER' mode='xcst:extension-instruction'>
-      <call-template name='app:element-instruction'/>
+      <call-template name='element-instruction'/>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "validation-summary"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='html_attributes
             .Concat(new[] { "include-member-errors", "message" })
@@ -1454,15 +1453,15 @@
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
 
       <choose>
          <when test='V2_OR_GREATER
-               &amp;&amp; !app_element_is_empty(el)'>
-            <variable name='dispVar' value='src_aux_variable("valmsgsum_" + fn_generate_id(el))'/>
+               &amp;&amp; !element_is_empty(el)'>
+            <variable name='dispVar' value='aux_variable("valmsgsum_" + fn_generate_id(el))'/>
             <code:using>
                <code:variable name='{dispVar}'>
                   <call-template name='validation-summary'>
@@ -1513,11 +1512,11 @@
 
       <code:method-call name='ValidationSummary'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>ValidationInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <copy-of value='select(output, src + "reference", code)'/>
             <if test='el.Attribute("include-member-errors") is XAttribute imeAttr'>
                <code:argument name='includePropertyErrors'>
@@ -1546,7 +1545,7 @@
                      </otherwise>
                   </choose>
                </code:argument>
-               <call-template name='app:html-attributes-param'>
+               <call-template name='html-attributes-param'>
                   <with-param name='el' value='el'/>
                </call-template>
             </if>
@@ -1557,19 +1556,19 @@
    <template match='XElement el &amp;&amp; el.Name == a + "validation-message"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <call-template name='app:validate-attribs'>
+      <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='html_attributes
             .Concat(new[] { "for", "name", "message" }.Where(p => p != "message" || V1))
             .ToArray()'/>
       </call-template>
 
-      <call-template name='app:validate-for'>
+      <call-template name='validate-for'>
          <with-param name='el' value='el'/>
       </call-template>
 
       <if test='V1'>
-         <call-template name='app:no-children'>
+         <call-template name='no-children'>
             <with-param name='el' value='el'/>
          </call-template>
       </if>
@@ -1578,17 +1577,17 @@
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
 
-      <call-template name='app:declare-doc-output'>
+      <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
 
-      <variable name='isEmpty' value='app_element_is_empty(el)'/>
+      <variable name='isEmpty' value='element_is_empty(el)'/>
 
       <choose>
          <when test='V2_OR_GREATER
                &amp;&amp; !isEmpty'>
-            <variable name='dispVar' value='src_aux_variable("valmsg_" + fn_generate_id(el))'/>
+            <variable name='dispVar' value='aux_variable("valmsg_" + fn_generate_id(el))'/>
             <code:using>
                <code:variable name='{dispVar}'>
                   <call-template name='validation-message'>
@@ -1643,15 +1642,15 @@
             <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='app:helper-type'>
+         <call-template name='helper-type'>
             <with-param name='name'>ValidationInstructions</with-param>
          </call-template>
          <code:arguments>
-            <call-template name='app:html-helper'/>
+            <call-template name='html-helper-ref'/>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
-                  <variable name='param' value='src_aux_variable(fn_generate_id(el))'/>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
                   <code:lambda>
                      <code:parameters>
                         <code:parameter name='{param}'/>
@@ -1689,7 +1688,7 @@
                </otherwise>
             </choose>
             <if test='V1'>
-               <call-template name='app:html-attributes-param'>
+               <call-template name='html-attributes-param'>
                   <with-param name='el' value='el'/>
                </call-template>
             </if>
