@@ -16,11 +16,16 @@
 -->
 <module version='1.0' language='C#'
    xmlns='http://maxtoroq.github.io/XCST'
+   xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
    xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
+
+   <mode name='src:statement' on-no-match='fail' visibility='public'/>
+   <mode name='src:expression' on-no-match='fail' visibility='public'/>
+   <mode name='xcst:extension-instruction' on-no-match='deep-skip' visibility='public'/>
 
    <template match='XElement el &amp;&amp; el.Name.Namespace == a' mode='src:statement'>
       <message terminate='yes' error-code='XTSE0010' error-data='src_error_object(el)' expand-text='yes' transform-text='trim'>

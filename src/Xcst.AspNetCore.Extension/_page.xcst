@@ -23,7 +23,7 @@
    <import-namespace ns='System.Xml.Linq'/>
    <import-namespace ns='System.Text.RegularExpressions'/>
 
-   <template name='src:package-attribute-extra'>
+   <template name='src:package-attribute-extra' visibility='public'>
       <param name='el' as='XElement' required='yes'/>
       <param name='xcsta_is_page' as='bool' tunnel='yes'/>
 
@@ -45,7 +45,7 @@
       </if>
    </template>
 
-   <template name='src:base-types'>
+   <template name='src:base-types' visibility='public'>
       <param name='el' as='XElement' required='yes'/>
 
       <variable name='inheritsPi' value='inherits_directive(el)'/>
@@ -118,7 +118,7 @@
       <return value='null'/>
    </function>
 
-   <template name='src:infrastructure-extra'>
+   <template name='src:infrastructure-extra' visibility='public'>
       <param name='el' as='XElement' required='yes'/>
       <param name='principalModule' as='bool' required='yes'/>
       <param name='xcsta_is_page' as='bool' tunnel='yes'/>
