@@ -1130,7 +1130,7 @@
          </call-template>
          <code:arguments>
             <call-template name='html-helper-ref'/>
-            <copy-of value='select(docOutput, src + "reference", code)'/>
+            <copy-of value='outputRef'/>
             <choose>
                <when test='app_select_disp_ref != null'>
                   <copy-of value='app_select_disp_ref'/>
