@@ -491,10 +491,6 @@ static class DefaultEditorTemplates {
       HtmlInputTemplateHelper(html, package, seqOutput, "String");
 
    public static void
-   TextTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "Text");
-
-   public static void
    TimeTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       ApplyRfc3339DateFormattingIfNeeded(html, "{0:HH:mm:ss.fff}");

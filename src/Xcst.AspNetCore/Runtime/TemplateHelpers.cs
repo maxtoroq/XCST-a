@@ -61,7 +61,7 @@ static class TemplateHelpers {
       { "HiddenInput", DefaultEditorTemplates.HiddenInputTemplate },
       { "MultilineText", DefaultEditorTemplates.MultilineTextTemplate },
       { "Password", DefaultEditorTemplates.PasswordTemplate },
-      { "Text", DefaultEditorTemplates.TextTemplate },
+      { "Text", DefaultEditorTemplates.StringTemplate },
       { "Collection", DefaultEditorTemplates.CollectionTemplate },
       { "PhoneNumber", DefaultEditorTemplates.PhoneNumberTemplate },
       { "Url", DefaultEditorTemplates.UrlTemplate },
