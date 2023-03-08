@@ -30,6 +30,12 @@ namespace Xcst.Web.Runtime;
 
 static class DefaultDisplayTemplates {
 
+   static readonly EditorInfo
+   _booleanSelectInfo = new("Boolean", "select");
+
+   static readonly EditorInfo
+   _booleanCheckboxInfo = new("Boolean", "input", InputType.CheckBox);
+
    public static void
    BooleanTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
@@ -46,7 +52,7 @@ static class DefaultDisplayTemplates {
 
          output.WriteStartElement("select");
 
-         var className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
+         var className = DefaultEditorTemplates.GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
 
          HtmlAttributeHelper.WriteCssClass(null, className, output);
          HtmlAttributeHelper.WriteBoolean("disabled", true, output);
@@ -62,7 +68,7 @@ static class DefaultDisplayTemplates {
          output.WriteStartElement("input");
          output.WriteAttributeString("type", "checkbox");
 
-         var className = DefaultEditorTemplates.GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
+         var className = DefaultEditorTemplates.GetEditorCssClass(_booleanCheckboxInfo, "check-box");
 
          HtmlAttributeHelper.WriteCssClass(null, className, output);
          HtmlAttributeHelper.WriteBoolean("disabled", true, output);

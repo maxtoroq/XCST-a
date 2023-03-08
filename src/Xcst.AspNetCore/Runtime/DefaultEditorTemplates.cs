@@ -33,6 +33,30 @@ namespace Xcst.Web.Runtime;
 
 static class DefaultEditorTemplates {
 
+   static readonly EditorInfo
+   _booleanSelectInfo = new("Boolean", "select");
+
+   static readonly EditorInfo
+   _booleanCheckBoxInfo = new("Boolean", "input", InputType.CheckBox);
+
+   static readonly EditorInfo
+   _dropDownListInfo = new("DropDownList", "select");
+
+   static readonly EditorInfo
+   _enumInfo = new("Enum", "select");
+
+   static readonly EditorInfo
+   _hiddenInputInfo = new("HiddenInput", "input", InputType.Hidden);
+
+   static readonly EditorInfo
+   _listBoxInfo = new("ListBox", "select");
+
+   static readonly EditorInfo
+   _multilineTextInfo = new("MultilineText", "textarea");
+
+   static readonly EditorInfo
+   _passwordInfo = new("Password", "input", InputType.Password);
+
    public static void
    BooleanTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
@@ -46,7 +70,7 @@ static class DefaultEditorTemplates {
       if (viewData.ModelMetadata.IsNullableValueType) {
 
          var output = DocumentWriter.CastElement(package, seqOutput);
-         var className = GetEditorCssClass(new EditorInfo("Boolean", "select"), "list-box tri-state");
+         var className = GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
          using (var disp = SelectInstructions.Select(
@@ -62,7 +86,7 @@ static class DefaultEditorTemplates {
 
       } else {
 
-         var className = GetEditorCssClass(new EditorInfo("Boolean", "input", InputType.CheckBox), "check-box");
+         var className = GetEditorCssClass(_booleanCheckBoxInfo, "check-box");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
          InputInstructions.CheckBoxHelper(
@@ -185,7 +209,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(package, seqOutput);
 
-      var className = GetEditorCssClass(new EditorInfo("DropDownList", "select"), null);
+      var className = GetEditorCssClass(_dropDownListInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
       var viewData = html.ViewData;
 
@@ -222,7 +246,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(package, seqOutput);
 
-      var className = GetEditorCssClass(new EditorInfo("Enum", "select"), null);
+      var className = GetEditorCssClass(_enumInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
       var viewData = html.ViewData;
 
@@ -269,7 +293,7 @@ static class DefaultEditorTemplates {
       var output = DocumentWriter.CastElement(package, seqOutput);
       var model = viewData.Model;
 
-      var className = GetEditorCssClass(new EditorInfo("HiddenInput", "input", InputType.Hidden), null);
+      var className = GetEditorCssClass(_hiddenInputInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using (InputInstructions.Input(
@@ -297,7 +321,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(package, seqOutput);
 
-      var className = GetEditorCssClass(new EditorInfo("ListBox", "select"), null);
+      var className = GetEditorCssClass(_listBoxInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
       var viewData = html.ViewData;
 
@@ -325,7 +349,7 @@ static class DefaultEditorTemplates {
       var output = DocumentWriter.CastElement(package, seqOutput);
 
       var value = html.ViewData.TemplateInfo.FormattedModelValue;
-      var className = GetEditorCssClass(new EditorInfo("MultilineText", "textarea"), "text-box multi-line");
+      var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
       using (var disp = TextAreaInstructions.TextArea(
@@ -443,7 +467,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(package, seqOutput);
 
-      var className = GetEditorCssClass(new EditorInfo("Password", "input", InputType.Password), "text-box single-line password");
+      var className = GetEditorCssClass(_passwordInfo, "text-box single-line password");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
       using (InputInstructions.Input(
