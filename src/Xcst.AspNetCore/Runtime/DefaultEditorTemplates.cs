@@ -146,6 +146,27 @@ static class DefaultEditorTemplates {
    }
 
    public static void
+   DateTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+      ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-dd}");
+      HtmlInputTemplateHelper(html, package, seqOutput, "Date", inputType: "date");
+   }
+
+   public static void
+   DateTimeTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+      ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fffK}");
+      HtmlInputTemplateHelper(html, package, seqOutput, "DateTime", inputType: "datetime");
+   }
+
+   public static void
+   DateTimeLocalTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+      ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fff}");
+      HtmlInputTemplateHelper(html, package, seqOutput, "DateTime-local", inputType: "datetime-local");
+   }
+
+   public static void
    DecimalTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
@@ -157,6 +178,83 @@ static class DefaultEditorTemplates {
       }
 
       HtmlInputTemplateHelper(html, package, seqOutput, "Decimal");
+   }
+
+   public static void
+   DropDownListTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+      var output = DocumentWriter.CastElement(package, seqOutput);
+
+      var className = GetEditorCssClass(new EditorInfo("DropDownList", "select"), null);
+      var htmlAttributes = CreateHtmlAttributes(html, className);
+      var viewData = html.ViewData;
+
+      string? optionLabel = null;
+
+      var options = Options(viewData);
+
+      if (options is OptionList and { AddBlankOption: true }) {
+         optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
+      }
+
+      using (var disp = SelectInstructions.SelectHelper(
+            html,
+            output,
+            viewData.ModelExplorer,
+            String.Empty,
+            value: null,
+            options,
+            optionLabel,
+            multiple: false,
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+         disp.EndOfConstructor();
+      }
+   }
+
+   public static void
+   EmailAddressTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, package, seqOutput, "EmailAddress", inputType: "email");
+
+   public static void
+   EnumTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+      var output = DocumentWriter.CastElement(package, seqOutput);
+
+      var className = GetEditorCssClass(new EditorInfo("Enum", "select"), null);
+      var htmlAttributes = CreateHtmlAttributes(html, className);
+      var viewData = html.ViewData;
+
+      var modelType = viewData.ModelMetadata.ModelType;
+      var enumType = Nullable.GetUnderlyingType(modelType) ?? modelType;
+
+      if (!enumType.IsEnum) {
+         throw new InvalidOperationException("Enum template can only be used on Enum members.");
+      }
+
+      var formatString = viewData.ModelMetadata.EditFormatString
+         ?? viewData.ModelMetadata.DisplayFormatString;
+
+      var applyFormatInEdit = viewData.ModelMetadata.EditFormatString != null;
+
+      var options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
+      var optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
+
+      using (var disp = SelectInstructions.SelectHelper(
+            html,
+            output,
+            viewData.ModelExplorer,
+            String.Empty,
+            value: null,
+            options,
+            optionLabel,
+            multiple: false,
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+         disp.EndOfConstructor();
+      }
    }
 
    public static void
@@ -187,6 +285,41 @@ static class DefaultEditorTemplates {
    }
 
    public static void
+   IFormFileTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+      const string templateName = nameof(IFormFile);
+
+      HtmlInputTemplateHelper(html, package, seqOutput, templateName, inputType: "file");
+   }
+
+   public static void
+   ListBoxTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+      var output = DocumentWriter.CastElement(package, seqOutput);
+
+      var className = GetEditorCssClass(new EditorInfo("ListBox", "select"), null);
+      var htmlAttributes = CreateHtmlAttributes(html, className);
+      var viewData = html.ViewData;
+
+      var options = Options(viewData);
+
+      using (var disp = SelectInstructions.SelectHelper(
+            html,
+            output,
+            viewData.ModelExplorer,
+            String.Empty,
+            value: null,
+            options,
+            optionLabel: null,
+            multiple: true,
+            @class: htmlAttributes.GetClassOrNull())) {
+
+         htmlAttributes.WriteTo(output, excludeClass: true);
+         disp.EndOfConstructor();
+      }
+   }
+
+   public static void
    MultilineTextTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       var output = DocumentWriter.CastElement(package, seqOutput);
@@ -207,34 +340,9 @@ static class DefaultEditorTemplates {
       }
    }
 
-   static HtmlAttributeDictionary
-   CreateHtmlAttributes(HtmlHelper html, string? className, string? inputType = null,
-         bool addMetadataAttributes = false) {
-
-      var htmlAttributes = new HtmlAttributeDictionary();
-
-      if (inputType != null) {
-         htmlAttributes.Add("type", inputType);
-      }
-
-      htmlAttributes.SetClass(className);
-
-      if (addMetadataAttributes) {
-
-         var metadata = html.ViewData.ModelMetadata;
-
-         if (!String.IsNullOrEmpty(metadata.Placeholder)) {
-            htmlAttributes["placeholder"] = metadata.Placeholder;
-         }
-
-         htmlAttributes.SetBoolean("readonly", metadata.IsReadOnly);
-      }
-
-      var userAttribs = html.ViewData["htmlAttributes"];
-      htmlAttributes.SetAttributes(userAttribs);
-
-      return htmlAttributes;
-   }
+   public static void
+   NumberTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, package, seqOutput, "Number", inputType: "number");
 
    public static void
    ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
@@ -351,6 +459,10 @@ static class DefaultEditorTemplates {
    }
 
    public static void
+   PhoneNumberTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, package, seqOutput, "PhoneNumber", inputType: "tel");
+
+   public static void
    StringTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
       HtmlInputTemplateHelper(html, package, seqOutput, "String");
 
@@ -359,178 +471,39 @@ static class DefaultEditorTemplates {
       HtmlInputTemplateHelper(html, package, seqOutput, "Text");
 
    public static void
-   PhoneNumberInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "PhoneNumber", inputType: "tel");
-
-   public static void
-   UrlInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "Url", inputType: "url");
-
-   public static void
-   EmailAddressInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "EmailAddress", inputType: "email");
-
-   public static void
-   DateTimeInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
-
-      ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fffK}");
-      HtmlInputTemplateHelper(html, package, seqOutput, "DateTime", inputType: "datetime");
-   }
-
-   public static void
-   DateTimeLocalInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
-
-      ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fff}");
-      HtmlInputTemplateHelper(html, package, seqOutput, "DateTime-local", inputType: "datetime-local");
-   }
-
-   public static void
-   DateInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
-
-      ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-dd}");
-      HtmlInputTemplateHelper(html, package, seqOutput, "Date", inputType: "date");
-   }
-
-   public static void
-   TimeInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   TimeTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       ApplyRfc3339DateFormattingIfNeeded(html, "{0:HH:mm:ss.fff}");
       HtmlInputTemplateHelper(html, package, seqOutput, "Time", inputType: "time");
    }
 
    public static void
-   ByteInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "Byte", inputType: "number");
-
-   public static void
-   SByteInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "SByte", inputType: "number");
-
-   public static void
-   Int32InputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "Int32", inputType: "number");
-
-   public static void
-   UInt32InputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "UInt32", inputType: "number");
-
-   public static void
-   Int64InputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "Int64", inputType: "number");
-
-   public static void
-   UInt64InputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "UInt64", inputType: "number");
-
-   public static void
    UploadTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
       HtmlInputTemplateHelper(html, package, seqOutput, "Upload", inputType: "file");
 
    public static void
-   HttpPostedFileBaseTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   UrlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, package, seqOutput, "Url", inputType: "url");
 
-      const string templateName = nameof(IFormFile);
-
-      HtmlInputTemplateHelper(html, package, seqOutput, templateName, inputType: "file");
-   }
-
-   public static void
-   DropDownListTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   static void
+   HtmlInputTemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
 
       var output = DocumentWriter.CastElement(package, seqOutput);
 
-      var className = GetEditorCssClass(new EditorInfo("DropDownList", "select"), null);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
-      var viewData = html.ViewData;
+      var value = html.ViewData.TemplateInfo.FormattedModelValue;
 
-      string? optionLabel = null;
+      var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
+      var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      var options = Options(viewData);
-
-      if (options is OptionList and { AddBlankOption: true }) {
-         optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
-      }
-
-      using (var disp = SelectInstructions.SelectHelper(
+      using (InputInstructions.Input(
             html,
             output,
-            viewData.ModelExplorer,
-            String.Empty,
-            value: null,
-            options,
-            optionLabel,
-            multiple: false,
+            name: String.Empty,
+            value,
+            type: inputType,
             @class: htmlAttributes.GetClassOrNull())) {
 
          htmlAttributes.WriteTo(output, excludeClass: true);
-         disp.EndOfConstructor();
-      }
-   }
-
-   public static void
-   ListBoxTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
-
-      var output = DocumentWriter.CastElement(package, seqOutput);
-
-      var className = GetEditorCssClass(new EditorInfo("ListBox", "select"), null);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
-      var viewData = html.ViewData;
-
-      var options = Options(viewData);
-
-      using (var disp = SelectInstructions.SelectHelper(
-            html,
-            output,
-            viewData.ModelExplorer,
-            String.Empty,
-            value: null,
-            options,
-            optionLabel: null,
-            multiple: true,
-            @class: htmlAttributes.GetClassOrNull())) {
-
-         htmlAttributes.WriteTo(output, excludeClass: true);
-         disp.EndOfConstructor();
-      }
-   }
-
-   public static void
-   EnumTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
-
-      var output = DocumentWriter.CastElement(package, seqOutput);
-
-      var className = GetEditorCssClass(new EditorInfo("Enum", "select"), null);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
-      var viewData = html.ViewData;
-
-      var modelType = viewData.ModelMetadata.ModelType;
-      var enumType = Nullable.GetUnderlyingType(modelType) ?? modelType;
-
-      if (!enumType.IsEnum) {
-         throw new InvalidOperationException("Enum template can only be used on Enum members.");
-      }
-
-      var formatString = viewData.ModelMetadata.EditFormatString
-         ?? viewData.ModelMetadata.DisplayFormatString;
-
-      var applyFormatInEdit = viewData.ModelMetadata.EditFormatString != null;
-
-      var options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
-      var optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
-
-      using (var disp = SelectInstructions.SelectHelper(
-            html,
-            output,
-            viewData.ModelExplorer,
-            String.Empty,
-            value: null,
-            options,
-            optionLabel,
-            multiple: false,
-            @class: htmlAttributes.GetClassOrNull())) {
-
-         htmlAttributes.WriteTo(output, excludeClass: true);
-         disp.EndOfConstructor();
       }
    }
 
@@ -557,26 +530,33 @@ static class DefaultEditorTemplates {
       }
    }
 
-   static void
-   HtmlInputTemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
+   static HtmlAttributeDictionary
+   CreateHtmlAttributes(HtmlHelper html, string? className, string? inputType = null,
+         bool addMetadataAttributes = false) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var htmlAttributes = new HtmlAttributeDictionary();
 
-      var value = html.ViewData.TemplateInfo.FormattedModelValue;
-
-      var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
-      var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
-
-      using (InputInstructions.Input(
-            html,
-            output,
-            name: String.Empty,
-            value,
-            type: inputType,
-            @class: htmlAttributes.GetClassOrNull())) {
-
-         htmlAttributes.WriteTo(output, excludeClass: true);
+      if (inputType != null) {
+         htmlAttributes.Add("type", inputType);
       }
+
+      htmlAttributes.SetClass(className);
+
+      if (addMetadataAttributes) {
+
+         var metadata = html.ViewData.ModelMetadata;
+
+         if (!String.IsNullOrEmpty(metadata.Placeholder)) {
+            htmlAttributes["placeholder"] = metadata.Placeholder;
+         }
+
+         htmlAttributes.SetBoolean("readonly", metadata.IsReadOnly);
+      }
+
+      var userAttribs = html.ViewData["htmlAttributes"];
+      htmlAttributes.SetAttributes(userAttribs);
+
+      return htmlAttributes;
    }
 
    internal static string?

@@ -166,6 +166,27 @@ static class DefaultDisplayTemplates {
    }
 
    public static void
+   EnumTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+      var viewData = html.ViewData;
+      var modelExplorer = viewData.ModelExplorer;
+
+      if (modelExplorer.Model != null) {
+
+         if (modelExplorer.Metadata.EditFormatString != null) {
+            // undo formatting if applicable to edit mode, for consistency with editor template
+            viewData.TemplateInfo.FormattedModelValue = modelExplorer.Model;
+         }
+
+         if (viewData.TemplateInfo.FormattedModelValue == modelExplorer.Model) {
+            viewData.TemplateInfo.FormattedModelValue = modelExplorer.GetSimpleDisplayText();
+         }
+      }
+
+      StringTemplate(html, package, seqOutput);
+   }
+
+   public static void
    HiddenInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       if (!html.ViewData.ModelMetadata.HideSurroundingHtml) {
@@ -176,6 +197,21 @@ static class DefaultDisplayTemplates {
    public static void
    HtmlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
       seqOutput.WriteRaw(package.Context.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
+
+   public static void
+   ImageUrlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+
+      var viewData = html.ViewData;
+
+      if (viewData.Model != null) {
+
+         var output = DocumentWriter.CastElement(package, seqOutput);
+
+         output.WriteStartElement("img");
+         output.WriteAttributeString("src", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
+         output.WriteEndElement();
+      }
+   }
 
    public static void
    ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
@@ -279,41 +315,5 @@ static class DefaultDisplayTemplates {
       output.WriteAttributeString("href", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
       output.WriteString(output.SimpleContent.Convert(viewData.TemplateInfo.FormattedModelValue));
       output.WriteEndElement();
-   }
-
-   public static void
-   ImageUrlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
-
-      var viewData = html.ViewData;
-
-      if (viewData.Model != null) {
-
-         var output = DocumentWriter.CastElement(package, seqOutput);
-
-         output.WriteStartElement("img");
-         output.WriteAttributeString("src", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
-         output.WriteEndElement();
-      }
-   }
-
-   public static void
-   EnumTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
-
-      var viewData = html.ViewData;
-      var modelExplorer = viewData.ModelExplorer;
-
-      if (modelExplorer.Model != null) {
-
-         if (modelExplorer.Metadata.EditFormatString != null) {
-            // undo formatting if applicable to edit mode, for consistency with editor template
-            viewData.TemplateInfo.FormattedModelValue = modelExplorer.Model;
-         }
-
-         if (viewData.TemplateInfo.FormattedModelValue == modelExplorer.Model) {
-            viewData.TemplateInfo.FormattedModelValue = modelExplorer.GetSimpleDisplayText();
-         }
-      }
-
-      StringTemplate(html, package, seqOutput);
    }
 }
