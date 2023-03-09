@@ -239,7 +239,7 @@
                   </if>
                   <if test='V2_OR_GREATER
                         &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
-                     <code:argument name='@class'>
+                     <code:argument name='class' verbatim='true'>
                         <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                      </code:argument>
                   </if>
@@ -453,7 +453,7 @@
             </choose>
             <if test='V2_OR_GREATER
                   &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
-               <code:argument name='@class'>
+               <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
             </if>
@@ -798,7 +798,7 @@
             </if>
             <if test='V2_OR_GREATER
                   &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
-               <code:argument name='@class'>
+               <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
             </if>
@@ -1088,7 +1088,7 @@
             </if>
             <if test='V2_OR_GREATER
                   &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
-               <code:argument name='@class'>
+               <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
             </if>
@@ -1415,7 +1415,7 @@
                      <code:bool value='{fn_string(!isEmpty)}'/>
                   </code:argument>
                   <if test='el.Attribute("class") is XAttribute classAttr'>
-                     <code:argument name='@class'>
+                     <code:argument name='class' verbatim='true'>
                         <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                      </code:argument>
                   </if>
@@ -1529,7 +1529,7 @@
             </if>
             <if test='V2_OR_GREATER
                   &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
-               <code:argument name='@class'>
+               <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
             </if>
@@ -1675,7 +1675,7 @@
                      <code:bool value='{fn_string(!isEmpty)}'/>
                   </code:argument>
                   <if test='el.Attribute("class") is XAttribute classAttr'>
-                     <code:argument name='@class'>
+                     <code:argument name='class' verbatim='true'>
                         <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                      </code:argument>
                   </if>
