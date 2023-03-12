@@ -42,49 +42,63 @@ static class TemplateHelpers {
 
    static readonly Dictionary<string, TemplateAction>
    _defaultDisplayActions = new(StringComparer.OrdinalIgnoreCase) {
+
+      // System.ComponentModel.DataAnnotations.DataType templates
       { "EmailAddress", DefaultDisplayTemplates.EmailAddressTemplate },
-      { "HiddenInput", DefaultDisplayTemplates.HiddenInputTemplate },
       { "Html", DefaultDisplayTemplates.HtmlTemplate },
+      { "ImageUrl", DefaultDisplayTemplates.ImageUrlTemplate },
       { "Text", DefaultDisplayTemplates.StringTemplate },
       { "Url", DefaultDisplayTemplates.UrlTemplate },
-      { "ImageUrl", DefaultDisplayTemplates.ImageUrlTemplate },
+
+      // primitive templates
+      { "Boolean", DefaultDisplayTemplates.BooleanTemplate },
+      { "Decimal", DefaultDisplayTemplates.DecimalTemplate },
+      { "Enum", DefaultDisplayTemplates.EnumTemplate },
+      { "String", DefaultDisplayTemplates.StringTemplate },
+
+      // "special" templates
+      { "Object", DefaultDisplayTemplates.ObjectTemplate },
+      { "HiddenInput", DefaultDisplayTemplates.HiddenInputTemplate },
       { "Collection", DefaultDisplayTemplates.CollectionTemplate },
-      { nameof(Enum), DefaultDisplayTemplates.EnumTemplate },
-      { nameof(Boolean), DefaultDisplayTemplates.BooleanTemplate },
-      { nameof(Decimal), DefaultDisplayTemplates.DecimalTemplate },
-      { nameof(String), DefaultDisplayTemplates.StringTemplate },
-      { nameof(Object), DefaultDisplayTemplates.ObjectTemplate },
    };
 
    static readonly Dictionary<string, TemplateAction>
    _defaultEditorActions = new(StringComparer.OrdinalIgnoreCase) {
-      { "HiddenInput", DefaultEditorTemplates.HiddenInputTemplate },
-      { "MultilineText", DefaultEditorTemplates.MultilineTextTemplate },
-      { "Password", DefaultEditorTemplates.PasswordTemplate },
-      { "Text", DefaultEditorTemplates.StringTemplate },
-      { "Collection", DefaultEditorTemplates.CollectionTemplate },
-      { "PhoneNumber", DefaultEditorTemplates.PhoneNumberTemplate },
-      { "Url", DefaultEditorTemplates.UrlTemplate },
-      { "EmailAddress", DefaultEditorTemplates.EmailAddressTemplate },
+
+      // System.ComponentModel.DataAnnotations.DataType templates
+      { "Date", DefaultEditorTemplates.DateTemplate },
       { "DateTime", DefaultEditorTemplates.DateTimeLocalTemplate },
       { "DateTime-local", DefaultEditorTemplates.DateTimeLocalTemplate },
-      { "Date", DefaultEditorTemplates.DateTemplate },
+      { "EmailAddress", DefaultEditorTemplates.EmailAddressTemplate },
+      { "MultilineText", DefaultEditorTemplates.MultilineTextTemplate },
+      { "Password", DefaultEditorTemplates.PasswordTemplate },
+      { "PhoneNumber", DefaultEditorTemplates.PhoneNumberTemplate },
+      { "Text", DefaultEditorTemplates.StringTemplate },
       { "Time", DefaultEditorTemplates.TimeTemplate },
       { "Upload", DefaultEditorTemplates.UploadTemplate },
+      { "Url", DefaultEditorTemplates.UrlTemplate },
+
+      // primitive templates
+      { "Boolean", DefaultEditorTemplates.BooleanTemplate },
+      { "Byte", DefaultEditorTemplates.NumberTemplate },
+      { "Decimal", DefaultEditorTemplates.DecimalTemplate },
+      { "Enum", DefaultEditorTemplates.EnumTemplate },
+      { "Int32", DefaultEditorTemplates.NumberTemplate },
+      { "Int64", DefaultEditorTemplates.NumberTemplate },
+      { "SByte", DefaultEditorTemplates.NumberTemplate },
+      { "String", DefaultEditorTemplates.StringTemplate },
+      { "UInt32", DefaultEditorTemplates.NumberTemplate },
+      { "UInt64", DefaultEditorTemplates.NumberTemplate },
+
+      // this library's templates
       { "DropDownList", DefaultEditorTemplates.DropDownListTemplate },
       { "ListBox", DefaultEditorTemplates.ListBoxTemplate },
-      { nameof(Enum), DefaultEditorTemplates.EnumTemplate },
-      { nameof(Byte), DefaultEditorTemplates.NumberTemplate },
-      { nameof(SByte), DefaultEditorTemplates.NumberTemplate },
-      { nameof(Int32), DefaultEditorTemplates.NumberTemplate },
-      { nameof(UInt32), DefaultEditorTemplates.NumberTemplate },
-      { nameof(Int64), DefaultEditorTemplates.NumberTemplate },
-      { nameof(UInt64), DefaultEditorTemplates.NumberTemplate },
-      { nameof(Boolean), DefaultEditorTemplates.BooleanTemplate },
-      { nameof(Decimal), DefaultEditorTemplates.DecimalTemplate },
-      { nameof(String), DefaultEditorTemplates.StringTemplate },
-      { nameof(Object), DefaultEditorTemplates.ObjectTemplate },
-      { nameof(IFormFile), DefaultEditorTemplates.IFormFileTemplate }
+      { "IFormFile", DefaultEditorTemplates.IFormFileTemplate },
+
+      // "special" templates
+      { "Object", DefaultEditorTemplates.ObjectTemplate },
+      { "HiddenInput", DefaultEditorTemplates.HiddenInputTemplate },
+      { "Collection", DefaultEditorTemplates.CollectionTemplate },
    };
 
    static string
