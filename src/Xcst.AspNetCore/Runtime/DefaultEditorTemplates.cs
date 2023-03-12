@@ -177,13 +177,6 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   DateTimeTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
-
-      ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fffK}");
-      HtmlInputTemplateHelper(html, package, seqOutput, "DateTime", inputType: "datetime");
-   }
-
-   public static void
    DateTimeLocalTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fff}");
