@@ -383,8 +383,9 @@ static class TemplateHelpers {
          // Nothing more to provide
 
          yield break;
+      }
 
-      } else if (!metadata.IsComplexType) {
+      if (!metadata.IsComplexType) {
 
          // IsEnum is false for the Enum class itself
 
