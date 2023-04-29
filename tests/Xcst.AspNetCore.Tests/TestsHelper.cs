@@ -77,6 +77,8 @@ static partial class TestsHelper {
          }
       }
 
+      Debug.Assert(correct);
+
       try {
 
          Type packageType;
@@ -93,12 +95,15 @@ static partial class TestsHelper {
                printCode
             );
 
+            // did not fail
+
             if (error) {
                printCode = true;
                TestAssert.Fail($"{xcstResult.Language} compilation error expected.");
+               return;
             }
 
-         } catch (ApplicationException) when (correct) {
+         } catch (ApplicationException) when (!error) {
 
             printCode = true;
             throw;
