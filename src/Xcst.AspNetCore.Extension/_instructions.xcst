@@ -23,8 +23,8 @@
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
 
-   <mode name='src:statement' on-no-match='fail' visibility='public'/>
-   <mode name='src:expression' on-no-match='fail' visibility='public'/>
+   <mode name='src:statement' visibility='public'/>
+   <mode name='src:expression' visibility='public'/>
    <mode name='xcst:extension-instruction' on-no-match='deep-skip' visibility='public'/>
 
    <template match='XElement el &amp;&amp; el.Name.Namespace == a' mode='src:statement'>
