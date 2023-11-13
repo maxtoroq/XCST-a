@@ -15,8 +15,6 @@
   <PropertyGroup>
     <XcstInput>**\*.xcst</XcstInput>
     <XcstOutput>xcst.generated.cs</XcstOutput>
-    <XcstCodegenExe>$(ProjectDir)..\extension-codegen\bin\$(Configuration)\net7.0\extension-codegen.exe</XcstCodegenExe>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(XcstOutput)</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,15 +27,32 @@
 
   <ItemGroup>
     <XcstInput Include="$(XcstInput)" />
+    <XcstOutput Include="$(XcstOutput)" />
     <UpToDateCheckInput Include="@(XcstInput)" />
-    <UpToDateCheckBuilt Include="$(XcstOutput)" />
-    <Compile Include="$(XcstOutput)" />
   </ItemGroup>
 
-  <Target Name="XcstCodeGen" BeforeTargets="PreBuildEvent" DependsOnTargets="ResolveReferences" Inputs="@(XcstInput);$(MSBuildThisFileFullPath);$(XcstCodegenExe)" Outputs="$(XcstOutput)">
-    <MSBuild Projects="..\extension-codegen\extension-codegen.csproj" />
+  <ItemGroup Condition="'@(XcstOutput)' == ''">
+    <!-- target won't run the first time if @(XcstOutput) is empty -->
+    <XcstOutput Include="72942035-eb8e-4e76-afb9-ac559f7bf12a" />
+  </ItemGroup>
+
+  <Target Name="XcstCodeGen"
+          BeforeTargets="PreBuildEvent"
+          DependsOnTargets="ResolveReferences"
+          Inputs="@(XcstInput);$(MSBuildThisFileFullPath)"
+          Outputs="@(XcstOutput)">
+    <MSBuild Projects="..\extension-codegen\extension-codegen.csproj">
+      <Output TaskParameter="TargetOutputs" PropertyName="XcstCodeGen" />
+    </MSBuild>
     <Message Text="xcst-codegen [$(MSBuildProjectName)]" Importance="high" />
-    <Exec Command="$(XcstCodegenExe) $(MSBuildThisFileFullPath) $(XcstOutput)" />
+    <Exec Command="dotnet $(XcstCodeGen) $(ProjectPath) $(XcstOutput) @(XcstInput->'%(Identity)', ' ')" />
+    <ItemGroup>
+      <!-- when target runs the first time generated source files are not included in compilation -->
+      <!-- on subsequent builds the files are automatically included -->
+      <!-- when the target runs again, must first remove source files to avoid duplication -->
+      <Compile Remove="$(XcstOutput)" />
+      <Compile Include="$(XcstOutput)" />
+    </ItemGroup>
   </Target>
 
 </Project>

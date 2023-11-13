@@ -14,7 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<package version='1.0' language='C#'
+<package name='Xcst.Web.Extension.ExtensionPackage' version='1.0' language='C#'
    xmlns='http://maxtoroq.github.io/XCST'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
    xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'>
