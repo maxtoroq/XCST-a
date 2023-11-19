@@ -39,7 +39,7 @@
          .Where(p => p.Name == "name")
          .ToArray()' as='XAttribute[]'/>
 
-      <if test='el.Attribute("for") is XAttribute
+      <if test='el.Attribute("for") is { }
             &amp;&amp; attribs.Length > 0'>
          <message terminate='yes' error-data='src_error_object(el)' expand-text='yes' transform-text='trim'>
             'for' and '{attribs[0].Name.LocalName}' attributes are mutually exclusive.

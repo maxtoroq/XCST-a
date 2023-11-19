@@ -119,7 +119,7 @@
                <with-param name='output' value='docOutput' tunnel='yes'/>
             </call-template>
 
-            <if test='el.Attribute("antiforgery") is XAttribute antiforgeryAttr'>
+            <if test='el.Attribute("antiforgery") is { } antiforgeryAttr'>
 
                <variable name='antiforgery' value='xcst_boolean(antiforgeryAttr, true)'/>
 
@@ -198,7 +198,7 @@
       <param name='typeAttr' as='XAttribute?' required='yes'/>
 
       <variable name='newHelper'>
-         <code:variable-reference name='{(el.Attribute("helper-name") is XAttribute helperNameAttr ?
+         <code:variable-reference name='{(el.Attribute("helper-name") is { } helperNameAttr ?
             xcst_name(helperNameAttr)
             : aux_variable("html") + "_" + fn_generate_id(el))}'/>
       </variable>
@@ -236,7 +236,7 @@
                      </code:default>
                   </otherwise>
                </choose>
-               <if test='el.Attribute("field-prefix") is XAttribute fieldPrefixAttr'>
+               <if test='el.Attribute("field-prefix") is { } fieldPrefixAttr'>
                   <code:argument name='htmlFieldPrefix'>
                      <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = fieldPrefixAttr }'/>
                   </code:argument>

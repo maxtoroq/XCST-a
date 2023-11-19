@@ -32,7 +32,7 @@
          &amp;&amp; this.ApplicationUri != null'/>
 
       <if test='genAttr
-            &amp;&amp; AppRelativeUri(el) is string relativeUri'>
+            &amp;&amp; AppRelativeUri(el) is { } relativeUri'>
          <code:attribute>
             <code:type-reference name='PageVirtualPath'
                namespace='{(V2_OR_GREATER ? "Xcst.Web" : "Xcst.Web.Precompilation")}'/>
@@ -129,7 +129,7 @@
          &amp;&amp; principalModule'/>
 
       <if test='genLinkTo
-            &amp;&amp; AppRelativeUri(el) is string relativeUri'>
+            &amp;&amp; AppRelativeUri(el) is { } relativeUri'>
          <if test='genLinkTo'>
             <call-template name='link-to'>
                <with-param name='relativeUri' value='relativeUri'/>

@@ -93,12 +93,12 @@
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                </when>
             </choose>
-            <if test='el.Attribute("template") is XAttribute templateAttr'>
+            <if test='el.Attribute("template") is { } templateAttr'>
                <code:argument name='templateName'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = templateAttr }'/>
                </code:argument>
             </if>
-            <if test='el.Attribute("field-name") is XAttribute fieldNameAttr'>
+            <if test='el.Attribute("field-name") is { } fieldNameAttr'>
                <code:argument name='htmlFieldName'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = fieldNameAttr }'/>
                </code:argument>
@@ -180,7 +180,7 @@
                   </call-template>
                </code:collection-initializer>
             </when>
-            <when test='el.Attribute("attributes") is XAttribute attributesAttr'>
+            <when test='el.Attribute("attributes") is { } attributesAttr'>
                <apply-templates value='attributesAttr' mode='editor-additional-view-data'/>
             </when>
          </choose>
@@ -192,7 +192,7 @@
       </variable>
 
       <variable name='withParamsExpr' value='
-         (el.Attribute("with-params") is XAttribute withParamsAttr) ?
+         (el.Attribute("with-params") is { } withParamsAttr) ?
             xcst_expression(withParamsAttr)
             : null'/>
 
@@ -362,7 +362,7 @@
       <variable name='newOutput' value='src_template_output(meta, el)'/>
 
       <variable name='newHelper'>
-         <code:variable-reference name='{(el.Attribute("helper-name") is XAttribute helperNameAttr ?
+         <code:variable-reference name='{(el.Attribute("helper-name") is { } helperNameAttr ?
             xcst_name(helperNameAttr)
             : aux_variable("html") + "_" + fn_generate_id(el))}'/>
       </variable>

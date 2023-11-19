@@ -206,7 +206,7 @@
                   <if test='nameAttr != null'>
                      <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                   </if>
-                  <if test='el.Attribute("value") is XAttribute valueAttr'>
+                  <if test='el.Attribute("value") is { } valueAttr'>
                      <code:expression value='{xcst_expression(valueAttr)}'/>
                   </if>
                </otherwise>
@@ -224,7 +224,7 @@
                   </call-template>
                </when>
                <otherwise>
-                  <if test='el.Attribute("type") is XAttribute typeAttr'>
+                  <if test='el.Attribute("type") is { } typeAttr'>
                      <code:argument name='type'>
                         <call-template name='app-input-type'>
                            <with-param name='val' value='xcsta_input_type(typeAttr, true)'/>
@@ -232,13 +232,13 @@
                         </call-template>
                      </code:argument>
                   </if>
-                  <if test='el.Attribute("format") is XAttribute formatAttr'>
+                  <if test='el.Attribute("format") is { } formatAttr'>
                      <code:argument name='format'>
                         <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = formatAttr }'/>
                      </code:argument>
                   </if>
                   <if test='V2_OR_GREATER
-                        &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
+                        &amp;&amp; el.Attribute("class") is { } classAttr'>
                      <code:argument name='class' verbatim='true'>
                         <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                      </code:argument>
@@ -440,7 +440,7 @@
                      </otherwise>
                   </choose>
                   <choose>
-                     <when test='el.Attribute("value") is XAttribute valueAttr'>
+                     <when test='el.Attribute("value") is { } valueAttr'>
                         <code:expression value='{xcst_expression(valueAttr)}'/>
                      </when>
                      <when test='V1'>
@@ -452,7 +452,7 @@
                </otherwise>
             </choose>
             <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
+                  &amp;&amp; el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
@@ -611,7 +611,7 @@
                   <if test='nameAttr != null'>
                      <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                   </if>
-                  <if test='el.Attribute("checked") is XAttribute checkedAttr'>
+                  <if test='el.Attribute("checked") is { } checkedAttr'>
                      <code:argument name='isChecked'>
                         <call-template name='src:boolean'>
                            <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
@@ -788,7 +788,7 @@
             </choose>
             <code:expression value='{xcst_expression(el.Attribute("value")!)}'/>
             <if test='forAttr is null
-                  &amp;&amp; el.Attribute("checked") is XAttribute checkedAttr'>
+                  &amp;&amp; el.Attribute("checked") is { } checkedAttr'>
                <code:argument name='isChecked'>
                   <call-template name='src:boolean'>
                      <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
@@ -797,7 +797,7 @@
                </code:argument>
             </if>
             <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
+                  &amp;&amp; el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
@@ -1062,7 +1062,7 @@
                   </if>
                   <if test='V2_OR_GREATER'>
                      <choose>
-                        <when test='el.Attribute("value") is XAttribute valueAttr'>
+                        <when test='el.Attribute("value") is { } valueAttr'>
                            <code:expression value='{xcst_expression(valueAttr)}'/>
                         </when>
                         <otherwise>
@@ -1074,7 +1074,7 @@
                   </if>
                </otherwise>
             </choose>
-            <variable name='multiple' value='(el.Attribute("multiple") is XAttribute multipleAttr) ?
+            <variable name='multiple' value='(el.Attribute("multiple") is { } multipleAttr) ?
                xcst_boolean(multipleAttr)!.Value : false'/>
             <call-template name='option-list'>
                <with-param name='el' value='el'/>
@@ -1087,7 +1087,7 @@
                </code:argument>
             </if>
             <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
+                  &amp;&amp; el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
@@ -1139,12 +1139,12 @@
                   <code:null/>
                </otherwise>
             </choose>
-            <if test='el.Attribute("value") is XAttribute valueAttr'>
+            <if test='el.Attribute("value") is { } valueAttr'>
                <code:argument name='value'>
                   <code:expression value='{xcst_expression(valueAttr)}'/>
                </code:argument>
             </if>
-            <if test='el.Attribute("selected") is XAttribute selectedAttr'>
+            <if test='el.Attribute("selected") is { } selectedAttr'>
                <code:argument name='selected'>
                   <call-template name='src:boolean'>
                      <with-param name='val' value='xcst_boolean(selectedAttr, true)'/>
@@ -1152,7 +1152,7 @@
                   </call-template>
                </code:argument>
             </if>
-            <if test='el.Attribute("disabled") is XAttribute disabledAttr'>
+            <if test='el.Attribute("disabled") is { } disabledAttr'>
                <code:argument name='disabled'>
                   <call-template name='src:boolean'>
                      <with-param name='val' value='xcst_boolean(disabledAttr, true)'/>
@@ -1261,7 +1261,7 @@
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <code:chain-reference/>
          <code:arguments>
-            <if test='el.Attribute("value") is XAttribute valueAttr'>
+            <if test='el.Attribute("value") is { } valueAttr'>
                <code:argument name='value'>
                   <code:cast>
                      <copy-of value='src_object_type'/>
@@ -1272,7 +1272,7 @@
             <code:argument name='text'>
                <invoke-delegate delegate='src_simple_content' with-params='new { el }'/>
             </code:argument>
-            <if test='el.Attribute("selected") is XAttribute selectedAttr'>
+            <if test='el.Attribute("selected") is { } selectedAttr'>
                <code:argument name='selected'>
                   <call-template name='src:boolean'>
                      <with-param name='val' value='xcst_boolean(selectedAttr, true)'/>
@@ -1280,7 +1280,7 @@
                   </call-template>
                </code:argument>
             </if>
-            <if test='el.Attribute("disabled") is XAttribute disabledAttr'>
+            <if test='el.Attribute("disabled") is { } disabledAttr'>
                <code:argument name='disabled'>
                   <call-template name='src:boolean'>
                      <with-param name='val' value='xcst_boolean(disabledAttr, true)'/>
@@ -1414,13 +1414,13 @@
                   <code:argument name='hasDefaultText'>
                      <code:bool value='{fn_string(!isEmpty)}'/>
                   </code:argument>
-                  <if test='el.Attribute("class") is XAttribute classAttr'>
+                  <if test='el.Attribute("class") is { } classAttr'>
                      <code:argument name='class' verbatim='true'>
                         <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                      </code:argument>
                   </if>
                </when>
-               <when test='el.Attribute("text") is XAttribute textAttr'>
+               <when test='el.Attribute("text") is { } textAttr'>
                   <code:argument name='labelText'>
                      <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = textAttr }'/>
                   </code:argument>
@@ -1519,7 +1519,7 @@
          <code:arguments>
             <call-template name='html-helper-ref'/>
             <copy-of value='select(output, src + "reference", code)'/>
-            <if test='el.Attribute("include-member-errors") is XAttribute imeAttr'>
+            <if test='el.Attribute("include-member-errors") is { } imeAttr'>
                <code:argument name='includePropertyErrors'>
                   <call-template name='src:boolean'>
                      <with-param name='val' value='xcst_boolean(imeAttr, true)'/>
@@ -1528,7 +1528,7 @@
                </code:argument>
             </if>
             <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is XAttribute classAttr'>
+                  &amp;&amp; el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
@@ -1536,7 +1536,7 @@
             <if test='V1'>
                <code:argument name='message'>
                   <choose>
-                     <when test='el.Attribute("message") is XAttribute messageAttr'>
+                     <when test='el.Attribute("message") is { } messageAttr'>
                         <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = messageAttr }'/>
                      </when>
                      <otherwise>
@@ -1674,13 +1674,13 @@
                   <code:argument name='hasDefaultText'>
                      <code:bool value='{fn_string(!isEmpty)}'/>
                   </code:argument>
-                  <if test='el.Attribute("class") is XAttribute classAttr'>
+                  <if test='el.Attribute("class") is { } classAttr'>
                      <code:argument name='class' verbatim='true'>
                         <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                      </code:argument>
                   </if>
                </when>
-               <when test='el.Attribute("message") is XAttribute messageAttr'>
+               <when test='el.Attribute("message") is { } messageAttr'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = messageAttr }'/>
                </when>
                <otherwise>

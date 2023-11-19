@@ -164,15 +164,15 @@ class Program {
             WriteLine($"public void {testName}() {{");
             PushIndent();
 
-            var disableWarning = (config.Attribute("disable-warning") is XAttribute disableWarnAttr) ?
+            var disableWarning = (config.Attribute("disable-warning") is { } disableWarnAttr) ?
                $"\"{disableWarnAttr.Value}\""
                : "null";
 
-            var warningAsError = (config.Attribute("warning-as-error") is XAttribute warnAsErrorAttr) ?
+            var warningAsError = (config.Attribute("warning-as-error") is { } warnAsErrorAttr) ?
                $"\"{warnAsErrorAttr.Value}\""
                : "null";
 
-            var languageVersion = (config.Attribute("language-version") is XAttribute langVerAttr) ?
+            var languageVersion = (config.Attribute("language-version") is { } langVerAttr) ?
                langVerAttr.Value + "m"
                : "-1m";
 
@@ -200,7 +200,7 @@ class Program {
 
             if (assertThrows) {
 
-               var testException = (config.Attribute("exception") is XAttribute exceptionAttr) ?
+               var testException = (config.Attribute("exception") is { } exceptionAttr) ?
                   exceptionAttr.Value
                   : "Xcst.RuntimeException";
 
