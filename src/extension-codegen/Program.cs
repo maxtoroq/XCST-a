@@ -8,25 +8,23 @@ namespace XcstCodeGen;
 
 class Program {
 
-#pragma warning disable CS8618
-   public Uri
+   public required Uri
    ProjectUri { get; init; }
 
-   public string[]
+   public required string[]
    SourceFiles { get; init; }
-#pragma warning restore CS8618
 
    // Show compilation errors on Visual Studio's Error List
    // Also makes the error on the Output window clickable
    static void
    VisualStudioErrorLog(RuntimeException ex) {
 
-      dynamic? errorData = ex.ErrorData;
+      var errorData = (dynamic?)ex.ErrorData;
 
       if (errorData != null) {
 
-         string uriString = errorData.ModuleUri;
-         string path = (Uri.TryCreate(uriString, UriKind.Absolute, out var uri) && uri.IsFile) ?
+         var uriString = (string?)errorData.ModuleUri;
+         var path = (Uri.TryCreate(uriString, UriKind.Absolute, out var uri) && uri.IsFile) ?
             uri.LocalPath
             : uriString;
 
@@ -65,8 +63,6 @@ class Program {
          if (fileName[0] == '_') {
             continue;
          }
-
-         compiler.PackageFileExtension = Path.GetExtension(file).TrimStart('.');
 
          try {
             compiler.Compile(fileUri);

@@ -14,16 +14,14 @@ class Program {
    string?
    _language;
 
-#pragma warning disable CS8618
-   public Uri
+   public required Uri
    ProjectUri { get; init; }
 
-   public string
+   public required string
    RootNamespace { get; init; }
 
-   public string[]
+   public required string[]
    SourceFiles { get; init; }
-#pragma warning restore CS8618
 
    public string?
    Nullable { get; init; }
@@ -88,16 +86,16 @@ class Program {
       var ns = RootNamespace;
       var relativePath = startUri.MakeRelativeUri(fileUri).OriginalString;
 
-      if (relativePath.Contains("/")) {
+      if (relativePath.Contains('/')) {
 
          var relativeDir = startUri
             .MakeRelativeUri(new Uri(Path.GetDirectoryName(fileUri.LocalPath)!, UriKind.Absolute))
             .OriginalString;
 
-         ns = String.Join(".", new[] { ns }.Concat(
-            relativeDir
-               .Split('/')
-               .Select(n => CleanIdentifier(n))));
+         ns = String.Join(".", relativeDir
+            .Split('/')
+            .Select(n => CleanIdentifier(n))
+            .Prepend(ns));
       }
 
       return ns;
@@ -113,12 +111,12 @@ class Program {
    static void
    VisualStudioErrorLog(RuntimeException ex) {
 
-      dynamic? errorData = ex.ErrorData;
+      var errorData = (dynamic?)ex.ErrorData;
 
       if (errorData != null) {
 
-         var uriString = errorData.ModuleUri;
-         var path = (Uri.TryCreate(uriString, UriKind.Absolute, out Uri uri) && uri.IsFile) ?
+         var uriString = (string?)errorData.ModuleUri;
+         var path = (Uri.TryCreate(uriString, UriKind.Absolute, out var uri) && uri.IsFile) ?
             uri.LocalPath
             : uriString;
 
@@ -228,7 +226,6 @@ class Program {
             && !fileBaseName.EndsWith("Package");
 
          compiler.TargetNamespace = FileNamespace(fileUri, startUri);
-         compiler.PackageFileExtension = Path.GetExtension(file).TrimStart('.');
 
          if (isPage) {
 
