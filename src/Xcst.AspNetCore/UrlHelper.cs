@@ -73,18 +73,20 @@ public class UrlHelper {
 
    [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", Justification = "Needs to take same parameters as HttpUtility.UrlEncode()")]
    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
-   public virtual string
-   Encode(string url) => HttpUtility.UrlEncode(url);
+   [return: NotNullIfNotNull(nameof(url))]
+   public virtual string?
+   Encode(string? url) => HttpUtility.UrlEncode(url);
 
    [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "0#", Justification = "Response.Redirect() takes its URI as a string parameter.")]
    public virtual bool
-   IsLocalUrl(string url) =>
+   IsLocalUrl(string? url) =>
       // TODO this should call the System.Web.dll API once it gets added to the framework and MVC takes a dependency on it.
       _httpContext.Request.IsUrlLocalToHost(url);
 
    // this method can accept an app-relative path or an absolute path for contentPath
-   static string
-   GenerateClientUrl(HttpContext httpContext, string contentPath) {
+   [return: NotNullIfNotNull(nameof(contentPath))]
+   static string?
+   GenerateClientUrl(HttpContext httpContext, string? contentPath) {
 
       if (String.IsNullOrEmpty(contentPath)) {
          return contentPath;
@@ -105,8 +107,9 @@ public class UrlHelper {
       }
    }
 
-   static string
-   GenerateClientUrlInternal(HttpContext httpContext, string contentPath) {
+   [return: NotNullIfNotNull(nameof(contentPath))]
+   static string?
+   GenerateClientUrlInternal(HttpContext httpContext, string? contentPath) {
 
       if (String.IsNullOrEmpty(contentPath)) {
          return contentPath;

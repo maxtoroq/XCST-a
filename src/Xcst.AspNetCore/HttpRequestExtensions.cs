@@ -66,7 +66,7 @@ public static class HttpRequestExtensions {
    [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "request", Justification = "The request parameter is no longer being used but we do not want to break legacy callers.")]
    [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "1#", Justification = "Response.Redirect() takes its URI as a string parameter.")]
    public static bool
-   IsUrlLocalToHost(this HttpRequest request, string url) {
+   IsUrlLocalToHost(this HttpRequest request, string? url) {
 
       return !String.IsNullOrEmpty(url) &&
          ((url[0] == '/' && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'))) || // "/" or "/foo" but not "//" or "/\"
