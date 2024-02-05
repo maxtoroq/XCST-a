@@ -59,7 +59,7 @@ public class OptionList : IEnumerable<SelectListItem> {
    }
 
    public OptionList
-   WithSelectedValue(object selectedValue, bool multiple = false) {
+   WithSelectedValue(object? selectedValue, bool multiple = false) {
 
       if (selectedValue != null) {
 
@@ -114,7 +114,7 @@ public class OptionList : IEnumerable<SelectListItem> {
    }
 
    public OptionList
-   ConcatDynamicList(IEnumerable<SelectListItem> list) {
+   ConcatDynamicList(IEnumerable<SelectListItem>? list) {
 
       if (list != null) {
 
@@ -136,7 +136,7 @@ public class OptionList : IEnumerable<SelectListItem> {
    }
 
    public OptionList
-   ConcatDynamicList<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> list) {
+   ConcatDynamicList<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>>? list) {
 
       if (list != null) {
 
@@ -155,7 +155,7 @@ public class OptionList : IEnumerable<SelectListItem> {
    }
 
    public OptionList
-   ConcatDynamicList<TGroupKey, TKey, TValue>(IEnumerable<IGrouping<TGroupKey, KeyValuePair<TKey, TValue>>> list) {
+   ConcatDynamicList<TGroupKey, TKey, TValue>(IEnumerable<IGrouping<TGroupKey, KeyValuePair<TKey, TValue>>>? list) {
 
       if (list != null) {
 
@@ -182,7 +182,7 @@ public class OptionList : IEnumerable<SelectListItem> {
    }
 
    public OptionList
-   ConcatDynamicList<TKey, TElement>(IEnumerable<IGrouping<TKey, TElement>> list) {
+   ConcatDynamicList<TKey, TElement>(IEnumerable<IGrouping<TKey, TElement>>? list) {
 
       if (list != null) {
 
@@ -208,7 +208,7 @@ public class OptionList : IEnumerable<SelectListItem> {
    }
 
    public OptionList
-   ConcatDynamicList(IEnumerable list) {
+   ConcatDynamicList(IEnumerable? list) {
 
       if (list != null) {
 
