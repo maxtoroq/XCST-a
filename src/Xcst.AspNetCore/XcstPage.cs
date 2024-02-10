@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Xcst.Web;
 
@@ -151,8 +152,8 @@ public abstract class XcstPage {
          return PolicyAuthorizationResult.Success();
       }
 
-      var policyProvider = (IAuthorizationPolicyProvider)httpContext.RequestServices.GetService(typeof(IAuthorizationPolicyProvider))!;
-      var policyEval = (IPolicyEvaluator)httpContext.RequestServices.GetService(typeof(IPolicyEvaluator))!;
+      var policyProvider = httpContext.RequestServices.GetRequiredService<IAuthorizationPolicyProvider>();
+      var policyEval = httpContext.RequestServices.GetRequiredService<IPolicyEvaluator>();
 
       var authorizeData = new AuthorizeData {
          Policy = policy,
@@ -161,7 +162,7 @@ public abstract class XcstPage {
 
       var authorizationPolicy = await AuthorizationPolicy.CombineAsync(policyProvider, new[] { authorizeData });
       var authenticateResult = await policyEval.AuthenticateAsync(authorizationPolicy!, httpContext);
-      var authorizeResult = await policyEval.AuthorizeAsync(authorizationPolicy!, authenticateResult, httpContext, null);
+      var authorizeResult = await policyEval.AuthorizeAsync(authorizationPolicy!, authenticateResult, httpContext, this);
 
       return authorizeResult;
    }
