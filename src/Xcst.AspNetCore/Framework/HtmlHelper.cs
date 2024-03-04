@@ -11,7 +11,6 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using Xcst.Web.Runtime;
-using RouteValueDictionary = Microsoft.AspNetCore.Routing.RouteValueDictionary;
 
 namespace Xcst.Web.Mvc;
 
@@ -96,10 +95,14 @@ public class HtmlHelper {
    /// </example>
    /// <param name="htmlAttributes">Anonymous object describing HTML attributes.</param>
    /// <returns>A dictionary that represents HTML attributes.</returns>
-   public static RouteValueDictionary
+   public static IDictionary<string, object?>
    AnonymousObjectToHtmlAttributes(object? htmlAttributes) {
 
-      var result = new RouteValueDictionary();
+      if (htmlAttributes is IDictionary<string, object?> dictionary) {
+         return new Dictionary<string, object?>(dictionary, StringComparer.OrdinalIgnoreCase);
+      }
+
+      var result = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
 
       if (htmlAttributes != null) {
          foreach (var property in HtmlAttributePropertyHelper.GetProperties(htmlAttributes)) {
@@ -206,7 +209,7 @@ public class HtmlHelper {
       }
    }
 
-   public IDictionary<string, object>
+   public IDictionary<string, string>
    GetUnobtrusiveValidationAttributes(string name) =>
       GetUnobtrusiveValidationAttributes(name, modelExplorer: null);
 
@@ -214,31 +217,47 @@ public class HtmlHelper {
    // never rendered validation for a field with this name in this form. Also, if there's no form context,
    // then we can't render the attributes (we'd have no <form> to attach them to).
 
-   public IDictionary<string, object>
+   public IDictionary<string, string>
    GetUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer) =>
       GetUnobtrusiveValidationAttributes(name, modelExplorer, false);
 
-   internal IDictionary<string, object>
+   internal IDictionary<string, string>
    GetUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength) {
 
-      var results = new Dictionary<string, object>();
+      var results = new Dictionary<string, string>();
+
+      WriteUnobtrusiveValidationAttributes(
+         name, modelExplorer, excludeMinMaxLength, (key, value) => results[key] = value);
+
+      return results;
+   }
+
+   internal void
+   WriteUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength, XcstWriter output) {
+
+      WriteUnobtrusiveValidationAttributes(
+         name, modelExplorer, excludeMinMaxLength, (key, value) => output.WriteAttributeString(key, value));
+   }
+
+   internal void
+   WriteUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength, Action<string, string> writeFn) {
 
       // The ordering of these 3 checks (and the early exits) is for performance reasons.
 
       if (!this.ViewContext.ClientValidationEnabled) {
-         return results;
+         return;
       }
 
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
       if (formContext is null) {
-         return results;
+         return;
       }
 
       var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
 
       if (formContext.RenderedField(fullName)) {
-         return results;
+         return;
       }
 
       formContext.RenderedField(fullName, true);
@@ -251,10 +270,8 @@ public class HtmlHelper {
          .AddValidationAttributes(this.ViewContext.ActionContext, modelExplorer, attributes, excludeMinMaxLength);
 
       foreach (var pair in attributes) {
-         results[pair.Key] = pair.Value;
+         writeFn.Invoke(pair.Key, pair.Value);
       }
-
-      return results;
    }
 
    public string

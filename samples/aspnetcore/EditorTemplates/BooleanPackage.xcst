@@ -9,10 +9,12 @@
    <c:import-namespace ns='System.Collections.Generic'/>
    <c:import-namespace ns='System.Globalization'/>
    <c:import-namespace ns='System.Linq'/>
+   <c:import-namespace ns='Xcst.Web.Mvc'/>
 
-   <c:param name='htmlAttributes' as='IDictionary&lt;string, object>?'/>
+   <c:param name='htmlAttributes' as='object?'/>
 
-   <c:variable name='@class' value='htmlAttributes?.TryGetValue("class", out var @class) == true ? $" {@class}" : null' as='string?'/>
+   <c:variable name='htmlAttributesDict' value='HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)' as='IDictionary&lt;string, object?>'/>
+   <c:variable name='@class' value='htmlAttributesDict.TryGetValue("class", out var @class) ? $" {@class}" : null' as='string?'/>
 
    <c:template name='c:initial-template' visibility='public'>
       <c:variable name='modelValue' value='(ViewData.Model != null) ?
@@ -40,11 +42,9 @@
    </c:template>
 
    <c:template name='write-attributes-except-class'>
-      <c:if test='htmlAttributes != null'>
-         <c:for-each name='pair' in='htmlAttributes.Where(p => p.Key != "class")'>
-            <c:attribute name='{pair.Key}' value='pair.Value'/>
-         </c:for-each>
-      </c:if>
+      <c:for-each name='pair' in='htmlAttributesDict.Where(p => p.Key != "class")'>
+         <c:attribute name='{pair.Key}' value='pair.Value'/>
+      </c:for-each>
    </c:template>
 
 </c:package>

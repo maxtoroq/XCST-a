@@ -7,7 +7,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using RouteValueDictionary = Microsoft.AspNetCore.Routing.RouteValueDictionary;
 
 namespace Xcst.Web;
 
@@ -174,30 +173,10 @@ static class TypeHelpers {
    /// This helper will cache accessors and types, and is intended when the anonymous object is accessed multiple
    /// times throughout the lifetime of the web application.
    /// </summary>
-   public static RouteValueDictionary
+   public static Dictionary<string, object?>
    ObjectToDictionary(object? value) {
 
-      var dictionary = new RouteValueDictionary();
-
-      if (value != null) {
-         foreach (var helper in PropertyHelper.GetProperties(value)) {
-            dictionary.Add(helper.Name, helper.GetValue(value));
-         }
-      }
-
-      return dictionary;
-   }
-
-   /// <summary>
-   /// Given an object of anonymous type, add each property as a key and associated with its value to a dictionary.
-   ///
-   /// This helper will not cache accessors and types, and is intended when the anonymous object is accessed once
-   /// or very few times throughout the lifetime of the web application.
-   /// </summary>
-   public static RouteValueDictionary
-   ObjectToDictionaryUncached(object? value) {
-
-      var dictionary = new RouteValueDictionary();
+      var dictionary = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
 
       if (value != null) {
          foreach (var helper in PropertyHelper.GetProperties(value)) {

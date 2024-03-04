@@ -19,7 +19,7 @@ using Xcst.Web.Mvc;
 namespace Xcst.Web.Runtime;
 
 /// <exclude/>
-public class HtmlAttributeDictionary : Dictionary<string, object> {
+public class HtmlAttributeDictionary : Dictionary<string, object?> {
 
    public HtmlAttributeDictionary
    SetClass(string? cssClass) {
@@ -32,7 +32,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object> {
    }
 
    public HtmlAttributeDictionary
-   SetAttribute(string key, object value) {
+   SetAttribute(string key, object? value) {
 
       if (String.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
 
@@ -55,20 +55,14 @@ public class HtmlAttributeDictionary : Dictionary<string, object> {
    SetAttributes(object? attributes) {
 
       if (attributes != null) {
-
-         var dict = attributes as IDictionary<string, object>
-#pragma warning disable CS8619
-            ?? HtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
-#pragma warning restore CS8619
-
-         SetAttributes(dict);
+         SetAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
       }
 
       return this;
    }
 
    public HtmlAttributeDictionary
-   SetAttributes(IDictionary<string, object>? attributes) {
+   SetAttributes(IDictionary<string, object?>? attributes) {
 
       // NOTE: For backcompat, the dictionary class must be a non-null string to be joined
       // with the attribute (or library) class, otherwise it's ignored. If there's no attribute class,
@@ -90,10 +84,10 @@ public class HtmlAttributeDictionary : Dictionary<string, object> {
          foreach (var entry in attributes) {
 
             if (entry.Key == "class"
-               && ContainsKey("class")) {
+               && TryGetValue("class", out var thisClassObj)) {
 
                if (entry.Value is string s) {
-                  this["class"] = (string)this["class"] + " " + s;
+                  this["class"] = (string?)thisClassObj + " " + s;
                }
 
             } else {
@@ -132,7 +126,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object> {
    GetClassOrNull() {
 
       if (TryGetValue("class", out var value)) {
-         return value.ToString();
+         return value?.ToString();
       }
 
       return null;

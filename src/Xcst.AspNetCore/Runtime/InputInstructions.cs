@@ -411,7 +411,7 @@ public static class InputInstructions {
          && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
       HtmlAttributeHelper.WriteCssClass(@class, cssClass, output);
-      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer), output);
+      htmlHelper.WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
 
       return new ElementEndingDisposable(output);
    }

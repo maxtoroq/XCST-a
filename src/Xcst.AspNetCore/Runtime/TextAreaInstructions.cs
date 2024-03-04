@@ -75,7 +75,7 @@ public static class TextAreaInstructions {
          : null;
 
       HtmlAttributeHelper.WriteCssClass(@class, cssClass, output);
-      HtmlAttributeHelper.WriteAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, modelExplorer), output);
+      htmlHelper.WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
 
       var value = (modelState != null) ? modelState.AttemptedValue
          : (modelExplorer.Model != null) ? Convert.ToString(modelExplorer.Model, CultureInfo.CurrentCulture)

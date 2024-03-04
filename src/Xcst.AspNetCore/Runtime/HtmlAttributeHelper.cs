@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using Xcst.Web.Mvc;
 
 namespace Xcst.Web.Runtime;
@@ -63,17 +62,6 @@ public static class HtmlAttributeHelper {
             : userClass;
 
          output.WriteAttributeString("class", joinedClass);
-      }
-   }
-
-   internal static void
-   WriteAttributes(IDictionary<string, object>? htmlAttributes, XcstWriter output) {
-
-      if (htmlAttributes != null) {
-
-         foreach (var item in htmlAttributes) {
-            WriteAttribute(item.Key, item.Value, output);
-         }
       }
    }
 

@@ -110,11 +110,8 @@ public static class SelectInstructions {
       var cssClass = (viewData.ModelState.TryGetValue(fullName, out var modelState)
          && modelState.Errors.Count > 0) ? HtmlHelper.ValidationInputCssClassName : null;
 
-      var validationAttribs = htmlHelper
-         .GetUnobtrusiveValidationAttributes(name, modelExplorer, excludeMinMaxLength: !multiple);
-
       HtmlAttributeHelper.WriteCssClass(@class, cssClass, output);
-      HtmlAttributeHelper.WriteAttributes(validationAttribs, output);
+      htmlHelper.WriteUnobtrusiveValidationAttributes(name, modelExplorer, excludeMinMaxLength: !multiple, output);
 
       bool isSelected(string value, bool selectedDefault) =>
          (selectedValues.Count > 0) ?
