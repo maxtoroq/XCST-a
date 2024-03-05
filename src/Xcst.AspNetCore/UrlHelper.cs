@@ -47,7 +47,7 @@ public class UrlHelper {
    }
 
    public string
-   Href(string path, params object[] pathParts) {
+   Href(string path, params object?[]? pathParts) {
 
       if (String.IsNullOrEmpty(path)) {
          return path;
