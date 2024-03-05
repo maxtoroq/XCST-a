@@ -21,7 +21,7 @@ namespace Xcst.Web.Runtime;
 public static class HtmlHelperFactory {
 
    public static HtmlHelper<TModel>
-   ForModel<TModel>(HtmlHelper currentHtml, TModel model, string? htmlFieldPrefix = null) {
+   ForModel<TModel>(HtmlHelper currentHtml, TModel? model, string? htmlFieldPrefix = null) {
 
       if (currentHtml is null) throw new ArgumentNullException(nameof(currentHtml));
 
