@@ -87,7 +87,7 @@ public static class DisplayInstructions {
          .Where(p => ShowForDisplay(html, p));
 
       var orderedProperties = (templateInfo.MembersNames.Count > 0) ?
-         filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.Metadata.PropertyName))
+         filteredProperties.OrderBy(p => templateInfo.MembersNames.IndexOf(p.Metadata.PropertyName!))
          : filteredProperties;
 
       return orderedProperties;
@@ -107,7 +107,7 @@ public static class DisplayInstructions {
       }
 
       if (templateInfo.MembersNames.Count > 0) {
-         return templateInfo.MembersNames.Contains(propertyMetadata.PropertyName);
+         return templateInfo.MembersNames.Contains(propertyMetadata.PropertyName!);
       }
 
       if (!propertyMetadata.ShowForDisplay) {

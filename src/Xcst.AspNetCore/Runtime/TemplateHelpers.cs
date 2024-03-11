@@ -102,7 +102,7 @@ static class TemplateHelpers {
          && !String.IsNullOrEmpty(formatString)) {
 
          formattedModelValue = (displayMode) ?
-            package.Context.SimpleContent.Format(formatString!, model)
+            package.Context.SimpleContent.Format(formatString, model)
             : String.Format(CultureInfo.CurrentCulture, formatString, model);
       }
 
