@@ -39,12 +39,14 @@ static class TemplateHelpers {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, html.ViewData);
 
+      htmlFieldName ??= expression;
+
       TemplateHelper(
          html,
          package,
          output,
          modelExplorer,
-         htmlFieldName: expression,
+         htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
          displayMode,
