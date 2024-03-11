@@ -41,7 +41,7 @@ public static class DisplayInstructions {
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
-         DataBoundControlMode.ReadOnly,
+         displayMode: true,
          additionalViewData
       );
 
@@ -57,7 +57,7 @@ public static class DisplayInstructions {
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
-         DataBoundControlMode.ReadOnly,
+         displayMode: true,
          additionalViewData
       );
 
@@ -72,7 +72,7 @@ public static class DisplayInstructions {
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
-         DataBoundControlMode.ReadOnly,
+         displayMode: true,
          additionalViewData
       );
 

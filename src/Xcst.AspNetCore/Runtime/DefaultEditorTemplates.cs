@@ -103,11 +103,7 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      CollectionTemplate(html, package, seqOutput, TemplateHelpers.TemplateHelper);
-
-   internal static void
-   CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+   CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
       var model = viewData.ModelExplorer.Model;
@@ -151,7 +147,7 @@ static class DefaultEditorTemplates {
             var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-            templateHelper(
+            TemplateHelpers.TemplateHelper(
                html,
                package,
                seqOutput,
@@ -159,7 +155,7 @@ static class DefaultEditorTemplates {
                htmlFieldName: fieldName,
                templateName: null,
                membersNames: null,
-               DataBoundControlMode.Edit,
+               displayMode: false,
                additionalViewData: null
             );
          }
@@ -362,11 +358,7 @@ static class DefaultEditorTemplates {
       HtmlInputTemplateHelper(html, package, seqOutput, "Number", inputType: "number");
 
    public static void
-   ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      ObjectTemplate(html, package, seqOutput, TemplateHelpers.TemplateHelper);
-
-   internal static void
-   ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, TemplateHelpers.TemplateHelperDelegate templateHelper) {
+   ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
 
@@ -426,7 +418,7 @@ static class DefaultEditorTemplates {
                fieldWriter.WriteAttributeString("class", "editor-field");
             }
 
-            templateHelper(
+            TemplateHelpers.TemplateHelper(
                html,
                package,
                fieldWriter ?? fieldsetWriter ?? seqOutput,
@@ -434,7 +426,7 @@ static class DefaultEditorTemplates {
                htmlFieldName: propertyMeta.PropertyName,
                templateName: null,
                membersNames: null,
-               DataBoundControlMode.Edit,
+               displayMode: false,
                additionalViewData: null
             );
 

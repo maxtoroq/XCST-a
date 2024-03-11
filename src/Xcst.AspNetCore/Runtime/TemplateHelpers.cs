@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xcst.Runtime;
 using Xcst.Web.Builder;
 using Xcst.Web.Mvc;
@@ -34,114 +33,13 @@ using TemplateAction = Action<HtmlHelper, IXcstPackage, ISequenceWriter<object>>
 
 static class TemplateHelpers {
 
-   static readonly Dictionary<DataBoundControlMode, string>
-   _modeViewPaths = new() {
-      { DataBoundControlMode.ReadOnly, "DisplayTemplates" },
-      { DataBoundControlMode.Edit, "EditorTemplates" }
-   };
-
-   static readonly Dictionary<string, TemplateAction>
-   _defaultDisplayActions = new(StringComparer.OrdinalIgnoreCase) {
-
-      // System.ComponentModel.DataAnnotations.DataType templates
-      { "EmailAddress", DefaultDisplayTemplates.EmailAddressTemplate },
-      { "Html", DefaultDisplayTemplates.HtmlTemplate },
-      { "ImageUrl", DefaultDisplayTemplates.ImageUrlTemplate },
-      { "Text", DefaultDisplayTemplates.StringTemplate },
-      { "Url", DefaultDisplayTemplates.UrlTemplate },
-
-      // primitive templates
-      { "Boolean", DefaultDisplayTemplates.BooleanTemplate },
-      { "Decimal", DefaultDisplayTemplates.DecimalTemplate },
-      { "Enum", DefaultDisplayTemplates.EnumTemplate },
-      { "String", DefaultDisplayTemplates.StringTemplate },
-
-      // "special" templates
-      { "Object", DefaultDisplayTemplates.ObjectTemplate },
-      { "HiddenInput", DefaultDisplayTemplates.HiddenInputTemplate },
-      { "Collection", DefaultDisplayTemplates.CollectionTemplate },
-   };
-
-   static readonly Dictionary<string, TemplateAction>
-   _defaultEditorActions = new(StringComparer.OrdinalIgnoreCase) {
-
-      // System.ComponentModel.DataAnnotations.DataType templates
-      { "Date", DefaultEditorTemplates.DateTemplate },
-      { "DateTime", DefaultEditorTemplates.DateTimeLocalTemplate },
-      { "DateTime-local", DefaultEditorTemplates.DateTimeLocalTemplate },
-      { "EmailAddress", DefaultEditorTemplates.EmailAddressTemplate },
-      { "MultilineText", DefaultEditorTemplates.MultilineTextTemplate },
-      { "Password", DefaultEditorTemplates.PasswordTemplate },
-      { "PhoneNumber", DefaultEditorTemplates.PhoneNumberTemplate },
-      { "Text", DefaultEditorTemplates.StringTemplate },
-      { "Time", DefaultEditorTemplates.TimeTemplate },
-      { "Upload", DefaultEditorTemplates.UploadTemplate },
-      { "Url", DefaultEditorTemplates.UrlTemplate },
-
-      // primitive templates
-      { "Boolean", DefaultEditorTemplates.BooleanTemplate },
-      { "Byte", DefaultEditorTemplates.NumberTemplate },
-      { "Decimal", DefaultEditorTemplates.DecimalTemplate },
-      { "Enum", DefaultEditorTemplates.EnumTemplate },
-      { "Int32", DefaultEditorTemplates.NumberTemplate },
-      { "Int64", DefaultEditorTemplates.NumberTemplate },
-      { "SByte", DefaultEditorTemplates.NumberTemplate },
-      { "String", DefaultEditorTemplates.StringTemplate },
-      { "UInt32", DefaultEditorTemplates.NumberTemplate },
-      { "UInt64", DefaultEditorTemplates.NumberTemplate },
-
-      // this library's templates
-      { "DropDownList", DefaultEditorTemplates.DropDownListTemplate },
-      { "ListBox", DefaultEditorTemplates.ListBoxTemplate },
-      { "IFormFile", DefaultEditorTemplates.IFormFileTemplate },
-
-      // "special" templates
-      { "Object", DefaultEditorTemplates.ObjectTemplate },
-      { "HiddenInput", DefaultEditorTemplates.HiddenInputTemplate },
-      { "Collection", DefaultEditorTemplates.CollectionTemplate },
-   };
-
-   static string
-   CacheItemId = Guid.NewGuid().ToString();
-
-   internal delegate void
-   ExecuteTemplateDelegate(
-         HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData, string? templateName,
-         IList<string>? membersNames, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions);
-
-   internal delegate Dictionary<string, TemplateAction>
-   GetDefaultActionsDelegate(DataBoundControlMode mode);
-
-   internal delegate IEnumerable<string>
-   GetViewNamesDelegate(ModelMetadata metadata, params string?[] templateHints);
-
-   internal delegate void
-   TemplateHelperDelegate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelExplorer modelExplorer, string? htmlFieldName, string? templateName,
-         IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData);
-
    public static void
    Template(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? htmlFieldName, string? templateName,
-         IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData) =>
-      Template(
-         html,
-         package,
-         output,
-         expression: expression,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         mode,
-         additionalViewData,
-         TemplateHelper
-      );
-
-   internal static void
-   Template(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? htmlFieldName, string? templateName,
-         IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData, TemplateHelperDelegate templateHelper) {
+         IList<string>? membersNames, bool displayMode, object? additionalViewData) {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, html.ViewData);
 
-      templateHelper(
+      TemplateHelper(
          html,
          package,
          output,
@@ -149,51 +47,19 @@ static class TemplateHelpers {
          htmlFieldName: expression,
          templateName: templateName,
          membersNames,
-         mode,
+         displayMode,
          additionalViewData
       );
    }
 
    public static void
    TemplateFor<TContainer, TValue>(HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
-         string? htmlFieldName, string? templateName, IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData) =>
-      TemplateFor(
-         html,
-         package,
-         output,
-         expression: expression,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         mode,
-         additionalViewData,
-         TemplateHelper
-      );
-
-   internal static void
-   TemplateFor<TContainer, TValue>(HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
-         string? htmlFieldName, string? templateName, IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData, TemplateHelperDelegate templateHelper) {
+         string? htmlFieldName, string? templateName, IList<string>? membersNames, bool displayMode, object? additionalViewData) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, html.ViewData);
 
       htmlFieldName ??= ExpressionHelper.GetExpressionText(expression);
 
-      templateHelper(
-         html,
-         package,
-         output,
-         modelExplorer,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         mode,
-         additionalViewData
-      );
-   }
-
-   public static void
-   TemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelExplorer modelExplorer, string? htmlFieldName, string? templateName,
-         IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData) =>
       TemplateHelper(
          html,
          package,
@@ -202,16 +68,15 @@ static class TemplateHelpers {
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
-         mode,
-         additionalViewData,
-         ExecuteTemplate
+         displayMode,
+         additionalViewData
       );
+   }
 
-   internal static void
+   public static void
    TemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelExplorer modelExplorer, string? htmlFieldName, string? templateName,
-         IList<string>? membersNames, DataBoundControlMode mode, object? additionalViewData, ExecuteTemplateDelegate executeTemplate) {
+         IList<string>? membersNames, bool displayMode, object? additionalViewData) {
 
-      var displayMode = mode == DataBoundControlMode.ReadOnly;
       var metadata = modelExplorer.Metadata;
       var model = modelExplorer.Model;
 
@@ -275,22 +140,111 @@ static class TemplateHelpers {
 
       viewData.TemplateInfo.VisitedObjects.Add(visitedObjectsKey); // DDB #224750
 
-      executeTemplate(html, package, output, viewData, templateName, membersNames, mode, GetViewNames, GetDefaultActions);
+      new TemplateRenderer(html.ViewContext, viewData, templateName, membersNames, displayMode)
+         .Render(package, output);
+   }
+}
+
+sealed class TemplateRenderer {
+
+   static readonly string
+   _cacheItemId = Guid.NewGuid().ToString();
+
+   static readonly Dictionary<string, TemplateAction>
+   _defaultDisplayActions = new(StringComparer.OrdinalIgnoreCase) {
+
+      // System.ComponentModel.DataAnnotations.DataType templates
+      { "EmailAddress", DefaultDisplayTemplates.EmailAddressTemplate },
+      { "Html", DefaultDisplayTemplates.HtmlTemplate },
+      { "ImageUrl", DefaultDisplayTemplates.ImageUrlTemplate },
+      { "Text", DefaultDisplayTemplates.StringTemplate },
+      { "Url", DefaultDisplayTemplates.UrlTemplate },
+
+      // primitive templates
+      { "Boolean", DefaultDisplayTemplates.BooleanTemplate },
+      { "Decimal", DefaultDisplayTemplates.DecimalTemplate },
+      { "Enum", DefaultDisplayTemplates.EnumTemplate },
+      { "String", DefaultDisplayTemplates.StringTemplate },
+
+      // "special" templates
+      { "Object", DefaultDisplayTemplates.ObjectTemplate },
+      { "HiddenInput", DefaultDisplayTemplates.HiddenInputTemplate },
+      { "Collection", DefaultDisplayTemplates.CollectionTemplate },
+   };
+
+   static readonly Dictionary<string, TemplateAction>
+   _defaultEditorActions = new(StringComparer.OrdinalIgnoreCase) {
+
+      // System.ComponentModel.DataAnnotations.DataType templates
+      { "Date", DefaultEditorTemplates.DateTemplate },
+      { "DateTime", DefaultEditorTemplates.DateTimeLocalTemplate },
+      { "DateTime-local", DefaultEditorTemplates.DateTimeLocalTemplate },
+      { "EmailAddress", DefaultEditorTemplates.EmailAddressTemplate },
+      { "MultilineText", DefaultEditorTemplates.MultilineTextTemplate },
+      { "Password", DefaultEditorTemplates.PasswordTemplate },
+      { "PhoneNumber", DefaultEditorTemplates.PhoneNumberTemplate },
+      { "Text", DefaultEditorTemplates.StringTemplate },
+      { "Time", DefaultEditorTemplates.TimeTemplate },
+      { "Upload", DefaultEditorTemplates.UploadTemplate },
+      { "Url", DefaultEditorTemplates.UrlTemplate },
+
+      // primitive templates
+      { "Boolean", DefaultEditorTemplates.BooleanTemplate },
+      { "Byte", DefaultEditorTemplates.NumberTemplate },
+      { "Decimal", DefaultEditorTemplates.DecimalTemplate },
+      { "Enum", DefaultEditorTemplates.EnumTemplate },
+      { "Int32", DefaultEditorTemplates.NumberTemplate },
+      { "Int64", DefaultEditorTemplates.NumberTemplate },
+      { "SByte", DefaultEditorTemplates.NumberTemplate },
+      { "String", DefaultEditorTemplates.StringTemplate },
+      { "UInt32", DefaultEditorTemplates.NumberTemplate },
+      { "UInt64", DefaultEditorTemplates.NumberTemplate },
+
+      // this library's templates
+      { "DropDownList", DefaultEditorTemplates.DropDownListTemplate },
+      { "ListBox", DefaultEditorTemplates.ListBoxTemplate },
+      { "IFormFile", DefaultEditorTemplates.IFormFileTemplate },
+
+      // "special" templates
+      { "Object", DefaultEditorTemplates.ObjectTemplate },
+      { "HiddenInput", DefaultEditorTemplates.HiddenInputTemplate },
+      { "Collection", DefaultEditorTemplates.CollectionTemplate },
+   };
+
+   readonly
+   ViewContext _viewContext;
+
+   readonly
+   ViewDataDictionary _viewData;
+
+   readonly string?
+   _templateName;
+
+   readonly IList<string>?
+   _membersNames;
+
+   readonly bool
+   _readOnly;
+
+   public
+   TemplateRenderer(ViewContext viewContext, ViewDataDictionary viewData, string? templateName, IList<string>? membersNames, bool readOnly) {
+      _viewContext = viewContext;
+      _viewData = viewData;
+      _templateName = templateName;
+      _membersNames = membersNames;
+      _readOnly = readOnly;
    }
 
-   static void
-   ExecuteTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData, string? templateName,
-         IList<string>? membersNames, DataBoundControlMode mode, GetViewNamesDelegate getViewNames, GetDefaultActionsDelegate getDefaultActions) {
+   public void
+   Render(IXcstPackage package, ISequenceWriter<object> output) {
 
-      var actionCache = GetActionCache(html);
-      var defaultActions = getDefaultActions(mode);
-      var modeViewPath = _modeViewPaths[mode];
+      var defaultActions = GetDefaultActions();
 
-      var metadata = viewData.ModelMetadata;
-      var options = DefaultEditorTemplates.Options(viewData);
+      var metadata = _viewData.ModelMetadata;
+      var options = DefaultEditorTemplates.Options(_viewData);
 
       string?[] templateHints = {
-         templateName,
+         _templateName,
          metadata.TemplateHint,
          ((options != null) ?
             TypeHelpers.IsIEnumerableNotString(metadata.ModelType) ? "ListBox"
@@ -301,70 +255,35 @@ static class TemplateHelpers {
 
       var config = XcstWebOptions.Instance;
 
-      foreach (var viewName in getViewNames(metadata, templateHints)) {
+      foreach (var viewName in GetViewNames(templateHints)) {
 
-         var viewPage = ((mode == DataBoundControlMode.ReadOnly) ?
+         var viewPage = ((_readOnly) ?
             config.DisplayTemplateFactory
-            : config.EditorTemplateFactory)?.Invoke(viewName, html.ViewContext);
+            : config.EditorTemplateFactory)?.Invoke(viewName, _viewContext);
 
          if (viewPage != null) {
-            RenderViewPage(html, output, viewData, viewPage);
+            RenderViewPage(viewPage, output);
             return;
          }
 
-         var fullViewName = modeViewPath + "/" + viewName;
-
-         if (actionCache.TryGetValue(fullViewName, out var cacheItem)) {
-
-            if (cacheItem != null) {
-               cacheItem.Execute(html, package, output, viewData);
-               return;
-            }
-
-         } else {
-
-            if (defaultActions.TryGetValue(viewName, out var defaultAction)) {
-
-               var item = new ActionCacheCodeItem {
-                  Action = defaultAction
-               };
-
-               actionCache[fullViewName] = item;
-
-               item.Execute(html, package, output, viewData);
-               return;
-            }
-
-            actionCache[fullViewName] = null;
+         if (defaultActions.TryGetValue(viewName, out var defaultAction)) {
+            defaultAction.Invoke(MakeHtmlHelper(_viewContext, _viewData), package, output);
+            return;
          }
       }
 
       throw new InvalidOperationException($"Unable to locate an appropriate template for type {metadata.UnderlyingOrModelType.FullName}.");
    }
 
-   static Dictionary<string, ActionCacheItem?>
-   GetActionCache(HtmlHelper html) {
-
-      var context = html.ViewContext.HttpContext;
-      Dictionary<string, ActionCacheItem?> result;
-
-      if (context.Items.TryGetValue(CacheItemId, out var item)) {
-         result = (Dictionary<string, ActionCacheItem?>)item!;
-      } else {
-         result = new Dictionary<string, ActionCacheItem?>();
-         context.Items[CacheItemId] = result;
-      }
-
-      return result;
-   }
-
-   static Dictionary<string, TemplateAction>
-   GetDefaultActions(DataBoundControlMode mode) =>
-      (mode == DataBoundControlMode.ReadOnly) ? _defaultDisplayActions
+   private Dictionary<string, TemplateAction>
+   GetDefaultActions() =>
+      (_readOnly) ? _defaultDisplayActions
          : _defaultEditorActions;
 
-   static IEnumerable<string>
-   GetViewNames(ModelMetadata metadata, params string?[] templateHints) {
+   IEnumerable<string>
+   GetViewNames(params string?[] templateHints) {
+
+      var metadata = _viewData.ModelMetadata;
 
       foreach (var templateHint in templateHints.Where(s => !String.IsNullOrEmpty(s))) {
          yield return templateHint!;
@@ -431,42 +350,24 @@ static class TemplateHelpers {
    }
 
    static HtmlHelper
-   MakeHtmlHelper(HtmlHelper currentHtml, ViewDataDictionary viewData) =>
-      new HtmlHelper(new ViewContext(currentHtml.ViewContext), new ViewDataContainer(viewData));
+   MakeHtmlHelper(ViewContext viewContext, ViewDataDictionary viewData) =>
+      new HtmlHelper(new ViewContext(viewContext), new ViewDataContainer(viewData));
 
-   static void
-   RenderViewPage(HtmlHelper html, ISequenceWriter<object> output, ViewDataDictionary viewData, XcstViewPage viewPage) {
+   void
+   RenderViewPage(XcstViewPage viewPage, ISequenceWriter<object> output) {
 
-      viewPage.ViewContext = new ViewContext(html.ViewContext);
-      viewPage.ViewData = viewData;
+      viewPage.ViewContext = new ViewContext(_viewContext);
+      viewPage.ViewData = _viewData;
 
       var evaluator = XcstEvaluator.Using((object)viewPage);
 
-      foreach (var item in viewData) {
+      foreach (var item in _viewData) {
          evaluator.WithParam(item.Key, item.Value);
       }
 
       evaluator.CallInitialTemplate()
          .OutputToRaw(output)
          .Run();
-   }
-
-   abstract class ActionCacheItem {
-
-      public abstract void
-      Execute(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData);
-   }
-
-   class ActionCacheCodeItem : ActionCacheItem {
-
-#pragma warning disable CS8618
-      public TemplateAction
-      Action { get; set; }
-#pragma warning restore CS8618
-
-      public override void
-      Execute(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ViewDataDictionary viewData) =>
-         Action(MakeHtmlHelper(html, viewData), package, output);
    }
 
    class ViewDataContainer : IViewDataContainer {
@@ -479,9 +380,4 @@ static class TemplateHelpers {
          this.ViewData = viewData;
       }
    }
-}
-
-enum DataBoundControlMode {
-   ReadOnly = 0,
-   Edit = 1
 }

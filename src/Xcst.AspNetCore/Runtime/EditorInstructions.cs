@@ -42,7 +42,7 @@ public static class EditorInstructions {
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
-         DataBoundControlMode.Edit,
+         displayMode: false,
          additionalViewData
       );
 
@@ -58,7 +58,7 @@ public static class EditorInstructions {
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
-         DataBoundControlMode.Edit,
+         displayMode: false,
          additionalViewData
       );
 
@@ -73,7 +73,7 @@ public static class EditorInstructions {
          htmlFieldName: htmlFieldName,
          templateName: templateName,
          membersNames,
-         DataBoundControlMode.Edit,
+         displayMode: false,
          additionalViewData
       );
 
