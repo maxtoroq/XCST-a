@@ -212,17 +212,29 @@
 
       <code:variable name='{newHelper.Attribute("name")!.Value}'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <code:method-call name='ForModel'>
-            <call-template name='helper-type'>
-               <with-param name='name'>HtmlHelperFactory</with-param>
-            </call-template>
+         <code:method-call name='{(V1 ? "ForModel" : "NewModelHelper")}'>
+            <choose>
+               <when test='V1'>
+                  <call-template name='helper-type'>
+                     <with-param name='name'>HtmlHelperFactory</with-param>
+                  </call-template>
+               </when>
+               <otherwise>
+                  <call-template name='html-helper-ref'/>
+               </otherwise>
+            </choose>
             <if test='typeAttr != null'>
                <code:type-arguments>
                   <copy-of value='type'/>
                </code:type-arguments>
             </if>
             <code:arguments>
-               <call-template name='html-helper-ref'/>
+               <if test='V2_OR_GREATER'>
+                  <code:this-reference/>
+               </if>
+               <if test='V1'>
+                  <call-template name='html-helper-ref'/>
+               </if>
                <choose>
                   <when test='valueAttr != null'>
                      <code:expression value='{xcst_expression(valueAttr)}'/>

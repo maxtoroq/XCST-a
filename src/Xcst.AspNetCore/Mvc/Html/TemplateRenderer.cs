@@ -12,140 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region TemplateHelpers is based on code from ASP.NET Web Stack
+#region TemplateRenderer is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using Xcst.Runtime;
 using Xcst.Web.Builder;
-using Xcst.Web.Mvc;
-using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
-namespace Xcst.Web.Runtime;
+namespace Xcst.Web.Mvc;
 
-using TemplateAction = Action<HtmlHelper, IXcstPackage, ISequenceWriter<object>>;
-
-static class TemplateHelpers {
-
-   public static void
-   Template(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, string expression, string? htmlFieldName, string? templateName,
-         IList<string>? membersNames, bool displayMode, object? additionalViewData) {
-
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, html.ViewData);
-
-      htmlFieldName ??= expression;
-
-      TemplateHelper(
-         html,
-         package,
-         output,
-         modelExplorer,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         displayMode,
-         additionalViewData
-      );
-   }
-
-   public static void
-   TemplateFor<TContainer, TValue>(HtmlHelper<TContainer> html, IXcstPackage package, ISequenceWriter<object> output, Expression<Func<TContainer, TValue>> expression,
-         string? htmlFieldName, string? templateName, IList<string>? membersNames, bool displayMode, object? additionalViewData) {
-
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, html.ViewData);
-
-      htmlFieldName ??= ExpressionHelper.GetExpressionText(expression);
-
-      TemplateHelper(
-         html,
-         package,
-         output,
-         modelExplorer,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         displayMode,
-         additionalViewData
-      );
-   }
-
-   public static void
-   TemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> output, ModelExplorer modelExplorer, string? htmlFieldName, string? templateName,
-         IList<string>? membersNames, bool displayMode, object? additionalViewData) {
-
-      var metadata = modelExplorer.Metadata;
-      var model = modelExplorer.Model;
-
-      if (metadata.ConvertEmptyStringToNull
-         && String.Empty.Equals(model)) {
-
-         model = null;
-      }
-
-      var formattedModelValue = model;
-
-      if (model is null
-         && displayMode) {
-
-         formattedModelValue = metadata.NullDisplayText;
-      }
-
-      var formatString = (displayMode) ?
-         metadata.DisplayFormatString
-         : metadata.EditFormatString;
-
-      if (model != null
-         && !String.IsNullOrEmpty(formatString)) {
-
-         formattedModelValue = (displayMode) ?
-            package.Context.SimpleContent.Format(formatString, model)
-            : String.Format(CultureInfo.CurrentCulture, formatString, model);
-      }
-
-      // Normally this shouldn't happen, unless someone writes their own custom Object templates which
-      // don't check to make sure that the object hasn't already been displayed
-
-      var visitedObjectsKey = model ?? metadata.UnderlyingOrModelType;
-
-      if (html.ViewData.TemplateInfo.VisitedObjects.Contains(visitedObjectsKey)) {
-         // DDB #224750
-         return;
-      }
-
-      var viewData = new ViewDataDictionary(html.ViewData) {
-         Model = model,
-         ModelExplorer = modelExplorer.GetExplorerForModel(model),
-         TemplateInfo = new TemplateInfo {
-            FormattedModelValue = formattedModelValue,
-            HtmlFieldPrefix = html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
-            MembersNames = membersNames
-         }
-      };
-
-      viewData.TemplateInfo.VisitedObjects = new HashSet<object>(html.ViewData.TemplateInfo.VisitedObjects); // DDB #224750
-
-      if (additionalViewData != null) {
-
-         var additionalParams = additionalViewData as IDictionary<string, object?>
-            ?? TypeHelpers.ObjectToDictionary(additionalViewData);
-
-         foreach (var kvp in additionalParams) {
-            viewData[kvp.Key] = kvp.Value;
-         }
-      }
-
-      viewData.TemplateInfo.VisitedObjects.Add(visitedObjectsKey); // DDB #224750
-
-      new TemplateRenderer(html.ViewContext, viewData, templateName, membersNames, displayMode)
-         .Render(package, output);
-   }
-}
+using TemplateAction = Action<HtmlHelper, ISequenceWriter<object>>;
 
 sealed class TemplateRenderer {
 
@@ -213,6 +93,9 @@ sealed class TemplateRenderer {
       { "Collection", DefaultEditorTemplates.CollectionTemplate },
    };
 
+   readonly IXcstPackage
+   _package;
+
    readonly
    ViewContext _viewContext;
 
@@ -222,23 +105,28 @@ sealed class TemplateRenderer {
    readonly string?
    _templateName;
 
-   readonly IList<string>?
-   _membersNames;
-
    readonly bool
    _readOnly;
 
+   public static TemplateRenderer
+   NullRenderer() =>
+      new TemplateRenderer(default!, default!, default!, default, default);
+
    public
-   TemplateRenderer(ViewContext viewContext, ViewDataDictionary viewData, string? templateName, IList<string>? membersNames, bool readOnly) {
+   TemplateRenderer(IXcstPackage package, ViewContext viewContext, ViewDataDictionary viewData, string? templateName, bool readOnly) {
+      _package = package;
       _viewContext = viewContext;
       _viewData = viewData;
       _templateName = templateName;
-      _membersNames = membersNames;
       _readOnly = readOnly;
    }
 
    public void
-   Render(IXcstPackage package, ISequenceWriter<object> output) {
+   Render(ISequenceWriter<object> output) {
+
+      if (_viewData is null) {
+         return;
+      }
 
       var defaultActions = GetDefaultActions();
 
@@ -249,7 +137,7 @@ sealed class TemplateRenderer {
          _templateName,
          metadata.TemplateHint,
          ((options != null) ?
-            TypeHelpers.IsIEnumerableNotString(metadata.ModelType) ? "ListBox"
+            metadata.IsEnumerableType ? "ListBox"
             : "DropDownList"
             : null),
          metadata.DataTypeName
@@ -269,7 +157,7 @@ sealed class TemplateRenderer {
          }
 
          if (defaultActions.TryGetValue(viewName, out var defaultAction)) {
-            defaultAction.Invoke(MakeHtmlHelper(_viewContext, _viewData), package, output);
+            defaultAction.Invoke(MakeHtmlHelper(_viewContext, _viewData), output);
             return;
          }
       }
@@ -277,7 +165,7 @@ sealed class TemplateRenderer {
       throw new InvalidOperationException($"Unable to locate an appropriate template for type {metadata.UnderlyingOrModelType.FullName}.");
    }
 
-   private Dictionary<string, TemplateAction>
+   Dictionary<string, TemplateAction>
    GetDefaultActions() =>
       (_readOnly) ? _defaultDisplayActions
          : _defaultEditorActions;
@@ -351,9 +239,9 @@ sealed class TemplateRenderer {
       }
    }
 
-   static HtmlHelper
+   HtmlHelper
    MakeHtmlHelper(ViewContext viewContext, ViewDataDictionary viewData) =>
-      new HtmlHelper(new ViewContext(viewContext), new ViewDataContainer(viewData));
+      new HtmlHelper(new ViewContext(viewContext), new ViewDataContainer(viewData), _package);
 
    void
    RenderViewPage(XcstViewPage viewPage, ISequenceWriter<object> output) {
@@ -370,16 +258,5 @@ sealed class TemplateRenderer {
       evaluator.CallInitialTemplate()
          .OutputToRaw(output)
          .Run();
-   }
-
-   class ViewDataContainer : IViewDataContainer {
-
-      public ViewDataDictionary
-      ViewData { get; set; }
-
-      public
-      ViewDataContainer(ViewDataDictionary viewData) {
-         this.ViewData = viewData;
-      }
    }
 }

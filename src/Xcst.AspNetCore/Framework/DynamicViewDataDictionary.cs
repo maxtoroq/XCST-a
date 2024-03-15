@@ -15,7 +15,7 @@ sealed class DynamicViewDataDictionary : DynamicObject {
    private ViewDataDictionary
    ViewData {
       get {
-         var viewData = _viewDataThunk();
+         var viewData = _viewDataThunk.Invoke();
          Debug.Assert(viewData != null);
          return viewData;
       }

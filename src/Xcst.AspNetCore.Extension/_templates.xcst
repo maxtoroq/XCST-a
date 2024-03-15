@@ -70,12 +70,21 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <call-template name='helper-type'>
-            <with-param name='name' expand-text='yes'>{(editor ? "Editor" : "Display")}Instructions</with-param>
-         </call-template>
+         <choose>
+            <when test='V1'>
+               <call-template name='helper-type'>
+                  <with-param name='name' expand-text='yes'>{(editor ? "Editor" : "Display")}Instructions</with-param>
+               </call-template>
+            </when>
+            <otherwise>
+               <copy-of value='htmlHelper'/>
+            </otherwise>
+         </choose>
          <code:arguments>
-            <copy-of value='htmlHelper'/>
-            <code:this-reference/>
+            <if test='V1'>
+               <copy-of value='htmlHelper'/>
+               <code:this-reference/>
+            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>

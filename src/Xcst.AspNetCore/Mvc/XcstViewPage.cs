@@ -107,7 +107,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
          if (_html is null
             && ViewContext != null) {
 
-            _html = new HtmlHelper(ViewContext, this);
+            _html = new HtmlHelper(ViewContext, this, (IXcstPackage)this);
          }
 #pragma warning disable CS8603
          return _html;
@@ -247,7 +247,7 @@ public abstract class XcstViewPage<TModel> : XcstViewPage {
          if (_html is null
             && ViewContext != null) {
 
-            _html = new HtmlHelper<TModel>(ViewContext, this);
+            _html = new HtmlHelper<TModel>(ViewContext, this, (IXcstPackage)this);
          }
 #pragma warning disable CS8603
          return _html;

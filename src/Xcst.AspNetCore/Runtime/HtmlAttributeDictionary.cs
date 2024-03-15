@@ -68,7 +68,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
       // with the attribute (or library) class, otherwise it's ignored. If there's no attribute class,
       // the dictionary class can be null, resulting in an empty attribute.
       // 
-      // See also HtmlAttributeHelper.WriteClass
+      // See also HtmlHelper.WriteCssClass
       // 
       // Previous logic:
       // if (!String.IsNullOrEmpty(cssClass)) {
@@ -103,7 +103,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
    WriteTo(XcstWriter output) {
 
       foreach (var item in this) {
-         HtmlAttributeHelper.WriteAttribute(item.Key, item.Value, output);
+         WriteAttribute(item.Key, item.Value, output);
       }
    }
 
@@ -118,9 +118,13 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
             continue;
          }
 
-         HtmlAttributeHelper.WriteAttribute(item.Key, item.Value, output);
+         WriteAttribute(item.Key, item.Value, output);
       }
    }
+
+   static void
+   WriteAttribute(string key, object? value, XcstWriter output) =>
+      output.WriteAttributeString(key, output.SimpleContent.Convert(value));
 
    internal string?
    GetClassOrNull() {

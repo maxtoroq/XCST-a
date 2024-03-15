@@ -62,11 +62,20 @@
             <if test='forAttr != null || forModel'>For</if>
             <if test='forModel'>Model</if>
          </attribute>
-         <call-template name='helper-type'>
-            <with-param name='name'>MetadataInstructions</with-param>
-         </call-template>
+         <choose>
+            <when test='V1'>
+               <call-template name='helper-type'>
+                  <with-param name='name'>MetadataInstructions</with-param>
+               </call-template>
+            </when>
+            <otherwise>
+               <call-template name='html-helper-ref'/>
+            </otherwise>
+         </choose>
          <code:arguments>
-            <call-template name='html-helper-ref'/>
+            <if test='V1'>
+               <call-template name='html-helper-ref'/>
+            </if>
             <choose>
                <when test='forAttr != null'>
                   <variable name='param' value='aux_variable(fn_generate_id(el))'/>
@@ -135,11 +144,20 @@
             </choose>
             <if test='forAttr != null'>For</if>
          </attribute>
-         <call-template name='helper-type'>
-            <with-param name='name'>MetadataInstructions</with-param>
-         </call-template>
+         <choose>
+            <when test='V1'>
+               <call-template name='helper-type'>
+                  <with-param name='name'>MetadataInstructions</with-param>
+               </call-template>
+            </when>
+            <otherwise>
+               <call-template name='html-helper-ref'/>
+            </otherwise>
+         </choose>
          <code:arguments>
-            <call-template name='html-helper-ref'/>
+            <if test='V1'>
+               <call-template name='html-helper-ref'/>
+            </if>
             <if test='statement'>
                <copy-of value='select(output, src + "reference", code)'/>
             </if>

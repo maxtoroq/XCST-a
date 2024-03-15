@@ -23,10 +23,9 @@ using System.Globalization;
 using System.Linq;
 using Xcst.Runtime;
 using Xcst.Web.Builder;
-using Xcst.Web.Mvc;
 using Xcst.Web.Mvc.ModelBinding;
 
-namespace Xcst.Web.Runtime;
+namespace Xcst.Web.Mvc;
 
 static class DefaultDisplayTemplates {
 
@@ -37,9 +36,9 @@ static class DefaultDisplayTemplates {
    _booleanCheckboxInfo = new("Boolean", "input", InputType.CheckBox);
 
    public static void
-   BooleanTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
       var viewData = html.ViewData;
 
       var value = default(bool?);
@@ -54,11 +53,11 @@ static class DefaultDisplayTemplates {
 
          var className = DefaultEditorTemplates.GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
 
-         HtmlAttributeHelper.WriteCssClass(null, className, output);
-         HtmlAttributeHelper.WriteBoolean("disabled", true, output);
+         html.WriteCssClass(null, className, output);
+         html.WriteBoolean("disabled", true, output);
 
          foreach (var item in DefaultEditorTemplates.TriStateValues(value)) {
-            SelectInstructions.WriteOption(item, null, output);
+            html.WriteOption(item, null, output);
          }
 
          output.WriteEndElement();
@@ -70,16 +69,16 @@ static class DefaultDisplayTemplates {
 
          var className = DefaultEditorTemplates.GetEditorCssClass(_booleanCheckboxInfo, "check-box");
 
-         HtmlAttributeHelper.WriteCssClass(null, className, output);
-         HtmlAttributeHelper.WriteBoolean("disabled", true, output);
-         HtmlAttributeHelper.WriteBoolean("checked", value.GetValueOrDefault(), output);
+         html.WriteCssClass(null, className, output);
+         html.WriteBoolean("disabled", true, output);
+         html.WriteBoolean("checked", value.GetValueOrDefault(), output);
 
          output.WriteEndElement();
       }
    }
 
    public static void
-   CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   CollectionTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
       var model = viewData.ModelExplorer.Model;
@@ -123,17 +122,14 @@ static class DefaultDisplayTemplates {
             var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-            TemplateHelpers.TemplateHelper(
-               html,
-               package,
-               seqOutput,
+            html.TemplateHelper(
+               displayMode: true,
                itemExplorer,
                htmlFieldName: fieldName,
                templateName: null,
                membersNames: null,
-               displayMode: true,
                additionalViewData: null
-            );
+            ).Render(seqOutput);
          }
 
       } finally {
@@ -142,23 +138,23 @@ static class DefaultDisplayTemplates {
    }
 
    public static void
-   DecimalTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   DecimalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
 
       if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelExplorer.Model) {
 
          viewData.TemplateInfo.FormattedModelValue =
-            package.Context.SimpleContent.Format("{0:0.00}", viewData.ModelExplorer.Model);
+            html.CurrentPackage.Context.SimpleContent.Format("{0:0.00}", viewData.ModelExplorer.Model);
       }
 
-      StringTemplate(html, package, seqOutput);
+      StringTemplate(html, seqOutput);
    }
 
    public static void
-   EmailAddressTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   EmailAddressTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
       var viewData = html.ViewData;
 
       output.WriteStartElement("a");
@@ -168,7 +164,7 @@ static class DefaultDisplayTemplates {
    }
 
    public static void
-   EnumTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   EnumTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
       var modelExplorer = viewData.ModelExplorer;
@@ -185,29 +181,29 @@ static class DefaultDisplayTemplates {
          }
       }
 
-      StringTemplate(html, package, seqOutput);
+      StringTemplate(html, seqOutput);
    }
 
    public static void
-   HiddenInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   HiddenInputTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       if (!html.ViewData.ModelMetadata.HideSurroundingHtml) {
-         StringTemplate(html, package, seqOutput);
+         StringTemplate(html, seqOutput);
       }
    }
 
    public static void
-   HtmlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      seqOutput.WriteRaw(package.Context.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
+   HtmlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+      seqOutput.WriteRaw(html.CurrentPackage.Context.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
 
    public static void
-   ImageUrlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   ImageUrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
 
       if (viewData.Model != null) {
 
-         var output = DocumentWriter.CastElement(package, seqOutput);
+         var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
          output.WriteStartElement("img");
          output.WriteAttributeString("src", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
@@ -216,7 +212,7 @@ static class DefaultDisplayTemplates {
    }
 
    public static void
-   ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   ObjectTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
       var modelExplorer = viewData.ModelExplorer;
@@ -224,11 +220,11 @@ static class DefaultDisplayTemplates {
       if (modelExplorer.Model is null
          || viewData.TemplateInfo.TemplateDepth > 1) {
 
-         MetadataInstructions.DisplayTextHelper(html, seqOutput, modelExplorer);
+         html.DisplayTextHelper(seqOutput, modelExplorer);
          return;
       }
 
-      var filteredProperties = DisplayInstructions.DisplayProperties(html);
+      var filteredProperties = html.DisplayProperties();
       var groupedProperties = filteredProperties.GroupBy(p => MetadataDetailsProvider.GetGroupName(p.Metadata));
 
       bool createFieldset = groupedProperties.Any(g => g.Key != null);
@@ -239,7 +235,7 @@ static class DefaultDisplayTemplates {
 
          if (createFieldset) {
 
-            fieldsetWriter = DocumentWriter.CastElement(package, seqOutput);
+            fieldsetWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
             fieldsetWriter.WriteStartElement("fieldset");
             fieldsetWriter.WriteStartElement("legend");
@@ -254,7 +250,7 @@ static class DefaultDisplayTemplates {
 
             if (!propertyMeta.HideSurroundingHtml) {
 
-               var memberTemplate = DisplayInstructions.MemberTemplate(html, propertyExplorer);
+               var memberTemplate = html.MemberTemplate(propertyExplorer);
 
                if (memberTemplate != null) {
                   memberTemplate.Invoke(null!/* argument is not used */, fieldsetWriter ?? seqOutput);
@@ -262,7 +258,7 @@ static class DefaultDisplayTemplates {
                }
 
                var labelWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(package, seqOutput);
+                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "display-label");
@@ -270,23 +266,20 @@ static class DefaultDisplayTemplates {
                labelWriter.WriteEndElement();
 
                fieldWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(package, seqOutput);
+                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
                fieldWriter.WriteStartElement("div");
                fieldWriter.WriteAttributeString("class", "display-field");
             }
 
-            TemplateHelpers.TemplateHelper(
-               html,
-               package,
-               fieldWriter ?? fieldsetWriter ?? seqOutput,
+            html.TemplateHelper(
+               displayMode: true,
                propertyExplorer,
                htmlFieldName: propertyMeta.PropertyName,
                templateName: null,
                membersNames: null,
-               displayMode: true,
                additionalViewData: null
-            );
+            ).Render(fieldWriter ?? fieldsetWriter ?? seqOutput);
 
             if (!propertyMeta.HideSurroundingHtml) {
                fieldWriter!.WriteEndElement(); // </div>
@@ -300,13 +293,13 @@ static class DefaultDisplayTemplates {
    }
 
    public static void
-   StringTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      seqOutput.WriteString(package.Context.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
+   StringTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+      seqOutput.WriteString(html.CurrentPackage.Context.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
 
    public static void
-   UrlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   UrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
       var viewData = html.ViewData;
 
       output.WriteStartElement("a");

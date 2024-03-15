@@ -200,9 +200,4 @@ static class TypeHelpers {
          && (type.Name.StartsWith("<>", StringComparison.OrdinalIgnoreCase) || type.Name.StartsWith("VB$", StringComparison.OrdinalIgnoreCase))
          && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
    }
-
-   public static bool
-   IsIEnumerableNotString(Type type) =>
-      typeof(IEnumerable).IsAssignableFrom(type)
-         && type != typeof(string);
 }

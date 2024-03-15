@@ -14,17 +14,17 @@
 
 using System;
 using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Xcst.Web.Runtime;
+namespace Xcst.Web.Mvc;
 
-/// <exclude/>
-public static class AntiforgeryInstructions {
+partial class HtmlHelper {
 
-   public static IDisposable
-   HiddenToken(HttpContext httpContext, XcstWriter output) {
+   /// <exclude/>
+   public IDisposable
+   Antiforgery(XcstWriter output) {
 
+      var httpContext = this.ViewContext.HttpContext;
       var antiforgery = httpContext.RequestServices.GetRequiredService<IAntiforgery>();
       var tokenSet = antiforgery.GetAndStoreTokens(httpContext);
 

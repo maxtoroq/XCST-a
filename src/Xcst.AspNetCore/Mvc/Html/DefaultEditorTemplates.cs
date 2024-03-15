@@ -25,11 +25,11 @@ using System.Linq;
 using System.Reflection;
 using Xcst.Runtime;
 using Xcst.Web.Builder;
-using Xcst.Web.Mvc;
 using Xcst.Web.Mvc.ModelBinding;
+using Xcst.Web.Runtime;
 using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
-namespace Xcst.Web.Runtime;
+namespace Xcst.Web.Mvc;
 
 static class DefaultEditorTemplates {
 
@@ -58,7 +58,7 @@ static class DefaultEditorTemplates {
    _passwordInfo = new("Password", "input", InputType.Password);
 
    public static void
-   BooleanTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
       var value = default(bool?);
@@ -69,41 +69,38 @@ static class DefaultEditorTemplates {
 
       if (viewData.ModelMetadata.IsNullableValueType) {
 
-         var output = DocumentWriter.CastElement(package, seqOutput);
+         var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
          var className = GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
-         using (var disp = SelectInstructions.Select(
-               html,
+         using var disp = html.Select(
                output,
                String.Empty,
                selectList: TriStateValues(value),
-               @class: htmlAttributes.GetClassOrNull())) {
+               @class: htmlAttributes.GetClassOrNull());
 
-            htmlAttributes.WriteTo(output, excludeClass: true);
-            disp.EndOfConstructor();
-         }
+         htmlAttributes.WriteTo(output, excludeClass: true);
+         disp.EndOfConstructor();
 
       } else {
 
          var className = GetEditorCssClass(_booleanCheckBoxInfo, "check-box");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
-         InputInstructions.CheckBoxHelper(
-               html,
-               package,
+         using var disp = html.GenerateCheckbox(
                seqOutput,
                modelExplorer: null,
                name: String.Empty,
                value.GetValueOrDefault(),
-               htmlAttributes)
-            .NoConstructor()
-            .Dispose();
+               @class: htmlAttributes.GetClassOrNull());
+
+         htmlAttributes.WriteTo(disp.CheckboxOutput, excludeClass: true);
+         disp.NoConstructor();
       }
    }
 
    public static void
-   CollectionTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   CollectionTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
       var model = viewData.ModelExplorer.Model;
@@ -147,17 +144,14 @@ static class DefaultEditorTemplates {
             var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-            TemplateHelpers.TemplateHelper(
-               html,
-               package,
-               seqOutput,
+            html.TemplateHelper(
+               displayMode: false,
                itemExplorer,
                htmlFieldName: fieldName,
                templateName: null,
                membersNames: null,
-               displayMode: false,
                additionalViewData: null
-            );
+            ).Render(seqOutput);
          }
 
       } finally {
@@ -166,21 +160,21 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   DateTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   DateTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-dd}");
-      HtmlInputTemplateHelper(html, package, seqOutput, "Date", inputType: "date");
+      HtmlInputTemplateHelper(html, seqOutput, "Date", inputType: "date");
    }
 
    public static void
-   DateTimeLocalTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   DateTimeLocalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fff}");
-      HtmlInputTemplateHelper(html, package, seqOutput, "DateTime-local", inputType: "datetime-local");
+      HtmlInputTemplateHelper(html, seqOutput, "DateTime-local", inputType: "datetime-local");
    }
 
    public static void
-   DecimalTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   DecimalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
 
@@ -190,13 +184,13 @@ static class DefaultEditorTemplates {
             String.Format(CultureInfo.CurrentCulture, "{0:0.00}", viewData.ModelExplorer.Model);
       }
 
-      HtmlInputTemplateHelper(html, package, seqOutput, "Decimal");
+      HtmlInputTemplateHelper(html, seqOutput, "Decimal");
    }
 
    public static void
-   DropDownListTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   DropDownListTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_dropDownListInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -210,8 +204,7 @@ static class DefaultEditorTemplates {
          optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
       }
 
-      using (var disp = SelectInstructions.SelectHelper(
-            html,
+      using (var disp = html.GenerateSelect(
             output,
             viewData.ModelExplorer,
             String.Empty,
@@ -227,13 +220,13 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   EmailAddressTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "EmailAddress", inputType: "email");
+   EmailAddressTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, seqOutput, "EmailAddress", inputType: "email");
 
    public static void
-   EnumTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   EnumTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_enumInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -254,8 +247,7 @@ static class DefaultEditorTemplates {
       var options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
       var optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
 
-      using (var disp = SelectInstructions.SelectHelper(
-            html,
+      using (var disp = html.GenerateSelect(
             output,
             viewData.ModelExplorer,
             String.Empty,
@@ -271,22 +263,21 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   HiddenInputTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   HiddenInputTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
 
       if (!viewData.ModelMetadata.HideSurroundingHtml) {
-         DefaultDisplayTemplates.StringTemplate(html, package, seqOutput);
+         DefaultDisplayTemplates.StringTemplate(html, seqOutput);
       }
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
       var model = viewData.Model;
 
       var className = GetEditorCssClass(_hiddenInputInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using (InputInstructions.Input(
-            html,
+      using (html.Input(
             output,
             name: String.Empty,
             model,
@@ -298,17 +289,17 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   IFormFileTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   IFormFileTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       const string templateName = nameof(IFormFile);
 
-      HtmlInputTemplateHelper(html, package, seqOutput, templateName, inputType: "file");
+      HtmlInputTemplateHelper(html, seqOutput, templateName, inputType: "file");
    }
 
    public static void
-   ListBoxTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   ListBoxTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_listBoxInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -316,8 +307,7 @@ static class DefaultEditorTemplates {
 
       var options = Options(viewData);
 
-      using (var disp = SelectInstructions.SelectHelper(
-            html,
+      using (var disp = html.GenerateSelect(
             output,
             viewData.ModelExplorer,
             String.Empty,
@@ -333,16 +323,15 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   MultilineTextTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   MultilineTextTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var value = html.ViewData.TemplateInfo.FormattedModelValue;
       var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      using (var disp = TextAreaInstructions.TextArea(
-            html,
+      using (var disp = html.Textarea(
             output,
             name: String.Empty,
             value,
@@ -354,20 +343,20 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   NumberTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "Number", inputType: "number");
+   NumberTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, seqOutput, "Number", inputType: "number");
 
    public static void
-   ObjectTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   ObjectTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
 
       if (viewData.TemplateInfo.TemplateDepth > 1) {
-         MetadataInstructions.DisplayTextHelper(html, seqOutput, viewData.ModelExplorer);
+         html.DisplayTextHelper(seqOutput, viewData.ModelExplorer);
          return;
       }
 
-      var filteredProperties = EditorInstructions.EditorProperties(html);
+      var filteredProperties = html.EditorProperties();
       var groupedProperties = filteredProperties.GroupBy(p => MetadataDetailsProvider.GetGroupName(p.Metadata));
 
       var createFieldset = groupedProperties.Any(g => g.Key != null);
@@ -378,7 +367,7 @@ static class DefaultEditorTemplates {
 
          if (createFieldset) {
 
-            fieldsetWriter = DocumentWriter.CastElement(package, seqOutput);
+            fieldsetWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
             fieldsetWriter.WriteStartElement("fieldset");
             fieldsetWriter.WriteStartElement("legend");
@@ -393,7 +382,7 @@ static class DefaultEditorTemplates {
 
             if (!propertyMeta.HideSurroundingHtml) {
 
-               var memberTemplate = EditorInstructions.MemberTemplate(html, propertyExplorer);
+               var memberTemplate = html.MemberTemplate(propertyExplorer);
 
                if (memberTemplate != null) {
                   memberTemplate.Invoke(null!/* argument is not used */, fieldsetWriter ?? seqOutput);
@@ -401,40 +390,37 @@ static class DefaultEditorTemplates {
                }
 
                var labelWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(package, seqOutput);
+                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "editor-label");
 
-               LabelInstructions.LabelHelper(html, labelWriter, propertyExplorer, propertyMeta.PropertyName!, default, default)
+               html.GenerateLabel(labelWriter, propertyExplorer, propertyMeta.PropertyName!, default, default)
                   .Dispose();
 
                labelWriter.WriteEndElement();
 
                fieldWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(package, seqOutput);
+                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
                fieldWriter.WriteStartElement("div");
                fieldWriter.WriteAttributeString("class", "editor-field");
             }
 
-            TemplateHelpers.TemplateHelper(
-               html,
-               package,
-               fieldWriter ?? fieldsetWriter ?? seqOutput,
+            html.TemplateHelper(
+               displayMode: false,
                propertyExplorer,
                htmlFieldName: propertyMeta.PropertyName,
                templateName: null,
                membersNames: null,
-               displayMode: false,
                additionalViewData: null
-            );
+            ).Render(fieldWriter ?? fieldsetWriter ?? seqOutput);
 
             if (!propertyMeta.HideSurroundingHtml) {
 
                fieldWriter!.WriteString(" ");
 
-               ValidationInstructions.ValidationMessageHelper(html, fieldWriter, propertyExplorer, propertyMeta.PropertyName!, default, default)
+               html.GenerateValidationMessage(fieldWriter, propertyExplorer, propertyMeta.PropertyName!, default, default)
                   .Dispose();
 
                fieldWriter.WriteEndElement(); // </div>
@@ -448,15 +434,14 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   PasswordTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   PasswordTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_passwordInfo, "text-box single-line password");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      using (InputInstructions.Input(
-            html,
+      using (html.Input(
             output,
             name: String.Empty,
             value: null,
@@ -468,40 +453,39 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   PhoneNumberTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "PhoneNumber", inputType: "tel");
+   PhoneNumberTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, seqOutput, "PhoneNumber", inputType: "tel");
 
    public static void
-   StringTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "String");
+   StringTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, seqOutput, "String");
 
    public static void
-   TimeTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) {
+   TimeTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       ApplyRfc3339DateFormattingIfNeeded(html, "{0:HH:mm:ss.fff}");
-      HtmlInputTemplateHelper(html, package, seqOutput, "Time", inputType: "time");
+      HtmlInputTemplateHelper(html, seqOutput, "Time", inputType: "time");
    }
 
    public static void
-   UploadTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "Upload", inputType: "file");
+   UploadTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, seqOutput, "Upload", inputType: "file");
 
    public static void
-   UrlTemplate(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, package, seqOutput, "Url", inputType: "url");
+   UrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, seqOutput, "Url", inputType: "url");
 
    static void
-   HtmlInputTemplateHelper(HtmlHelper html, IXcstPackage package, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
+   HtmlInputTemplateHelper(HtmlHelper html, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
 
-      var output = DocumentWriter.CastElement(package, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var value = html.ViewData.TemplateInfo.FormattedModelValue;
 
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      using (InputInstructions.Input(
-            html,
+      using (html.Input(
             output,
             name: String.Empty,
             value,

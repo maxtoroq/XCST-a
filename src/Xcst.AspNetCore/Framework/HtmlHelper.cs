@@ -1,20 +1,37 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+﻿// Copyright 2015 Max Toro Q.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region HtmlHelper is based on code from ASP.NET Web Stack
+// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+#endregion
 
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
-using Xcst.Web.Runtime;
+using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc;
 
-public class HtmlHelper {
+public partial class HtmlHelper {
 
    public static readonly string
    ValidationInputCssClassName = "input-validation-error";
@@ -78,11 +95,15 @@ public class HtmlHelper {
       _validationAttributeProvider ??=
          ActivatorUtilities.CreateInstance<DefaultValidationHtmlAttributeProvider>(ViewContext.HttpContext.RequestServices);
 
+   internal IXcstPackage
+   CurrentPackage { get; }
+
    public
-   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer) {
+   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IXcstPackage currentPackage) {
 
       this.ViewContext = viewContext ?? throw new ArgumentNullException(nameof(viewContext));
       this.ViewDataContainer = viewDataContainer ?? throw new ArgumentNullException(nameof(viewDataContainer));
+      this.CurrentPackage = currentPackage ?? throw new ArgumentNullException(nameof(currentPackage));
    }
 
    /// <summary>
@@ -275,34 +296,69 @@ public class HtmlHelper {
    }
 
    public string
+   DisplayName(string name) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return DisplayNameHelper(modelExplorer, name);
+   }
+
+   public string
    DisplayNameForModel() =>
-      MetadataInstructions.DisplayNameForModel(this);
+      DisplayNameHelper(this.ViewData.ModelExplorer, String.Empty);
+
+   internal string
+   DisplayNameHelper(ModelExplorer modelExplorer, string htmlFieldName) {
+
+      var metadata = modelExplorer.Metadata;
+
+      // We don't call ModelMetadata.GetDisplayName here because we want to fall back to the field name rather than the ModelType.
+      // This is similar to how the LabelHelpers get the text of a label.
+
+      var resolvedDisplayName = metadata.DisplayName
+         ?? metadata.PropertyName
+         ?? htmlFieldName.Split('.').Last();
+
+      return resolvedDisplayName;
+   }
+
+   public void
+   DisplayText(ISequenceWriter<string> output, string name) =>
+      DisplayTextHelper(output, ExpressionMetadataProvider.FromStringExpression(name, this.ViewData));
 
    public string
-   DisplayName(string name) =>
-      MetadataInstructions.DisplayName(this, name);
+   DisplayString(string name) =>
+      DisplayStringHelper(ExpressionMetadataProvider.FromStringExpression(name, this.ViewData));
 
-   public string
-   IdForModel() => Id(String.Empty);
+   internal string
+   DisplayStringHelper(ModelExplorer modelExplorer) =>
+      modelExplorer.GetSimpleDisplayText();
+
+   internal void
+   DisplayTextHelper(ISequenceWriter<string> output, ModelExplorer modelExplorer) {
+
+      var text = modelExplorer.GetSimpleDisplayText();
+
+      if (modelExplorer.Metadata.HtmlEncode) {
+         output.WriteString(text);
+      } else {
+         output.WriteRaw(text);
+      }
+   }
 
    public string
    Id(string name) =>
       this.ViewData.TemplateInfo.GetFullHtmlFieldId(name);
 
    public string
-   NameForModel() => Name(String.Empty);
+   IdForModel() => Id(String.Empty);
 
    public string
    Name(string name) =>
       this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
 
    public string
-   ValueForModel() {
-
-      var format = this.ViewData.ModelMetadata.EditFormatString;
-
-      return ValueHelper(String.Empty, value: null, format: format, useViewData: true);
-   }
+   NameForModel() => Name(String.Empty);
 
    public string
    Value(string name) {
@@ -320,6 +376,14 @@ public class HtmlHelper {
       if (name is null) throw new ArgumentNullException(nameof(name));
 
       return ValueHelper(name, value: null, format: format, useViewData: true);
+   }
+
+   public string
+   ValueForModel() {
+
+      var format = this.ViewData.ModelMetadata.EditFormatString;
+
+      return ValueHelper(String.Empty, value: null, format: format, useViewData: true);
    }
 
    internal string
@@ -360,50 +424,66 @@ public class HtmlHelper {
       return resolvedValue;
    }
 
-   /// <summary>
-   /// Returns the properties that should be shown in a display template, based on the
-   /// model's metadata.
-   /// </summary>
-   /// <returns>The relevant model properties.</returns>
-   /// <remarks>
-   /// This method uses the same logic used by the built-in <code>Object</code> display template;
-   /// e.g. by default, it excludes complex-type properties.
-   /// </remarks>
-   public IEnumerable<ModelExplorer>
-   DisplayProperties() =>
-      DisplayInstructions.DisplayProperties(this);
+   internal void
+   WriteId(string name, XcstWriter output) {
 
-   /// <summary>
-   /// Returns the properties that should be shown in an editor template, based on the
-   /// model's metadata.
-   /// </summary>
-   /// <returns>The relevant model properties.</returns>
-   /// <remarks>
-   /// This method uses the same logic used by the built-in <code>Object</code> editor template;
-   /// e.g. by default, it excludes complex-type properties.
-   /// </remarks>
-   public IEnumerable<ModelExplorer>
-   EditorProperties() =>
-      EditorInstructions.EditorProperties(this);
+      var sanitizedId = TagBuilder.CreateSanitizedId(name);
 
-   /// <summary>
-   /// Returns the member template delegate for the provided property.
-   /// </summary>
-   /// <param name="propertyExplorer">The property's explorer.</param>
-   /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
-   public XcstDelegate<object>?
-   MemberTemplate(ModelExplorer propertyExplorer) =>
-      EditorInstructions.MemberTemplate(this, propertyExplorer);
+      if (!String.IsNullOrEmpty(sanitizedId)) {
+         output.WriteAttributeString("id", sanitizedId);
+      }
+   }
+
+   /// <exclude/>
+   public void
+   WriteBoolean(string key, bool value, XcstWriter output) {
+
+      if (value) {
+         output.WriteAttributeString(key, key);
+      }
+   }
+
+   internal void
+   WriteCssClass(string? userClass, string? libClass, XcstWriter output) {
+
+      // NOTE: For backcompat, userClass must be a non-null string to be joined
+      // with libClass, otherwise it's ignored. If there's no libClass,
+      // userClass can be null, resulting in an empty attribute.
+      // 
+      // libClass must not be null or empty, which allows you to call this method
+      // without having to make that check.
+      // 
+      // See also HtmlAttributeDictionary.SetAttributes
+
+      var libClassHasValue = !String.IsNullOrEmpty(libClass);
+      var userClassHasValue = userClass != null;
+
+      if (libClassHasValue
+         || userClassHasValue) {
+
+         var joinedClass =
+            (libClassHasValue && userClassHasValue) ? userClass + " " + libClass
+            : (libClassHasValue) ? libClass
+            : userClass;
+
+         output.WriteAttributeString("class", joinedClass);
+      }
+   }
+
+   /// <exclude/>
+   public void
+   WriteAttribute(string key, object? value, XcstWriter output) =>
+      output.WriteAttributeString(key, output.SimpleContent.Convert(value));
 }
 
-public class HtmlHelper<TModel> : HtmlHelper {
+public partial class HtmlHelper<TModel> : HtmlHelper {
 
    public new ViewDataDictionary<TModel>
    ViewData => (ViewDataDictionary<TModel>)ViewDataContainer.ViewData;
 
    public
-   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
-      : base(viewContext, viewDataContainer) {
+   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IXcstPackage currentPackage)
+      : base(viewContext, viewDataContainer, currentPackage) {
 
       if (!(viewDataContainer.ViewData is ViewDataDictionary<TModel>)) {
          throw new ArgumentException(
@@ -414,19 +494,35 @@ public class HtmlHelper<TModel> : HtmlHelper {
    }
 
    public string
-   DisplayNameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
-      MetadataInstructions.DisplayNameFor(this, expression);
+   DisplayNameFor<TResult>(Expression<Func<TModel, TResult>> expression) {
+
+      var modelExplorer = (typeof(IEnumerable<TModel>).IsAssignableFrom(typeof(TModel))) ?
+          ExpressionMetadataProvider.FromLambdaExpression(expression, new ViewDataDictionary<TModel>(this.ViewData.MetadataProvider, this.ViewData.ModelState))
+          : ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
+
+      return DisplayNameHelper(modelExplorer, expressionString);
+   }
+
+   public void
+   DisplayTextFor<TResult>(ISequenceWriter<string> output, Expression<Func<TModel, TResult>> expression) =>
+      DisplayTextHelper(output, ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData));
 
    public string
-   IdFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
+   DisplayStringFor<TResult>(Expression<Func<TModel, TResult>> expression) =>
+      DisplayStringHelper(ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData));
+
+   public string
+   IdFor<TResult>(Expression<Func<TModel, TResult>> expression) =>
       Id(ExpressionHelper.GetExpressionText(expression));
 
    public string
-   NameFor<TProperty>(Expression<Func<TModel, TProperty>> expression) =>
+   NameFor<TResult>(Expression<Func<TModel, TResult>> expression) =>
       Name(ExpressionHelper.GetExpressionText(expression));
 
    public string
-   ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression) {
+   ValueFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
@@ -435,7 +531,7 @@ public class HtmlHelper<TModel> : HtmlHelper {
    }
 
    public string
-   ValueFor<TProperty>(Expression<Func<TModel, TProperty>> expression, string format) {
+   ValueFor<TResult>(Expression<Func<TModel, TResult>> expression, string format) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
@@ -446,7 +542,6 @@ public class HtmlHelper<TModel> : HtmlHelper {
 
 public interface IViewDataContainer {
 
-   [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is the mechanism by which the ViewPage / ViewUserControl get their ViewDataDictionary objects.")]
    ViewDataDictionary
    ViewData { get; set; }
 }
