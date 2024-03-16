@@ -17,7 +17,7 @@ using System.ComponentModel;
 
 namespace Xcst.Web.Mvc;
 
-/// <exclude/>
+[GeneratedCodeReference]
 [EditorBrowsable(EditorBrowsableState.Never)]
 [AttributeUsage(AttributeTargets.Property)]
 public class ShowForAttribute : Attribute {

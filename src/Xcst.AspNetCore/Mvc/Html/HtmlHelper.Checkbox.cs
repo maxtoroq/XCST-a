@@ -25,22 +25,22 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public CheckboxDisposable
    Checkbox(ISequenceWriter<XElement> output, string name, string? @class = null) =>
       GenerateCheckbox(output, modelExplorer: null, name, isChecked: null, @class);
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public CheckboxDisposable
    Checkbox(ISequenceWriter<XElement> output, string name, bool isChecked, string? @class = null) =>
       GenerateCheckbox(output, modelExplorer: null, name, isChecked, @class);
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public CheckboxDisposable
    CheckboxForModel(ISequenceWriter<XElement> output, string? @class = null) =>
       CheckboxForModelExplorer(output, this.ViewData.ModelExplorer, expression: String.Empty, isChecked: null, @class);
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public CheckboxDisposable
    CheckboxForModel(ISequenceWriter<XElement> output, bool isChecked, string? @class = null) =>
       CheckboxForModelExplorer(output, this.ViewData.ModelExplorer, expression: String.Empty, isChecked, @class);
@@ -95,7 +95,7 @@ partial class HtmlHelper {
       return new CheckboxDisposable(inputDisposable, inputWriter, hiddenWriter, fullName);
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public class CheckboxDisposable : IDisposable {
 
       readonly IDisposable
@@ -168,7 +168,7 @@ partial class HtmlHelper {
 
 partial class HtmlHelper<TModel> {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public CheckboxDisposable
    CheckboxFor(ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression, string? @class = null) {
 

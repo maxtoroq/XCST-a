@@ -24,7 +24,7 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    Radio(XcstWriter output, string name, object value, string? @class = null) {
 
@@ -35,7 +35,7 @@ partial class HtmlHelper {
       return GenerateRadio(output, modelExplorer: null, name, value, isChecked, @class);
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    Radio(XcstWriter output, string name, object value, bool isChecked, string? @class = null) {
 
@@ -44,12 +44,12 @@ partial class HtmlHelper {
       return GenerateRadio(output, modelExplorer: null, name, value, isChecked, @class);
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    RadioForModel(XcstWriter output, object value, string? @class = null) =>
       RadioForModelExplorer(output, this.ViewData.ModelExplorer, String.Empty, value, isChecked: null, @class);
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    RadioForModel(XcstWriter output, object value, bool isChecked, string? @class = null) =>
       RadioForModelExplorer(output, this.ViewData.ModelExplorer, String.Empty, value, isChecked, @class);
@@ -99,7 +99,7 @@ partial class HtmlHelper {
 
 partial class HtmlHelper<TModel> {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    RadioFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, object value,
          string? @class = null) {

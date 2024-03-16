@@ -1029,9 +1029,7 @@
                A long method chain on a dynamic object hurts performance.
             -->
             <code:chain>
-               <call-template name='helper-type'>
-                  <with-param name='name'>OptionList</with-param>
-               </call-template>
+               <code:type-reference name='OptionList' namespace='Xcst.Web.Mvc'/>
                <choose>
                   <when test='optionEls.Length > 0'>
                      <code:method-call name='FromStaticList'>

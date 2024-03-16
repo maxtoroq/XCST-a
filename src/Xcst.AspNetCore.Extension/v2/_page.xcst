@@ -164,9 +164,7 @@
                      <text>LinkTo</text>
                      <if test='isDefaultPage'>Default</if>
                   </attribute>
-                  <call-template name='helper-type'>
-                     <with-param name='name'>LinkToHelper</with-param>
-                  </call-template>
+                  <code:type-reference name='UrlHelper' namespace='Xcst.Web'/>
                   <code:arguments>
                      <code:string>
                         <value-of value='"/" + pagePath'/>

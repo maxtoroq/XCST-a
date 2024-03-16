@@ -14,11 +14,10 @@
 
 using System;
 using System.Collections.Generic;
-using Xcst.Web.Mvc;
 
-namespace Xcst.Web.Runtime;
+namespace Xcst.Web.Mvc;
 
-/// <exclude/>
+[GeneratedCodeReference]
 public class HtmlAttributeDictionary : Dictionary<string, object?> {
 
    public HtmlAttributeDictionary

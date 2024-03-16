@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Web;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +30,6 @@ public class UrlHelper {
    Content(string contentPath) =>
       GenerateContentUrl(contentPath, _httpContext);
 
-   [SuppressMessage("Microsoft.Design", "CA1055:UriReturnValuesShouldNotBeStrings", Justification = "As the return value will used only for rendering, string return value is more appropriate.")]
    public static string
    GenerateContentUrl(string contentPath, HttpContext httpContext) {
 
@@ -69,15 +69,10 @@ public class UrlHelper {
       }
    }
 
-   //REVIEW: Should we have an overload that takes Uri?
-
-   [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", Justification = "Needs to take same parameters as HttpUtility.UrlEncode()")]
-   [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
    [return: NotNullIfNotNull(nameof(url))]
    public virtual string?
    Encode(string? url) => HttpUtility.UrlEncode(url);
 
-   [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "0#", Justification = "Response.Redirect() takes its URI as a string parameter.")]
    public virtual bool
    IsLocalUrl(string? url) =>
       // TODO this should call the System.Web.dll API once it gets added to the framework and MVC takes a dependency on it.
@@ -141,7 +136,26 @@ public class UrlHelper {
       }
    }
 
-   internal static class UrlBuilder {
+   [GeneratedCodeReference]
+   public static string
+   LinkTo(string path, params object?[]? pathParts) =>
+      UrlUtil.GenerateClientUrl(null, path, pathParts);
+
+   [GeneratedCodeReference]
+   public static string
+   LinkToDefault(string path, string defaultPath, params object?[]? pathParts) {
+
+      if (pathParts is null
+         || pathParts.Length == 0
+         || pathParts.All(p => p is null || !UrlBuilder.IsDisplayableType(p.GetType()))) {
+
+         return LinkTo(defaultPath, pathParts);
+      }
+
+      return LinkTo(path, pathParts);
+   }
+
+   static class UrlBuilder {
 
       internal static string
       BuildUrl(string path, out string query, params object?[]? pathParts) {
@@ -255,6 +269,60 @@ public class UrlHelper {
                 .Append('=')
                 .Append(HttpUtility.UrlEncode(stringValue));
          }
+      }
+   }
+
+   static class UrlUtil {
+
+      public static string
+      GenerateClientUrl(string? basePath, string path, params object?[]? pathParts) =>
+         GenerateClientUrl(null, basePath, path, pathParts);
+
+      static string
+      GenerateClientUrl(HttpContext? httpContext, string? basePath, string path, params object?[]? pathParts) {
+
+         if (String.IsNullOrEmpty(path)) {
+            return path;
+         }
+
+         if (basePath != null) {
+            path = new PathString(basePath).Add(path).Value!;
+         }
+
+         var processedPath = UrlBuilder.BuildUrl(path, out var query, pathParts);
+
+         // many of the methods we call internally can't handle query strings properly, so tack it on after processing
+         // the virtual app path and url rewrites
+
+         if (String.IsNullOrEmpty(query)) {
+            return GenerateClientUrlInternal(httpContext, processedPath);
+         } else {
+            return GenerateClientUrlInternal(httpContext, processedPath) + query;
+         }
+      }
+
+      static string
+      GenerateClientUrlInternal(HttpContext? httpContext, string contentPath) {
+
+         if (String.IsNullOrEmpty(contentPath)) {
+            return contentPath;
+         }
+
+         // can't call VirtualPathUtility.IsAppRelative since it throws on some inputs
+
+         var isAppRelative = contentPath[0] == '~';
+
+         if (isAppRelative) {
+
+            var context = httpContext
+               ?? throw new ArgumentException("httpContext cannot be null for app-relative paths.", nameof(httpContext));
+
+            // See also Microsoft.AspNetCore.Mvc.Routing.UrlHelperBase.Content
+            var other = new PathString(contentPath.Substring(1));
+            return context.Request.PathBase.Add(other).Value!;
+         }
+
+         return contentPath;
       }
    }
 }

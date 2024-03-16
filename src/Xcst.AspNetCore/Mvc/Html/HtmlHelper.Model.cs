@@ -18,7 +18,7 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public HtmlHelper<TModel>
    NewModelHelper<TModel>(IXcstPackage currentPackage, TModel? model, string? htmlFieldPrefix = null) {
 

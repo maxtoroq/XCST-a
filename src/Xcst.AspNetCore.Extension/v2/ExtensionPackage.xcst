@@ -40,12 +40,6 @@
    <variable name='c' as='XNamespace'>http://maxtoroq.github.io/XCST</variable>
    <variable name='a' as='XNamespace'>http://maxtoroq.github.io/XCST/application</variable>
 
-   <template name='helper-type' as='XElement'>
-      <param name='name' as='string' required='yes'/>
-
-      <code:type-reference name='{name}' namespace='Xcst.Web.Runtime'/>
-   </template>
-
    <function name='aux_variable' as='string'>
       <param name='name' as='string'/>
 

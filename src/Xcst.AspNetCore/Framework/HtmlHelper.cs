@@ -295,6 +295,7 @@ public partial class HtmlHelper {
       }
    }
 
+   [GeneratedCodeReference]
    public string
    DisplayName(string name) {
 
@@ -303,6 +304,7 @@ public partial class HtmlHelper {
       return DisplayNameHelper(modelExplorer, name);
    }
 
+   [GeneratedCodeReference]
    public string
    DisplayNameForModel() =>
       DisplayNameHelper(this.ViewData.ModelExplorer, String.Empty);
@@ -322,10 +324,12 @@ public partial class HtmlHelper {
       return resolvedDisplayName;
    }
 
+   [GeneratedCodeReference]
    public void
    DisplayText(ISequenceWriter<string> output, string name) =>
       DisplayTextHelper(output, ExpressionMetadataProvider.FromStringExpression(name, this.ViewData));
 
+   [GeneratedCodeReference]
    public string
    DisplayString(string name) =>
       DisplayStringHelper(ExpressionMetadataProvider.FromStringExpression(name, this.ViewData));
@@ -434,7 +438,7 @@ public partial class HtmlHelper {
       }
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public void
    WriteBoolean(string key, bool value, XcstWriter output) {
 
@@ -469,11 +473,6 @@ public partial class HtmlHelper {
          output.WriteAttributeString("class", joinedClass);
       }
    }
-
-   /// <exclude/>
-   public void
-   WriteAttribute(string key, object? value, XcstWriter output) =>
-      output.WriteAttributeString(key, output.SimpleContent.Convert(value));
 }
 
 public partial class HtmlHelper<TModel> : HtmlHelper {
@@ -493,6 +492,7 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
       }
    }
 
+   [GeneratedCodeReference]
    public string
    DisplayNameFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
@@ -505,10 +505,12 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
       return DisplayNameHelper(modelExplorer, expressionString);
    }
 
+   [GeneratedCodeReference]
    public void
    DisplayTextFor<TResult>(ISequenceWriter<string> output, Expression<Func<TModel, TResult>> expression) =>
       DisplayTextHelper(output, ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData));
 
+   [GeneratedCodeReference]
    public string
    DisplayStringFor<TResult>(Expression<Func<TModel, TResult>> expression) =>
       DisplayStringHelper(ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData));

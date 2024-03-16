@@ -26,7 +26,7 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public ElementEndingDisposable
    ValidationMessage(XcstWriter output, string modelName, bool hasDefaultText = false,
          string? @class = null) {
@@ -100,7 +100,7 @@ partial class HtmlHelper {
       }
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public ValidationSummaryDisposable
    ValidationSummary(XcstWriter output, bool includePropertyErrors = false,
          string? @class = null) {
@@ -209,7 +209,7 @@ partial class HtmlHelper {
       }
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public class ValidationSummaryDisposable : ElementEndingDisposable {
 
       readonly XcstWriter
@@ -268,7 +268,7 @@ partial class HtmlHelper {
 
 partial class HtmlHelper<TModel> {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public ElementEndingDisposable
    ValidationMessageFor<TResult>(
          XcstWriter output, Expression<Func<TModel, TResult>> expression, bool hasDefaultText = false,

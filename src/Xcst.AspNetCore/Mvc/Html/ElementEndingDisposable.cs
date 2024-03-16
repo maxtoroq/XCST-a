@@ -18,7 +18,7 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public class ElementEndingDisposable : IDisposable {
 
       readonly XcstWriter

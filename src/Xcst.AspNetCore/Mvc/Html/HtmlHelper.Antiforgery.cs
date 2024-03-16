@@ -20,7 +20,7 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    Antiforgery(XcstWriter output) {
 

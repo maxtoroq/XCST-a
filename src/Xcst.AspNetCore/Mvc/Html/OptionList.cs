@@ -18,11 +18,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using Xcst.Web.Mvc;
 
-namespace Xcst.Web.Runtime;
+namespace Xcst.Web.Mvc;
 
-/// <exclude/>
+[GeneratedCodeReference]
 public class OptionList : IEnumerable<SelectListItem> {
 
    readonly List<SelectListItem>

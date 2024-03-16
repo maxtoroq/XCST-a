@@ -29,7 +29,7 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public void
    Display(ISequenceWriter<object> output, string expression, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -48,7 +48,7 @@ partial class HtmlHelper {
       );
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public void
    DisplayForModel(ISequenceWriter<object> output, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -128,7 +128,7 @@ partial class HtmlHelper {
       return !propertyMetadata.IsComplexType;
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public void
    Editor(ISequenceWriter<object> output, string expression, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -147,7 +147,7 @@ partial class HtmlHelper {
       );
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public void
    EditorForModel(ISequenceWriter<object> output, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -345,7 +345,7 @@ partial class HtmlHelper {
 
 partial class HtmlHelper<TModel> {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public void
    DisplayFor<TResult>(ISequenceWriter<object> output, Expression<Func<TModel, TResult>> expression, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -364,7 +364,7 @@ partial class HtmlHelper<TModel> {
       );
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public void
    EditorFor<TResult>(ISequenceWriter<object> output, Expression<Func<TModel, TResult>> expression, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {

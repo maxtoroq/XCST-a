@@ -27,13 +27,13 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public SelectDisposable
    Select(XcstWriter output, string name, object? value = null, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, string? @class = null) =>
       GenerateSelect(output, default(ModelExplorer), name, value, selectList, default(string), multiple, @class);
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public SelectDisposable
    SelectForModel(XcstWriter output, object? value = null, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, string? @class = null) =>
@@ -218,7 +218,7 @@ partial class HtmlHelper {
       output.WriteEndElement();
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public void
    SelectOption(XcstWriter output, SelectDisposable? disp,
          object? value = null, bool selected = false, bool disabled = false, string text = "") {
@@ -243,7 +243,7 @@ partial class HtmlHelper {
       Convert.ToString(value, CultureInfo.CurrentCulture)
          ?? String.Empty;
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public class SelectDisposable : ElementEndingDisposable {
 
       readonly XcstWriter
@@ -310,7 +310,7 @@ partial class HtmlHelper {
 
 partial class HtmlHelper<TModel> {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public SelectDisposable
    SelectFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, string? @class = null) {

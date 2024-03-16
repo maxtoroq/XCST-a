@@ -24,7 +24,7 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    Label(XcstWriter output, string expression, bool hasDefaultText = false, string? @class = null) {
 
@@ -33,7 +33,7 @@ partial class HtmlHelper {
       return GenerateLabel(output, modelExplorer, expression, hasDefaultText, @class);
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    LabelForModel(XcstWriter output, bool hasDefaultText = false, string? @class = null) =>
       GenerateLabel(output, this.ViewData.ModelExplorer, String.Empty, hasDefaultText, @class);
@@ -66,7 +66,7 @@ partial class HtmlHelper {
 
 partial class HtmlHelper<TModel> {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    LabelFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, bool hasDefaultText = false,
          string? @class = null) {

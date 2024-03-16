@@ -23,12 +23,12 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    Input(XcstWriter output, string name, object? value = null, string? type = null, string? format = null, string? @class = null) =>
       InputImpl(output, type, modelExplorer: null, name, value, useViewData: null, format, @class);
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    InputForModel(XcstWriter output, object? value = null, string? type = null,
          string? format = null, string? @class = null) =>
@@ -206,7 +206,7 @@ partial class HtmlHelper {
 
 partial class HtmlHelper<TModel> {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public IDisposable
    InputFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, string? type = null,
          string? format = null, string? @class = null) {

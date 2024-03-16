@@ -24,7 +24,7 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public TextareaDisposable
    Textarea(XcstWriter output, string name, object? value = null, string? @class = null) {
 
@@ -74,7 +74,7 @@ partial class HtmlHelper {
       return new TextareaDisposable(output, text);
    }
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public class TextareaDisposable : ElementEndingDisposable {
 
       readonly XcstWriter
@@ -133,7 +133,7 @@ partial class HtmlHelper {
 
 partial class HtmlHelper<TModel> {
 
-   /// <exclude/>
+   [GeneratedCodeReference]
    public TextareaDisposable
    TextareaFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, string? @class = null) {
 

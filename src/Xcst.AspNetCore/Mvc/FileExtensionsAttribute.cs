@@ -29,7 +29,7 @@ using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
 namespace Xcst.Web.Mvc;
 
-/// <exclude/>
+[GeneratedCodeReference]
 [EditorBrowsable(EditorBrowsableState.Never)]
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
 public class FileExtensionsAttribute : ValidationAttribute, IClientModelValidator {
