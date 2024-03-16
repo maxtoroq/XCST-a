@@ -14,12 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<package name='Xcst.Web.Extension.ExtensionPackage' version='1.0' language='C#'
+<package name='Xcst.Web.Extension.ExtensionPackageV2' version='1.0' language='C#'
    xmlns='http://maxtoroq.github.io/XCST'
    xmlns:code='https://maxtoroq.github.io/XCST/code'
    xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'>
 
-   <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
 
    <import href='_grammar.xcst'/>
@@ -30,25 +29,11 @@
    <import href='_model.xcst'/>
    <import href='_metadata.xcst'/>
    <import href='_page.xcst'/>
+   <import href='../_compiler_services.xcst'/>
 
-   <param name='TargetRuntime' value='2m' as='decimal'/>
    <param name='ApplicationUri' as='System.Uri?'/>
    <param name='GenerateLinkTo' as='bool'/>
    <param name='AnnotateVirtualPath' as='bool'/>
-
-   <param name='xcst_is_value_template' as='System.Func&lt;object, bool>' required='yes'/>
-   <param name='xcst_require_output' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
-   <param name='src_base_types' as='XElement[]' required='yes'/>
-   <param name='src_doc_output' as='System.Func&lt;XObject?, XElement?, XElement>' required='yes'/>
-   <param name='src_output_is_doc' as='System.Func&lt;XElement, bool>' required='yes'/>
-   <param name='src_template_output' as='System.Func&lt;XElement?, XElement?, XElement>' required='yes'/>
-   <param name='src_helper_type' as='System.Func&lt;string, XElement>' required='yes'/>
-   <param name='src_expand_attribute' as='Xcst.XcstDelegate&lt;XElement>' required='yes'/>
-   <param name='src_sequence_constructor' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
-   <param name='src_simple_content' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
-   <param name='src_validation_arguments' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
-   <param name='src_top_level_package_reference' as='XElement' required='yes'/>
-   <param name='src_line_number' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
 
    <variable name='code' as='XNamespace'>https://maxtoroq.github.io/XCST/code</variable>
    <variable name='src' as='XNamespace'>https://maxtoroq.github.io/XCST/compiled</variable>

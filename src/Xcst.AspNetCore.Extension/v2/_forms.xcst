@@ -25,9 +25,6 @@
 
    <variable name='html_attributes' as='string[]'>
       <object>class</object>
-      <if test='V1'>
-         <object>attributes</object>
-      </if>
    </variable>
 
    <variable name='input_attributes' as='string[]'>
@@ -82,12 +79,6 @@
             .ToArray()'/>
       </call-template>
 
-      <if test='V1'>
-         <call-template name='no-children'>
-            <with-param name='el' value='el'/>
-         </call-template>
-      </if>
-
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
@@ -104,8 +95,7 @@
          .ToArray()'/>
 
       <choose>
-         <when test='V2_OR_GREATER
-               &amp;&amp; (!element_is_empty(el) || !fn_empty(clientAttribs))'>
+         <when test='!element_is_empty(el) || !fn_empty(clientAttribs)'>
             <code:using>
                <call-template name='input-or-hidden'>
                   <with-param name='el' value='el'/>
@@ -155,11 +145,9 @@
                   <with-param name='el' value='el'/>
                   <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
-               <if test='V2_OR_GREATER'>
-                  <code:method-call name='Dispose'>
-                     <code:chain-reference/>
-                  </code:method-call>
-               </if>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
             </code:chain>
          </otherwise>
       </choose>
@@ -182,20 +170,8 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V1'>
-               <call-template name='helper-type'>
-                  <with-param name='name'>InputInstructions</with-param>
-               </call-template>
-            </when>
-            <otherwise>
-               <call-template name='html-helper-ref'/>
-            </otherwise>
-         </choose>
+         <call-template name='html-helper-ref'/>
          <code:arguments>
-            <if test='V1'>
-               <call-template name='html-helper-ref'/>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
@@ -239,35 +215,10 @@
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = formatAttr }'/>
                </code:argument>
             </if>
-            <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is { } classAttr'>
+            <if test='el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
-            </if>
-            <if test='V1'>
-               <choose>
-                  <when test='hidden'>
-                     <call-template name='html-attributes-param'>
-                        <with-param name='el' value='el'/>
-                        <with-param name='boolAttribs' value='attributes(el)
-                           .Where(p => input_client_bool_attributes.Contains(p.Name.LocalName))
-                           .ToArray()'/>
-                     </call-template>
-                  </when>
-                  <otherwise>
-                     <call-template name='html-attributes-param'>
-                        <with-param name='el' value='el'/>
-                        <with-param name='mergeAttribs' value='attributes(el)
-                           .Where(p => p.Name == "placeholder")
-                           .ToArray()'/>
-                        <with-param name='boolAttribs' value='attributes(el)
-                           .Where(p => p.Name.Namespace == XNamespace.None
-                              &amp;&amp; textbox_client_bool_attributes.Contains(p.Name.LocalName))
-                           .ToArray()'/>
-                     </call-template>
-                  </otherwise>
-               </choose>
             </if>
          </code:arguments>
       </code:method-call>
@@ -298,12 +249,6 @@
             .ToArray()'/>
       </call-template>
 
-      <if test='V1'>
-         <call-template name='no-children'>
-            <with-param name='el' value='el'/>
-         </call-template>
-      </if>
-
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
@@ -320,8 +265,7 @@
          .ToArray()'/>
 
       <choose>
-         <when test='V2_OR_GREATER
-               &amp;&amp; (!element_is_empty(el) || !fn_empty(clientAttribs))'>
+         <when test='!element_is_empty(el) || !fn_empty(clientAttribs)'>
             <variable name='dispVar' value='aux_variable("txtarea_" + fn_generate_id(el))'/>
             <code:using>
                <code:variable name='{dispVar}'>
@@ -396,14 +340,12 @@
                   <with-param name='el' value='el'/>
                   <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
-               <if test='V2_OR_GREATER'>
-                  <code:method-call name='NoConstructor'>
-                     <code:chain-reference/>
-                  </code:method-call>
-                  <code:method-call name='Dispose'>
-                     <code:chain-reference/>
-                  </code:method-call>
-               </if>
+               <code:method-call name='NoConstructor'>
+                  <code:chain-reference/>
+               </code:method-call>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
             </code:chain>
          </otherwise>
       </choose>
@@ -418,27 +360,12 @@
 
       <code:method-call>
          <attribute name='name'>
-            <choose>
-               <when test='V1'>TextArea</when>
-               <otherwise>Textarea</otherwise>
-            </choose>
+            <text>Textarea</text>
             <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V1'>
-               <call-template name='helper-type'>
-                  <with-param name='name'>TextAreaInstructions</with-param>
-               </call-template>
-            </when>
-            <otherwise>
-               <call-template name='html-helper-ref'/>
-            </otherwise>
-         </choose>
+         <call-template name='html-helper-ref'/>
          <code:arguments>
-            <if test='V1'>
-               <call-template name='html-helper-ref'/>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
@@ -461,66 +388,15 @@
                         <code:string/>
                      </otherwise>
                   </choose>
-                  <choose>
-                     <when test='el.Attribute("value") is { } valueAttr'>
-                        <code:expression value='{xcst_expression(valueAttr)}'/>
-                     </when>
-                     <when test='V1'>
-                        <code:default>
-                           <copy-of value='src_object_type'/>
-                        </code:default>
-                     </when>
-                  </choose>
+                  <if test='el.Attribute("value") is { } valueAttr'>
+                     <code:expression value='{xcst_expression(valueAttr)}'/>
+                  </if>
                </otherwise>
             </choose>
-            <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is { } classAttr'>
+            <if test='el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
-            </if>
-            <if test='V1'>
-               <variable name='rowsAttr' value='el.Attribute("rows")'/>
-               <variable name='colsAttr' value='el.Attribute("cols")'/>
-               <if test='rowsAttr != null
-                     || colsAttr != null'>
-                  <code:argument name='rows'>
-                     <choose>
-                        <when test='rowsAttr != null'>
-                           <call-template name='src:integer'>
-                              <with-param name='val' value='xcst_integer(rowsAttr, true)'/>
-                              <with-param name='avt' value='rowsAttr'/>
-                           </call-template>
-                        </when>
-                        <otherwise>
-                           <code:int value='0'/>
-                        </otherwise>
-                     </choose>
-                  </code:argument>
-                  <code:argument name='columns'>
-                     <choose>
-                        <when test='colsAttr != null'>
-                           <call-template name='src:integer'>
-                              <with-param name='val' value='xcst_integer(colsAttr, true)'/>
-                              <with-param name='avt' value='colsAttr'/>
-                           </call-template>
-                        </when>
-                        <otherwise>
-                           <code:int value='0'/>
-                        </otherwise>
-                     </choose>
-                  </code:argument>
-               </if>
-               <call-template name='html-attributes-param'>
-                  <with-param name='el' value='el'/>
-                  <with-param name='mergeAttribs' value='attributes(el)
-                     .Where(p => p.Name == "placeholder")
-                     .ToArray()'/>
-                  <with-param name='boolAttribs' value='attributes(el)
-                     .Where(p => p.Name.Namespace == XNamespace.None
-                        &amp;&amp; textbox_client_bool_attributes.Contains(p.Name.LocalName))
-                     .ToArray()'/>
-               </call-template>
             </if>
          </code:arguments>
       </code:method-call>
@@ -550,12 +426,6 @@
             .ToArray()'/>
       </call-template>
 
-      <if test='V1'>
-         <call-template name='no-children'>
-            <with-param name='el' value='el'/>
-         </call-template>
-      </if>
-
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='clientAttribs' value='attributes(el)
@@ -564,8 +434,7 @@
          .ToArray()'/>
 
       <choose>
-         <when test='V2_OR_GREATER
-               &amp;&amp; (!element_is_empty(el) || !fn_empty(clientAttribs))'>
+         <when test='!element_is_empty(el) || !fn_empty(clientAttribs)'>
             <variable name='dispVar' value='aux_variable("chkbx_" + fn_generate_id(el))'/>
             <code:using>
                <code:variable name='{dispVar}'>
@@ -623,14 +492,12 @@
                <call-template name='checkbox'>
                   <with-param name='el' value='el'/>
                </call-template>
-               <if test='V2_OR_GREATER'>
-                  <code:method-call name='NoConstructor'>
-                     <code:chain-reference/>
-                  </code:method-call>
-                  <code:method-call name='Dispose'>
-                     <code:chain-reference/>
-                  </code:method-call>
-               </if>
+               <code:method-call name='NoConstructor'>
+                  <code:chain-reference/>
+               </code:method-call>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
             </code:chain>
          </otherwise>
       </choose>
@@ -646,29 +513,13 @@
 
       <code:method-call>
          <attribute name='name'>
-            <choose>
-               <when test='V1'>CheckBox</when>
-               <otherwise>Checkbox</otherwise>
-            </choose>
+            <text>Checkbox</text>
             <if test='forAttr != null || forModel'>For</if>
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V1'>
-               <call-template name='helper-type'>
-                  <with-param name='name'>InputInstructions</with-param>
-               </call-template>
-            </when>
-            <otherwise>
-               <call-template name='html-helper-ref'/>
-            </otherwise>
-         </choose>
+         <call-template name='html-helper-ref'/>
          <code:arguments>
-            <if test='V1'>
-               <call-template name='html-helper-ref'/>
-               <code:this-reference/>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
@@ -696,20 +547,10 @@
                   </if>
                </otherwise>
             </choose>
-            <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is { } classAttr'>
+            <if test='el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
-            </if>
-            <if test='V1'>
-               <call-template name='html-attributes-param'>
-                  <with-param name='el' value='el'/>
-                  <with-param name='boolAttribs' value='attributes(el)
-                     .Where(p => p.Name.Namespace == XNamespace.None
-                        &amp;&amp; input_client_bool_attributes.Contains(p.Name.LocalName))
-                     .ToArray()'/>
-               </call-template>
             </if>
          </code:arguments>
       </code:method-call>
@@ -747,12 +588,6 @@
             .ToArray()'/>
       </call-template>
 
-      <if test='V1'>
-         <call-template name='no-children'>
-            <with-param name='el' value='el'/>
-         </call-template>
-      </if>
-
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
@@ -769,8 +604,7 @@
          .ToArray()'/>
 
       <choose>
-         <when test='V2_OR_GREATER
-               &amp;&amp; (!element_is_empty(el) || !fn_empty(clientAttribs))'>
+         <when test='!element_is_empty(el) || !fn_empty(clientAttribs)'>
             <code:using>
                <call-template name='radio'>
                   <with-param name='el' value='el'/>
@@ -820,11 +654,9 @@
                   <with-param name='el' value='el'/>
                   <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
-               <if test='V2_OR_GREATER'>
-                  <code:method-call name='Dispose'>
-                     <code:chain-reference/>
-                  </code:method-call>
-               </if>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
             </code:chain>
          </otherwise>
       </choose>
@@ -841,25 +673,12 @@
       <code:method-call>
          <attribute name='name'>
             <text>Radio</text>
-            <if test='V1'>Button</if>
             <if test='forAttr != null || forModel'>For</if>
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V1'>
-               <call-template name='helper-type'>
-                  <with-param name='name'>InputInstructions</with-param>
-               </call-template>
-            </when>
-            <otherwise>
-               <call-template name='html-helper-ref'/>
-            </otherwise>
-         </choose>
+         <call-template name='html-helper-ref'/>
          <code:arguments>
-            <if test='V1'>
-               <call-template name='html-helper-ref'/>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
@@ -887,20 +706,10 @@
                   </call-template>
                </code:argument>
             </if>
-            <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is { } classAttr'>
+            <if test='el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
-            </if>
-            <if test='V1'>
-               <call-template name='html-attributes-param'>
-                  <with-param name='el' value='el'/>
-                  <with-param name='boolAttribs' value='attributes(el)
-                     .Where(p => p.Name.Namespace == XNamespace.None
-                        &amp;&amp; input_client_bool_attributes.Contains(p.Name.LocalName))
-                     .ToArray()'/>
-               </call-template>
             </if>
          </code:arguments>
       </code:method-call>
@@ -917,12 +726,6 @@
          <with-param name='el' value='el'/>
       </call-template>
 
-      <if test='V1'>
-         <call-template name='no-children'>
-            <with-param name='el' value='el'/>
-         </call-template>
-      </if>
-
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
@@ -933,8 +736,7 @@
       </call-template>
 
       <choose>
-         <when test='V2_OR_GREATER
-               &amp;&amp; !element_is_empty(el)'>
+         <when test='!element_is_empty(el)'>
             <code:using>
                <call-template name='antiforgery'>
                   <with-param name='el' value='el'/>
@@ -954,11 +756,9 @@
                   <with-param name='el' value='el'/>
                   <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
-               <if test='V2_OR_GREATER'>
-                  <code:method-call name='Dispose'>
-                     <code:chain-reference/>
-                  </code:method-call>
-               </if>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
             </code:chain>
          </otherwise>
       </choose>
@@ -968,32 +768,10 @@
       <param name='el' as='XElement' required='yes'/>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <code:method-call>
+      <code:method-call name='Antiforgery'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V2_OR_GREATER'>
-               <code:method-reference name='Antiforgery'>
-                  <call-template name='html-helper-ref'/>
-               </code:method-reference>
-            </when>
-            <otherwise>
-               <code:method-reference name='GetHtml'>
-                  <code:type-reference name='AntiForgery' namespace='System.Web.Helpers'/>
-               </code:method-reference>
-            </otherwise>
-         </choose>
+         <call-template name='html-helper-ref'/>
          <code:arguments>
-            <if test='V1'>
-               <code:chain>
-                  <call-template name='html-helper-ref'/>
-                  <code:property-reference name='ViewContext'>
-                     <code:chain-reference/>
-                  </code:property-reference>
-                  <code:property-reference name='HttpContext'>
-                     <code:chain-reference/>
-                  </code:property-reference>
-               </code:chain>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
          </code:arguments>
       </code:method-call>
@@ -1038,8 +816,7 @@
          .ToArray()'/>
 
       <choose>
-         <when test='V2_OR_GREATER
-               &amp;&amp; (!element_is_empty(el) || !fn_empty(clientAttribs))'>
+         <when test='!element_is_empty(el) || !fn_empty(clientAttribs)'>
             <variable name='dispVar' value='aux_variable("select_" + fn_generate_id(el))'/>
             <variable name='dispRef'>
                <code:variable-reference name='{dispVar}'/>
@@ -1099,14 +876,12 @@
                   <with-param name='el' value='el'/>
                   <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
-               <if test='V2_OR_GREATER'>
-                  <code:method-call name='NoConstructor'>
-                     <code:chain-reference/>
-                  </code:method-call>
-                  <code:method-call name='Dispose'>
-                     <code:chain-reference/>
-                  </code:method-call>
-               </if>
+               <code:method-call name='NoConstructor'>
+                  <code:chain-reference/>
+               </code:method-call>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
             </code:chain>
          </otherwise>
       </choose>
@@ -1127,20 +902,8 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V1'>
-               <call-template name='helper-type'>
-                  <with-param name='name'>SelectInstructions</with-param>
-               </call-template>
-            </when>
-            <otherwise>
-               <call-template name='html-helper-ref'/>
-            </otherwise>
-         </choose>
+         <call-template name='html-helper-ref'/>
          <code:arguments>
-            <if test='V1'>
-               <call-template name='html-helper-ref'/>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
@@ -1158,25 +921,22 @@
                   <if test='nameAttr != null'>
                      <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                   </if>
-                  <if test='V2_OR_GREATER'>
-                     <choose>
-                        <when test='el.Attribute("value") is { } valueAttr'>
-                           <code:expression value='{xcst_expression(valueAttr)}'/>
-                        </when>
-                        <otherwise>
-                           <code:default>
-                              <copy-of value='src_object_type'/>
-                           </code:default>
-                        </otherwise>
-                     </choose>
-                  </if>
+                  <choose>
+                     <when test='el.Attribute("value") is { } valueAttr'>
+                        <code:expression value='{xcst_expression(valueAttr)}'/>
+                     </when>
+                     <otherwise>
+                        <code:default>
+                           <copy-of value='src_object_type'/>
+                        </code:default>
+                     </otherwise>
+                  </choose>
                </otherwise>
             </choose>
             <variable name='multiple' value='(el.Attribute("multiple") is { } multipleAttr) ?
                xcst_boolean(multipleAttr)!.Value : false'/>
             <call-template name='option-list'>
                <with-param name='el' value='el'/>
-               <with-param name='valueAttr' value='(V1) ? el.Attribute("value") : null'/>
                <with-param name='multiple' value='multiple'/>
             </call-template>
             <if test='multiple'>
@@ -1184,26 +944,16 @@
                   <code:bool value='{fn_string(multiple)}'/>
                </code:argument>
             </if>
-            <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is { } classAttr'>
+            <if test='el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
-            </if>
-            <if test='V1'>
-               <call-template name='html-attributes-param'>
-                  <with-param name='el' value='el'/>
-                  <with-param name='boolAttribs' value='attributes(el)
-                     .Where(p => p.Name.Namespace == XNamespace.None
-                        &amp;&amp; input_client_bool_attributes.Contains(p.Name.LocalName))
-                     .ToArray()'/>
-               </call-template>
             </if>
          </code:arguments>
       </code:method-call>
    </template>
 
-   <template match='XElement el &amp;&amp; el.Name == a + "option" &amp;&amp; V2_OR_GREATER' mode='src:statement'>
+   <template match='XElement el &amp;&amp; el.Name == a + "option"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
       <param name='app_select_disp_ref' as='XElement?' tunnel='yes'/>
 
@@ -1264,11 +1014,10 @@
 
    <template name='option-list'>
       <param name='el' as='XElement' required='yes'/>
-      <param name='valueAttr' as='XAttribute?'/>
       <param name='multiple' value='false' as='bool'/>
 
       <variable name='optionsAttr' value='el.Attribute("options")'/>
-      <variable name='optionEls' value='(V1 || el.Name.LocalName != "select") ?
+      <variable name='optionEls' value='(el.Name.LocalName != "select") ?
          select(el, a + "option").ToArray()
          : System.Array.Empty&lt;XElement>()'/>
 
@@ -1298,23 +1047,6 @@
                      </code:method-call>
                   </otherwise>
                </choose>
-               <if test='valueAttr != null'>
-                  <code:method-call name='WithSelectedValue'>
-                     <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-                     <code:chain-reference/>
-                     <code:arguments>
-                        <code:cast>
-                           <copy-of value='src_object_type'/>
-                           <code:expression value='{xcst_expression(valueAttr)}'/>
-                        </code:cast>
-                        <if test='multiple'>
-                           <code:argument name='multiple'>
-                              <code:bool value='{fn_string(multiple)}'/>
-                           </code:argument>
-                        </if>
-                     </code:arguments>
-                  </code:method-call>
-               </if>
                <for-each name='opt' in='optionEls'>
                   <call-template name='option-item'>
                      <with-param name='el' value='opt'/>
@@ -1336,8 +1068,7 @@
             <code:default>
                <code:type-reference name='IEnumerable' namespace='System.Collections.Generic'>
                   <code:type-arguments>
-                     <code:type-reference name='SelectListItem'
-                        namespace='{(V2_OR_GREATER ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
+                     <code:type-reference name='SelectListItem' namespace='Xcst.Web.Mvc'/>
                   </code:type-arguments>
                </code:type-reference>
             </code:default>
@@ -1406,20 +1137,13 @@
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='html_attributes
-            .Concat(new[] { "for", "name", "text" }
-            .Where(p => p != "text" || V1))
+            .Concat(new[] { "for", "name" })
             .ToArray()'/>
       </call-template>
 
       <call-template name='validate-for'>
          <with-param name='el' value='el'/>
       </call-template>
-
-      <if test='V1'>
-         <call-template name='no-children'>
-            <with-param name='el' value='el'/>
-         </call-template>
-      </if>
 
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
@@ -1433,8 +1157,7 @@
       <variable name='isEmpty' value='element_is_empty(el)'/>
 
       <choose>
-         <when test='V2_OR_GREATER
-               &amp;&amp; !isEmpty'>
+         <when test='!isEmpty'>
             <code:using>
                <call-template name='label'>
                   <with-param name='el' value='el'/>
@@ -1456,11 +1179,9 @@
                   <with-param name='isEmpty' value='isEmpty'/>
                   <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
-               <if test='V2_OR_GREATER'>
-                  <code:method-call name='Dispose'>
-                     <code:chain-reference/>
-                  </code:method-call>
-               </if>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
             </code:chain>
          </otherwise>
       </choose>
@@ -1482,20 +1203,8 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V1'>
-               <call-template name='helper-type'>
-                  <with-param name='name'>LabelInstructions</with-param>
-               </call-template>
-            </when>
-            <otherwise>
-               <call-template name='html-helper-ref'/>
-            </otherwise>
-         </choose>
+         <call-template name='html-helper-ref'/>
          <code:arguments>
-            <if test='V1'>
-               <call-template name='html-helper-ref'/>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
@@ -1513,33 +1222,19 @@
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                </when>
             </choose>
-            <choose>
-               <when test='V2_OR_GREATER'>
-                  <code:argument name='hasDefaultText'>
-                     <code:bool value='{fn_string(!isEmpty)}'/>
-                  </code:argument>
-                  <if test='el.Attribute("class") is { } classAttr'>
-                     <code:argument name='class' verbatim='true'>
-                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
-                     </code:argument>
-                  </if>
-               </when>
-               <when test='el.Attribute("text") is { } textAttr'>
-                  <code:argument name='labelText'>
-                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = textAttr }'/>
-                  </code:argument>
-               </when>
-            </choose>
-            <if test='V1'>
-               <call-template name='html-attributes-param'>
-                  <with-param name='el' value='el'/>
-               </call-template>
+            <code:argument name='hasDefaultText'>
+               <code:bool value='{fn_string(!isEmpty)}'/>
+            </code:argument>
+            <if test='el.Attribute("class") is { } classAttr'>
+               <code:argument name='class' verbatim='true'>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
+               </code:argument>
             </if>
          </code:arguments>
       </code:method-call>
    </template>
 
-   <template match='XElement el &amp;&amp; el.Name == a + "label" &amp;&amp; V2_OR_GREATER' mode='xcst:extension-instruction'>
+   <template match='XElement el &amp;&amp; el.Name == a + "label"' mode='xcst:extension-instruction'>
       <call-template name='element-instruction'/>
    </template>
 
@@ -1549,8 +1244,7 @@
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='html_attributes
-            .Concat(new[] { "include-member-errors", "message" })
-            .Where(p => p != "message" || V1)
+            .Append("include-member-errors")
             .ToArray()'/>
       </call-template>
 
@@ -1564,8 +1258,7 @@
       </call-template>
 
       <choose>
-         <when test='V2_OR_GREATER
-               &amp;&amp; !element_is_empty(el)'>
+         <when test='!element_is_empty(el)'>
             <variable name='dispVar' value='aux_variable("valmsgsum_" + fn_generate_id(el))'/>
             <code:using>
                <code:variable name='{dispVar}'>
@@ -1598,14 +1291,12 @@
                   <with-param name='el' value='el'/>
                   <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
-               <if test='V2_OR_GREATER'>
-                  <code:method-call name='NoConstructor'>
-                     <code:chain-reference/>
-                  </code:method-call>
-                  <code:method-call name='Dispose'>
-                     <code:chain-reference/>
-                  </code:method-call>
-               </if>
+               <code:method-call name='NoConstructor'>
+                  <code:chain-reference/>
+               </code:method-call>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
             </code:chain>
          </otherwise>
       </choose>
@@ -1617,20 +1308,8 @@
 
       <code:method-call name='ValidationSummary'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V1'>
-               <call-template name='helper-type'>
-                  <with-param name='name'>ValidationInstructions</with-param>
-               </call-template>
-            </when>
-            <otherwise>
-               <call-template name='html-helper-ref'/>
-            </otherwise>
-         </choose>
+         <call-template name='html-helper-ref'/>
          <code:arguments>
-            <if test='V1'>
-               <call-template name='html-helper-ref'/>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <if test='el.Attribute("include-member-errors") is { } imeAttr'>
                <code:argument name='includePropertyErrors'>
@@ -1640,28 +1319,10 @@
                   </call-template>
                </code:argument>
             </if>
-            <if test='V2_OR_GREATER
-                  &amp;&amp; el.Attribute("class") is { } classAttr'>
+            <if test='el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                </code:argument>
-            </if>
-            <if test='V1'>
-               <code:argument name='message'>
-                  <choose>
-                     <when test='el.Attribute("message") is { } messageAttr'>
-                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = messageAttr }'/>
-                     </when>
-                     <otherwise>
-                        <code:default>
-                           <code:type-reference name='String' namespace='System'/>
-                        </code:default>
-                     </otherwise>
-                  </choose>
-               </code:argument>
-               <call-template name='html-attributes-param'>
-                  <with-param name='el' value='el'/>
-               </call-template>
             </if>
          </code:arguments>
       </code:method-call>
@@ -1673,20 +1334,13 @@
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='html_attributes
-            .Concat(new[] { "for", "name", "message" }
-            .Where(p => p != "message" || V1))
+            .Concat(new[] { "for", "name" })
             .ToArray()'/>
       </call-template>
 
       <call-template name='validate-for'>
          <with-param name='el' value='el'/>
       </call-template>
-
-      <if test='V1'>
-         <call-template name='no-children'>
-            <with-param name='el' value='el'/>
-         </call-template>
-      </if>
 
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
@@ -1700,8 +1354,7 @@
       <variable name='isEmpty' value='element_is_empty(el)'/>
 
       <choose>
-         <when test='V2_OR_GREATER
-               &amp;&amp; !isEmpty'>
+         <when test='!isEmpty'>
             <variable name='dispVar' value='aux_variable("valmsg_" + fn_generate_id(el))'/>
             <code:using>
                <code:variable name='{dispVar}'>
@@ -1733,11 +1386,9 @@
                   <with-param name='isEmpty' value='isEmpty'/>
                   <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
-               <if test='V2_OR_GREATER'>
-                  <code:method-call name='Dispose'>
-                     <code:chain-reference/>
-                  </code:method-call>
-               </if>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
             </code:chain>
          </otherwise>
       </choose>
@@ -1757,20 +1408,8 @@
             <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V1'>
-               <call-template name='helper-type'>
-                  <with-param name='name'>ValidationInstructions</with-param>
-               </call-template>
-            </when>
-            <otherwise>
-               <call-template name='html-helper-ref'/>
-            </otherwise>
-         </choose>
+         <call-template name='html-helper-ref'/>
          <code:arguments>
-            <if test='V1'>
-               <call-template name='html-helper-ref'/>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
@@ -1791,30 +1430,13 @@
                   <code:string/>
                </otherwise>
             </choose>
-            <choose>
-               <when test='V2_OR_GREATER'>
-                  <code:argument name='hasDefaultText'>
-                     <code:bool value='{fn_string(!isEmpty)}'/>
-                  </code:argument>
-                  <if test='el.Attribute("class") is { } classAttr'>
-                     <code:argument name='class' verbatim='true'>
-                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
-                     </code:argument>
-                  </if>
-               </when>
-               <when test='el.Attribute("message") is { } messageAttr'>
-                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = messageAttr }'/>
-               </when>
-               <otherwise>
-                  <code:default>
-                     <code:type-reference name='String' namespace='System'/>
-                  </code:default>
-               </otherwise>
-            </choose>
-            <if test='V1'>
-               <call-template name='html-attributes-param'>
-                  <with-param name='el' value='el'/>
-               </call-template>
+            <code:argument name='hasDefaultText'>
+               <code:bool value='{fn_string(!isEmpty)}'/>
+            </code:argument>
+            <if test='el.Attribute("class") is { } classAttr'>
+               <code:argument name='class' verbatim='true'>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
+               </code:argument>
             </if>
          </code:arguments>
       </code:method-call>

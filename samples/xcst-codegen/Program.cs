@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Xcst;
 using Xcst.Compiler;
+using XcstWebExtension = Xcst.Web.Extension.ExtensionPackageV2;
 
 namespace XcstCodeGen;
 
@@ -167,15 +168,11 @@ class Program {
       // Enable "application" extension
       compiler.RegisterExtension(() => {
 
-         var appExtPkg = new Xcst.Web.Extension.ExtensionPackage {
+         var appExtPkg = new XcstWebExtension {
             ApplicationUri = startUri,
             GenerateLinkTo = true,
             AnnotateVirtualPath = true
          };
-
-         if (TargetRuntime != default) {
-            appExtPkg.TargetRuntime = TargetRuntime;
-         }
 
          return appExtPkg;
       });
@@ -241,7 +238,7 @@ class Program {
             compiler.TargetBaseTypes = null;
          }
 
-         Xcst.Web.Extension.ExtensionPackage.IsPage(compiler.SetTunnelParam, isPage);
+         XcstWebExtension.IsPage(compiler.SetTunnelParam, isPage);
 
          var pkgOutput = default(TextWriter);
 

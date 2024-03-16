@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ Copyright 2022 Max Toro Q.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<module version='1.0' language='C#'
+   xmlns='http://maxtoroq.github.io/XCST'
+   xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
+   xmlns:code='https://maxtoroq.github.io/XCST/code'
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
+
+   <import-namespace ns='System.Linq'/>
+   <import-namespace ns='System.Xml.Linq'/>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "display-name"' mode='src:statement'>
+      <param name='output' as='XElement' tunnel='yes'/>
+
+      <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
+
+      <code:method-call name='WriteString'>
+         <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
+         <copy-of value='select(output, src + "reference", code)'/>
+         <code:arguments>
+            <apply-templates value='el' mode='src:expression'/>
+         </code:arguments>
+      </code:method-call>
+   </template>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "display-name"' mode='src:expression'>
+
+      <call-template name='validate-attribs'>
+         <with-param name='el' value='el'/>
+         <with-param name='optional' value='new[] { "for", "name" }'/>
+      </call-template>
+
+      <call-template name='validate-for'>
+         <with-param name='el' value='el'/>
+      </call-template>
+
+      <call-template name='no-children'>
+         <with-param name='el' value='el'/>
+      </call-template>
+
+      <variable name='forAttr' value='el.Attribute("for")'/>
+      <variable name='nameAttr' value='el.Attribute("name")'/>
+      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
+
+      <code:method-call>
+         <attribute name='name'>
+            <text>DisplayName</text>
+            <if test='forAttr != null || forModel'>For</if>
+            <if test='forModel'>Model</if>
+         </attribute>
+         <call-template name='html-helper-ref'/>
+         <code:arguments>
+            <choose>
+               <when test='forAttr != null'>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
+                  <code:lambda>
+                     <code:parameters>
+                        <code:parameter name='{param}'/>
+                     </code:parameters>
+                     <code:property-reference name='{xcst_expression(forAttr)}'>
+                        <code:variable-reference name='{param}'/>
+                     </code:property-reference>
+                  </code:lambda>
+               </when>
+               <when test='nameAttr != null'>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
+               </when>
+            </choose>
+         </code:arguments>
+      </code:method-call>
+   </template>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "display-name"' mode='xcst:extension-instruction'>
+      <xcst:instruction expression='true'>
+         <code:type-reference name='String' namespace='System'/>
+      </xcst:instruction>
+   </template>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "display-text"' mode='src:statement'>
+      <apply-templates value='el' mode='src:expression'>
+         <with-param name='statement' value='true'/>
+      </apply-templates>
+   </template>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "display-text"' mode='src:expression'>
+      <param name='statement' value='false' as='bool'/>
+      <param name='output' as='XElement?' tunnel='yes'/>
+
+      <call-template name='validate-attribs'>
+         <with-param name='el' value='el'/>
+         <with-param name='optional' value='new[] { "for", "name" }'/>
+      </call-template>
+
+      <call-template name='validate-for'>
+         <with-param name='el' value='el'/>
+      </call-template>
+
+      <call-template name='no-children'>
+         <with-param name='el' value='el'/>
+      </call-template>
+
+      <if test='statement'>
+         <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
+      </if>
+
+      <variable name='forAttr' value='el.Attribute("for")'/>
+      <variable name='nameAttr' value='el.Attribute("name")'/>
+
+      <code:method-call>
+         <if test='statement'>
+            <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
+         </if>
+         <attribute name='name'>
+            <text>Display</text>
+            <choose>
+               <when test='statement'>Text</when>
+               <otherwise>String</otherwise>
+            </choose>
+            <if test='forAttr != null'>For</if>
+         </attribute>
+         <call-template name='html-helper-ref'/>
+         <code:arguments>
+            <if test='statement'>
+               <copy-of value='select(output, src + "reference", code)'/>
+            </if>
+            <choose>
+               <when test='forAttr != null'>
+                  <variable name='param' value='aux_variable(fn_generate_id(el))'/>
+                  <code:lambda>
+                     <code:parameters>
+                        <code:parameter name='{param}'/>
+                     </code:parameters>
+                     <code:property-reference name='{xcst_expression(forAttr)}'>
+                        <code:variable-reference name='{param}'/>
+                     </code:property-reference>
+                  </code:lambda>
+               </when>
+               <when test='nameAttr != null'>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
+               </when>
+               <otherwise>
+                  <code:string/>
+               </otherwise>
+            </choose>
+         </code:arguments>
+      </code:method-call>
+   </template>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "display-text"' mode='xcst:extension-instruction'>
+      <xcst:instruction expression='true'>
+         <code:type-reference name='String' namespace='System'/>
+      </xcst:instruction>
+   </template>
+
+
+   <!-- ## Type Attributes -->
+
+   <template name='src:type-attribute-extra' visibility='public'>
+      <param name='el' as='XElement' required='yes'/>
+
+      <variable name='members' value='el.Elements(c + "member").ToArray()'/>
+      <variable name='included' value='(
+         from mem in members
+         let bindAttr = mem.Attribute(a + "bind")
+         where bindAttr is null
+            || xcst_boolean(bindAttr) == true
+         select xcst_name(mem.Attribute("name")!))
+         .ToArray()'/>
+
+      <if test='included.Length &lt; members.Length'>
+         <code:attribute>
+            <code:type-reference name='Bind' namespace='Microsoft.AspNetCore.Mvc'/>
+            <code:arguments>
+               <for-each name='mem' in='included'>
+                  <code:string literal='true'>
+                     <value-of value='mem'/>
+                  </code:string>
+               </for-each>
+            </code:arguments>
+         </code:attribute>
+      </if>
+   </template>
+
+   <template name='src:member-attribute-extra' visibility='public'>
+      <param name='el' as='XElement' required='yes'/>
+
+      <apply-templates value='attributes(el)
+         .Where(p => p.Name == "display" || p.Name.Namespace == a)' mode='member-attribute-extra'/>
+   </template>
+
+   <template match='XAttribute attr &amp;&amp; attr.Name == "display"' mode='member-attribute-extra'>
+
+      <variable name='display' value='xcst_non_string(attr)'/>
+      <variable name='scaffold' value='
+         (display is "view-only" or "edit-only" or "hidden") ? true
+            : xcst_boolean(attr)!.Value'/>
+
+      <if test='scaffold'>
+         <code:attribute line-hidden='true'>
+            <code:type-reference name='ShowFor' namespace='Xcst.Web.Mvc'/>
+            <code:initializer>
+               <code:member-initializer name='Display'>
+                  <code:bool value='{fn_string(display != "edit-only")}'/>
+               </code:member-initializer>
+               <code:member-initializer name='Edit'>
+                  <code:bool value='{fn_string(display != "view-only")}'/>
+               </code:member-initializer>
+            </code:initializer>
+         </code:attribute>
+         <if test='display == "hidden"'>
+            <code:attribute>
+               <code:type-reference name='HiddenInput' namespace='Microsoft.AspNetCore.Mvc'/>
+               <code:initializer>
+                  <code:member-initializer name='DisplayValue'>
+                     <code:bool value='false'/>
+                  </code:member-initializer>
+               </code:initializer>
+            </code:attribute>
+         </if>
+      </if>
+   </template>
+
+   <template match='XAttribute attr &amp;&amp; attr.Name.Namespace == a' mode='member-attribute-extra'>
+      <message terminate='yes' error-code='XTSE0090' error-data='src_error_object(attr.Parent!)' expand-text='yes' transform-text='trim'>
+         Attribute 'a:{attr.Name.LocalName}' is not allowed on the {fn_name(attr.Parent!)} element.
+      </message>
+   </template>
+
+   <template match='XAttribute attr &amp;&amp; attr.Name.Namespace == a
+      &amp;&amp; attr.Name.LocalName is "file-extensions-message" or "file-max-length-message" or "bind"' mode='member-attribute-extra'/>
+
+   <template match='XAttribute attr &amp;&amp; attr.Name == a + "file-extensions"' mode='member-attribute-extra'>
+      <code:attribute>
+         <code:type-reference name='FileExtensions' namespace='Xcst.Web.Mvc'/>
+         <code:arguments>
+            <code:string verbatim='true'>
+               <value-of value='xcst_non_string(attr)'/>
+            </code:string>
+         </code:arguments>
+         <code:initializer>
+            <invoke-delegate delegate='src_validation_arguments' with-params='new { el = attr.Parent!, name = attr.Name }'/>
+         </code:initializer>
+      </code:attribute>
+   </template>
+
+   <template match='XAttribute attr &amp;&amp; attr.Name == a + "file-max-length"' mode='member-attribute-extra'>
+      <code:attribute>
+         <code:type-reference name='FileMaxLength' namespace='Xcst.Web.Mvc'/>
+         <code:arguments>
+            <code:int value='{xcst_integer(attr)}'/>
+         </code:arguments>
+         <code:initializer>
+            <invoke-delegate delegate='src_validation_arguments' with-params='new { el = attr.Parent!, name = attr.Name }'/>
+         </code:initializer>
+      </code:attribute>
+   </template>
+
+</module>

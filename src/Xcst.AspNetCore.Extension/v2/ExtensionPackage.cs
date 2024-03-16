@@ -17,19 +17,13 @@ using System.Xml.Linq;
 
 namespace Xcst.Web.Extension;
 
-public partial class ExtensionPackage {
+public partial class ExtensionPackageV2 {
 
    const string
    _tunnelParamPrefix = "xcsta_";
 
    public string
    ExtensionNamespace => a.NamespaceName;
-
-   private bool
-   V1 => TargetRuntime < 2m;
-
-   private bool
-   V2_OR_GREATER => TargetRuntime >= 2m;
 
    public static void
    IsPage(System.Action<string, object?> setFn, bool isPage) {

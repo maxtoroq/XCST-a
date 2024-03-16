@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ Copyright 2022 Max Toro Q.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<module version='1.0' language='C#'
+   xmlns='http://maxtoroq.github.io/XCST'>
+
+   <import-namespace ns='System.Linq'/>
+   <import-namespace ns='System.Xml.Linq'/>
+
+   <template name='validate-attribs'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='required' value='System.Array.Empty&lt;string>()' as='string[]'/>
+      <param name='optional' value='System.Array.Empty&lt;string>()' as='string[]'/>
+
+      <variable name='allowed' value='required.Concat(optional).ToArray()'/>
+
+      <variable name='attribs' value='attributes(el)
+         .Where(a => a.Name.Namespace == XNamespace.None)
+         .ToArray()'/>
+
+      <for-each name='a' in='attribs'>
+         <if test='!allowed.Contains(a.Name.LocalName)'>
+            <message terminate='yes' error-code='XTSE0090' error-data='src_error_object(el)' expand-text='yes' transform-text='trim'>
+               Attribute '{a.Name.LocalName}' is not allowed on the {fn_name(el)} element.
+            </message>
+         </if>
+      </for-each>
+
+      <variable name='missing' value='required.FirstOrDefault(r => !attribs.Any(a => a.Name.LocalName == r))'/>
+
+      <if test='!(missing is null)'>
+         <message terminate='yes' error-code='XTSE0010' error-data='src_error_object(el)' expand-text='yes' transform-text='trim'>
+            Element must have an '{missing}' attribute.
+         </message>
+      </if>
+   </template>
+
+   <template name='no-children'>
+      <param name='el' as='XElement' required='yes'/>
+
+      <if test='!element_is_empty(el)'>
+         <message terminate='yes' error-code='XTSE0260' error-data='src_error_object(el)' transform-text='trim'>
+            Element must be empty.
+         </message>
+      </if>
+   </template>
+
+   <function name='element_is_empty' as='bool'>
+      <param name='el' as='XElement'/>
+
+      <return value='fn_empty(el.Elements())
+         &amp;&amp; el.Nodes().OfType&lt;XText>()
+            .All(tx => trim(tx.Value).Length == 0 &amp;&amp; !xcst_preserve_whitespace(el))'/>
+   </function>
+
+   <function name='xcst_preserve_whitespace' as='bool'>
+      <param name='el' as='XElement'/>
+
+      <return value='el.AncestorsAndSelf()
+         .Select(p => p.Attribute(XNamespace.Xml + "space"))
+         .Where(a => a != null)
+         .FirstOrDefault()?.Value == "preserve"'/>
+   </function>
+
+
+   <!-- ## Data Types -->
+
+   <function name='xcst_boolean' as='bool?'>
+      <param name='node' as='XObject'/>
+      <param name='avt' value='false' as='bool'/>
+
+      <variable name='str' value='xcst_non_string(node)'/>
+
+      <choose>
+         <when test='str is "yes" or "true" or "1"'>
+            <return value='true'/>
+         </when>
+         <when test='str is "no" or "false" or "0"'>
+            <return value='false'/>
+         </when>
+         <when test='avt &amp;&amp; xcst_is_value_template(node)'>
+            <return value='default'/>
+         </when>
+         <otherwise>
+            <message terminate='yes' error-code='XTSE0020' error-data='src_error_object(node)' expand-text='yes' transform-text='trim'>
+               Invalid boolean for '{fn_name(node)}'.
+            </message>
+         </otherwise>
+      </choose>
+   </function>
+
+   <function name='xcst_integer' as='int?'>
+      <param name='node' as='XObject'/>
+      <param name='avt' value='false' as='bool'/>
+
+      <variable name='str' value='xcst_non_string(node)'/>
+
+      <choose>
+         <when test='avt &amp;&amp; xcst_is_value_template(node)'>
+            <return value='default'/>
+         </when>
+         <when test='int.TryParse(str, out var val)'>
+            <return value='val'/>
+         </when>
+         <otherwise>
+            <message terminate='yes' error-code='XTSE0020' error-data='src_error_object(node)' expand-text='yes' transform-text='trim'>
+               Invalid value for '{fn_name(node)}'.
+            </message>
+         </otherwise>
+      </choose>
+   </function>
+
+   <function name='xcst_expression' as='string'>
+      <param name='node' as='XObject'/>
+
+      <if test='!(xcst_non_string(node) != null)'>
+         <message terminate='yes' error-code='XTSE0020' error-data='src_error_object(node)' expand-text='yes' transform-text='trim'>
+            Value of '{fn_name(node)}' must be a non-empty string.
+         </message>
+      </if>
+
+      <return value='fn_string(node)'/>
+   </function>
+
+   <function name='xcst_name' as='string'>
+      <param name='node' as='XObject'/>
+
+      <variable name='str' value='xcst_non_string(node)'/>
+      <return value='str'/>
+   </function>
+
+   <function name='xcst_type' as='string'>
+      <param name='node' as='XObject'/>
+
+      <variable name='str' value='xcst_non_string(node)'/>
+      <return value='str'/>
+   </function>
+
+   <function name='xcst_non_string' as='string'>
+      <param name='node' as='XObject'/>
+
+      <variable name='str' value='trim(fn_string(node))'/>
+
+      <if test='!(str.Length > 0)'>
+         <message terminate='yes' error-code='XTSE0020' error-data='src_error_object(node)' expand-text='yes' transform-text='trim'>
+            Value of '{fn_name(node)}' must be a non-empty string.
+         </message>
+      </if>
+
+      <return value='str'/>
+   </function>
+
+   <function name='xcsta_input_type' as='string?'>
+      <param name='node' as='XObject'/>
+      <param name='avt' as='bool'/>
+
+      <variable name='str' value='xcst_non_string(node)'/>
+      <return value='(avt &amp;&amp; xcst_is_value_template(node)) ?
+         null : str'/>
+   </function>
+
+</module>

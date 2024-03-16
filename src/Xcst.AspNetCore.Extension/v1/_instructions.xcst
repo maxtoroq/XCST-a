@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ Copyright 2022 Max Toro Q.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<module version='1.0' language='C#'
+   xmlns='http://maxtoroq.github.io/XCST'
+   xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
+   xmlns:code='https://maxtoroq.github.io/XCST/code'
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
+
+   <import-namespace ns='System.Linq'/>
+   <import-namespace ns='System.Xml.Linq'/>
+
+   <mode name='src:statement' visibility='public'/>
+   <mode name='src:expression' visibility='public'/>
+   <mode name='xcst:extension-instruction' on-no-match='deep-skip' visibility='public'/>
+
+   <template match='XElement el &amp;&amp; el.Name.Namespace == a' mode='src:statement'>
+      <message terminate='yes' error-code='XTSE0010' error-data='src_error_object(el)' expand-text='yes' transform-text='trim'>
+         Element a:{el.Name.LocalName} is unknown.
+      </message>
+   </template>
+
+   <template name='validate-for'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='attribs' value='attributes(el)
+         .Where(p => p.Name == "name")
+         .ToArray()' as='XAttribute[]'/>
+
+      <if test='el.Attribute("for") is { }
+            &amp;&amp; attribs.Length > 0'>
+         <message terminate='yes' error-data='src_error_object(el)' expand-text='yes' transform-text='trim'>
+            'for' and '{attribs[0].Name.LocalName}' attributes are mutually exclusive.
+         </message>
+      </if>
+   </template>
+
+   <template name='declare-doc-output'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='docOutput' as='XElement' required='yes'/>
+      <param name='output' as='XElement' tunnel='yes'/>
+
+      <variable name='outputIsDoc' value='src_output_is_doc(output)'/>
+
+      <if test='!outputIsDoc'>
+         <code:variable name='{select(docOutput, src + "reference", code).First().Attribute("name")!.Value}'>
+            <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
+            <code:method-call name='CastElement'>
+               <copy-of value='src_helper_type("DocumentWriter")'/>
+               <code:arguments>
+                  <code:this-reference/>
+                  <copy-of value='select(output, src + "reference", code)'/>
+               </code:arguments>
+            </code:method-call>
+         </code:variable>
+      </if>
+   </template>
+
+   <template name='html-helper-ref' as='XElement'>
+      <param name='app_html_helper' as='XElement?' tunnel='yes'/>
+
+      <choose>
+         <when test='app_html_helper != null'>
+            <copy-of value='app_html_helper'/>
+         </when>
+         <otherwise>
+            <code:property-reference name='Html'>
+               <code:cast>
+                  <code:type-reference name='XcstViewPage' namespace='Xcst.Web.Mvc'/>
+                  <copy-of value='src_top_level_package_reference'/>
+               </code:cast>
+            </code:property-reference>
+         </otherwise>
+      </choose>
+   </template>
+
+   <template name='html-attributes-param'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='attributesAttr' value='el.Attribute("attributes")' as='XAttribute?'/>
+      <param name='classAttr' value='el.Attribute("class")' as='XAttribute?'/>
+      <param name='mergeAttribs' value='System.Array.Empty&lt;XAttribute>()' as='XAttribute[]'/>
+      <param name='boolAttribs' value='System.Array.Empty&lt;XAttribute>()' as='XAttribute[]'/>
+      <param name='omitParam' value='false'/>
+
+      <!-- Keep document order -->
+      <variable name='avts' value='attributes(el)
+         .Where(p => p == classAttr || mergeAttribs.Contains(p) || boolAttribs.Contains(p))
+         .ToArray()'/>
+
+      <if test='attributesAttr != null
+            || avts.Length > 0'>
+         <variable name='expr'>
+            <code:chain>
+               <code:new-object>
+                  <call-template name='helper-type'>
+                     <with-param name='name'>HtmlAttributeDictionary</with-param>
+                  </call-template>
+               </code:new-object>
+               <for-each name='avt' in='avts'>
+                  <choose>
+                     <when test='avt == classAttr'>
+                        <code:method-call name='SetClass'>
+                           <code:chain-reference/>
+                           <code:arguments>
+                              <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt }'/>
+                           </code:arguments>
+                        </code:method-call>
+                     </when>
+                     <when test='boolAttribs.Contains(avt)'>
+                        <code:method-call name='SetBoolean'>
+                           <code:chain-reference/>
+                           <code:arguments>
+                              <code:string literal='true'>
+                                 <value-of value='avt.Name.LocalName'/>
+                              </code:string>
+                              <call-template name='src:boolean'>
+                                 <with-param name='val' value='xcst_boolean(avt, true)'/>
+                                 <with-param name='avt' value='avt'/>
+                              </call-template>
+                           </code:arguments>
+                        </code:method-call>
+                     </when>
+                     <otherwise>
+                        <code:method-call name='SetAttribute'>
+                           <code:chain-reference/>
+                           <code:arguments>
+                              <code:string literal='true'>
+                                 <value-of value='avt.Name.LocalName'/>
+                              </code:string>
+                              <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt }'/>
+                           </code:arguments>
+                        </code:method-call>
+                     </otherwise>
+                  </choose>
+               </for-each>
+               <if test='attributesAttr != null'>
+                  <code:method-call name='SetAttributes'>
+                     <code:chain-reference/>
+                     <code:arguments>
+                        <code:expression value='{xcst_expression(attributesAttr)}'/>
+                     </code:arguments>
+                  </code:method-call>
+               </if>
+            </code:chain>
+         </variable>
+         <choose>
+            <when test='!omitParam'>
+               <code:argument name='htmlAttributes'>
+                  <copy-of value='expr'/>
+               </code:argument>
+            </when>
+            <otherwise>
+               <copy-of value='expr'/>
+            </otherwise>
+         </choose>
+      </if>
+   </template>
+
+</module>

@@ -29,7 +29,7 @@ using System.Xml.Linq;
 
 namespace Xcst.Web.Extension;
 
-partial class ExtensionPackage {
+partial class ExtensionPackageV2 {
 
    static readonly char[]
    _uniqueIdTbl = new char[32] {

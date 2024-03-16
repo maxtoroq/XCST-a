@@ -34,8 +34,7 @@
       <if test='genAttr
             &amp;&amp; AppRelativeUri(el) is { } relativeUri'>
          <code:attribute>
-            <code:type-reference name='PageVirtualPath'
-               namespace='{(V2_OR_GREATER ? "Xcst.Web" : "Xcst.Web.Precompilation")}'/>
+            <code:type-reference name='PageVirtualPath' namespace='Xcst.Web'/>
             <code:arguments>
                <code:string>
                   <value-of value='page_path(relativeUri)'/>

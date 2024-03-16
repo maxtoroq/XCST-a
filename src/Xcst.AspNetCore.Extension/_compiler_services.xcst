@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ Copyright 2022 Max Toro Q.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<module version='1.0' language='C#' xmlns='http://maxtoroq.github.io/XCST'>
+
+   <import-namespace ns='System.Xml.Linq'/>
+
+   <param name='xcst_is_value_template' as='System.Func&lt;object, bool>' required='yes'/>
+   <param name='xcst_require_output' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_base_types' as='XElement[]' required='yes'/>
+   <param name='src_doc_output' as='System.Func&lt;XObject?, XElement?, XElement>' required='yes'/>
+   <param name='src_output_is_doc' as='System.Func&lt;XElement, bool>' required='yes'/>
+   <param name='src_template_output' as='System.Func&lt;XElement?, XElement?, XElement>' required='yes'/>
+   <param name='src_helper_type' as='System.Func&lt;string, XElement>' required='yes'/>
+   <param name='src_expand_attribute' as='Xcst.XcstDelegate&lt;XElement>' required='yes'/>
+   <param name='src_sequence_constructor' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_simple_content' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_validation_arguments' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+   <param name='src_top_level_package_reference' as='XElement' required='yes'/>
+   <param name='src_line_number' as='Xcst.XcstDelegate&lt;object>' required='yes'/>
+
+</module>

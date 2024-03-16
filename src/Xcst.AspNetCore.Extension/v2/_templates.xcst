@@ -70,21 +70,8 @@
             <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <choose>
-            <when test='V1'>
-               <call-template name='helper-type'>
-                  <with-param name='name' expand-text='yes'>{(editor ? "Editor" : "Display")}Instructions</with-param>
-               </call-template>
-            </when>
-            <otherwise>
-               <copy-of value='htmlHelper'/>
-            </otherwise>
-         </choose>
+         <copy-of value='htmlHelper'/>
          <code:arguments>
-            <if test='V1'>
-               <copy-of value='htmlHelper'/>
-               <code:this-reference/>
-            </if>
             <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='forAttr != null'>
@@ -224,8 +211,7 @@
                      <if test='withParamsExpr != null'>
                         <code:arguments>
                            <code:method-call name='ObjectToDictionary'>
-                              <code:type-reference name='HtmlHelper'
-                                 namespace='{(V2_OR_GREATER ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
+                              <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
                               <code:arguments>
                                  <code:expression value='{withParamsExpr}'/>
                               </code:arguments>
@@ -286,20 +272,8 @@
                   <if test='useFor || forModel'>For</if>
                   <if test='forModel'>Model</if>
                </attribute>
-               <choose>
-                  <when test='V2_OR_GREATER'>
-                     <call-template name='html-helper-ref'/>
-                  </when>
-                  <otherwise>
-                     <call-template name='helper-type'>
-                        <with-param name='name'>InputInstructions</with-param>
-                     </call-template>
-                  </otherwise>
-               </choose>
+               <call-template name='html-helper-ref'/>
                <code:arguments>
-                  <if test='V1'>
-                     <call-template name='html-helper-ref'/>
-                  </if>
                   <choose>
                      <when test='useFor'>
                         <variable name='param' value='aux_variable(fn_generate_id(el))'/>
@@ -381,8 +355,7 @@
          <code:new-object>
             <code:type-reference name='Action' namespace='System'>
                <code:type-arguments>
-                  <code:type-reference name='HtmlHelper'
-                     namespace='{(V2_OR_GREATER ? "Xcst.Web.Mvc" : "System.Web.Mvc")}'/>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
                   <copy-of value='select(newOutput, code + "type-reference")'/>
                </code:type-arguments>
             </code:type-reference>

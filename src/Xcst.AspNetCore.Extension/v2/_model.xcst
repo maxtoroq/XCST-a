@@ -30,9 +30,7 @@
          <with-param name='el' value='el'/>
          <with-param name='required' value='new[] { "method" }'/>
          <with-param name='optional' value='
-            new[] { "model-value", "model-type", "id", "action", "autocomplete", "enctype", "class", "attributes", "field-prefix", "helper-name", "antiforgery" }
-               .Where(p => p != "attributes" || V1)
-               .ToArray()'/>
+            new[] { "model-value", "model-type", "id", "action", "autocomplete", "enctype", "class", "field-prefix", "helper-name", "antiforgery" }'/>
       </call-template>
 
       <variable name='methodAttr' value='el.Attribute("method")'/>
@@ -69,7 +67,6 @@
             <variable name='attribs' value='attributes(el)
                .Where(p => p.Name.Namespace == XNamespace.None
                   &amp;&amp; p.Name.LocalName is "method" or "id" or "action" or "autocomplete" or "enctype" or "class")
-               .Where(p => p.Name != "class" || V2_OR_GREATER)
                .ToArray()'/>
 
             <for-each name='attr' in='attribs'>
@@ -93,25 +90,6 @@
                </code:method-call>
             </for-each>
 
-            <if test='V1'>
-               <variable name='attributesArg' as='object?'>
-                  <call-template name='html-attributes-param'>
-                     <with-param name='el' value='el'/>
-                     <with-param name='omitParam' value='true'/>
-                  </call-template>
-                  <on-empty value='default(object)'/>
-               </variable>
-
-               <if test='attributesArg != null'>
-                  <code:method-call name='WriteTo'>
-                     <copy-of value='attributesArg'/>
-                     <code:arguments>
-                        <copy-of value='outputRef'/>
-                     </code:arguments>
-                  </code:method-call>
-               </if>
-            </if>
-
             <call-template name='model-seqctor'>
                <with-param name='el' value='el'/>
                <with-param name='valueAttr' value='valueAttr'/>
@@ -129,11 +107,9 @@
                         <with-param name='el' value='el'/>
                         <with-param name='output' value='docOutput' tunnel='yes'/>
                      </call-template>
-                     <if test='V2_OR_GREATER'>
-                        <code:method-call name='Dispose'>
-                           <code:chain-reference/>
-                        </code:method-call>
-                     </if>
+                     <code:method-call name='Dispose'>
+                        <code:chain-reference/>
+                     </code:method-call>
                   </code:chain>
                </variable>
 
@@ -212,29 +188,15 @@
 
       <code:variable name='{newHelper.Attribute("name")!.Value}'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <code:method-call name='{(V1 ? "ForModel" : "NewModelHelper")}'>
-            <choose>
-               <when test='V1'>
-                  <call-template name='helper-type'>
-                     <with-param name='name'>HtmlHelperFactory</with-param>
-                  </call-template>
-               </when>
-               <otherwise>
-                  <call-template name='html-helper-ref'/>
-               </otherwise>
-            </choose>
+         <code:method-call name='NewModelHelper'>
+            <call-template name='html-helper-ref'/>
             <if test='typeAttr != null'>
                <code:type-arguments>
                   <copy-of value='type'/>
                </code:type-arguments>
             </if>
             <code:arguments>
-               <if test='V2_OR_GREATER'>
-                  <code:this-reference/>
-               </if>
-               <if test='V1'>
-                  <call-template name='html-helper-ref'/>
-               </if>
+               <code:this-reference/>
                <choose>
                   <when test='valueAttr != null'>
                      <code:expression value='{xcst_expression(valueAttr)}'/>

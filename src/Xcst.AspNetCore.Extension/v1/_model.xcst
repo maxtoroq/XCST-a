@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ Copyright 2022 Max Toro Q.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<module version='1.0' language='C#'
+   xmlns='http://maxtoroq.github.io/XCST'
+   xmlns:xcst='https://maxtoroq.github.io/XCST/grammar'
+   xmlns:code='https://maxtoroq.github.io/XCST/code'
+   xmlns:src='https://maxtoroq.github.io/XCST/compiled'>
+
+   <import-namespace ns='System.Linq'/>
+   <import-namespace ns='System.Xml.Linq'/>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "form"' mode='src:statement'>
+      <param name='output' as='XElement' tunnel='yes'/>
+
+      <call-template name='validate-attribs'>
+         <with-param name='el' value='el'/>
+         <with-param name='required' value='new[] { "method" }'/>
+         <with-param name='optional' value='
+            new[] { "model-value", "model-type", "id", "action", "autocomplete", "enctype", "class", "attributes", "field-prefix", "helper-name", "antiforgery" }'/>
+      </call-template>
+
+      <variable name='methodAttr' value='el.Attribute("method")'/>
+      <variable name='valueAttr' value='el.Attribute("model-value")'/>
+      <variable name='typeAttr' value='el.Attribute("model-type")'/>
+
+      <if test='!(valueAttr != null || typeAttr != null)'>
+         <message terminate='yes' error-data='src_error_object(el)' transform-text='trim'>
+            Element must have either 'model-value' or 'model-type' attributes.
+         </message>
+      </if>
+
+      <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
+
+      <variable name='docOutput' value='src_doc_output(el, output)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
+
+      <call-template name='declare-doc-output'>
+         <with-param name='el' value='el'/>
+         <with-param name='docOutput' value='docOutput'/>
+      </call-template>
+
+      <code:method-call name='WriteStartElement'>
+         <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
+         <copy-of value='outputRef'/>
+         <code:arguments>
+            <code:string literal='true'>form</code:string>
+         </code:arguments>
+      </code:method-call>
+
+      <code:try line-hidden='true'>
+         <code:block>
+
+            <variable name='attribs' value='attributes(el)
+               .Where(p => p.Name.Namespace == XNamespace.None
+                  &amp;&amp; p.Name.LocalName is "method" or "id" or "action" or "autocomplete" or "enctype")
+               .ToArray()'/>
+
+            <for-each name='attr' in='attribs'>
+               <code:method-call name='WriteAttributeString'>
+                  <copy-of value='outputRef'/>
+                  <code:arguments>
+                     <code:string literal='true'>
+                        <value-of value='attr.Name.LocalName'/>
+                     </code:string>
+                     <choose>
+                        <when test='attr == methodAttr'>
+                           <code:string verbatim='true'>
+                              <value-of value='xcst_non_string(attr)'/>
+                           </code:string>
+                        </when>
+                        <otherwise>
+                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
+                        </otherwise>
+                     </choose>
+                  </code:arguments>
+               </code:method-call>
+            </for-each>
+
+            <variable name='attributesArg' as='object?'>
+               <call-template name='html-attributes-param'>
+                  <with-param name='el' value='el'/>
+                  <with-param name='omitParam' value='true'/>
+               </call-template>
+               <on-empty value='default(object)'/>
+            </variable>
+
+            <if test='attributesArg != null'>
+               <code:method-call name='WriteTo'>
+                  <copy-of value='attributesArg'/>
+                  <code:arguments>
+                     <copy-of value='outputRef'/>
+                  </code:arguments>
+               </code:method-call>
+            </if>
+
+            <call-template name='model-seqctor'>
+               <with-param name='el' value='el'/>
+               <with-param name='valueAttr' value='valueAttr'/>
+               <with-param name='typeAttr' value='typeAttr'/>
+               <with-param name='output' value='docOutput' tunnel='yes'/>
+            </call-template>
+
+            <if test='el.Attribute("antiforgery") is { } antiforgeryAttr'>
+
+               <variable name='antiforgery' value='xcst_boolean(antiforgeryAttr, true)'/>
+
+               <variable name='antiforgeryCall'>
+                  <call-template name='antiforgery'>
+                     <with-param name='el' value='el'/>
+                     <with-param name='output' value='docOutput' tunnel='yes'/>
+                  </call-template>
+               </variable>
+
+               <choose>
+                  <when test='antiforgery == true'>
+                     <copy-of value='antiforgeryCall'/>
+                  </when>
+                  <when test='antiforgery is null'>
+                     <code:if line-hidden='true'>
+                        <call-template name='src:boolean'>
+                           <with-param name='val' value='antiforgery'/>
+                           <with-param name='avt' value='antiforgeryAttr'/>
+                        </call-template>
+                        <code:block>
+                           <copy-of value='antiforgeryCall'/>
+                        </code:block>
+                     </code:if>
+                  </when>
+               </choose>
+            </if>
+         </code:block>
+         <code:finally line-hidden='true'>
+            <code:method-call name='WriteEndElement'>
+               <copy-of value='outputRef'/>
+            </code:method-call>
+         </code:finally>
+      </code:try>
+   </template>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "form"' mode='xcst:extension-instruction'>
+      <call-template name='element-instruction'/>
+   </template>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "model"' mode='src:statement'>
+
+      <call-template name='validate-attribs'>
+         <with-param name='el' value='el'/>
+         <with-param name='optional' value='new[] { "value", "as", "field-prefix", "helper-name" }'/>
+      </call-template>
+
+      <variable name='valueAttr' value='el.Attribute("value")'/>
+      <variable name='typeAttr' value='el.Attribute("as")'/>
+
+      <if test='!(valueAttr != null || typeAttr != null)'>
+         <message terminate='yes' error-data='src_error_object(el)' transform-text='trim'>
+            Element must have either 'value' or 'as' attributes.
+         </message>
+      </if>
+
+      <code:block>
+         <call-template name='model-seqctor'>
+            <with-param name='el' value='el'/>
+            <with-param name='valueAttr' value='valueAttr'/>
+            <with-param name='typeAttr' value='typeAttr'/>
+         </call-template>
+      </code:block>
+   </template>
+
+   <template name='model-seqctor'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='valueAttr' as='XAttribute?' required='yes'/>
+      <param name='typeAttr' as='XAttribute?' required='yes'/>
+
+      <variable name='newHelper'>
+         <code:variable-reference name='{(el.Attribute("helper-name") is { } helperNameAttr ?
+            xcst_name(helperNameAttr)
+            : aux_variable("html") + "_" + fn_generate_id(el))}'/>
+      </variable>
+
+      <variable name='type' as='XElement?'>
+         <if test='typeAttr != null'>
+            <code:type-reference name='{xcst_type(typeAttr)}'/>
+         </if>
+         <on-empty value='default(XElement)'/>
+      </variable>
+
+      <code:variable name='{newHelper.Attribute("name")!.Value}'>
+         <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
+         <code:method-call name='ForModel'>
+            <call-template name='helper-type'>
+               <with-param name='name'>HtmlHelperFactory</with-param>
+            </call-template>
+            <if test='typeAttr != null'>
+               <code:type-arguments>
+                  <copy-of value='type'/>
+               </code:type-arguments>
+            </if>
+            <code:arguments>
+               <call-template name='html-helper-ref'/>
+               <choose>
+                  <when test='valueAttr != null'>
+                     <code:expression value='{xcst_expression(valueAttr)}'/>
+                  </when>
+                  <otherwise>
+                     <code:default>
+                        <copy-of value='type'/>
+                        <on-empty>
+                           <copy-of value='src_object_type'/>
+                        </on-empty>
+                     </code:default>
+                  </otherwise>
+               </choose>
+               <if test='el.Attribute("field-prefix") is { } fieldPrefixAttr'>
+                  <code:argument name='htmlFieldPrefix'>
+                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = fieldPrefixAttr }'/>
+                  </code:argument>
+               </if>
+            </code:arguments>
+         </code:method-call>
+      </code:variable>
+
+      <invoke-delegate delegate='src_sequence_constructor'>
+         <with-param name='el' value='el'/>
+         <with-param name='app_html_helper' value='newHelper' tunnel='yes'/>
+      </invoke-delegate>
+   </template>
+
+</module>

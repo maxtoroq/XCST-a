@@ -20,7 +20,7 @@ using Xcst.Runtime;
 
 namespace Xcst.Web.Extension;
 
-partial class ExtensionPackage {
+partial class ExtensionPackageV1 {
 
    static IEnumerable<XAttribute>
    attributes(XElement node) =>
