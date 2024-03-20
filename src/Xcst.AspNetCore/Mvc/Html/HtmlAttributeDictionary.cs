@@ -14,10 +14,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Xcst.Web.Mvc;
 
 [GeneratedCodeReference]
+[EditorBrowsable(EditorBrowsableState.Never)]
 public class HtmlAttributeDictionary : Dictionary<string, object?> {
 
    public HtmlAttributeDictionary

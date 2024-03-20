@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -30,6 +31,7 @@ namespace Xcst.Web.Mvc;
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    Display(ISequenceWriter<object> output, string expression, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -49,6 +51,7 @@ partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    DisplayForModel(ISequenceWriter<object> output, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -129,6 +132,7 @@ partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    Editor(ISequenceWriter<object> output, string expression, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -148,6 +152,7 @@ partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    EditorForModel(ISequenceWriter<object> output, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -346,6 +351,7 @@ partial class HtmlHelper {
 partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    DisplayFor<TResult>(ISequenceWriter<object> output, Expression<Func<TModel, TResult>> expression, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
@@ -365,6 +371,7 @@ partial class HtmlHelper<TModel> {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    EditorFor<TResult>(ISequenceWriter<object> output, Expression<Func<TModel, TResult>> expression, string? htmlFieldName = null,
          string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {

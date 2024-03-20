@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -137,11 +138,13 @@ public class UrlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public static string
    LinkTo(string path, params object?[]? pathParts) =>
       UrlUtil.GenerateClientUrl(null, path, pathParts);
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public static string
    LinkToDefault(string path, string defaultPath, params object?[]? pathParts) {
 

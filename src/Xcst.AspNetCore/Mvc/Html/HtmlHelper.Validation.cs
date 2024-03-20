@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -27,6 +28,7 @@ namespace Xcst.Web.Mvc;
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public ElementEndingDisposable
    ValidationMessage(XcstWriter output, string modelName, bool hasDefaultText = false,
          string? @class = null) {
@@ -101,6 +103,7 @@ partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public ValidationSummaryDisposable
    ValidationSummary(XcstWriter output, bool includePropertyErrors = false,
          string? @class = null) {
@@ -210,6 +213,7 @@ partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public class ValidationSummaryDisposable : ElementEndingDisposable {
 
       readonly XcstWriter
@@ -269,6 +273,7 @@ partial class HtmlHelper {
 partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public ElementEndingDisposable
    ValidationMessageFor<TResult>(
          XcstWriter output, Expression<Func<TModel, TResult>> expression, bool hasDefaultText = false,

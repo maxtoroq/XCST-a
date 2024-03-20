@@ -15,6 +15,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -22,6 +23,7 @@ using System.Linq;
 namespace Xcst.Web.Mvc;
 
 [GeneratedCodeReference]
+[EditorBrowsable(EditorBrowsableState.Never)]
 public class OptionList : IEnumerable<SelectListItem> {
 
    readonly List<SelectListItem>

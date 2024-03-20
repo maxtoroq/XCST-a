@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Linq.Expressions;
 
 namespace Xcst.Web.Mvc;
@@ -24,11 +25,13 @@ namespace Xcst.Web.Mvc;
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    Input(XcstWriter output, string name, object? value = null, string? type = null, string? format = null, string? @class = null) =>
       InputImpl(output, type, modelExplorer: null, name, value, useViewData: null, format, @class);
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    InputForModel(XcstWriter output, object? value = null, string? type = null,
          string? format = null, string? @class = null) =>
@@ -207,6 +210,7 @@ partial class HtmlHelper {
 partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    InputFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, string? type = null,
          string? format = null, string? @class = null) {

@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Xml.Linq;
 using Xcst.Runtime;
@@ -26,21 +27,25 @@ namespace Xcst.Web.Mvc;
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public CheckboxDisposable
    Checkbox(ISequenceWriter<XElement> output, string name, string? @class = null) =>
       GenerateCheckbox(output, modelExplorer: null, name, isChecked: null, @class);
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public CheckboxDisposable
    Checkbox(ISequenceWriter<XElement> output, string name, bool isChecked, string? @class = null) =>
       GenerateCheckbox(output, modelExplorer: null, name, isChecked, @class);
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public CheckboxDisposable
    CheckboxForModel(ISequenceWriter<XElement> output, string? @class = null) =>
       CheckboxForModelExplorer(output, this.ViewData.ModelExplorer, expression: String.Empty, isChecked: null, @class);
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public CheckboxDisposable
    CheckboxForModel(ISequenceWriter<XElement> output, bool isChecked, string? @class = null) =>
       CheckboxForModelExplorer(output, this.ViewData.ModelExplorer, expression: String.Empty, isChecked, @class);
@@ -96,6 +101,7 @@ partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public class CheckboxDisposable : IDisposable {
 
       readonly IDisposable

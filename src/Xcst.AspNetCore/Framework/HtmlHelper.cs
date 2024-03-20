@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -325,6 +326,7 @@ public partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    DisplayText(ISequenceWriter<string> output, string name) =>
       DisplayTextHelper(output, ExpressionMetadataProvider.FromStringExpression(name, this.ViewData));
@@ -439,6 +441,7 @@ public partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    WriteBoolean(string key, bool value, XcstWriter output) {
 
@@ -506,6 +509,7 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    DisplayTextFor<TResult>(ISequenceWriter<string> output, Expression<Func<TModel, TResult>> expression) =>
       DisplayTextHelper(output, ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData));

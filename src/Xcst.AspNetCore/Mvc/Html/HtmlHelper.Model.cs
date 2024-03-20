@@ -13,12 +13,14 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 
 namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public HtmlHelper<TModel>
    NewModelHelper<TModel>(IXcstPackage currentPackage, TModel? model, string? htmlFieldPrefix = null) {
 

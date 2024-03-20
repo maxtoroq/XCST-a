@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq.Expressions;
 
@@ -25,6 +26,7 @@ namespace Xcst.Web.Mvc;
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public TextareaDisposable
    Textarea(XcstWriter output, string name, object? value = null, string? @class = null) {
 
@@ -75,6 +77,7 @@ partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public class TextareaDisposable : ElementEndingDisposable {
 
       readonly XcstWriter
@@ -134,6 +137,7 @@ partial class HtmlHelper {
 partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public TextareaDisposable
    TextareaFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, string? @class = null) {
 

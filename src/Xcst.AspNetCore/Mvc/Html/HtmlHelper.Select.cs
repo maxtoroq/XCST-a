@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -28,12 +29,14 @@ namespace Xcst.Web.Mvc;
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
    Select(XcstWriter output, string name, object? value = null, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, string? @class = null) =>
       GenerateSelect(output, default(ModelExplorer), name, value, selectList, default(string), multiple, @class);
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
    SelectForModel(XcstWriter output, object? value = null, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, string? @class = null) =>
@@ -219,6 +222,7 @@ partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    SelectOption(XcstWriter output, SelectDisposable? disp,
          object? value = null, bool selected = false, bool disabled = false, string text = "") {
@@ -244,6 +248,7 @@ partial class HtmlHelper {
          ?? String.Empty;
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public class SelectDisposable : ElementEndingDisposable {
 
       readonly XcstWriter
@@ -311,6 +316,7 @@ partial class HtmlHelper {
 partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
    SelectFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, string? @class = null) {

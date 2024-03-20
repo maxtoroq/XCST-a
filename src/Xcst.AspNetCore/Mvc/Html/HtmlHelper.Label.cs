@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -25,6 +26,7 @@ namespace Xcst.Web.Mvc;
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    Label(XcstWriter output, string expression, bool hasDefaultText = false, string? @class = null) {
 
@@ -34,6 +36,7 @@ partial class HtmlHelper {
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    LabelForModel(XcstWriter output, bool hasDefaultText = false, string? @class = null) =>
       GenerateLabel(output, this.ViewData.ModelExplorer, String.Empty, hasDefaultText, @class);
@@ -67,6 +70,7 @@ partial class HtmlHelper {
 partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    LabelFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, bool hasDefaultText = false,
          string? @class = null) {
