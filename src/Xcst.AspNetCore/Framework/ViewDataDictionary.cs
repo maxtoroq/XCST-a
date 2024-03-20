@@ -65,7 +65,9 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    }
 
    public ModelMetadata
-   ModelMetadata => ModelExplorer.Metadata;
+#pragma warning disable CS8603 // can be null, but most times when requested it's not
+   ModelMetadata => ModelExplorer?.Metadata;
+#pragma warning restore CS8603
 
    public ModelStateDictionary
    ModelState => _modelState;
