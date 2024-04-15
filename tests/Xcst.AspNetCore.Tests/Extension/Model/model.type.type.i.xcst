@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:model as=''/>
+      <a:model type=''/>
    </c:template>
 
 </c:module>

@@ -15,22 +15,22 @@
    <c:template name='c:initial-template'>
       <div>
          <section>
-            <a:model as='Foo'>
+            <a:model type='Foo'>
                <a:editor members-names='SomeField {"DontDisplay"}'/>
             </a:model>
          </section>
          <section>
-            <a:model as='Foo'>
+            <a:model type='Foo'>
                <a:editor members-names='DontDisplay SomeField'/>
             </a:model>
          </section>
          <section>
-            <a:model as='Foo'>
+            <a:model type='Foo'>
                <a:editor members-names=''/>
             </a:model>
          </section>
          <section>
-            <a:model as='Foo'>
+            <a:model type='Foo'>
                <a:editor for='Complex' members-names='ComplexField'/>
             </a:model>
          </section>

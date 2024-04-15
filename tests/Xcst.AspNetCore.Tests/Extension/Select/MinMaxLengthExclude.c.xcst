@@ -13,7 +13,7 @@
 
    <c:template name='c:initial-template'>
       <div>
-         <a:model as='ModelType'>
+         <a:model type='ModelType'>
             <a:select for='foo' options='null'/>
             <a:select for='bar' options='null'/>
          </a:model>

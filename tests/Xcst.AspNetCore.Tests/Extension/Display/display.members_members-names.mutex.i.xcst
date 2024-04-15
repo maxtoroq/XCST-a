@@ -9,7 +9,7 @@
    </c:type>
 
    <c:template name='foo'>
-      <a:model as='Foo'>
+      <a:model type='Foo'>
          <a:display members='a' members-names='a'/>
       </a:model>
    </c:template>

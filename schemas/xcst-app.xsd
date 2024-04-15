@@ -388,7 +388,7 @@
          <xs:complexContent>
             <xs:extension base="a:_form-model-common">
                <xs:attribute name="value" type="a:expression" />
-               <xs:attribute name="as" type="a:type_name" />
+               <xs:attribute name="type" type="a:type_name" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>

@@ -9,7 +9,7 @@
    </c:type>
 
    <c:template name='c:initial-template'>
-      <a:model as='Foo' helper-name='htm1'>
+      <a:model type='Foo' helper-name='htm1'>
          <c:set ref='htm1.ViewData["foo"]' value='"foo"'/>
          <a:editor>
             <a:member-template helper-name='htm2'>

@@ -147,11 +147,11 @@
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
-         <with-param name='optional' value='new[] { "value", "as", "field-prefix", "helper-name" }'/>
+         <with-param name='optional' value='new[] { "value", "type", "field-prefix", "helper-name" }'/>
       </call-template>
 
       <variable name='valueAttr' value='el.Attribute("value")'/>
-      <variable name='typeAttr' value='el.Attribute("as")'/>
+      <variable name='typeAttr' value='el.Attribute("type")'/>
 
       <if test='!(valueAttr != null || typeAttr != null)'>
          <message terminate='yes' error-data='src_error_object(el)' transform-text='trim'>

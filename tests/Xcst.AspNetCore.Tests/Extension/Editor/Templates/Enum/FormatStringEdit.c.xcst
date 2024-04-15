@@ -13,7 +13,7 @@
    <c:template name='c:initial-template'>
       <c:variable name='doc'>
          <c:document>
-            <a:model as='Foo'>
+            <a:model type='Foo'>
                <a:editor for='Bar'/>
             </a:model>
          </c:document>

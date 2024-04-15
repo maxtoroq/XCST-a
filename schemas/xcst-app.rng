@@ -629,7 +629,7 @@
                   <attribute name="value">
                      <ref name="expression"/>
                   </attribute>
-                  <attribute name="as">
+                  <attribute name="type">
                      <ref name="type_name"/>
                   </attribute>
                </choice>

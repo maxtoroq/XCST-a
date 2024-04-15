@@ -9,7 +9,7 @@
    </c:type>
 
    <c:template name='c:initial-template'>
-      <a:model as='Foo'>
+      <a:model type='Foo'>
          <c:variable name='text'>
             <a:display-text for='bar'/>
          </c:variable>
