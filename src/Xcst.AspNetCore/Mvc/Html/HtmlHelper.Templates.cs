@@ -32,53 +32,19 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public void
-   Display(ISequenceWriter<object> output, string expression, string? htmlFieldName = null,
-         string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
+   public TemplateHelper
+   Display(string expression) {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, this.ViewData);
 
-      htmlFieldName ??= expression;
-
-      GenerateDisplay(
-         output,
-         modelExplorer,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         additionalViewData
-      );
+      return new TemplateHelper(this, true, expression, modelExplorer);
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public void
-   DisplayForModel(ISequenceWriter<object> output, string? htmlFieldName = null,
-         string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
-
-      GenerateDisplay(
-         output,
-         this.ViewData.ModelExplorer,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         additionalViewData
-      );
-   }
-
-   protected void
-   GenerateDisplay(ISequenceWriter<object> output, ModelExplorer modelExplorer, string? htmlFieldName,
-         string? templateName, IList<string>? membersNames, object? additionalViewData) {
-
-      TemplateHelper(
-         displayMode: true,
-         modelExplorer,
-         htmlFieldName,
-         templateName,
-         membersNames,
-         additionalViewData
-      ).Render(output);
-   }
+   public TemplateHelper
+   DisplayForModel() =>
+      new TemplateHelper(this, true, null, this.ViewData.ModelExplorer);
 
    /// <summary>
    /// Returns the properties that should be shown in a display template, based on the
@@ -133,53 +99,19 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public void
-   Editor(ISequenceWriter<object> output, string expression, string? htmlFieldName = null,
-         string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
+   public TemplateHelper
+   Editor(string expression) {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, this.ViewData);
 
-      htmlFieldName ??= expression;
-
-      GenerateEditor(
-         output,
-         modelExplorer,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         additionalViewData
-      );
+      return new TemplateHelper(this, false, expression, modelExplorer);
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public void
-   EditorForModel(ISequenceWriter<object> output, string? htmlFieldName = null,
-         string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
-
-      GenerateEditor(
-         output,
-         this.ViewData.ModelExplorer,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         additionalViewData
-      );
-   }
-
-   protected void
-   GenerateEditor(ISequenceWriter<object> output, ModelExplorer modelExplorer, string? htmlFieldName,
-         string? templateName, IList<string>? membersNames, object? additionalViewData) {
-
-      TemplateHelper(
-         displayMode: false,
-         modelExplorer,
-         htmlFieldName,
-         templateName,
-         membersNames,
-         additionalViewData
-      ).Render(output);
-   }
+   public TemplateHelper
+   EditorForModel() =>
+      new TemplateHelper(this, false, null, this.ViewData.ModelExplorer);
 
    /// <summary>
    /// Returns the properties that should be shown in an editor template, based on the
@@ -236,76 +168,6 @@ partial class HtmlHelper {
       return !propertyMetadata.IsComplexType;
    }
 
-   internal TemplateRenderer
-   TemplateHelper(bool displayMode, ModelExplorer modelExplorer, string? htmlFieldName,
-         string? templateName, IList<string>? membersNames, object? additionalViewData) {
-
-      var metadata = modelExplorer.Metadata;
-      var model = modelExplorer.Model;
-
-      if (metadata.ConvertEmptyStringToNull
-         && String.Empty.Equals(model)) {
-
-         model = null;
-      }
-
-      // Normally this shouldn't happen, unless someone writes their own custom Object templates which
-      // don't check to make sure that the object hasn't already been displayed
-
-      var visitedObjectsKey = model ?? metadata.UnderlyingOrModelType;
-
-      if (this.ViewData.TemplateInfo.VisitedObjects.Contains(visitedObjectsKey)) {
-         // DDB #224750
-         return TemplateRenderer.NullRenderer();
-      }
-
-      var formattedModelValue = model;
-
-      if (model is null
-         && displayMode) {
-
-         formattedModelValue = metadata.NullDisplayText;
-      }
-
-      var formatString = (displayMode) ?
-         metadata.DisplayFormatString
-         : metadata.EditFormatString;
-
-      if (model != null
-         && !String.IsNullOrEmpty(formatString)) {
-
-         formattedModelValue = (displayMode) ?
-            this.CurrentPackage.Context.SimpleContent.Format(formatString, model)
-            : String.Format(CultureInfo.CurrentCulture, formatString, model);
-      }
-
-      var viewData = new ViewDataDictionary(this.ViewData) {
-         Model = model,
-         ModelExplorer = modelExplorer.GetExplorerForModel(model),
-         TemplateInfo = new TemplateInfo {
-            FormattedModelValue = formattedModelValue,
-            HtmlFieldPrefix = this.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
-            MembersNames = membersNames
-         }
-      };
-
-      viewData.TemplateInfo.VisitedObjects = new HashSet<object>(this.ViewData.TemplateInfo.VisitedObjects); // DDB #224750
-
-      if (additionalViewData != null) {
-
-         var additionalParams = additionalViewData as IDictionary<string, object?>
-            ?? TypeHelpers.ObjectToDictionary(additionalViewData);
-
-         foreach (var kvp in additionalParams) {
-            viewData[kvp.Key] = kvp.Value;
-         }
-      }
-
-      viewData.TemplateInfo.VisitedObjects.Add(visitedObjectsKey); // DDB #224750
-
-      return new TemplateRenderer(this.CurrentPackage, this.ViewContext, viewData, templateName, displayMode);
-   }
-
    /// <summary>
    /// Returns the member template delegate for the provided property.
    /// </summary>
@@ -352,41 +214,114 @@ partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public void
-   DisplayFor<TResult>(ISequenceWriter<object> output, Expression<Func<TModel, TResult>> expression, string? htmlFieldName = null,
-         string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
+   public TemplateHelper
+   DisplayFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
 
-      htmlFieldName ??= ExpressionHelper.GetExpressionText(expression);
-
-      GenerateDisplay(
-         output,
-         modelExplorer,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         additionalViewData
-      );
+      return new TemplateHelper(this, true, ExpressionHelper.GetExpressionText(expression), modelExplorer);
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public void
-   EditorFor<TResult>(ISequenceWriter<object> output, Expression<Func<TModel, TResult>> expression, string? htmlFieldName = null,
-         string? templateName = null, IList<string>? membersNames = null, object? additionalViewData = null) {
+   public TemplateHelper
+   EditorFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
 
-      htmlFieldName ??= ExpressionHelper.GetExpressionText(expression);
+      return new TemplateHelper(this, false, ExpressionHelper.GetExpressionText(expression), modelExplorer);
+   }
+}
 
-      GenerateEditor(
-         output,
-         modelExplorer,
-         htmlFieldName: htmlFieldName,
-         templateName: templateName,
-         membersNames,
-         additionalViewData
-      );
+public class TemplateHelper {
+
+   readonly HtmlHelper
+   _html;
+
+   readonly bool
+   _displayMode;
+
+   readonly string?
+   _expression;
+
+   readonly ModelExplorer
+   _modelExplorer;
+
+   internal
+   TemplateHelper(HtmlHelper html, bool displayMode, string? expression, ModelExplorer modelExplorer) {
+      _html = html;
+      _displayMode = displayMode;
+      _expression = expression;
+      _modelExplorer = modelExplorer;
+   }
+
+   [GeneratedCodeReference]
+   public void
+   Render(ISequenceWriter<object> output, string? htmlFieldName = null, string? templateName = null,
+         IList<string>? membersNames = null, object? additionalViewData = null) {
+
+      htmlFieldName ??= _expression;
+
+      var metadata = _modelExplorer.Metadata;
+      var model = _modelExplorer.Model;
+
+      if (metadata.ConvertEmptyStringToNull
+         && String.Empty.Equals(model)) {
+
+         model = null;
+      }
+
+      // Normally this shouldn't happen, unless someone writes their own custom Object templates which
+      // don't check to make sure that the object hasn't already been displayed
+
+      var visitedObjectsKey = model ?? metadata.UnderlyingOrModelType;
+
+      if (_html.ViewData.TemplateInfo.VisitedObjects.Contains(visitedObjectsKey)) {
+         // DDB #224750
+         return;
+      }
+
+      var formattedModelValue = model;
+
+      if (model is null
+         && _displayMode) {
+
+         formattedModelValue = metadata.NullDisplayText;
+      }
+
+      var formatString = (_displayMode) ?
+         metadata.DisplayFormatString
+         : metadata.EditFormatString;
+
+      if (model != null
+         && !String.IsNullOrEmpty(formatString)) {
+
+         formattedModelValue = (_displayMode) ?
+            _html.CurrentPackage.Context.SimpleContent.Format(formatString, model)
+            : String.Format(CultureInfo.CurrentCulture, formatString, model);
+      }
+
+      var viewData = new ViewDataDictionary(_html.ViewData) {
+         Model = model,
+         ModelExplorer = _modelExplorer.GetExplorerForModel(model),
+         TemplateInfo = new TemplateInfo {
+            FormattedModelValue = formattedModelValue,
+            HtmlFieldPrefix = _html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
+            MembersNames = membersNames
+         }
+      };
+
+      viewData.TemplateInfo.VisitedObjects = new HashSet<object>(_html.ViewData.TemplateInfo.VisitedObjects); // DDB #224750
+
+      if (additionalViewData != null) {
+         foreach (var kvp in HtmlHelper.ObjectToDictionary(additionalViewData)) {
+            viewData[kvp.Key] = kvp.Value;
+         }
+      }
+
+      viewData.TemplateInfo.VisitedObjects.Add(visitedObjectsKey); // DDB #224750
+
+      new TemplateRenderer(_html.CurrentPackage, _html.ViewContext, viewData, templateName, _displayMode)
+         .Render(output);
    }
 }

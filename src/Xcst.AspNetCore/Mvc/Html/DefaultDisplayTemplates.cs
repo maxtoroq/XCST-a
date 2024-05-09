@@ -122,14 +122,8 @@ static class DefaultDisplayTemplates {
             var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-            html.TemplateHelper(
-               displayMode: true,
-               itemExplorer,
-               htmlFieldName: fieldName,
-               templateName: null,
-               membersNames: null,
-               additionalViewData: null
-            ).Render(seqOutput);
+            new TemplateHelper(html, true, null, itemExplorer)
+               .Render(seqOutput, htmlFieldName: fieldName);
          }
 
       } finally {
@@ -272,14 +266,11 @@ static class DefaultDisplayTemplates {
                fieldWriter.WriteAttributeString("class", "display-field");
             }
 
-            html.TemplateHelper(
-               displayMode: true,
-               propertyExplorer,
-               htmlFieldName: propertyMeta.PropertyName,
-               templateName: null,
-               membersNames: null,
-               additionalViewData: null
-            ).Render(fieldWriter ?? fieldsetWriter ?? seqOutput);
+            new TemplateHelper(html, true, null, propertyExplorer)
+               .Render(
+                  fieldWriter ?? fieldsetWriter ?? seqOutput,
+                  htmlFieldName: propertyMeta.PropertyName
+               );
 
             if (!propertyMeta.HideSurroundingHtml) {
                fieldWriter!.WriteEndElement(); // </div>

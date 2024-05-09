@@ -108,10 +108,6 @@ sealed class TemplateRenderer {
    readonly bool
    _readOnly;
 
-   public static TemplateRenderer
-   NullRenderer() =>
-      new TemplateRenderer(default!, default!, default!, default, default);
-
    public
    TemplateRenderer(IXcstPackage package, ViewContext viewContext, ViewDataDictionary viewData, string? templateName, bool readOnly) {
       _package = package;
@@ -123,10 +119,6 @@ sealed class TemplateRenderer {
 
    public void
    Render(ISequenceWriter<object> output) {
-
-      if (_viewData is null) {
-         return;
-      }
 
       var defaultActions = GetDefaultActions();
 

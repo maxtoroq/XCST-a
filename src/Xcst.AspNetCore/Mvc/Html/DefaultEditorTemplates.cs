@@ -143,14 +143,8 @@ static class DefaultEditorTemplates {
             var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-            html.TemplateHelper(
-               displayMode: false,
-               itemExplorer,
-               htmlFieldName: fieldName,
-               templateName: null,
-               membersNames: null,
-               additionalViewData: null
-            ).Render(seqOutput);
+            new TemplateHelper(html, false, null, itemExplorer)
+               .Render(seqOutput, htmlFieldName: fieldName);
          }
 
       } finally {
@@ -406,14 +400,11 @@ static class DefaultEditorTemplates {
                fieldWriter.WriteAttributeString("class", "editor-field");
             }
 
-            html.TemplateHelper(
-               displayMode: false,
-               propertyExplorer,
-               htmlFieldName: propertyMeta.PropertyName,
-               templateName: null,
-               membersNames: null,
-               additionalViewData: null
-            ).Render(fieldWriter ?? fieldsetWriter ?? seqOutput);
+            new TemplateHelper(html, false, null, propertyExplorer)
+               .Render(
+                  fieldWriter ?? fieldsetWriter ?? seqOutput,
+                  htmlFieldName: propertyMeta.PropertyName
+               );
 
             if (!propertyMeta.HideSurroundingHtml) {
 

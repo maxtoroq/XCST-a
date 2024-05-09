@@ -22,6 +22,12 @@ namespace Xcst.Web.Mvc;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public class HtmlAttributeDictionary : Dictionary<string, object?> {
 
+   // StringComparer consistent with HtmlHelper.AnonymousObjectToHtmlAttributes()
+
+   public
+   HtmlAttributeDictionary()
+      : base(StringComparer.OrdinalIgnoreCase) { }
+
    public HtmlAttributeDictionary
    SetClass(string? cssClass) {
 

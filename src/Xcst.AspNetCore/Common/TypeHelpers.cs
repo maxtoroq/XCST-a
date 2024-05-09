@@ -176,15 +176,19 @@ static class TypeHelpers {
    public static Dictionary<string, object?>
    ObjectToDictionary(object? value) {
 
-      var dictionary = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+      if (value is IDictionary<string, object?> dictionary) {
+         return new Dictionary<string, object?>(dictionary, StringComparer.OrdinalIgnoreCase);
+      }
+
+      var result = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
 
       if (value != null) {
          foreach (var helper in PropertyHelper.GetProperties(value)) {
-            dictionary.Add(helper.Name, helper.GetValue(value));
+            result.Add(helper.Name, helper.GetValue(value));
          }
       }
 
-      return dictionary;
+      return result;
    }
 
    /// <remarks>This code is copied from http://www.liensberger.it/web/blog/?p=191 </remarks>
