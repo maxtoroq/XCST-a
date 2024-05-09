@@ -2,6 +2,7 @@
 
 namespace Xcst.Web.Mvc;
 
+[GeneratedCodeReference]
 public class SelectListItem {
 
    /// <summary>
