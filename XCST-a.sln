@@ -12,13 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{28636474
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3D9FCA40-C58E-428A-AE3C-480DF5724451}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{A0812B4C-159C-4387-94AE-BEEC87FFFF86}"
-	ProjectSection(SolutionItems) = preProject
-		schemas\README.md = schemas\README.md
-		schemas\xcst-app.rng = schemas\xcst-app.rng
-		schemas\xcst-app.xsd = schemas\xcst-app.xsd
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcst.AspNetCore", "src\Xcst.AspNetCore\Xcst.AspNetCore.csproj", "{76A90B3D-3008-45BE-9D30-DAE368945FC8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aspnetcore", "samples\aspnetcore\aspnetcore.csproj", "{BE720A70-F3FB-493F-BF12-BCB99C9AFD4F}"
