@@ -69,6 +69,7 @@
    </template>
 
    <template name='html-helper-ref' as='XElement'>
+      <param name='topLevelFallback' value='false' as='bool'/>
       <param name='app_html_helper' as='XElement?' tunnel='yes'/>
 
       <choose>
@@ -77,10 +78,17 @@
          </when>
          <otherwise>
             <code:property-reference name='Html'>
-               <code:cast>
-                  <code:type-reference name='XcstViewPage' namespace='Xcst.Web.Mvc'/>
-                  <copy-of value='src_top_level_package_reference'/>
-               </code:cast>
+               <choose>
+                  <when test='topLevelFallback'>
+                     <code:cast>
+                        <code:type-reference name='XcstViewPage' namespace='Xcst.Web.Mvc'/>
+                        <copy-of value='src_top_level_package_reference'/>
+                     </code:cast>
+                  </when>
+                  <otherwise>
+                     <code:this-reference/>
+                  </otherwise>
+               </choose>
             </code:property-reference>
          </otherwise>
       </choose>

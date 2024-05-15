@@ -189,7 +189,9 @@
       <code:variable name='{newHelper.Attribute("name")!.Value}'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <code:method-call name='NewModelHelper'>
-            <call-template name='html-helper-ref'/>
+            <call-template name='html-helper-ref'>
+               <with-param name='topLevelFallback' value='true'/>
+            </call-template>
             <if test='typeAttr != null'>
                <code:type-arguments>
                   <copy-of value='type'/>
