@@ -152,6 +152,9 @@
                      </code:method-call>
                   </code:argument>
                </if>
+               <call-template name='editor-members-options'>
+                  <with-param name='el' value='el'/>
+               </call-template>
                <call-template name='editor-additional-view-data'>
                   <with-param name='el' value='el'/>
                   <with-param name='boolAttribs' value='(editor) ?
@@ -163,6 +166,126 @@
             </code:arguments>
          </code:method-call>
       </code:chain>
+   </template>
+
+   <template name='editor-members-options'>
+      <param name='el' as='XElement' required='yes'/>
+
+      <variable name='withOptionsEls' value='select(el, a + "with-options").ToArray()'/>
+      <variable name='optionsAttr' value='el.Attribute("options")'/>
+
+      <if test='withOptionsEls.Length > 0
+            || optionsAttr != null'>
+         <code:argument name='membersOptions'>
+            <code:new-object>
+               <code:type-reference name='Dictionary' namespace='System.Collections.Generic'>
+                  <code:type-arguments>
+                     <code:type-reference name='String' namespace='System'/>
+                     <code:type-reference name='IEnumerable' namespace='System.Collections.Generic'>
+                        <code:type-arguments>
+                           <code:type-reference name='SelectListItem' namespace='Xcst.Web.Mvc'/>
+                        </code:type-arguments>
+                     </code:type-reference>
+                  </code:type-arguments>
+               </code:type-reference>
+               <code:collection-initializer>
+                  <apply-templates value='withOptionsEls' mode='editor-members-options'/>
+                  <apply-templates value='optionsAttr' mode='editor-members-options'/>
+               </code:collection-initializer>
+            </code:new-object>
+         </code:argument>
+      </if>
+   </template>
+
+   <template match='XElement el &amp;&amp; (el.Name == a + "with-options" || el.Attribute("options") != null)' mode='editor-members-options'>
+
+      <variable name='withOptions' value='el.Name == a + "with-options"'/>
+
+      <if test='withOptions'>
+         <call-template name='validate-attribs'>
+            <with-param name='el' value='el'/>
+            <with-param name='optional' value='new[] { "for", "name", "options" }'/>
+         </call-template>
+         <call-template name='validate-for'>
+            <with-param name='el' value='el'/>
+         </call-template>
+      </if>
+
+      <variable name='forAttr' value='el.Attribute("for")'/>
+      <variable name='parentForAttr' value='(withOptions) ?
+         el.Parent!.Attribute("for") : null'/>
+
+      <variable name='nameAttr' value='el.Attribute("name")'/>
+      <variable name='parentNameAttr' value='(withOptions) ?
+         el.Parent!.Attribute("name") : null'/>
+
+      <variable name='useFor' value='forAttr != null || parentForAttr != null'/>
+      <variable name='useName' value='nameAttr != null || parentNameAttr != null'/>
+      <variable name='forModel' value='!(useFor || useName)'/>
+
+      <code:collection-initializer>
+         <code:method-call>
+            <attribute name='name'>
+               <text>Name</text>
+               <if test='useFor || forModel'>For</if>
+               <if test='forModel'>Model</if>
+            </attribute>
+            <call-template name='html-helper-ref'/>
+            <code:arguments>
+               <choose>
+                  <when test='useFor'>
+                     <variable name='param' value='aux_variable(fn_generate_id(el))'/>
+                     <code:lambda>
+                        <code:parameters>
+                           <code:parameter name='{param}'/>
+                        </code:parameters>
+                        <code:chain>
+                           <code:variable-reference name='{param}'/>
+                           <if test='parentForAttr != null'>
+                              <code:property-reference name='{xcst_expression(parentForAttr)}'>
+                                 <code:chain-reference/>
+                              </code:property-reference>
+                           </if>
+                           <if test='forAttr != null'>
+                              <code:property-reference name='{xcst_expression(forAttr)}'>
+                                 <code:chain-reference/>
+                              </code:property-reference>
+                           </if>
+                        </code:chain>
+                     </code:lambda>
+                  </when>
+                  <when test='useName'>
+                     <variable name='parts' as='XElement[]'>
+                        <if test='parentNameAttr != null'>
+                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = parentNameAttr }'/>
+                        </if>
+                        <if test='nameAttr != null'>
+                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
+                        </if>
+                     </variable>
+                     <choose>
+                        <when test='parts.Length == 1'>
+                           <copy-of value='parts[0]'/>
+                        </when>
+                        <otherwise>
+                           <code:method-call name='Concat'>
+                              <code:type-reference name='String' namespace='System'/>
+                              <code:arguments>
+                                 <copy-of value='parts[0]'/>
+                                 <code:string literal='true'>.</code:string>
+                                 <copy-of value='parts[1]'/>
+                              </code:arguments>
+                           </code:method-call>
+                        </otherwise>
+                     </choose>
+                  </when>
+               </choose>
+            </code:arguments>
+         </code:method-call>
+         <call-template name='option-list'>
+            <with-param name='el' value='el'/>
+         </call-template>
+      </code:collection-initializer>
    </template>
 
    <template name='editor-additional-view-data'>
@@ -181,10 +304,6 @@
                   <with-param name='boolAttribs' value='boolAttribs'/>
                </call-template>
             </code:collection-initializer>
-         </if>
-         <apply-templates value='select(el, a + "with-options")' mode='editor-additional-view-data'/>
-         <if test='el.Attribute("options") != null'>
-            <apply-templates value='el' mode='editor-additional-view-data'/>
          </if>
          <apply-templates value='select(el, a + "member-template")' mode='editor-additional-view-data'/>
       </variable>
@@ -300,100 +419,6 @@
             </code:method-call>
          </if>
       </code:chain>
-   </template>
-
-   <template match='XElement el &amp;&amp; (el.Name == a + "with-options" || el.Attribute("options") != null)' mode='editor-additional-view-data'>
-
-      <variable name='withOptions' value='el.Name == a + "with-options"'/>
-
-      <if test='withOptions'>
-         <call-template name='validate-attribs'>
-            <with-param name='el' value='el'/>
-            <with-param name='optional' value='new[] { "for", "name", "options" }'/>
-         </call-template>
-         <call-template name='validate-for'>
-            <with-param name='el' value='el'/>
-         </call-template>
-      </if>
-
-      <variable name='forAttr' value='el.Attribute("for")'/>
-      <variable name='parentForAttr' value='(withOptions) ?
-         el.Parent!.Attribute("for") : null'/>
-
-      <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='parentNameAttr' value='(withOptions) ?
-         el.Parent!.Attribute("name") : null'/>
-
-      <variable name='useFor' value='forAttr != null || parentForAttr != null'/>
-      <variable name='useName' value='nameAttr != null || parentNameAttr != null'/>
-      <variable name='forModel' value='!(useFor || useName)'/>
-
-      <code:collection-initializer>
-         <code:add>
-            <code:string literal='true'>__xcst_options:</code:string>
-            <code:method-call>
-               <attribute name='name'>
-                  <text>Name</text>
-                  <if test='useFor || forModel'>For</if>
-                  <if test='forModel'>Model</if>
-               </attribute>
-               <call-template name='html-helper-ref'/>
-               <code:arguments>
-                  <choose>
-                     <when test='useFor'>
-                        <variable name='param' value='aux_variable(fn_generate_id(el))'/>
-                        <code:lambda>
-                           <code:parameters>
-                              <code:parameter name='{param}'/>
-                           </code:parameters>
-                           <code:chain>
-                              <code:variable-reference name='{param}'/>
-                              <if test='parentForAttr != null'>
-                                 <code:property-reference name='{xcst_expression(parentForAttr)}'>
-                                    <code:chain-reference/>
-                                 </code:property-reference>
-                              </if>
-                              <if test='forAttr != null'>
-                                 <code:property-reference name='{xcst_expression(forAttr)}'>
-                                    <code:chain-reference/>
-                                 </code:property-reference>
-                              </if>
-                           </code:chain>
-                        </code:lambda>
-                     </when>
-                     <when test='useName'>
-                        <variable name='parts' as='XElement[]'>
-                           <if test='parentNameAttr != null'>
-                              <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = parentNameAttr }'/>
-                           </if>
-                           <if test='nameAttr != null'>
-                              <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
-                           </if>
-                        </variable>
-                        <choose>
-                           <when test='parts.Length == 1'>
-                              <copy-of value='parts[0]'/>
-                           </when>
-                           <otherwise>
-                              <code:method-call name='Concat'>
-                                 <code:type-reference name='String' namespace='System'/>
-                                 <code:arguments>
-                                    <copy-of value='parts[0]'/>
-                                    <code:string literal='true'>.</code:string>
-                                    <copy-of value='parts[1]'/>
-                                 </code:arguments>
-                              </code:method-call>
-                           </otherwise>
-                        </choose>
-                     </when>
-                  </choose>
-               </code:arguments>
-            </code:method-call>
-         </code:add>
-         <call-template name='option-list'>
-            <with-param name='el' value='el'/>
-         </call-template>
-      </code:collection-initializer>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "member-template"' mode='editor-additional-view-data'>

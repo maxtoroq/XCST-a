@@ -191,7 +191,7 @@ static class DefaultEditorTemplates {
 
       string? optionLabel = null;
 
-      var options = Options(viewData);
+      var options = viewData.TemplateInfo.OptionsForModel();
 
       if (options is OptionList and { AddBlankOption: true }) {
          optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
@@ -298,7 +298,7 @@ static class DefaultEditorTemplates {
       var htmlAttributes = CreateHtmlAttributes(html, className);
       var viewData = html.ViewData;
 
-      var options = Options(viewData);
+      var options = viewData.TemplateInfo.OptionsForModel();
 
       using (var disp = html.GenerateSelect(
             output,
@@ -569,18 +569,6 @@ static class DefaultEditorTemplates {
             Selected = value.HasValue && !value.Value
          }
       };
-
-   internal static IEnumerable<SelectListItem>?
-   Options(ViewDataDictionary viewData) {
-
-      var key = "__xcst_options:" + viewData.TemplateInfo.HtmlFieldPrefix;
-
-      if (viewData.TryGetValue(key, out IEnumerable<SelectListItem>? options)) {
-         return options;
-      }
-
-      return null;
-   }
 
    internal static IList<SelectListItem>
    EnumOptions(Type enumType, XcstWriter output, string? formatString = null, bool applyFormatInEdit = false) {

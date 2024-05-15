@@ -389,11 +389,14 @@ public class TemplateInfo {
    }
 
    [AllowNull]
-   internal IList<string>
+   public IList<string>
    MembersNames {
       get => _membersNames ?? Array.Empty<string>();
       set => _membersNames = value;
    }
+
+   public IDictionary<string, IEnumerable<SelectListItem>>?
+   MembersOptions { get; set; }
 
    public int
    TemplateDepth => VisitedObjects.Count;
@@ -435,6 +438,37 @@ public class TemplateInfo {
    public bool
    Visited(ModelExplorer modelExplorer) =>
       this.VisitedObjects.Contains(modelExplorer.Model ?? modelExplorer.Metadata.ModelType);
+
+   public void
+   InheritMembersOptions(TemplateInfo parentInfo) {
+
+      var parentOptions = parentInfo.MembersOptions;
+
+      if (parentOptions is null) {
+         return;
+      }
+
+      if (this.MembersOptions is null) {
+         this.MembersOptions = new Dictionary<string, IEnumerable<SelectListItem>>(parentOptions);
+         return;
+      }
+
+      foreach (var pair in parentOptions) {
+         if (!this.MembersOptions.ContainsKey(pair.Key)) {
+            this.MembersOptions[pair.Key] = pair.Value;
+         }
+      }
+   }
+
+   public IEnumerable<SelectListItem>?
+   OptionsForModel() {
+
+      if (this.MembersOptions?.TryGetValue(this.HtmlFieldPrefix, out var value) == true) {
+         return value;
+      }
+
+      return null;
+   }
 }
 
 public class ViewDataInfo {

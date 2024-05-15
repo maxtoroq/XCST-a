@@ -123,7 +123,7 @@ sealed class TemplateRenderer {
       var defaultActions = GetDefaultActions();
 
       var metadata = _viewData.ModelMetadata;
-      var options = DefaultEditorTemplates.Options(_viewData);
+      var options = _viewData.TemplateInfo.OptionsForModel();
 
       string?[] templateHints = {
          _templateName,

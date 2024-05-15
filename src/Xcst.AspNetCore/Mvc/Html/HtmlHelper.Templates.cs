@@ -201,7 +201,8 @@ partial class HtmlHelper {
             Model = memberExplorer.Model,
             ModelExplorer = memberExplorer,
             TemplateInfo = new TemplateInfo {
-               HtmlFieldPrefix = currentViewData.TemplateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName)
+               HtmlFieldPrefix = currentViewData.TemplateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
+               MembersOptions = currentViewData.TemplateInfo.MembersOptions
             }
          }
       );
@@ -258,7 +259,8 @@ public class TemplateHelper {
    [GeneratedCodeReference]
    public void
    Render(ISequenceWriter<object> output, string? htmlFieldName = null, string? templateName = null,
-         IList<string>? membersNames = null, object? additionalViewData = null) {
+         IList<string>? membersNames = null, IDictionary<string, IEnumerable<SelectListItem>>? membersOptions = null,
+         object? additionalViewData = null) {
 
       htmlFieldName ??= _expression;
 
@@ -307,11 +309,13 @@ public class TemplateHelper {
          TemplateInfo = new TemplateInfo {
             FormattedModelValue = formattedModelValue,
             HtmlFieldPrefix = _html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
-            MembersNames = membersNames
+            MembersNames = membersNames,
+            MembersOptions = membersOptions
          }
       };
 
       viewData.TemplateInfo.VisitedObjects = new HashSet<object>(_html.ViewData.TemplateInfo.VisitedObjects); // DDB #224750
+      viewData.TemplateInfo.InheritMembersOptions(_html.ViewData.TemplateInfo);
 
       if (additionalViewData != null) {
          foreach (var kvp in HtmlHelper.ObjectToDictionary(additionalViewData)) {
