@@ -50,6 +50,9 @@ public class TemplateInfo {
       set => _htmlFieldPrefix = value;
    }
 
+   public IDictionary<string, object?>?
+   HtmlAttributes { get; set; }
+
    [AllowNull]
    public IList<string>
    MembersNames {
@@ -102,6 +105,45 @@ public class TemplateInfo {
       this.VisitedObjects.Contains(modelExplorer.Model ?? modelExplorer.Metadata.ModelType);
 
    public void
+   InheritParentState(TemplateInfo parentInfo) {
+      InheritHtmlAttributes(parentInfo);
+      InheritMembersOptions(parentInfo);
+   }
+
+   void
+   InheritHtmlAttributes(TemplateInfo parentInfo) {
+
+      var parentAttribs = parentInfo.HtmlAttributes;
+
+      if (parentAttribs is null) {
+         return;
+      }
+
+      if (this.HtmlAttributes is null) {
+         this.HtmlAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(parentAttribs);
+         return;
+      }
+
+      var dict = this.HtmlAttributes as HtmlAttributeDictionary
+         ?? new HtmlAttributeDictionary(this.HtmlAttributes);
+
+      foreach (var pair in parentAttribs) {
+
+         if (dict.Comparer.Equals(pair.Key, "class")) {
+
+            dict.AddClass(pair.Value);
+            continue;
+         }
+
+         if (!dict.ContainsKey(pair.Key)) {
+            dict[pair.Key] = pair.Value;
+         }
+      }
+
+      this.HtmlAttributes = dict;
+   }
+
+   void
    InheritMembersOptions(TemplateInfo parentInfo) {
 
       var parentOptions = parentInfo.MembersOptions;

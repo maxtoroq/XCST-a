@@ -73,12 +73,12 @@ static class DefaultEditorTemplates {
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
          using var disp = html.Select(
-               output,
-               String.Empty,
-               selectList: TriStateValues(value),
-               @class: htmlAttributes.GetClassOrNull());
+            output,
+            String.Empty,
+            selectList: TriStateValues(value),
+            @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
-         htmlAttributes.WriteTo(output, excludeClass: true);
+         htmlAttributes.WriteTo(output);
          disp.EndOfConstructor();
 
       } else {
@@ -87,13 +87,13 @@ static class DefaultEditorTemplates {
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
          using var disp = html.GenerateCheckbox(
-               seqOutput,
-               modelExplorer: null,
-               name: String.Empty,
-               value.GetValueOrDefault(),
-               @class: htmlAttributes.GetClassOrNull());
+            seqOutput,
+            modelExplorer: null,
+            name: String.Empty,
+            value.GetValueOrDefault(),
+            @class: htmlAttributes.RemoveClass(html.CurrentPackage.Context.SimpleContent));
 
-         htmlAttributes.WriteTo(disp.CheckboxOutput, excludeClass: true);
+         htmlAttributes.WriteTo(disp.CheckboxOutput);
          disp.NoConstructor();
       }
    }
@@ -197,19 +197,18 @@ static class DefaultEditorTemplates {
          optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
       }
 
-      using (var disp = html.GenerateSelect(
-            output,
-            viewData.ModelExplorer,
-            String.Empty,
-            value: null,
-            options,
-            optionLabel,
-            multiple: false,
-            @class: htmlAttributes.GetClassOrNull())) {
+      using var disp = html.GenerateSelect(
+         output,
+         viewData.ModelExplorer,
+         String.Empty,
+         value: null,
+         options,
+         optionLabel,
+         multiple: false,
+         @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
-         htmlAttributes.WriteTo(output, excludeClass: true);
-         disp.EndOfConstructor();
-      }
+      htmlAttributes.WriteTo(output);
+      disp.EndOfConstructor();
    }
 
    public static void
@@ -240,19 +239,18 @@ static class DefaultEditorTemplates {
       var options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
       var optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
 
-      using (var disp = html.GenerateSelect(
-            output,
-            viewData.ModelExplorer,
-            String.Empty,
-            value: null,
-            options,
-            optionLabel,
-            multiple: false,
-            @class: htmlAttributes.GetClassOrNull())) {
+      using var disp = html.GenerateSelect(
+         output,
+         viewData.ModelExplorer,
+         String.Empty,
+         value: null,
+         options,
+         optionLabel,
+         multiple: false,
+         @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
-         htmlAttributes.WriteTo(output, excludeClass: true);
-         disp.EndOfConstructor();
-      }
+      htmlAttributes.WriteTo(output);
+      disp.EndOfConstructor();
    }
 
    public static void
@@ -270,15 +268,14 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(_hiddenInputInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using (html.Input(
-            output,
-            name: String.Empty,
-            model,
-            type: "hidden",
-            @class: htmlAttributes.GetClassOrNull())) {
+      using var disp = html.Input(
+         output,
+         name: String.Empty,
+         model,
+         type: "hidden",
+         @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
-         htmlAttributes.WriteTo(output, excludeClass: true);
-      }
+      htmlAttributes.WriteTo(output);
    }
 
    public static void
@@ -300,19 +297,18 @@ static class DefaultEditorTemplates {
 
       var options = viewData.TemplateInfo.OptionsForModel();
 
-      using (var disp = html.GenerateSelect(
-            output,
-            viewData.ModelExplorer,
-            String.Empty,
-            value: null,
-            options,
-            optionLabel: null,
-            multiple: true,
-            @class: htmlAttributes.GetClassOrNull())) {
+      using var disp = html.GenerateSelect(
+         output,
+         viewData.ModelExplorer,
+         String.Empty,
+         value: null,
+         options,
+         optionLabel: null,
+         multiple: true,
+         @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
-         htmlAttributes.WriteTo(output, excludeClass: true);
-         disp.EndOfConstructor();
-      }
+      htmlAttributes.WriteTo(output);
+      disp.EndOfConstructor();
    }
 
    public static void
@@ -324,15 +320,14 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      using (var disp = html.Textarea(
-            output,
-            name: String.Empty,
-            value,
-            @class: htmlAttributes.GetClassOrNull())) {
+      using var disp = html.Textarea(
+         output,
+         name: String.Empty,
+         value,
+         @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
-         htmlAttributes.WriteTo(output, excludeClass: true);
-         disp.EndOfConstructor();
-      }
+      htmlAttributes.WriteTo(output);
+      disp.EndOfConstructor();
    }
 
    public static void
@@ -431,15 +426,14 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(_passwordInfo, "text-box single-line password");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      using (html.Input(
-            output,
-            name: String.Empty,
-            value: null,
-            type: "password",
-            @class: htmlAttributes.GetClassOrNull())) {
+      using var _ = html.Input(
+         output,
+         name: String.Empty,
+         value: null,
+         type: "password",
+         @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
-         htmlAttributes.WriteTo(output, excludeClass: true);
-      }
+      htmlAttributes.WriteTo(output);
    }
 
    public static void
@@ -475,15 +469,14 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      using (html.Input(
-            output,
-            name: String.Empty,
-            value,
-            type: inputType,
-            @class: htmlAttributes.GetClassOrNull())) {
+      using var _ = html.Input(
+         output,
+         name: String.Empty,
+         value,
+         type: inputType,
+         @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
-         htmlAttributes.WriteTo(output, excludeClass: true);
-      }
+      htmlAttributes.WriteTo(output);
    }
 
    static void
@@ -519,7 +512,7 @@ static class DefaultEditorTemplates {
          htmlAttributes.Add("type", inputType);
       }
 
-      htmlAttributes.SetClass(className);
+      htmlAttributes.AddClass(className);
 
       if (addMetadataAttributes) {
 
@@ -532,8 +525,7 @@ static class DefaultEditorTemplates {
          htmlAttributes.SetBoolean("readonly", metadata.IsReadOnly);
       }
 
-      var userAttribs = html.ViewData["htmlAttributes"];
-      htmlAttributes.SetAttributes(userAttribs);
+      htmlAttributes.SetAttributes(html.ViewData.TemplateInfo.HtmlAttributes);
 
       return htmlAttributes;
    }

@@ -195,14 +195,16 @@ partial class HtmlHelper {
       if (memberExplorer is null) throw new ArgumentNullException(nameof(memberExplorer));
 
       var currentViewData = this.ViewData;
+      var templateInfo = currentViewData.TemplateInfo;
 
       var container = new ViewDataContainer(
          new ViewDataDictionary(currentViewData) {
             Model = memberExplorer.Model,
             ModelExplorer = memberExplorer,
             TemplateInfo = new TemplateInfo {
-               HtmlFieldPrefix = currentViewData.TemplateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
-               MembersOptions = currentViewData.TemplateInfo.MembersOptions
+               HtmlFieldPrefix = templateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
+               MembersOptions = templateInfo.MembersOptions,
+               HtmlAttributes = templateInfo.HtmlAttributes
             }
          }
       );
@@ -260,7 +262,7 @@ public class TemplateHelper {
    public void
    Render(ISequenceWriter<object> output, string? htmlFieldName = null, string? templateName = null,
          IList<string>? membersNames = null, IDictionary<string, IEnumerable<SelectListItem>>? membersOptions = null,
-         object? additionalViewData = null) {
+         object? htmlAttributes = null, object? additionalViewData = null) {
 
       htmlFieldName ??= _expression;
 
@@ -310,12 +312,15 @@ public class TemplateHelper {
             FormattedModelValue = formattedModelValue,
             HtmlFieldPrefix = _html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
             MembersNames = membersNames,
-            MembersOptions = membersOptions
+            MembersOptions = membersOptions,
+            HtmlAttributes = (htmlAttributes != null) ?
+               HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)
+               : null
          }
       };
 
       viewData.TemplateInfo.VisitedObjects = new HashSet<object>(_html.ViewData.TemplateInfo.VisitedObjects); // DDB #224750
-      viewData.TemplateInfo.InheritMembersOptions(_html.ViewData.TemplateInfo);
+      viewData.TemplateInfo.InheritParentState(_html.ViewData.TemplateInfo);
 
       if (additionalViewData != null) {
          foreach (var kvp in HtmlHelper.ObjectToDictionary(additionalViewData)) {

@@ -461,7 +461,7 @@ public partial class HtmlHelper {
       // libClass must not be null or empty, which allows you to call this method
       // without having to make that check.
       // 
-      // See also HtmlAttributeDictionary.SetAttributes
+      // See also HtmlAttributeDictionary.AddClass()
 
       var libClassHasValue = !String.IsNullOrEmpty(libClass);
       var userClassHasValue = userClass != null;

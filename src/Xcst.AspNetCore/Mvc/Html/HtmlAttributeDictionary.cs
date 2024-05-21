@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc;
 
@@ -28,11 +29,23 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
    HtmlAttributeDictionary()
       : base(StringComparer.OrdinalIgnoreCase) { }
 
-   public HtmlAttributeDictionary
-   SetClass(string? cssClass) {
+   public
+   HtmlAttributeDictionary(IDictionary<string, object?> dictionary)
+      : base(dictionary, StringComparer.OrdinalIgnoreCase) { }
 
-      if (!String.IsNullOrEmpty(cssClass)) {
-         this["class"] = cssClass;
+   public HtmlAttributeDictionary
+   AddClass(object? cssClass) {
+
+      if (!(cssClass is null or string and { Length: 0 })) {
+
+         if (TryGetValue("class", out var existingObj)
+            && existingObj != null) {
+
+            this["class"] = $"{existingObj} {cssClass}";
+
+         } else {
+            this["class"] = cssClass;
+         }
       }
 
       return this;
@@ -62,7 +75,11 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
    SetAttributes(object? attributes) {
 
       if (attributes != null) {
-         SetAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
+
+         SetAttributes((attributes is IDictionary<string, object?> dictionary) ?
+            dictionary
+            : HtmlHelper.AnonymousObjectToHtmlAttributes(attributes)
+         );
       }
 
       return this;
@@ -71,34 +88,14 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
    public HtmlAttributeDictionary
    SetAttributes(IDictionary<string, object?>? attributes) {
 
-      // NOTE: For backcompat, the dictionary class must be a non-null string to be joined
-      // with the attribute (or library) class, otherwise it's ignored. If there's no attribute class,
-      // the dictionary class can be null, resulting in an empty attribute.
-      // 
-      // See also HtmlHelper.WriteCssClass
-      // 
-      // Previous logic:
-      // if (!String.IsNullOrEmpty(cssClass)) {
-      //    if (DictionaryExtensions.TryGetValue(this, "class", out string existingClass)) {
-      //       this["class"] = existingClass + " " + cssClass;
-      //    } else {
-      //       this["class"] = cssClass;
-      //    }
-      // }
-
       if (attributes != null) {
 
          foreach (var entry in attributes) {
 
-            if (entry.Key == "class"
-               && TryGetValue("class", out var thisClassObj)) {
-
-               if (entry.Value is string s) {
-                  this["class"] = (string?)thisClassObj + " " + s;
-               }
-
+            if (this.Comparer.Equals(entry.Key, "class")) {
+               AddClass(entry.Value);
             } else {
-               SetAttribute(entry.Key, entry.Value);
+               this[entry.Key] = entry.Value;
             }
          }
       }
@@ -106,38 +103,23 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
       return this;
    }
 
-   public void
+   internal void
    WriteTo(XcstWriter output) {
 
       foreach (var item in this) {
-         WriteAttribute(item.Key, item.Value, output);
+         output.WriteAttributeString(item.Key, SerializeValue(item.Value, output.SimpleContent));
       }
    }
 
-   internal void
-   WriteTo(XcstWriter output, bool excludeClass) {
-
-      foreach (var item in this) {
-
-         if (excludeClass
-            && item.Key == "class") {
-
-            continue;
-         }
-
-         WriteAttribute(item.Key, item.Value, output);
-      }
-   }
-
-   static void
-   WriteAttribute(string key, object? value, XcstWriter output) =>
-      output.WriteAttributeString(key, output.SimpleContent.Convert(value));
+   static string
+   SerializeValue(object? value, SimpleContent simpleContent) =>
+      simpleContent.Convert(value);
 
    internal string?
-   GetClassOrNull() {
+   RemoveClass(SimpleContent simpleContent) {
 
-      if (TryGetValue("class", out var value)) {
-         return value?.ToString();
+      if (Remove("class", out var value)) {
+         return SerializeValue(value, simpleContent);
       }
 
       return null;

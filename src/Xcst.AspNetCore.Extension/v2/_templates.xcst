@@ -155,13 +155,17 @@
                <call-template name='editor-members-options'>
                   <with-param name='el' value='el'/>
                </call-template>
-               <call-template name='editor-additional-view-data'>
+               <call-template name='editor-html-attributes'>
                   <with-param name='el' value='el'/>
+                  <with-param name='attributesAttr' value='el.Attribute("attributes")'/>
                   <with-param name='boolAttribs' value='(editor) ?
                      attributes(el).Where(p => p.Name.Namespace == XNamespace.None
                            &amp;&amp; p.Name.LocalName is "autofocus" or "disabled" or "readonly")
                         .ToArray()
                      : System.Array.Empty&lt;XAttribute>()'/>
+               </call-template>
+               <call-template name='editor-additional-view-data'>
+                  <with-param name='el' value='el'/>
                </call-template>
             </code:arguments>
          </code:method-call>
@@ -288,23 +292,88 @@
       </code:collection-initializer>
    </template>
 
-   <template name='editor-additional-view-data'>
+   <template name='editor-html-attributes'>
       <param name='el' as='XElement' required='yes'/>
+      <param name='attributesAttr' as='XAttribute?'/>
+      <param name='classAttr' as='XAttribute?'/>
       <param name='boolAttribs' value='System.Array.Empty&lt;XAttribute>()' as='XAttribute[]'/>
 
+      <!-- Keep document order -->
+      <variable name='avts' value='attributes(el)
+         .Where(p => p == classAttr || boolAttribs.Contains(p))
+         .ToArray()'/>
+
+      <variable name='attributesExpr' value='(attributesAttr != null) ?
+         xcst_expression(attributesAttr) : null'/>
+
+      <if test='!(avts.Length == 0
+            &amp;&amp; attributesExpr is null)'>
+         <code:argument name='htmlAttributes'>
+            <choose>
+               <when test='avts.Length == 0'>
+                  <code:expression value='{attributesExpr}'/>
+               </when>
+               <otherwise>
+                  <code:chain>
+                     <code:new-object>
+                        <code:type-reference name='HtmlAttributeDictionary' namespace='Xcst.Web.Mvc'/>
+                     </code:new-object>
+                     <for-each name='avt' in='avts'>
+                        <choose>
+                           <when test='avt == classAttr'>
+                              <code:method-call name='AddClass'>
+                                 <code:chain-reference/>
+                                 <code:arguments>
+                                    <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt }'/>
+                                 </code:arguments>
+                              </code:method-call>
+                           </when>
+                           <when test='boolAttribs.Contains(avt)'>
+                              <code:method-call name='SetBoolean'>
+                                 <code:chain-reference/>
+                                 <code:arguments>
+                                    <code:string literal='true'>
+                                       <value-of value='avt.Name.LocalName'/>
+                                    </code:string>
+                                    <call-template name='src:boolean'>
+                                       <with-param name='val' value='xcst_boolean(avt, true)'/>
+                                       <with-param name='avt' value='avt'/>
+                                    </call-template>
+                                 </code:arguments>
+                              </code:method-call>
+                           </when>
+                           <otherwise>
+                              <code:method-call name='SetAttribute'>
+                                 <code:chain-reference/>
+                                 <code:arguments>
+                                    <code:string literal='true'>
+                                       <value-of value='avt.Name.LocalName'/>
+                                    </code:string>
+                                    <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt }'/>
+                                 </code:arguments>
+                              </code:method-call>
+                           </otherwise>
+                        </choose>
+                     </for-each>
+                     <if test='attributesExpr != null'>
+                        <code:method-call name='SetAttributes'>
+                           <code:chain-reference/>
+                           <code:arguments>
+                              <code:expression value='{attributesExpr}'/>
+                           </code:arguments>
+                        </code:method-call>
+                     </if>
+                  </code:chain>
+               </otherwise>
+            </choose>
+         </code:argument>
+      </if>
+   </template>
+
+   <template name='editor-additional-view-data'>
+      <param name='el' as='XElement' required='yes'/>
+
       <variable name='inits' as='XElement[]'>
-         <variable name='attributesAttr' value='el.Attribute("attributes")'/>
-         <if test='boolAttribs.Length > 0
-               || attributesAttr != null'>
-            <code:collection-initializer>
-               <code:string literal='true'>htmlAttributes</code:string>
-               <call-template name='html-attributes-param'>
-                  <with-param name='el' value='el'/>
-                  <with-param name='attributesAttr' value='attributesAttr'/>
-                  <with-param name='boolAttribs' value='boolAttribs'/>
-               </call-template>
-            </code:collection-initializer>
-         </if>
          <apply-templates value='select(el, a + "member-template")' mode='editor-additional-view-data'/>
       </variable>
 
@@ -313,12 +382,11 @@
             xcst_expression(withParamsAttr)
             : null'/>
 
-      <if test='withParamsExpr != null
-            || inits.Length > 0'>
+      <if test='!(inits.Length == 0
+            &amp;&amp; withParamsExpr is null)'>
          <code:argument name='additionalViewData'>
             <choose>
-               <when test='withParamsExpr != null
-                     &amp;&amp; inits.Length == 0'>
+               <when test='inits.Length == 0'>
                   <code:expression value='{withParamsExpr}'/>
                </when>
                <otherwise>
@@ -339,86 +407,14 @@
                            </code:method-call>
                         </code:arguments>
                      </if>
-                     <if test='inits.Length > 0'>
-                        <code:collection-initializer>
-                           <copy-of value='inits'/>
-                        </code:collection-initializer>
-                     </if>
+                     <code:collection-initializer>
+                        <copy-of value='inits'/>
+                     </code:collection-initializer>
                   </code:new-object>
                </otherwise>
             </choose>
          </code:argument>
       </if>
-   </template>
-
-   <template name='html-attributes-param'>
-      <param name='el' as='XElement' required='yes'/>
-      <param name='attributesAttr' as='XAttribute?'/>
-      <param name='classAttr' as='XAttribute?'/>
-      <param name='mergeAttribs' value='System.Array.Empty&lt;XAttribute>()' as='XAttribute[]'/>
-      <param name='boolAttribs' value='System.Array.Empty&lt;XAttribute>()' as='XAttribute[]'/>
-
-      <!-- Keep document order -->
-      <variable name='avts' value='attributes(el)
-         .Where(p => p == classAttr || mergeAttribs.Contains(p) || boolAttribs.Contains(p))
-         .ToArray()'/>
-
-      <if test='avts.Length == 0
-            &amp;&amp; attributesAttr != null'>
-         <code:expression value='{xcst_expression(attributesAttr)}'/>
-         <return/>
-      </if>
-
-      <code:chain>
-         <code:new-object>
-            <code:type-reference name='HtmlAttributeDictionary' namespace='Xcst.Web.Mvc'/>
-         </code:new-object>
-         <for-each name='avt' in='avts'>
-            <choose>
-               <when test='avt == classAttr'>
-                  <code:method-call name='SetClass'>
-                     <code:chain-reference/>
-                     <code:arguments>
-                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt }'/>
-                     </code:arguments>
-                  </code:method-call>
-               </when>
-               <when test='boolAttribs.Contains(avt)'>
-                  <code:method-call name='SetBoolean'>
-                     <code:chain-reference/>
-                     <code:arguments>
-                        <code:string literal='true'>
-                           <value-of value='avt.Name.LocalName'/>
-                        </code:string>
-                        <call-template name='src:boolean'>
-                           <with-param name='val' value='xcst_boolean(avt, true)'/>
-                           <with-param name='avt' value='avt'/>
-                        </call-template>
-                     </code:arguments>
-                  </code:method-call>
-               </when>
-               <otherwise>
-                  <code:method-call name='SetAttribute'>
-                     <code:chain-reference/>
-                     <code:arguments>
-                        <code:string literal='true'>
-                           <value-of value='avt.Name.LocalName'/>
-                        </code:string>
-                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt }'/>
-                     </code:arguments>
-                  </code:method-call>
-               </otherwise>
-            </choose>
-         </for-each>
-         <if test='attributesAttr != null'>
-            <code:method-call name='SetAttributes'>
-               <code:chain-reference/>
-               <code:arguments>
-                  <code:expression value='{xcst_expression(attributesAttr)}'/>
-               </code:arguments>
-            </code:method-call>
-         </if>
-      </code:chain>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "member-template"' mode='editor-additional-view-data'>
