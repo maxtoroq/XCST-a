@@ -243,7 +243,7 @@ sealed class TemplateRenderer {
 
       var evaluator = XcstEvaluator.Using((object)viewPage);
 
-      foreach (var item in _viewData) {
+      foreach (var item in _viewData.TemplateInfo.TemplateParameters) {
          evaluator.WithParam(item.Key, item.Value);
       }
 

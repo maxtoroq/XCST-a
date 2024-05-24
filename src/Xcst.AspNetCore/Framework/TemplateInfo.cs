@@ -33,6 +33,9 @@ public class TemplateInfo {
    IList<string>?
    _membersNames;
 
+   IDictionary<string, object?>?
+   _templateParameters;
+
    HashSet<object>?
    _visitedObjects;
 
@@ -62,6 +65,10 @@ public class TemplateInfo {
 
    public IDictionary<string, IEnumerable<SelectListItem>>?
    MembersOptions { get; set; }
+
+   public IDictionary<string, object?>
+   TemplateParameters =>
+      _templateParameters ??= new Dictionary<string, object?>();
 
    public int
    TemplateDepth => VisitedObjects.Count;
@@ -108,6 +115,7 @@ public class TemplateInfo {
    InheritParentState(TemplateInfo parentInfo) {
       InheritHtmlAttributes(parentInfo);
       InheritMembersOptions(parentInfo);
+      InheritTemplateParameters(parentInfo);
    }
 
    void
@@ -160,6 +168,22 @@ public class TemplateInfo {
       foreach (var pair in parentOptions) {
          if (!this.MembersOptions.ContainsKey(pair.Key)) {
             this.MembersOptions[pair.Key] = pair.Value;
+         }
+      }
+   }
+
+   void
+   InheritTemplateParameters(TemplateInfo parentInfo) {
+
+      var parentParams = parentInfo._templateParameters;
+
+      if (parentParams is null) {
+         return;
+      }
+
+      foreach (var pair in parentParams) {
+         if (!this.TemplateParameters.ContainsKey(pair.Key)) {
+            this.TemplateParameters[pair.Key] = pair.Value;
          }
       }
    }

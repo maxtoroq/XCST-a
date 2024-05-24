@@ -262,7 +262,7 @@ public class TemplateHelper {
    public void
    Render(ISequenceWriter<object> output, string? htmlFieldName = null, string? templateName = null,
          IList<string>? membersNames = null, IDictionary<string, IEnumerable<SelectListItem>>? membersOptions = null,
-         object? htmlAttributes = null, object? additionalViewData = null) {
+         object? htmlAttributes = null, object? withParams = null, object? additionalViewData = null) {
 
       htmlFieldName ??= _expression;
 
@@ -318,6 +318,12 @@ public class TemplateHelper {
                : null
          }
       };
+
+      if (withParams !=  null) {
+         foreach (var kvp in HtmlHelper.ObjectToDictionary(withParams)) {
+            viewData.TemplateInfo.TemplateParameters.Add(kvp);
+         }
+      }
 
       viewData.TemplateInfo.VisitedObjects = new HashSet<object>(_html.ViewData.TemplateInfo.VisitedObjects); // DDB #224750
       viewData.TemplateInfo.InheritParentState(_html.ViewData.TemplateInfo);

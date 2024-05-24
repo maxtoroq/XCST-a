@@ -164,6 +164,11 @@
                         .ToArray()
                      : System.Array.Empty&lt;XAttribute>()'/>
                </call-template>
+               <if test='el.Attribute("with-params") is { } withParamsAttr'>
+                  <code:argument name='withParams'>
+                     <code:expression value='{xcst_expression(withParamsAttr)}'/>
+                  </code:argument>
+               </if>
                <call-template name='editor-additional-view-data'>
                   <with-param name='el' value='el'/>
                </call-template>
@@ -377,42 +382,19 @@
          <apply-templates value='select(el, a + "member-template")' mode='editor-additional-view-data'/>
       </variable>
 
-      <variable name='withParamsExpr' value='
-         (el.Attribute("with-params") is { } withParamsAttr) ?
-            xcst_expression(withParamsAttr)
-            : null'/>
-
-      <if test='!(inits.Length == 0
-            &amp;&amp; withParamsExpr is null)'>
+      <if test='!(inits.Length == 0)'>
          <code:argument name='additionalViewData'>
-            <choose>
-               <when test='inits.Length == 0'>
-                  <code:expression value='{withParamsExpr}'/>
-               </when>
-               <otherwise>
-                  <code:new-object>
-                     <code:type-reference name='Dictionary' namespace='System.Collections.Generic'>
-                        <code:type-arguments>
-                           <code:type-reference name='String' namespace='System'/>
-                           <copy-of value='src_nullable_object_type'/>
-                        </code:type-arguments>
-                     </code:type-reference>
-                     <if test='withParamsExpr != null'>
-                        <code:arguments>
-                           <code:method-call name='ObjectToDictionary'>
-                              <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
-                              <code:arguments>
-                                 <code:expression value='{withParamsExpr}'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </code:arguments>
-                     </if>
-                     <code:collection-initializer>
-                        <copy-of value='inits'/>
-                     </code:collection-initializer>
-                  </code:new-object>
-               </otherwise>
-            </choose>
+            <code:new-object>
+               <code:type-reference name='Dictionary' namespace='System.Collections.Generic'>
+                  <code:type-arguments>
+                     <code:type-reference name='String' namespace='System'/>
+                     <copy-of value='src_nullable_object_type'/>
+                  </code:type-arguments>
+               </code:type-reference>
+               <code:collection-initializer>
+                  <copy-of value='inits'/>
+               </code:collection-initializer>
+            </code:new-object>
          </code:argument>
       </if>
    </template>

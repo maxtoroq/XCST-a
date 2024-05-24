@@ -178,7 +178,6 @@ public partial class HtmlHelper {
    /// </example>
    /// <param name="value">The object to be converted.</param>
    /// <returns>The created dictionary of property names and property values.</returns>
-   [GeneratedCodeReference]
    public static IDictionary<string, object?>
    ObjectToDictionary(object value) =>
       TypeHelpers.ObjectToDictionary(value);
