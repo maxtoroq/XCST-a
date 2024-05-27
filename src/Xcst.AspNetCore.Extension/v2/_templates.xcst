@@ -49,6 +49,11 @@
          </message>
       </if>
 
+      <call-template name='validate-children'>
+         <with-param name='el' value='el'/>
+         <with-param name='allowed' value='new[] { "with-options", "member-template" }'/>
+      </call-template>
+
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='forAttr' value='el.Attribute("for")'/>
@@ -216,6 +221,13 @@
          <call-template name='validate-for'>
             <with-param name='el' value='el'/>
          </call-template>
+         <call-template name='no-other-preceding'>
+            <with-param name='el' value='el'/>
+         </call-template>
+         <call-template name='validate-children'>
+            <with-param name='el' value='el'/>
+            <with-param name='allowed' value='new[] { "option" }'/>
+         </call-template>
       </if>
 
       <variable name='forAttr' value='el.Attribute("for")'/>
@@ -300,6 +312,11 @@
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='new[] { "helper-name" }'/>
+      </call-template>
+
+      <call-template name='no-other-following'>
+         <with-param name='el' value='el'/>
+         <with-param name='except' value='System.Array.Empty&lt;XName>()'/>
       </call-template>
 
       <variable name='meta'>

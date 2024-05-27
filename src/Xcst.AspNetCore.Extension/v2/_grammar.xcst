@@ -48,6 +48,71 @@
       </if>
    </template>
 
+   <template name='validate-children'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='allowed' as='string[]' required='yes'/>
+
+      <if test='!(el.Elements()
+            .All(p => p.Name.Namespace == a
+               &amp;&amp; allowed.Contains(p.Name.LocalName))
+            &amp;&amp; el.Nodes()
+               .OfType&lt;XText>()
+               .All(tx => trim(tx.Value).Length == 0))'>
+         <message terminate='yes' error-code='XTSE0010' error-data='src_error_object(el)' expand-text='yes' transform-text='trim'>
+            Only {string.Join("", allowed.Select((p, i) => string.Concat((i == 0 ? "" : allowed.Length - 1 > 1 ? " and " : ", "), "a:" + p)))} allowed within the a:{el.Name.LocalName} element.
+         </message>
+      </if>
+   </template>
+
+   <template name='no-other-preceding'>
+      <param name='el' as='XElement' required='yes'/>
+
+      <variable name='disallowedPreceding' value='el
+         .NodesBeforeSelf()
+         .FirstOrDefault(p => (p is XText txt &amp;&amp; trim(txt.Value).Length > 0)
+            || (p is XElement elem &amp;&amp; elem.Name != el.Name))'/>
+
+      <if test='!(disallowedPreceding is null)'>
+         <message terminate='yes' error-code='XTSE0010' error-data='src_error_object(el)' expand-text='yes'>
+            <text>a:{el.Name.LocalName} element cannot be preceded </text>
+            <choose>
+               <when test='disallowedPreceding is XElement'>by a different element</when>
+               <otherwise>with text</otherwise>
+            </choose>
+            <text>.</text>
+         </message>
+      </if>
+   </template>
+
+   <template name='no-other-following'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='except' value='new[] { el.Name }' as='XName[]'/>
+
+      <variable name='disallowedFollowing' value='el
+         .NodesAfterSelf()
+         .FirstOrDefault(p => (p is XText txt &amp;&amp; trim(txt.Value).Length > 0)
+            || (p is XElement elem &amp;&amp; !except.Contains(elem.Name)))'/>
+
+      <if test='!(disallowedFollowing is null)'>
+         <message terminate='yes' error-code='XTSE0010' error-data='src_error_object(el)' expand-text='yes'>
+            <choose>
+               <when test='disallowedFollowing is XElement disallowedEl
+                     &amp;&amp; disallowedEl.Name == el.Name'>
+                  <text>a:{el.Name.LocalName} element cannot be repeated in this context.</text>
+               </when>
+               <otherwise>
+                  <text>a:{el.Name.LocalName} element cannot be followed </text>
+                  <choose>
+                     <when test='disallowedFollowing is XElement'>by a different element</when>
+                     <otherwise>with text</otherwise>
+                  </choose>
+                  <text>.</text>
+               </otherwise>
+            </choose>
+         </message>
+      </if>
+   </template>
+
    <template name='no-children'>
       <param name='el' as='XElement' required='yes'/>
 
