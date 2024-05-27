@@ -155,6 +155,7 @@
                <call-template name='editor-members-options'>
                   <with-param name='el' value='el'/>
                </call-template>
+               <apply-templates value='select(el, a + "member-template")' mode='editor-member-template'/>
                <call-template name='editor-html-attributes'>
                   <with-param name='el' value='el'/>
                   <with-param name='attributesAttr' value='el.Attribute("attributes")'/>
@@ -169,9 +170,6 @@
                      <code:expression value='{xcst_expression(withParamsAttr)}'/>
                   </code:argument>
                </if>
-               <call-template name='editor-additional-view-data'>
-                  <with-param name='el' value='el'/>
-               </call-template>
             </code:arguments>
          </code:method-call>
       </code:chain>
@@ -297,6 +295,52 @@
       </code:collection-initializer>
    </template>
 
+   <template match='XElement el &amp;&amp; el.Name == a + "member-template"' mode='editor-member-template'>
+
+      <call-template name='validate-attribs'>
+         <with-param name='el' value='el'/>
+         <with-param name='optional' value='new[] { "helper-name" }'/>
+      </call-template>
+
+      <variable name='meta'>
+         <xcst:delegate/>
+      </variable>
+
+      <variable name='newOutput' value='src_template_output(meta, el)'/>
+
+      <variable name='newHelper'>
+         <code:variable-reference name='{(el.Attribute("helper-name") is { } helperNameAttr ?
+            xcst_name(helperNameAttr)
+            : aux_variable("html") + "_" + fn_generate_id(el))}'/>
+      </variable>
+
+      <code:argument name='memberTemplate'>
+         <code:new-object>
+            <code:type-reference name='Action' namespace='System'>
+               <code:type-arguments>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+                  <copy-of value='select(newOutput, code + "type-reference")'/>
+               </code:type-arguments>
+            </code:type-reference>
+            <code:arguments>
+               <code:lambda void='true'>
+                  <code:parameters>
+                     <code:parameter name='{newHelper.Attribute("name")!.Value}'/>
+                     <code:parameter name='{select(newOutput, src + "reference", code).First().Attribute("name")!.Value}'/>
+                  </code:parameters>
+                  <code:block>
+                     <invoke-delegate delegate='src_sequence_constructor'>
+                        <with-param name='el' value='el'/>
+                        <with-param name='output' value='newOutput' tunnel='yes'/>
+                        <with-param name='app_html_helper' value='newHelper' tunnel='yes'/>
+                     </invoke-delegate>
+                  </code:block>
+               </code:lambda>
+            </code:arguments>
+         </code:new-object>
+      </code:argument>
+   </template>
+
    <template name='editor-html-attributes'>
       <param name='el' as='XElement' required='yes'/>
       <param name='attributesAttr' as='XAttribute?'/>
@@ -373,77 +417,6 @@
             </choose>
          </code:argument>
       </if>
-   </template>
-
-   <template name='editor-additional-view-data'>
-      <param name='el' as='XElement' required='yes'/>
-
-      <variable name='inits' as='XElement[]'>
-         <apply-templates value='select(el, a + "member-template")' mode='editor-additional-view-data'/>
-      </variable>
-
-      <if test='!(inits.Length == 0)'>
-         <code:argument name='additionalViewData'>
-            <code:new-object>
-               <code:type-reference name='Dictionary' namespace='System.Collections.Generic'>
-                  <code:type-arguments>
-                     <code:type-reference name='String' namespace='System'/>
-                     <copy-of value='src_nullable_object_type'/>
-                  </code:type-arguments>
-               </code:type-reference>
-               <code:collection-initializer>
-                  <copy-of value='inits'/>
-               </code:collection-initializer>
-            </code:new-object>
-         </code:argument>
-      </if>
-   </template>
-
-   <template match='XElement el &amp;&amp; el.Name == a + "member-template"' mode='editor-additional-view-data'>
-
-      <call-template name='validate-attribs'>
-         <with-param name='el' value='el'/>
-         <with-param name='optional' value='new[] { "helper-name" }'/>
-      </call-template>
-
-      <variable name='meta'>
-         <xcst:delegate/>
-      </variable>
-
-      <variable name='newOutput' value='src_template_output(meta, el)'/>
-
-      <variable name='newHelper'>
-         <code:variable-reference name='{(el.Attribute("helper-name") is { } helperNameAttr ?
-            xcst_name(helperNameAttr)
-            : aux_variable("html") + "_" + fn_generate_id(el))}'/>
-      </variable>
-
-      <code:collection-initializer>
-         <code:string literal='true'>__xcst_member_template</code:string>
-         <code:new-object>
-            <code:type-reference name='Action' namespace='System'>
-               <code:type-arguments>
-                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
-                  <copy-of value='select(newOutput, code + "type-reference")'/>
-               </code:type-arguments>
-            </code:type-reference>
-            <code:arguments>
-               <code:lambda void='true'>
-                  <code:parameters>
-                     <code:parameter name='{newHelper.Attribute("name")!.Value}'/>
-                     <code:parameter name='{select(newOutput, src + "reference", code).First().Attribute("name")!.Value}'/>
-                  </code:parameters>
-                  <code:block>
-                     <invoke-delegate delegate='src_sequence_constructor'>
-                        <with-param name='el' value='el'/>
-                        <with-param name='output' value='newOutput' tunnel='yes'/>
-                        <with-param name='app_html_helper' value='newHelper' tunnel='yes'/>
-                     </invoke-delegate>
-                  </code:block>
-               </code:lambda>
-            </code:arguments>
-         </code:new-object>
-      </code:collection-initializer>
    </template>
 
 </module>

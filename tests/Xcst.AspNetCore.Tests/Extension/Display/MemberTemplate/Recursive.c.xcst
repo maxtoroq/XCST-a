@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='ContactModel'>
+      <c:member name='first_name' as='string'/>
+      <c:member name='last_name' as='string'/>
+      <c:member name='address' display='yes'>
+         <c:member name='line_1' as='string'/>
+         <c:member name='line_2' as='string'/>
+         <c:member name='city' as='string'/>
+      </c:member>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <a:model value='new ContactModel {
+               first_name = "John",
+               last_name = "Doe",
+               address = new() {
+                  line_1 = "Street 123",
+                  city = "Some Place"
+               }
+            }'>
+         <dl>
+            <a:display>
+               <a:member-template helper-name='prop'>
+                  <dt>
+                     <a:display-name/>
+                     <c:text>:</c:text>
+                  </dt>
+                  <dd>
+                     <c:element name='{(prop.ModelMetadata.IsComplexType ? "dl" : "span")}'>
+                        <a:display/>
+                     </c:element>
+                  </dd>
+               </a:member-template>
+            </a:display>
+         </dl>
+      </a:model>
+   </c:template>
+
+   <c:template name='expected'>
+      <dl>
+         <dt>first_name:</dt>
+         <dd>
+            <span>John</span>
+         </dd>
+         <dt>last_name:</dt>
+         <dd>
+            <span>Doe</span>
+         </dd>
+         <dt>address:</dt>
+         <dd>
+            <dl>
+               <dt>line_1:</dt>
+               <dd>
+                  <span>Street 123</span>
+               </dd>
+               <dt>line_2:</dt>
+               <dd>
+                  <span/>
+               </dd>
+               <dt>city:</dt>
+               <dd>
+                  <span>Some Place</span>
+               </dd>
+            </dl>
+         </dd>
+      </dl>
+   </c:template>
+
+</c:module>

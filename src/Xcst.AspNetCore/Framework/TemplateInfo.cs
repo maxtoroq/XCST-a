@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc;
 
@@ -65,6 +66,9 @@ public class TemplateInfo {
 
    public IDictionary<string, IEnumerable<SelectListItem>>?
    MembersOptions { get; set; }
+
+   internal Action<HtmlHelper, ISequenceWriter<object?>>?
+   MemberTemplate { get; set; }
 
    public IDictionary<string, object?>
    TemplateParameters =>
@@ -115,7 +119,27 @@ public class TemplateInfo {
    InheritParentState(TemplateInfo parentInfo) {
       InheritHtmlAttributes(parentInfo);
       InheritMembersOptions(parentInfo);
+      InheritMemberTemplate(parentInfo);
       InheritTemplateParameters(parentInfo);
+   }
+
+   internal void
+   InheritVisitedObjects(TemplateInfo parentInfo) {
+
+      var parentObjects = parentInfo._visitedObjects;
+
+      if (parentObjects is null or { Count: 0 }) {
+         return;
+      }
+
+      if (_visitedObjects is null) {
+         _visitedObjects = new HashSet<object>(parentObjects);
+         return;
+      }
+
+      foreach (var item in parentObjects) {
+         _visitedObjects.Add(item);
+      }
    }
 
    void
@@ -170,6 +194,11 @@ public class TemplateInfo {
             this.MembersOptions[pair.Key] = pair.Value;
          }
       }
+   }
+
+   void
+   InheritMemberTemplate(TemplateInfo parentInfo) {
+      this.MemberTemplate ??= parentInfo.MemberTemplate;
    }
 
    void

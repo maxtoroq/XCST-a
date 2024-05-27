@@ -173,13 +173,12 @@ partial class HtmlHelper {
    /// </summary>
    /// <param name="propertyExplorer">The property's explorer.</param>
    /// <returns>The member template delegate for the provided property; or null if a member template is not available.</returns>
-   public XcstDelegate<object>?
+   public XcstDelegate<object?>?
    MemberTemplate(ModelExplorer propertyExplorer) {
 
       if (propertyExplorer is null) throw new ArgumentNullException(nameof(propertyExplorer));
 
-      if (this.ViewData.TryGetValue("__xcst_member_template", out Action<HtmlHelper, ISequenceWriter<object>>? memberTemplate)
-         && memberTemplate != null) {
+      if (this.ViewData.TemplateInfo.MemberTemplate is { } memberTemplate) {
 
          var helper = MakeHtmlHelperForMemberTemplate(propertyExplorer);
 
@@ -203,11 +202,11 @@ partial class HtmlHelper {
             ModelExplorer = memberExplorer,
             TemplateInfo = new TemplateInfo {
                HtmlFieldPrefix = templateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
-               MembersOptions = templateInfo.MembersOptions,
-               HtmlAttributes = templateInfo.HtmlAttributes
             }
          }
       );
+
+      container.ViewData.TemplateInfo.InheritParentState(templateInfo);
 
       return new HtmlHelper(this.ViewContext, container, this.CurrentPackage);
    }
@@ -260,9 +259,14 @@ public class TemplateHelper {
 
    [GeneratedCodeReference]
    public void
-   Render(ISequenceWriter<object> output, string? htmlFieldName = null, string? templateName = null,
-         IList<string>? membersNames = null, IDictionary<string, IEnumerable<SelectListItem>>? membersOptions = null,
-         object? htmlAttributes = null, object? withParams = null, object? additionalViewData = null) {
+   Render(ISequenceWriter<object> output,
+         string? htmlFieldName = null,
+         string? templateName = null,
+         IList<string>? membersNames = null,
+         IDictionary<string, IEnumerable<SelectListItem>>? membersOptions = null,
+         Action<HtmlHelper, ISequenceWriter<object?>>? memberTemplate = null,
+         object? htmlAttributes = null,
+         object? withParams = null) {
 
       htmlFieldName ??= _expression;
 
@@ -313,28 +317,22 @@ public class TemplateHelper {
             HtmlFieldPrefix = _html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
             MembersNames = membersNames,
             MembersOptions = membersOptions,
+            MemberTemplate = memberTemplate,
             HtmlAttributes = (htmlAttributes != null) ?
                HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)
                : null
          }
       };
 
-      if (withParams !=  null) {
+      if (withParams != null) {
          foreach (var kvp in HtmlHelper.ObjectToDictionary(withParams)) {
             viewData.TemplateInfo.TemplateParameters.Add(kvp);
          }
       }
 
-      viewData.TemplateInfo.VisitedObjects = new HashSet<object>(_html.ViewData.TemplateInfo.VisitedObjects); // DDB #224750
       viewData.TemplateInfo.InheritParentState(_html.ViewData.TemplateInfo);
-
-      if (additionalViewData != null) {
-         foreach (var kvp in HtmlHelper.ObjectToDictionary(additionalViewData)) {
-            viewData[kvp.Key] = kvp.Value;
-         }
-      }
-
-      viewData.TemplateInfo.VisitedObjects.Add(visitedObjectsKey); // DDB #224750
+      viewData.TemplateInfo.InheritVisitedObjects(_html.ViewData.TemplateInfo);
+      viewData.TemplateInfo.VisitedObjects.Add(visitedObjectsKey);
 
       new TemplateRenderer(_html.CurrentPackage, _html.ViewContext, viewData, templateName, _displayMode)
          .Render(output);
