@@ -16,5 +16,5 @@ using System;
 
 namespace Xcst.Web;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Property)]
 sealed class GeneratedCodeReferenceAttribute : Attribute { }

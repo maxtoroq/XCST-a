@@ -247,7 +247,6 @@ partial class HtmlHelper {
       Convert.ToString(value, CultureInfo.CurrentCulture)
          ?? String.Empty;
 
-   [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public class SelectDisposable : ElementEndingDisposable {
 
@@ -279,11 +278,13 @@ partial class HtmlHelper {
       IsSelected(string value, bool selectedDefault) =>
          _isSelectedFn.Invoke(value, selectedDefault);
 
+      [GeneratedCodeReference]
       public void
       EndOfConstructor() {
          _eoc = true;
       }
 
+      [GeneratedCodeReference]
       public SelectDisposable
       NoConstructor() {
          _eoc = this.ElementStarted;

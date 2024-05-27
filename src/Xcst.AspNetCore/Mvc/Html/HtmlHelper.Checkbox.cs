@@ -100,7 +100,6 @@ partial class HtmlHelper {
       return new CheckboxDisposable(inputDisposable, inputWriter, hiddenWriter, fullName);
    }
 
-   [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public class CheckboxDisposable : IDisposable {
 
@@ -119,6 +118,7 @@ partial class HtmlHelper {
       bool
       _disposed;
 
+      [GeneratedCodeReference]
       public XcstWriter
       CheckboxOutput { get; }
 
@@ -130,11 +130,13 @@ partial class HtmlHelper {
          _fullName = fullName;
       }
 
+      [GeneratedCodeReference]
       public void
       EndOfConstructor() {
          _eoc = true;
       }
 
+      [GeneratedCodeReference]
       public CheckboxDisposable
       NoConstructor() {
          _eoc = true;
@@ -151,6 +153,7 @@ partial class HtmlHelper {
          _hiddenOutput.WriteEndElement();
       }
 
+      [GeneratedCodeReference]
       public void
       Dispose() {
 

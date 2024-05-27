@@ -43,6 +43,7 @@ public class OptionList : IEnumerable<SelectListItem> {
       _staticList.Count == 0
          && _dynamicList != null;
 
+   [GeneratedCodeReference]
    public static OptionList
    FromStaticList(int staticOptionsCount) {
 
@@ -51,6 +52,7 @@ public class OptionList : IEnumerable<SelectListItem> {
       return new OptionList(staticOptionsCount);
    }
 
+   [GeneratedCodeReference]
    public static OptionList
    Create() => new OptionList(0);
 
@@ -94,6 +96,7 @@ public class OptionList : IEnumerable<SelectListItem> {
       return item.Selected;
    }
 
+   [GeneratedCodeReference]
    public OptionList
    AddStaticOption(object? value = null, string? text = null, bool selected = false, bool disabled = false) {
 
@@ -114,6 +117,7 @@ public class OptionList : IEnumerable<SelectListItem> {
       return this;
    }
 
+   [GeneratedCodeReference]
    public OptionList
    ConcatDynamicList(IEnumerable<SelectListItem>? list) {
 

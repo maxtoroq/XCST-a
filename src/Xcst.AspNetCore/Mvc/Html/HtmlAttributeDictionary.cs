@@ -25,6 +25,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
 
    // StringComparer consistent with HtmlHelper.AnonymousObjectToHtmlAttributes()
 
+   [GeneratedCodeReference]
    public
    HtmlAttributeDictionary()
       : base(StringComparer.OrdinalIgnoreCase) { }
@@ -33,6 +34,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
    HtmlAttributeDictionary(IDictionary<string, object?> dictionary)
       : base(dictionary, StringComparer.OrdinalIgnoreCase) { }
 
+   [GeneratedCodeReference]
    public HtmlAttributeDictionary
    AddClass(object? cssClass) {
 
@@ -51,6 +53,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
       return this;
    }
 
+   [GeneratedCodeReference]
    public HtmlAttributeDictionary
    SetAttribute(string key, object? value) {
 
@@ -61,6 +64,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
       return this;
    }
 
+   [GeneratedCodeReference]
    public HtmlAttributeDictionary
    SetBoolean(string key, bool value) {
 
@@ -71,6 +75,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
       return this;
    }
 
+   [GeneratedCodeReference]
    public HtmlAttributeDictionary
    SetAttributes(object? attributes) {
 
@@ -85,6 +90,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
       return this;
    }
 
+   [GeneratedCodeReference]
    public HtmlAttributeDictionary
    SetAttributes(IDictionary<string, object?>? attributes) {
 

@@ -50,6 +50,7 @@ public class FileExtensionsAttribute : ValidationAttribute, IClientModelValidato
    ExtensionsParsed =>
       ExtensionsNormalized.Split(',').Select(e => "." + e);
 
+   [GeneratedCodeReference]
    public
    FileExtensionsAttribute(string extensions) {
 

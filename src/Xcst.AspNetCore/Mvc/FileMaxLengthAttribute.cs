@@ -29,6 +29,7 @@ public class FileMaxLengthAttribute : ValidationAttribute {
    public int
    MaxLength { get; }
 
+   [GeneratedCodeReference]
    public
    FileMaxLengthAttribute(int length) {
 

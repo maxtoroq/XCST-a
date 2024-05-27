@@ -212,7 +212,6 @@ partial class HtmlHelper {
       }
    }
 
-   [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public class ValidationSummaryDisposable : ElementEndingDisposable {
 
@@ -236,11 +235,13 @@ partial class HtmlHelper {
          _listBuilder = listBuilder;
       }
 
+      [GeneratedCodeReference]
       public void
       EndOfConstructor() {
          _eoc = true;
       }
 
+      [GeneratedCodeReference]
       public ValidationSummaryDisposable
       NoConstructor() {
          _eoc = this.ElementStarted;

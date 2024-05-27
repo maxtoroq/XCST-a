@@ -19,7 +19,6 @@ namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
 
-   [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public class ElementEndingDisposable : IDisposable {
 
@@ -29,6 +28,7 @@ partial class HtmlHelper {
       bool
       _disposed;
 
+      [GeneratedCodeReference]
       public bool
       ElementStarted { get; }
 
@@ -38,6 +38,7 @@ partial class HtmlHelper {
          this.ElementStarted = elementStarted;
       }
 
+      [GeneratedCodeReference]
       public void
       Dispose() => Dispose(disposing: true);
 

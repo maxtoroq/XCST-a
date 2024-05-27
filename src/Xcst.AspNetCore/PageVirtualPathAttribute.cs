@@ -23,6 +23,7 @@ public sealed class PageVirtualPathAttribute : Attribute {
    public string
    VirtualPath { get; }
 
+   [GeneratedCodeReference]
    public
    PageVirtualPathAttribute(string virtualPath) {
       this.VirtualPath = virtualPath;
