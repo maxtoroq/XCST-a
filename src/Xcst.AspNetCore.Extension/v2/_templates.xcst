@@ -202,7 +202,9 @@
                </code:type-reference>
                <code:collection-initializer>
                   <apply-templates value='withOptionsEls' mode='editor-members-options'/>
-                  <apply-templates value='optionsAttr' mode='editor-members-options'/>
+                  <if test='optionsAttr != null'>
+                     <apply-templates value='el' mode='editor-members-options'/>
+                  </if>
                </code:collection-initializer>
             </code:new-object>
          </code:argument>

@@ -11,14 +11,13 @@
    <c:import-namespace ns='System.Linq'/>
    <c:import-namespace ns='Xcst.Web.Mvc'/>
 
-   <c:variable name='@class' value='
-      ViewData.TemplateInfo.HtmlAttributes?.TryGetValue("class", out var @class) == true ?
-         $" {@class}" : null' as='string?'/>
+   <c:variable name='htmlAttributes' value='ViewData.TemplateInfo.HtmlAttributes' as='IDictionary&lt;string, object?>?'/>
 
    <c:template name='c:initial-template' visibility='public'>
       <c:variable name='modelValue' value='(ViewData.Model != null) ?
          Convert.ToBoolean(ViewData.Model, CultureInfo.InvariantCulture)
          : default(bool?)' as='bool?'/>
+      <c:variable name='@class' value='this.htmlAttributes?.TryGetValue("class", out var cls) == true ? $" {cls}" : null'/>
       <c:choose>
          <c:when test='ViewData.ModelMetadata.IsNullableValueType'>
             <a:select class='form-control{@class}'>
@@ -41,8 +40,8 @@
    </c:template>
 
    <c:template name='write-attributes-except-class'>
-      <c:if test='ViewData.TemplateInfo.HtmlAttributes is { } dict'>
-         <c:for-each name='pair' in='dict.Where(p => p.Key != "class")'>
+      <c:if test='this.htmlAttributes != null'>
+         <c:for-each name='pair' in='this.htmlAttributes.Where(p => p.Key != "class")'>
             <c:attribute name='{pair.Key}' value='pair.Value'/>
          </c:for-each>
       </c:if>
