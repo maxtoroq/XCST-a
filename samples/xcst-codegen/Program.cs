@@ -10,7 +10,7 @@ using XcstWebExtension = Xcst.Web.Extension.ExtensionPackageV2;
 
 namespace XcstCodeGen;
 
-class Program {
+partial class Program {
 
    string?
    _language;
@@ -105,7 +105,11 @@ class Program {
    // Transforms invalid identifier (class, namespace, variable) characters
    static string
    CleanIdentifier(string identifier) =>
-      Regex.Replace(identifier, "[^a-z0-9_]", "_", RegexOptions.IgnoreCase);
+      CleanIdentifierRegex().Replace(identifier, "_");
+
+   [GeneratedRegex("[^a-z0-9_]", RegexOptions.IgnoreCase)]
+   private static partial Regex
+   CleanIdentifierRegex();
 
    // Show compilation errors on Visual Studio's Error List
    // Also makes the error on the Output window clickable
