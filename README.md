@@ -29,7 +29,7 @@ Support for ASP.NET 4 (.NET Framework) was dropped in v2, focusing on ASP.NET Co
 
 The runtime on v2 is much more integrated with ASP.NET Core. Functionality that was previously copied from ASP.NET MVC 5 such as *model metadata*, *model binding*, *model validation*, *anti-forgery*, etc. is now reused from ASP.NET Core.
 
-The extension on v2 can generate code for runtime v1 or v2 (the default). This not only accounts for runtime API changes, but the extension instructions and attributes also. For example, if v2 removes an attribute, it will be available if you target v1. On the other hand, new instructions and attributes on v2 are not supported when targeting v1. To put is simply, the extension is backwards compatible, but you must explicitly target v1. You are therefore encouraged to use the v2 extension and XCST's v2 compiler to maintain your legacy v1 apps.
+The extension on v2 can generate code for runtime v1 or v2 (the default). This not only accounts for runtime API changes, but the extension instructions and attributes also. For example, if v2 removes an attribute, it will be available if you target v1. On the other hand, new instructions and attributes on v2 are not supported when targeting v1. To put it simply, the extension is backwards compatible, but you must explicitly target v1. You are therefore encouraged to use the v2 extension and XCST's v2 compiler to maintain your legacy v1 apps.
 
 System Requirements
 -------------------
