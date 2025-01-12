@@ -1024,10 +1024,6 @@
       <choose>
          <when test='optionsAttr != null
                || optionEls.Length > 0'>
-            <!--
-               Casting of xcst:expression avoids turning into a dynamic object when one of the arguments is dynamic.
-               A long method chain on a dynamic object hurts performance.
-            -->
             <code:chain>
                <code:type-reference name='OptionList' namespace='Xcst.Web.Mvc'/>
                <choose>
@@ -1080,6 +1076,11 @@
       <call-template name='validate-option'>
          <with-param name='el' value='el'/>
       </call-template>
+
+      <!--
+         Casting of xcst_expression avoids turning into a dynamic object when one of the arguments is dynamic.
+         A long method chain on a dynamic object hurts performance.
+      -->
 
       <code:method-call name='AddStaticOption'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
