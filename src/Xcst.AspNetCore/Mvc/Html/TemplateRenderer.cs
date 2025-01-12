@@ -96,11 +96,11 @@ sealed class TemplateRenderer {
    readonly IXcstPackage
    _package;
 
-   readonly
-   ViewContext _viewContext;
+   readonly ViewContext
+   _viewContext;
 
-   readonly
-   ViewDataDictionary _viewData;
+   readonly ViewDataDictionary
+   _viewData;
 
    readonly string?
    _templateName;
