@@ -126,7 +126,7 @@
    <function name='element_is_empty' as='bool'>
       <param name='el' as='XElement'/>
 
-      <return value='fn_empty(el.Elements())
+      <return value='!el.HasElements
          &amp;&amp; el.Nodes().OfType&lt;XText>()
             .All(tx => trim(tx.Value).Length == 0 &amp;&amp; !xcst_preserve_whitespace(el))'/>
    </function>
