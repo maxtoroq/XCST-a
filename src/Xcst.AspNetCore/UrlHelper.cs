@@ -70,6 +70,19 @@ public class UrlHelper {
       }
    }
 
+   public string
+   Absolute(string s) {
+
+      var request = _httpContext.Request;
+
+      return String.Concat(
+         request.Scheme,
+         "://",
+         request.Host.ToUriComponent(),
+         Content(s)
+      );
+   }
+
    [return: NotNullIfNotNull(nameof(url))]
    public virtual string?
    Encode(string? url) => HttpUtility.UrlEncode(url);
