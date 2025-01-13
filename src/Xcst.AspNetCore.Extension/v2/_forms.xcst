@@ -953,29 +953,74 @@
       </code:method-call>
    </template>
 
+   <template match='XElement el &amp;&amp; el.Name == a + "select"' mode='xcst:extension-instruction'>
+      <call-template name='element-instruction'/>
+   </template>
+
    <template match='XElement el &amp;&amp; el.Name == a + "option"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
-      <param name='app_select_disp_ref' as='XElement?' tunnel='yes'/>
 
       <call-template name='validate-option'>
          <with-param name='el' value='el'/>
       </call-template>
 
+      <if test='el.HasElements
+            &amp;&amp; el.Attribute("value") is null'>
+         <message terminate='yes' error-data='src_error_object(el)' transform-text='trim'>
+            A a:option element with child elements must specify a 'value' attribute.
+         </message>
+      </if>
+
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
-      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
 
       <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
 
+      <choose>
+         <when test='el.HasElements'>
+            <code:using>
+               <call-template name='option'>
+                  <with-param name='el' value='el'/>
+                  <with-param name='output' value='docOutput' tunnel='yes'/>
+               </call-template>
+               <code:block>
+                  <invoke-delegate delegate='src_sequence_constructor'>
+                     <with-param name='el' value='el'/>
+                     <with-param name='output' value='docOutput' tunnel='yes'/>
+                  </invoke-delegate>
+               </code:block>
+            </code:using>
+         </when>
+         <otherwise>
+            <code:chain>
+               <call-template name='option'>
+                  <with-param name='el' value='el'/>
+                  <with-param name='output' value='docOutput' tunnel='yes'/>
+               </call-template>
+               <code:method-call name='Dispose'>
+                  <code:chain-reference/>
+               </code:method-call>
+            </code:chain>
+         </otherwise>
+      </choose>
+   </template>
+
+   <template name='option'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='output' as='XElement' tunnel='yes'/>
+      <param name='app_select_disp_ref' as='XElement?' tunnel='yes'/>
+
+      <variable name='text' value='xcst_text(el, null)'/>
+
       <code:method-call name='SelectOption'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
          <code:arguments>
-            <copy-of value='outputRef'/>
+            <copy-of value='select(output, src + "reference", code)'/>
             <choose>
                <when test='app_select_disp_ref != null'>
                   <copy-of value='app_select_disp_ref'/>
@@ -1005,9 +1050,11 @@
                   </call-template>
                </code:argument>
             </if>
-            <code:argument name='text'>
-               <invoke-delegate delegate='src_simple_content' with-params='new { el }'/>
-            </code:argument>
+            <if test='text != null'>
+               <code:argument name='text'>
+                  <invoke-delegate delegate='src_expand_text' with-params='new { el, text }'/>
+               </code:argument>
+            </if>
          </code:arguments>
       </code:method-call>
    </template>
@@ -1077,6 +1124,12 @@
          <with-param name='el' value='el'/>
       </call-template>
 
+      <call-template name='text-only'>
+         <with-param name='el' value='el'/>
+      </call-template>
+
+      <variable name='text' value='xcst_text(el, null)'/>
+
       <!--
          Casting of xcst_expression avoids turning into a dynamic object when one of the arguments is dynamic.
          A long method chain on a dynamic object hurts performance.
@@ -1094,9 +1147,11 @@
                   </code:cast>
                </code:argument>
             </if>
-            <code:argument name='text'>
-               <invoke-delegate delegate='src_simple_content' with-params='new { el }'/>
-            </code:argument>
+            <if test='text != null'>
+               <code:argument name='text'>
+                  <invoke-delegate delegate='src_expand_text' with-params='new { el, text }'/>
+               </code:argument>
+            </if>
             <if test='el.Attribute("selected") is { } selectedAttr'>
                <code:argument name='selected'>
                   <call-template name='src:boolean'>
@@ -1126,7 +1181,7 @@
       </call-template>
    </template>
 
-   <template match='XElement el &amp;&amp; el.Name == a + "select"' mode='xcst:extension-instruction'>
+   <template match='XElement el &amp;&amp; el.Name == a + "option"' mode='xcst:extension-instruction'>
       <call-template name='element-instruction'/>
    </template>
 

@@ -815,7 +815,9 @@
                </code:argument>
             </if>
             <code:argument name='text'>
-               <invoke-delegate delegate='src_simple_content' with-params='new { el }'/>
+               <call-template name='src:simple-content'>
+                  <with-param name='el' value='el'/>
+               </call-template>
             </code:argument>
             <if test='el.Attribute("selected") is { } selectedAttr'>
                <code:argument name='selected'>

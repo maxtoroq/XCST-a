@@ -30,6 +30,45 @@
       <code:type-reference name='Object' namespace='System' nullable='true'/>
    </variable>
 
+   <template name='src:simple-content' as='XElement'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='text' as='string?' value='xcst_text(el, null)'/>
+
+      <choose>
+         <when test='text != null'>
+            <invoke-delegate delegate='src_expand_text' with-params='new { el, text }'/>
+         </when>
+         <when test='el.HasElements'>
+            <variable name='newOutput' value='src_doc_output(el, null)'/>
+            <variable name='defaultSep' value='" "'/>
+            <code:method-call name='SimpleContent'>
+               <copy-of value='src_helper_type("Serialization")'/>
+               <code:arguments>
+                  <code:this-reference/>
+                  <code:string literal='true'>
+                     <attribute name='xml:space'>preserve</attribute>
+                     <value-of value='defaultSep'/>
+                  </code:string>
+                  <code:lambda void='true'>
+                     <code:parameters>
+                        <code:parameter name='{select(newOutput, src + "reference", code).First().Attribute("name")!.Value}'/>
+                     </code:parameters>
+                     <code:block>
+                        <invoke-delegate delegate='src_sequence_constructor'>
+                           <with-param name='el' value='el'/>
+                           <with-param name='output' value='newOutput' tunnel='yes'/>
+                        </invoke-delegate>
+                     </code:block>
+                  </code:lambda>
+               </code:arguments>
+            </code:method-call>
+         </when>
+         <otherwise>
+            <code:string/>
+         </otherwise>
+      </choose>
+   </template>
+
 
    <!-- ## Data Types-->
 

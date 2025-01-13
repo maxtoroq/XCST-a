@@ -16,7 +16,7 @@
          <!-- value overrides selected of static option -->
          <a:select name='color' value='"red"' class='a'>
             <a:option>red</a:option>
-            <a:option selected='true'>blue</a:option>
+            <a:option selected='yes'>blue</a:option>
          </a:select>
          <!-- value overrides selected of dynamic option -->
          <a:select name='color' value='"red"'

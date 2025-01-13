@@ -16,8 +16,8 @@
          <!-- value overrides selected of static option -->
          <a:select name='color' value='new[] { "red", "blue" }' multiple='yes' class='a'>
             <a:option>red</a:option>
-            <a:option selected='true'>blue</a:option>
-            <a:option selected='true'>green</a:option>
+            <a:option selected='yes'>blue</a:option>
+            <a:option selected='yes'>green</a:option>
          </a:select>
          <!-- value overrides selected of dynamic option -->
          <a:select name='color' value='new[] { "red", "blue" }'

@@ -123,6 +123,16 @@
       </if>
    </template>
 
+   <template name='text-only'>
+      <param name='el' as='XElement' required='yes'/>
+
+      <if test='!(!el.HasElements)'>
+         <message terminate='yes' error-code='XTSE0010' error-data='src_error_object(el)' expand-text='yes' transform-text='trim'>
+            Element a:{el.Name.LocalName} can only contain text.
+         </message>
+      </if>
+   </template>
+
    <function name='element_is_empty' as='bool'>
       <param name='el' as='XElement'/>
 

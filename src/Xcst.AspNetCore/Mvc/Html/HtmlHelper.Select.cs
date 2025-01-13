@@ -223,12 +223,12 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public void
+   public IDisposable
    SelectOption(XcstWriter output, SelectDisposable? disp,
-         object? value = null, bool selected = false, bool disabled = false, string text = "") {
+         object? value = null, bool selected = false, bool disabled = false, string? text = null) {
 
       var valueStr = SelectValueString(value);
-      var valueOrText = (value != null) ? valueStr : text;
+      var valueOrText = (value != null) ? valueStr : text ?? String.Empty;
 
       output.WriteStartElement("option");
 
@@ -238,8 +238,12 @@ partial class HtmlHelper {
 
       WriteBoolean("selected", disp?.IsSelected(valueOrText, selected) ?? selected, output);
       WriteBoolean("disabled", disabled, output);
-      output.WriteString(text);
-      output.WriteEndElement();
+
+      if (text != null) {
+         output.WriteString(text);
+      }
+
+      return new ElementEndingDisposable(output);
    }
 
    static string
