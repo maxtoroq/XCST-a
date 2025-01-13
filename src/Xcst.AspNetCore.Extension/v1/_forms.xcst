@@ -62,10 +62,6 @@
 
       <variable name='hidden' value='el.Name.LocalName == "hidden"'/>
 
-      <variable name='clientAttributes' value='(hidden) ?
-         input_client_attributes
-         : textbox_client_attributes'/>
-
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='
@@ -93,11 +89,6 @@
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
-
-      <variable name='clientAttribs' value='attributes(el)
-         .Where(p => p.Name.Namespace == XNamespace.None
-            &amp;&amp; clientAttributes.Contains(p.Name.LocalName))
-         .ToArray()'/>
 
       <call-template name='input-or-hidden'>
          <with-param name='el' value='el'/>
@@ -235,11 +226,6 @@
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
 
-      <variable name='clientAttribs' value='attributes(el)
-         .Where(p => p.Name.Namespace == XNamespace.None
-            &amp;&amp; clientAttributes.Contains(p.Name.LocalName))
-         .ToArray()'/>
-
       <call-template name='textarea'>
          <with-param name='el' value='el'/>
          <with-param name='output' value='docOutput' tunnel='yes'/>
@@ -350,8 +336,6 @@
    <template match='XElement el &amp;&amp; el.Name == a + "checkbox"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <variable name='clientAttributes' value='input_client_attributes'/>
-
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='input_attributes
@@ -372,11 +356,6 @@
       </call-template>
 
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
-
-      <variable name='clientAttribs' value='attributes(el)
-         .Where(p => p.Name.Namespace == XNamespace.None
-            &amp;&amp; clientAttributes.Contains(p.Name.LocalName))
-         .ToArray()'/>
 
       <call-template name='checkbox'>
          <with-param name='el' value='el'/>
@@ -456,8 +435,6 @@
    <template match='XElement el &amp;&amp; el.Name == a + "radio"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <variable name='clientAttributes' value='input_client_attributes'/>
-
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='required' value='new[] { "value" }'/>
@@ -487,11 +464,6 @@
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
-
-      <variable name='clientAttribs' value='attributes(el)
-         .Where(p => p.Name.Namespace == XNamespace.None
-            &amp;&amp; clientAttributes.Contains(p.Name.LocalName))
-         .ToArray()'/>
 
       <call-template name='radio'>
          <with-param name='el' value='el'/>
@@ -618,8 +590,6 @@
    <template match='XElement el &amp;&amp; el.Name == a + "select"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <variable name='clientAttributes' value='input_client_attributes'/>
-
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' value='input_attributes
@@ -643,11 +613,6 @@
          <with-param name='el' value='el'/>
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
-
-      <variable name='clientAttribs' value='attributes(el)
-         .Where(p => p.Name.Namespace == XNamespace.None
-            &amp;&amp; clientAttributes.Contains(p.Name.LocalName))
-         .ToArray()'/>
 
       <call-template name='select'>
          <with-param name='el' value='el'/>
