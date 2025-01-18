@@ -31,10 +31,26 @@ The runtime on v2 is much more integrated with ASP.NET Core. Functionality that 
 
 The extension on v2 can generate code for runtime v1 or v2 (the default). This not only accounts for runtime API changes, but the extension instructions and attributes also. For example, if v2 removes an attribute, it will be available if you target v1. On the other hand, new instructions and attributes on v2 are not supported when targeting v1. To put it simply, the extension is backwards compatible, but you must explicitly target v1. You are therefore encouraged to use the v2 extension and XCST's v2 compiler to maintain your legacy v1 apps.
 
+Breaking Changes
+----------------
+### Entension
+- [Text-only sequence constructor for a:with-options/a:option](https://github.com/maxtoroq/XCST-a/commit/a168d65dcaec34680f0ad15e2bf3b7821e0bf00a)
+- [Renamed a:model's 'as' attribute to 'type'](https://github.com/maxtoroq/XCST-a/commit/3ac2492e377e7be181f0aa49e981e20c67010608)
+- [Removed 'attributes' attribute from all html instructions (can now use sequence constructor to add attributes)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
+- [a:select now doesn't auto-add blank option (but a:editor still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
+- [Don't prepend new line on a:textarea when value is empty](https://github.com/maxtoroq/XCST-a/commit/7df19560060f7ac8a1ed09aab1ff833b961a09b5)
+- [Use single Number template for integral types](https://github.com/maxtoroq/XCST-a/commit/6787fb48ee29127f536dcb52c267082be7791cee)
+
+### Runtime
+The runtime has lots of changes, including renamed namespaces and moved types. These are the most notable changes:
+
+- [Removed RouteValueDictionary dependency from ObjectToDictionary and AnonymousObjectToHtmlAttributes](https://github.com/maxtoroq/XCST-a/commit/25e0171c73cf199280dbaa77445c3532074f23d0)
+- [Removed TempData](https://github.com/maxtoroq/XCST-a/commit/1d2fdacbe13cde8383af34245d2170379a529289)
+- [Renamed XcstPage.Context to HttpContext](https://github.com/maxtoroq/XCST-a/commit/a576f482c5ce36c2463c1af9328a6058e4eabcec)
+- [Removed XcstPageHandler, moved RenderPage to XcstPage](https://github.com/maxtoroq/XCST-a/commit/8d32a32fb74180a85d28675ab0d24845fe0a974c)
+
 System Requirements
 -------------------
-The [release script](build/release.ps1) (which creates the NuGet packages) and other utility scripts require **PowerShell 5.1** or **PowerShell Core**.
-
 The [application extension schema](schemas/xcst-app.rng) is written in **Relax NG** and converted to XSD using [Trang], which requires **Java**.
 
 
