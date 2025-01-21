@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <ol>
+         <li>
+            <a:editor name='foo'/>
+         </li>
+         <a:model type='object' field-prefix='foo'>
+            <li>
+               <a:editor/>
+            </li>
+            <li>
+               <a:editor name=''/>
+            </li>
+         </a:model>
+      </ol>
+   </c:template>
+
+   <c:template name='expected'>
+      <ol>
+         <c:for-each name='i' in='System.Linq.Enumerable.Range(1, 3)'>
+            <li>
+               <input type='text' id='foo' name='foo' value='' class='text-box single-line'/>
+            </li>
+         </c:for-each>
+      </ol>
+   </c:template>
+
+</c:module>
