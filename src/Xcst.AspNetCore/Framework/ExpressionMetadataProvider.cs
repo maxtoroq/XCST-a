@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -13,16 +13,11 @@ namespace Xcst.Web.Mvc;
 
 static class ExpressionMetadataProvider {
 
-   [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an appropriate nesting of generic types")]
    public static ModelExplorer
-   FromLambdaExpression<TParameter, TValue>(Expression<Func<TParameter, TValue>> expression, ViewDataDictionary<TParameter> viewData) =>
-      FromLambdaExpression(expression, viewData, metadataProvider: null);
-
-   internal static ModelExplorer
    FromLambdaExpression<TParameter, TValue>(
          Expression<Func<TParameter, TValue>> expression,
          ViewDataDictionary<TParameter> viewData,
-         IModelMetadataProvider? metadataProvider) {
+         IModelMetadataProvider? metadataProvider = null) {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
       if (viewData is null) throw new ArgumentNullException(nameof(viewData));
@@ -103,11 +98,7 @@ static class ExpressionMetadataProvider {
    }
 
    public static ModelExplorer
-   FromStringExpression(string expression, ViewDataDictionary viewData) =>
-      FromStringExpression(expression, viewData, metadataProvider: null);
-
-   internal static ModelExplorer
-   FromStringExpression(string expression, ViewDataDictionary viewData, IModelMetadataProvider? metadataProvider) {
+   FromStringExpression(string expression, ViewDataDictionary viewData, IModelMetadataProvider? metadataProvider = null) {
 
       if (expression is null) throw new ArgumentNullException(nameof(expression));
       if (viewData is null) throw new ArgumentNullException(nameof(viewData));
@@ -149,7 +140,7 @@ static class ExpressionMetadataProvider {
             return containerExplorer.GetExplorerForExpression(valueMetadata, vdi.Value);
          }
 
-      } else if (viewData.ModelExplorer != null) {
+      } else {
 
          //  Try getting a property from ModelMetadata if we couldn't find an answer in ViewData
 
@@ -162,10 +153,10 @@ static class ExpressionMetadataProvider {
 
       // Treat the expression as string if we don't find anything better.
 
-      //var stringMetadata = metadataProvider.GetMetadataForType(typeof(string));
+      var stringMetadata = metadataProvider.GetMetadataForType(typeof(string));
 
-      //return viewData.ModelExplorer.GetExplorerForExpression(stringMetadata, modelAccessor: null);
-      return metadataProvider.GetModelExplorerForType(typeof(string), null);
+      return viewData.ModelExplorer.GetExplorerForExpression(stringMetadata, modelAccessor: null);
+      //return metadataProvider.GetModelExplorerForType(typeof(string), null);
    }
 
    static ModelExplorer
@@ -173,7 +164,16 @@ static class ExpressionMetadataProvider {
 
       ArgumentNullException.ThrowIfNull(viewData);
 
-      return viewData.ModelExplorer
-         ?? metadataProvider.GetModelExplorerForType(typeof(string), null);
+      if (viewData.ModelMetadata.ModelType == typeof(object)) {
+
+         // Use common simple type rather than object so e.g. Editor() at least generates a TextBox.
+         var model = (viewData.Model == null) ? null : Convert.ToString(viewData.Model, CultureInfo.CurrentCulture);
+         return metadataProvider.GetModelExplorerForType(typeof(string), model);
+      }
+
+      return viewData.ModelExplorer;
+
+      //return viewData.ModelExplorer
+      //   ?? metadataProvider.GetModelExplorerForType(typeof(string), null);
    }
 }

@@ -26,20 +26,12 @@ partial class HtmlHelper {
 
       if (currentPackage is null) throw new ArgumentNullException(nameof(currentPackage));
 
-      var currentViewData = this.ViewData;
-
-      // Cannot call new ViewDataDictionary<TModel>(currentViewData)
-      // because currentViewData.Model might be incompatible with TModel
-
-      var tempDictionary = new ViewDataDictionary(currentViewData) {
-         Model = model
-      };
-
       var container = new ViewDataContainer(
-         new ViewDataDictionary<TModel>(tempDictionary) {
+         new ViewDataDictionary<TModel>(this.ViewData) {
+            Model = model!,
             // setting new TemplateInfo clears VisitedObjects cache
             TemplateInfo = new TemplateInfo {
-               HtmlFieldPrefix = currentViewData.TemplateInfo.HtmlFieldPrefix
+               HtmlFieldPrefix = this.ViewData.TemplateInfo.HtmlFieldPrefix
             }
          }
       );

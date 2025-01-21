@@ -11,15 +11,13 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Xcst.Web.Mvc;
 
-// TODO: Unit test ModelState interaction with VDD
-
 public class ViewDataDictionary : IDictionary<string, object?> {
 
    readonly IDictionary<string, object?>
    _innerDictionary;
 
-   readonly ModelStateDictionary
-   _modelState;
+   readonly Type
+   _declaredModelType;
 
    object?
    _model;
@@ -43,7 +41,6 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    Model {
       get => _model;
       set {
-         _modelExplorer = null;
          SetModel(value);
       }
    }
@@ -51,26 +48,25 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    internal IModelMetadataProvider
    MetadataProvider { get; }
 
-   public virtual ModelExplorer
+   public ModelExplorer
    ModelExplorer {
       get {
-         if (_modelExplorer is null && _model != null) {
-            _modelExplorer = MetadataProvider.GetModelExplorerForType(_model.GetType(), _model);
-         }
-#pragma warning disable CS8603 // can be null, but most times when requested it's not
+         _modelExplorer ??= MetadataProvider
+            .GetModelExplorerForType(_model?.GetType() ?? _declaredModelType, _model);
+
          return _modelExplorer;
-#pragma warning restore CS8603
       }
-      set => _modelExplorer = value;
+      set {
+         Model = value?.Model;
+         _modelExplorer = value;
+      }
    }
 
    public ModelMetadata
-#pragma warning disable CS8603 // can be null, but most times when requested it's not
-   ModelMetadata => ModelExplorer?.Metadata;
-#pragma warning restore CS8603
+   ModelMetadata => ModelExplorer.Metadata;
 
    public ModelStateDictionary
-   ModelState => _modelState;
+   ModelState { get; }
 
    public TemplateInfo
    TemplateInfo {
@@ -95,29 +91,42 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    internal IDictionary<string, object?>
    InnerDictionary => _innerDictionary;
 
-   [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "See note on SetModel() method.")]
    public
-   ViewDataDictionary(IModelMetadataProvider metadataProvider, ModelStateDictionary modelState) {
+   ViewDataDictionary(IModelMetadataProvider metadataProvider, ModelStateDictionary modelState)
+      : this(metadataProvider, modelState, typeof(object)) { }
 
-      this.MetadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
+   private protected
+   ViewDataDictionary(IModelMetadataProvider metadataProvider, ModelStateDictionary modelState, Type declaredModelType) {
+
+      ArgumentNullException.ThrowIfNull(metadataProvider);
+      ArgumentNullException.ThrowIfNull(modelState);
+      ArgumentNullException.ThrowIfNull(declaredModelType);
+
+      this.MetadataProvider = metadataProvider;
+      this.ModelState = modelState;
+
       _innerDictionary = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
-      _modelState = modelState;
+      _declaredModelType = declaredModelType;
    }
 
-   [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "See note on SetModel() method.")]
    public
-   ViewDataDictionary(ViewDataDictionary dictionary) {
+   ViewDataDictionary(ViewDataDictionary dictionary)
+      : this(dictionary, dictionary._declaredModelType) { }
 
-      if (dictionary is null) throw new ArgumentNullException(nameof(dictionary));
+   private protected
+   ViewDataDictionary(ViewDataDictionary dictionary, Type declaredModelType) {
+
+      ArgumentNullException.ThrowIfNull(dictionary);
+      ArgumentNullException.ThrowIfNull(declaredModelType);
 
       _innerDictionary = new CopyOnWriteDictionary<string, object?>(dictionary, StringComparer.OrdinalIgnoreCase);
-      _modelState = new ModelStateDictionary(dictionary.ModelState);
 
-      this.Model = dictionary.Model;
+      this.ModelState = new ModelStateDictionary(dictionary.ModelState);
       this.MetadataProvider = dictionary.MetadataProvider;
       this.TemplateInfo = dictionary.TemplateInfo;
 
-      // PERF: Don't unnecessarily instantiate the model metadata
+      _declaredModelType = declaredModelType;
+      _model = dictionary._model;
       _modelExplorer = dictionary._modelExplorer;
    }
 
@@ -194,8 +203,10 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    // enough so as not to depend on the "this" pointer referencing a fully constructed object.
 
    protected virtual void
-   SetModel(object? value) =>
+   SetModel(object? value) {
       _model = value;
+      _modelExplorer = null;
+   }
 
    public bool
    TryGetValue(string key, out object? value) =>
@@ -410,28 +421,13 @@ public class ViewDataDictionary<TModel> : ViewDataDictionary {
       set => SetModel(value);
    }
 
-   public override ModelExplorer
-   ModelExplorer {
-      get {
-         var result = base.ModelExplorer;
-
-         if (result is null) {
-            result = MetadataProvider.GetModelExplorerForType(typeof(TModel), null);
-            base.ModelExplorer = result;
-         }
-
-         return result;
-      }
-      set => base.ModelExplorer = value;
-   }
-
    public
    ViewDataDictionary(IModelMetadataProvider metadataProvider, ModelStateDictionary modelState)
-      : base(metadataProvider, modelState) { }
+      : base(metadataProvider, modelState, typeof(TModel)) { }
 
    public
    ViewDataDictionary(ViewDataDictionary viewDataDictionary)
-      : base(viewDataDictionary) { }
+      : base(viewDataDictionary, typeof(TModel)) { }
 
    protected override void
    SetModel(object? value) {

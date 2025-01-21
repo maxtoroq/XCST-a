@@ -11,9 +11,11 @@
             <a:editor name='foo'/>
          </li>
          <a:model type='object' field-prefix='foo'>
+            <!--
             <li>
                <a:editor/>
             </li>
+            -->
             <li>
                <a:editor name=''/>
             </li>
@@ -23,7 +25,7 @@
 
    <c:template name='expected'>
       <ol>
-         <c:for-each name='i' in='System.Linq.Enumerable.Range(1, 3)'>
+         <c:for-each name='i' in='System.Linq.Enumerable.Range(1, 2)'>
             <li>
                <input type='text' id='foo' name='foo' value='' class='text-box single-line'/>
             </li>

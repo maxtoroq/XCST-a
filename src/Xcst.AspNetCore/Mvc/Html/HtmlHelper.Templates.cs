@@ -198,7 +198,6 @@ partial class HtmlHelper {
 
       var container = new ViewDataContainer(
          new ViewDataDictionary(currentViewData) {
-            Model = memberExplorer.Model,
             ModelExplorer = memberExplorer,
             TemplateInfo = new TemplateInfo {
                HtmlFieldPrefix = templateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
@@ -310,7 +309,6 @@ public class TemplateHelper {
       }
 
       var viewData = new ViewDataDictionary(_html.ViewData) {
-         Model = model,
          ModelExplorer = _modelExplorer.GetExplorerForModel(model),
          TemplateInfo = new TemplateInfo {
             FormattedModelValue = formattedModelValue,
