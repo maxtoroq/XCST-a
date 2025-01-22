@@ -81,14 +81,13 @@ partial class HtmlHelper {
          value,
          useViewData: useViewData.Value,
          isChecked: false,
-         setId: true,
          format,
          @class);
    }
 
    protected IDisposable
    GenerateInput(XcstWriter output, InputType inputType, string? type, ModelExplorer? modelExplorer, string name, object? value,
-         bool useViewData, bool isChecked, bool setId, string? format, string? @class) {
+         bool useViewData, bool isChecked, string? format, string? @class) {
 
       var fullName = Name(name);
 
@@ -98,9 +97,7 @@ partial class HtmlHelper {
 
       output.WriteStartElement("input");
 
-      if (setId) {
-         WriteId(fullName, output);
-      }
+      WriteId(fullName, output);
 
       output.WriteAttributeString("type", type ?? GetInputTypeString(inputType));
       output.WriteAttributeString("name", fullName);
