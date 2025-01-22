@@ -12,18 +12,18 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { p = "property" }'>
-            <a:input for='p'/>
-            <a:input name='p'/>
-            <a:input name='p' value='"explicit"'/>
+            <a:input class='a' for='p'/>
+            <a:input class='b' name='p'/>
+            <a:input class='c' name='p' value='"explicit"'/>
          </a:model>
          <a:model value='"model"' field-prefix='p'>
-            <a:input/>
-            <a:input value='"explicit"'/>
+            <a:input class='d'/>
+            <a:input class='e' value='"explicit"'/>
          </a:model>
          <a:model value='new Foo { p = "property" }' field-prefix='x'>
-            <a:input for='p'/>
+            <a:input class='f' for='p'/>
             <!--
-            <a:input name='p'/>
+            <a:input class='g' name='p'/>
             -->
          </a:model>
       </div>
@@ -31,14 +31,14 @@
 
    <c:template name='expected'>
       <div>
-         <input type='text' id='p' name='p' value='property'/>
-         <input type='text' id='p' name='p' value='property'/>
-         <input type='text' id='p' name='p' value='explicit'/>
-         <input type='text' id='p' name='p' value='model'/>
-         <input type='text' id='p' name='p' value='explicit'/>
-         <input type='text' id='x_p' name='x.p' value='property'/>
+         <input class='a' type='text' id='p' name='p' value='property'/>
+         <input class='b' type='text' id='p' name='p' value='property'/>
+         <input class='c' type='text' id='p' name='p' value='explicit'/>
+         <input class='d' type='text' id='p' name='p' value='model'/>
+         <input class='e' type='text' id='p' name='p' value='explicit'/>
+         <input class='f' type='text' id='x_p' name='x.p' value='property'/>
          <!--
-         <input type='text' id='x_p' name='x.p' value='property'/>
+         <input class='g' type='text' id='x_p' name='x.p' value='property'/>
          -->
       </div>
    </c:template>

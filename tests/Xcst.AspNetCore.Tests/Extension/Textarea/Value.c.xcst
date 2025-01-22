@@ -14,38 +14,38 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo()'>
-            <a:textarea name='p'>text</a:textarea>
+            <a:textarea class='a' name='p'>text</a:textarea>
          </a:model>
          <a:model value='new Foo { p = "property" }'>
-            <a:textarea for='p'/>
-            <a:textarea name='p'/>
-            <a:textarea name='p'>text</a:textarea>
-            <a:textarea name='p' value='"explicit"'/>
-            <a:textarea name='p' value='"explicit"'>text</a:textarea>
+            <a:textarea class='b' for='p'/>
+            <a:textarea class='c' name='p'/>
+            <a:textarea class='d' name='p'>text</a:textarea>
+            <a:textarea class='e' name='p' value='"explicit"'/>
+            <a:textarea class='f' name='p' value='"explicit"'>text</a:textarea>
          </a:model>
          <a:model value='"model"' field-prefix='p'>
-            <a:textarea/>
-            <a:textarea value='"explicit"'/>
+            <a:textarea class='g'/>
+            <a:textarea class='h' value='"explicit"'/>
          </a:model>
          <a:model value='new Foo { p = "property" }' field-prefix='x'>
-            <a:textarea for='p'/>
-            <a:textarea name='p'/>
+            <a:textarea class='i' for='p'/>
+            <a:textarea class='j' name='p'/>
          </a:model>
       </div>
    </c:template>
 
    <c:template name='expected' expand-text='yes'>
       <div>
-         <textarea id='p' name='p'>text</textarea>
-         <textarea id='p' name='p'>{Environment.NewLine}property</textarea>
-         <textarea id='p' name='p'>{Environment.NewLine}property</textarea>
-         <textarea id='p' name='p'>text{Environment.NewLine}property</textarea>
-         <textarea id='p' name='p'>{Environment.NewLine}explicit</textarea>
-         <textarea id='p' name='p'>text{Environment.NewLine}explicit</textarea>
-         <textarea id='p' name='p'>{Environment.NewLine}model</textarea>
-         <textarea id='p' name='p'>{Environment.NewLine}explicit</textarea>
-         <textarea id='x_p' name='x.p'>{Environment.NewLine}property</textarea>
-         <textarea id='x_p' name='x.p'>{Environment.NewLine}property</textarea>
+         <textarea class='a' id='p' name='p'>text</textarea>
+         <textarea class='b' id='p' name='p'>{Environment.NewLine}property</textarea>
+         <textarea class='c' id='p' name='p'>{Environment.NewLine}property</textarea>
+         <textarea class='d' id='p' name='p'>text{Environment.NewLine}property</textarea>
+         <textarea class='e' id='p' name='p'>{Environment.NewLine}explicit</textarea>
+         <textarea class='f' id='p' name='p'>text{Environment.NewLine}explicit</textarea>
+         <textarea class='g' id='p' name='p'>{Environment.NewLine}model</textarea>
+         <textarea class='h' id='p' name='p'>{Environment.NewLine}explicit</textarea>
+         <textarea class='i' id='x_p' name='x.p'>{Environment.NewLine}property</textarea>
+         <textarea class='j' id='x_p' name='x.p'>{Environment.NewLine}property</textarea>
       </div>
    </c:template>
 

@@ -12,18 +12,18 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { p = true }'>
-            <a:checkbox for='p' class='a'/>
-            <a:checkbox name='p' class='b'/>
-            <a:checkbox name='p' checked='false' class='c'/>
+            <a:checkbox class='a' for='p'/>
+            <a:checkbox class='b' name='p'/>
+            <a:checkbox class='c' name='p' checked='false'/>
          </a:model>
          <a:model value='true' field-prefix='p'>
             <a:checkbox class='e'/>
-            <a:checkbox checked='false' class='f'/>
+            <a:checkbox class='f' checked='false'/>
          </a:model>
          <a:model value='new Foo { p = true }' field-prefix='x'>
-            <a:checkbox for='p' class='h'/>
+            <a:checkbox class='h' for='p'/>
             <!--
-            <a:checkbox name='p' class='i'/>
+            <a:checkbox class='i' name='p'/>
             -->
          </a:model>
       </div>
@@ -31,26 +31,26 @@
 
    <c:template name='expected'>
       <div>
-         <input type='checkbox' id='p' name='p' value='true' checked='checked' class='a'/>
+         <input class='a' type='checkbox' id='p' name='p' value='true' checked='checked'/>
          <input type='hidden' name='p' value='false'/>
 
-         <input type='checkbox' id='p' name='p' value='true' checked='checked' class='b'/>
+         <input class='b' type='checkbox' id='p' name='p' value='true' checked='checked'/>
          <input type='hidden' name='p' value='false'/>
 
-         <input type='checkbox' id='p' name='p' value='true' class='c'/>
+         <input class='c' type='checkbox' id='p' name='p' value='true'/>
          <input type='hidden' name='p' value='false'/>
 
-         <input type='checkbox' id='p' name='p' value='true' checked='checked' class='e'/>
+         <input class='e' type='checkbox' id='p' name='p' value='true' checked='checked'/>
          <input type='hidden' name='p' value='false'/>
 
-         <input type='checkbox' id='p' name='p' value='true' class='f'/>
+         <input class='f' type='checkbox' id='p' name='p' value='true'/>
          <input type='hidden' name='p' value='false'/>
 
-         <input type='checkbox' id='x_p' name='x.p' value='true' checked='checked' class='h'/>
+         <input class='h' type='checkbox' id='x_p' name='x.p' value='true' checked='checked'/>
          <input type='hidden' name='x.p' value='false'/>
 
          <!--
-         <input type='checkbox' id='x_p' name='x.p' value='true' checked='checked' class='i'/>
+         <input class='i' type='checkbox' id='x_p' name='x.p' value='true' checked='checked'/>
          <input type='hidden' name='p' value='false'/>
          -->
       </div>

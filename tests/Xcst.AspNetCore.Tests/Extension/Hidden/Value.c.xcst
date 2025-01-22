@@ -12,18 +12,18 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { p = "property" }'>
-            <a:hidden for='p'/>
-            <a:hidden name='p'/>
-            <a:hidden name='p' value='"explicit"'/>
+            <a:hidden class='a' for='p'/>
+            <a:hidden class='b' name='p'/>
+            <a:hidden class='c' name='p' value='"explicit"'/>
          </a:model>
          <a:model value='"model"' field-prefix='p'>
-            <a:hidden/>
-            <a:hidden value='"explicit"'/>
+            <a:hidden class='d'/>
+            <a:hidden class='e' value='"explicit"'/>
          </a:model>
          <a:model value='new Foo { p = "property" }' field-prefix='x'>
-            <a:hidden for='p'/>
+            <a:hidden class='f' for='p'/>
             <!--
-            <a:hidden name='p'/>
+            <a:hidden class='g' name='p'/>
             -->
          </a:model>
       </div>
@@ -31,14 +31,14 @@
 
    <c:template name='expected'>
       <div>
-         <input type='hidden' id='p' name='p' value='property'/>
-         <input type='hidden' id='p' name='p' value='property'/>
-         <input type='hidden' id='p' name='p' value='explicit'/>
-         <input type='hidden' id='p' name='p' value='model'/>
-         <input type='hidden' id='p' name='p' value='explicit'/>
-         <input type='hidden' id='x_p' name='x.p' value='property'/>
+         <input class='a' type='hidden' id='p' name='p' value='property'/>
+         <input class='b' type='hidden' id='p' name='p' value='property'/>
+         <input class='c' type='hidden' id='p' name='p' value='explicit'/>
+         <input class='d' type='hidden' id='p' name='p' value='model'/>
+         <input class='e' type='hidden' id='p' name='p' value='explicit'/>
+         <input class='f' type='hidden' id='x_p' name='x.p' value='property'/>
          <!--
-         <input type='hidden' id='x_p' name='x.p' value='property'/>
+         <input class='g' type='hidden' id='x_p' name='x.p' value='property'/>
          -->
       </div>
    </c:template>

@@ -13,49 +13,49 @@
       <div>
          <a:model value='new Foo { p = "property" }'>
             <!-- different value -->
-            <a:radio for='p' value='"foo"' class='a'/>
-            <a:radio name='p' value='"foo"' class='b'/>
+            <a:radio class='a' for='p' value='"foo"'/>
+            <a:radio class='b' name='p' value='"foo"'/>
 
             <!-- same value -->
-            <a:radio for='p' value='"property"' class='c'/>
-            <a:radio name='p' value='"property"' class='d'/>
+            <a:radio class='c' for='p' value='"property"'/>
+            <a:radio class='d' name='p' value='"property"'/>
 
             <!-- explicit checked -->
-            <a:radio name='p' value='"foo"' checked='yes' class='e'/>
-            <a:radio name='p' value='"property"' checked='no' class='f'/>
+            <a:radio class='e' name='p' value='"foo"' checked='yes'/>
+            <a:radio class='f' name='p' value='"property"' checked='no'/>
          </a:model>
          <a:model value='"model"' field-prefix='p'>
             <!-- different value -->
-            <a:radio value='"foo"' class='j'/>
+            <a:radio class='j' value='"foo"'/>
 
             <!-- same value -->
-            <a:radio value='"model"' class='k'/>
+            <a:radio class='k' value='"model"'/>
 
             <!-- explicit checked -->
-            <a:radio value='"foo"' checked='yes' class='l'/>
-            <a:radio value='"model"' checked='no' class='m'/>
+            <a:radio class='l' value='"foo"' checked='yes'/>
+            <a:radio class='m' value='"model"' checked='no'/>
          </a:model>
          <a:model value='new Foo { p = "property" }' field-prefix='x'>
-            <a:radio for='p' value='"property"' class='p'/>
-            <a:radio name='p' value='"property"' class='q'/>
+            <a:radio class='p' for='p' value='"property"'/>
+            <a:radio class='q' name='p' value='"property"'/>
          </a:model>
       </div>
    </c:template>
 
    <c:template name='expected'>
       <div>
-         <input type='radio' id='p' name='p' value='foo' class='a'/>
-         <input type='radio' id='p' name='p' value='foo' class='b'/>
-         <input type='radio' id='p' name='p' value='property' checked='checked' class='c'/>
-         <input type='radio' id='p' name='p' value='property' checked='checked' class='d'/>
-         <input type='radio' id='p' name='p' value='foo' checked='checked' class='e'/>
-         <input type='radio' id='p' name='p' value='property' class='f'/>
-         <input type='radio' id='p' name='p' value='foo' class='j'/>
-         <input type='radio' id='p' name='p' value='model' checked='checked' class='k'/>
-         <input type='radio' id='p' name='p' value='foo' checked='checked' class='l'/>
-         <input type='radio' id='p' name='p' value='model' class='m'/>
-         <input type='radio' id='x_p' name='x.p' value='property' checked='checked' class='p'/>
-         <input type='radio' id='x_p' name='x.p' value='property' checked='checked' class='q'/>
+         <input class='a' type='radio' id='p' name='p' value='foo'/>
+         <input class='b' type='radio' id='p' name='p' value='foo'/>
+         <input class='c' type='radio' id='p' name='p' value='property' checked='checked'/>
+         <input class='d' type='radio' id='p' name='p' value='property' checked='checked'/>
+         <input class='e' type='radio' id='p' name='p' value='foo' checked='checked'/>
+         <input class='f' type='radio' id='p' name='p' value='property'/>
+         <input class='j' type='radio' id='p' name='p' value='foo'/>
+         <input class='k' type='radio' id='p' name='p' value='model' checked='checked'/>
+         <input class='l' type='radio' id='p' name='p' value='foo' checked='checked'/>
+         <input class='m' type='radio' id='p' name='p' value='model'/>
+         <input class='p' type='radio' id='x_p' name='x.p' value='property' checked='checked'/>
+         <input class='q' type='radio' id='x_p' name='x.p' value='property' checked='checked'/>
       </div>
    </c:template>
 

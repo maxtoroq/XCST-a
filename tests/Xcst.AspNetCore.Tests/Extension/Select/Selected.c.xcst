@@ -14,14 +14,13 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <!-- value overrides selected of static option -->
-         <a:select name='color' value='"red"' class='a'>
+         <a:select class='a' name='color' value='"red"'>
             <a:option>red</a:option>
             <a:option selected='yes'>blue</a:option>
          </a:select>
          <!-- value overrides selected of dynamic option -->
-         <a:select name='color' value='"red"'
-            options='new SelectListItem[] { new() { Text = "red" }, new() { Text = "blue", Selected = true } }'
-            class='b'/>
+         <a:select class='b' name='color' value='"red"'
+            options='new SelectListItem[] { new() { Text = "red" }, new() { Text = "blue", Selected = true } }'/>
          <!-- model selected -->
          <a:model value='"blue"' field-prefix='color'>
             <a:select class='c'>
@@ -29,34 +28,34 @@
                <a:option>blue</a:option>
             </a:select>
             <!--
-            <a:select value='"red"' class='d'>
+            <a:select class='d' value='"red"'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
             -->
          </a:model>
          <a:model value='new Foo { color = "blue" }'>
-            <a:select for='color' class='e'>
+            <a:select class='e' for='color'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
-            <a:select name='color' class='f'>
+            <a:select class='f' name='color'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
             <!--
-            <a:select name='color' value='"red"' class='g'>
+            <a:select class='g' name='color' value='"red"'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
             -->
          </a:model>
          <a:model value='new Foo { color = "blue" }' field-prefix='x'>
-            <a:select for='color' class='h'>
+            <a:select class='h' for='color'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
-            <a:select name='color' class='i'>
+            <a:select class='i' name='color'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
@@ -66,43 +65,43 @@
 
    <c:template name='expected'>
       <div>
-         <select name="color" id="color" class="a">
+         <select class="a" name="color" id="color">
             <option selected="selected">red</option>
             <option>blue</option>
          </select>
-         <select name="color" id="color" class="b">
+         <select class="b" name="color" id="color">
             <option selected="selected">red</option>
             <option>blue</option>
          </select>
-         <select name="color" id="color" class="c">
+         <select class="c" name="color" id="color">
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
          <!--
-         <select name="color" id="color" class="d">
+         <select class="d" name="color" id="color">
             <option selected="selected">red</option>
             <option>blue</option>
          </select>
          -->
-         <select name="color" id="color" class="e">
+         <select class="e" name="color" id="color">
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
-         <select name="color" id="color" class="f">
+         <select class="f" name="color" id="color">
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
          <!--
-         <select name="color" id="color" class="g">
+         <select class="g" name="color" id="color">
             <option selected="selected">red</option>
             <option>blue</option>
          </select>
          -->
-         <select name="x.color" id="x_color" class="h">
+         <select class="h" name="x.color" id="x_color">
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
-         <select name="x.color" id="x_color" class="i">
+         <select class="i" name="x.color" id="x_color">
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
