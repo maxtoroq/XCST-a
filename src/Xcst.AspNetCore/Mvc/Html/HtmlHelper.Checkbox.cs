@@ -86,7 +86,6 @@ partial class HtmlHelper {
          useViewData: !explicitChecked,
          isChecked: isChecked ?? false,
          setId: true,
-         isExplicitValue: false,
          format: null,
          @class: @class);
 

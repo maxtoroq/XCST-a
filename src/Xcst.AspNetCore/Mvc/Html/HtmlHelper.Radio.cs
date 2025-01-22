@@ -88,7 +88,6 @@ partial class HtmlHelper {
          useViewData: false,
          isChecked: isChecked.GetValueOrDefault(),
          setId: true,
-         isExplicitValue: true,
          format: null,
          @class);
    }

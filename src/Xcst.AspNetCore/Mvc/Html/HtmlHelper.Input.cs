@@ -82,14 +82,13 @@ partial class HtmlHelper {
          useViewData: useViewData.Value,
          isChecked: false,
          setId: true,
-         isExplicitValue: true,
          format,
          @class);
    }
 
    protected IDisposable
    GenerateInput(XcstWriter output, InputType inputType, string? type, ModelExplorer? modelExplorer, string name, object? value,
-         bool useViewData, bool isChecked, bool setId, bool isExplicitValue, string? format, string? @class) {
+         bool useViewData, bool isChecked, bool setId, string? format, string? @class) {
 
       var fullName = Name(name);
 
