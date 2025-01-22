@@ -941,7 +941,7 @@
             </call-template>
             <if test='multiple'>
                <code:argument name='multiple'>
-                  <code:bool value='{fn_string(multiple)}'/>
+                  <code:bool value='true'/>
                </code:argument>
             </if>
             <if test='el.Attribute("class") is { } classAttr'>
