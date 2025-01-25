@@ -104,7 +104,7 @@ partial class HtmlHelper {
                checkedAttr = modelChecked;
             }
          } else {
-            checkedAttr = EvalBoolean(fullName);
+            checkedAttr = EvalBoolean(name);
          }
       }
 

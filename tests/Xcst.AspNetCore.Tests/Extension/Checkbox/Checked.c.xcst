@@ -22,9 +22,7 @@
          </a:model>
          <a:model value='new Foo { p = true }' field-prefix='x'>
             <a:checkbox class='h' for='p'/>
-            <!--
             <a:checkbox class='i' name='p'/>
-            -->
          </a:model>
       </div>
    </c:template>
@@ -49,10 +47,8 @@
          <input class='h' type='checkbox' id='x_p' name='x.p' value='true' checked='checked'/>
          <input type='hidden' name='x.p' value='false'/>
 
-         <!--
          <input class='i' type='checkbox' id='x_p' name='x.p' value='true' checked='checked'/>
-         <input type='hidden' name='p' value='false'/>
-         -->
+         <input type='hidden' name='x.p' value='false'/>
       </div>
    </c:template>
 

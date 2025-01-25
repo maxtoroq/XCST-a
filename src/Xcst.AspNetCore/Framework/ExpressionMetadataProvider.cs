@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -19,13 +18,13 @@ static class ExpressionMetadataProvider {
          ViewDataDictionary<TParameter> viewData,
          IModelMetadataProvider? metadataProvider = null) {
 
-      if (expression is null) throw new ArgumentNullException(nameof(expression));
-      if (viewData is null) throw new ArgumentNullException(nameof(viewData));
+      ArgumentNullException.ThrowIfNull(expression);
+      ArgumentNullException.ThrowIfNull(viewData);
 
       metadataProvider ??= viewData.MetadataProvider;
 
-      string? propertyName = null;
-      Type? containerType = null;
+      var propertyName = default(string);
+      var containerType = default(Type);
       var legalExpression = false;
 
       // Need to verify the expression is valid; it needs to at least end in something
@@ -45,8 +44,11 @@ static class ExpressionMetadataProvider {
          case ExpressionType.MemberAccess:
             // Property/field access is always legal
             var memberExpression = (MemberExpression)expression.Body;
-            propertyName = memberExpression.Member is PropertyInfo ? memberExpression.Member.Name : null;
-            containerType = memberExpression.Expression.Type;
+
+            propertyName = (memberExpression.Member is PropertyInfo) ?
+               memberExpression.Member.Name : null;
+
+            containerType = memberExpression.Expression?.Type;
             legalExpression = true;
             break;
 
@@ -69,30 +71,30 @@ static class ExpressionMetadataProvider {
          }
       }
 
-      ModelMetadata metadata = null;
+      var metadata = default(ModelMetadata);
 
-      if (containerType != null && propertyName != null) {
+      if (containerType != null
+         && propertyName != null) {
+
          // Ex:
          //    m => m.Color (simple property access)
          //    m => m.Color.Red (nested property access)
          //    m => m.Widgets[0].Size (expression ending with property-access)
-         metadata = metadataProvider.GetMetadataForType(containerType).Properties[propertyName];
+         metadata = metadataProvider.GetMetadataForType(containerType)
+            .Properties[propertyName];
       }
 
-      if (metadata == null) {
-         // Ex:
-         //    m => 5 (arbitrary expression)
-         //    m => foo (arbitrary expression)
-         //    m => m.Widgets[0] (expression ending with non-property-access)
-         //
-         // This can also happen for any case where we cannot retrieve a model metadata.
-         // This will happen for:
-         // - fields
-         // - statics
-         // - non-visibility (internal/private)
-         metadata = metadataProvider.GetMetadataForType(typeof(TValue));
-         Debug.Assert(metadata != null);
-      }
+      // Ex:
+      //    m => 5 (arbitrary expression)
+      //    m => foo (arbitrary expression)
+      //    m => m.Widgets[0] (expression ending with non-property-access)
+      //
+      // This can also happen for any case where we cannot retrieve a model metadata.
+      // This will happen for:
+      // - fields
+      // - statics
+      // - non-visibility (internal/private)
+      metadata ??= metadataProvider.GetMetadataForType(typeof(TValue));
 
       return viewData.ModelExplorer.GetExplorerForExpression(metadata, modelAccessor);
    }
@@ -100,47 +102,13 @@ static class ExpressionMetadataProvider {
    public static ModelExplorer
    FromStringExpression(string expression, ViewDataDictionary viewData, IModelMetadataProvider? metadataProvider = null) {
 
-      if (expression is null) throw new ArgumentNullException(nameof(expression));
-      if (viewData is null) throw new ArgumentNullException(nameof(viewData));
+      ArgumentNullException.ThrowIfNull(viewData);
 
       metadataProvider ??= viewData.MetadataProvider;
 
-      if (expression.Length == 0) {
-         // Empty string really means "model metadata for the current model"
-         return FromModel(viewData, metadataProvider);
-      }
+      var viewDataInfo = viewData.GetViewDataInfo(expression);
 
-      var vdi = viewData.GetViewDataInfo(expression);
-
-      if (vdi != null) {
-
-         var containerExplorer = viewData.ModelExplorer;
-         var containerType = vdi.Container?.GetType();
-
-         if (vdi.Container != null) {
-            containerExplorer = metadataProvider.GetModelExplorerForType(containerType, vdi.Container);
-         }
-
-         if (vdi.PropertyDescriptor != null) {
-
-            // We've identified a property access, which provides us with accurate metadata.
-            var containerMetadata = metadataProvider.GetMetadataForType(containerType!);
-            var propertyMetadata = containerMetadata.Properties[vdi.PropertyDescriptor.Name];
-
-            Func<object, object> modelAccessor = (_) => vdi.Value;
-
-            return containerExplorer.GetExplorerForExpression(propertyMetadata, modelAccessor);
-         }
-
-         if (vdi.Value != null) {
-
-            // We have a value, even though we may not know where it came from.
-
-            var valueMetadata = metadataProvider.GetMetadataForType(vdi.Value.GetType());
-            return containerExplorer.GetExplorerForExpression(valueMetadata, vdi.Value);
-         }
-
-      } else {
+      if (viewDataInfo is null) {
 
          //  Try getting a property from ModelMetadata if we couldn't find an answer in ViewData
 
@@ -151,12 +119,49 @@ static class ExpressionMetadataProvider {
          }
       }
 
+      if (viewDataInfo != null) {
+
+         if (viewDataInfo.Container == viewData
+            && viewDataInfo.Value == viewData.Model
+            && String.IsNullOrEmpty(expression)) {
+
+            // Nothing for empty expression in ViewData and ViewDataEvaluator just returned the model. Handle
+            // using FromModel() for its object special case.
+            return FromModel(viewData, metadataProvider);
+         }
+
+         var containerExplorer = viewData.ModelExplorer;
+         var containerType = viewDataInfo.Container?.GetType();
+
+         if (viewDataInfo.Container != null) {
+            containerExplorer = metadataProvider.GetModelExplorerForType(containerType, viewDataInfo.Container);
+         }
+
+         if (viewDataInfo.PropertyDescriptor != null) {
+
+            // We've identified a property access, which provides us with accurate metadata.
+            var containerMetadata = metadataProvider.GetMetadataForType(containerType!);
+            var propertyMetadata = containerMetadata.Properties[viewDataInfo.PropertyDescriptor.Name];
+
+            object? modelAccessor(object _) => viewDataInfo.Value;
+
+            return containerExplorer.GetExplorerForExpression(propertyMetadata, modelAccessor);
+         }
+
+         if (viewDataInfo.Value != null) {
+
+            // We have a value, even though we may not know where it came from.
+
+            var valueMetadata = metadataProvider.GetMetadataForType(viewDataInfo.Value.GetType());
+            return containerExplorer.GetExplorerForExpression(valueMetadata, viewDataInfo.Value);
+         }
+      }
+
       // Treat the expression as string if we don't find anything better.
 
       var stringMetadata = metadataProvider.GetMetadataForType(typeof(string));
 
       return viewData.ModelExplorer.GetExplorerForExpression(stringMetadata, modelAccessor: null);
-      //return metadataProvider.GetModelExplorerForType(typeof(string), null);
    }
 
    static ModelExplorer
@@ -172,8 +177,5 @@ static class ExpressionMetadataProvider {
       }
 
       return viewData.ModelExplorer;
-
-      //return viewData.ModelExplorer
-      //   ?? metadataProvider.GetModelExplorerForType(typeof(string), null);
    }
 }

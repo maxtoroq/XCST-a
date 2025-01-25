@@ -53,21 +53,9 @@ partial class HtmlHelper {
          GetModelStateValue(fullName, typeof(string[]))
          : GetModelStateValue(fullName, typeof(string));
 
-      if (defaultValue is null) {
-
-         if (modelExplorer != null) {
-            defaultValue = modelExplorer.Model;
-
-         } else if (value != null) {
-            defaultValue = value;
-
-         } else {
-
-            if (!String.IsNullOrEmpty(name)) {
-               defaultValue = viewData.Eval(name);
-            }
-         }
-      }
+      defaultValue ??= (value != null || modelExplorer != null) ?
+         value ?? modelExplorer?.Model
+         : viewData.Eval(name);
 
       var selectedValues = getSelectedValues(defaultValue, multiple);
 

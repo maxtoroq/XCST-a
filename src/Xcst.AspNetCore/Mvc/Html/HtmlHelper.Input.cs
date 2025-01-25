@@ -53,7 +53,7 @@ partial class HtmlHelper {
       valueAttr ??= (inputType == InputType.Hidden
          && valueOrModel is byte[] byteArrayValue) ? Convert.ToBase64String(byteArrayValue)
          : (value != null || modelExplorer != null) ? FormatValue(valueOrModel, format)
-         : EvalString(fullName, format);
+         : EvalString(name, format);
 
       output.WriteStartElement("input");
 

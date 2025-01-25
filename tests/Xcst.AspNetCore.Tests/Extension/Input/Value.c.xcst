@@ -22,9 +22,7 @@
          </a:model>
          <a:model value='new Foo { p = "property" }' field-prefix='x'>
             <a:input class='f' for='p'/>
-            <!--
             <a:input class='g' name='p'/>
-            -->
          </a:model>
       </div>
    </c:template>
@@ -37,9 +35,7 @@
          <input class='d' type='text' id='p' name='p' value='model'/>
          <input class='e' type='text' id='p' name='p' value='explicit'/>
          <input class='f' type='text' id='x_p' name='x.p' value='property'/>
-         <!--
          <input class='g' type='text' id='x_p' name='x.p' value='property'/>
-         -->
       </div>
    </c:template>
 

@@ -27,12 +27,10 @@
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
-            <!--
             <a:select class='d' value='"red"'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
-            -->
          </a:model>
          <a:model value='new Foo { color = "blue" }'>
             <a:select class='e' for='color'>
@@ -43,12 +41,10 @@
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
-            <!--
             <a:select class='g' name='color' value='"red"'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
-            -->
          </a:model>
          <a:model value='new Foo { color = "blue" }' field-prefix='x'>
             <a:select class='h' for='color'>
@@ -77,12 +73,10 @@
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
-         <!--
          <select class="d" name="color" id="color">
             <option selected="selected">red</option>
             <option>blue</option>
          </select>
-         -->
          <select class="e" name="color" id="color">
             <option>red</option>
             <option selected="selected">blue</option>
@@ -91,12 +85,10 @@
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
-         <!--
          <select class="g" name="color" id="color">
             <option selected="selected">red</option>
             <option>blue</option>
          </select>
-         -->
          <select class="h" name="x.color" id="x_color">
             <option>red</option>
             <option selected="selected">blue</option>

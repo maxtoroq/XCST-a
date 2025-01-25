@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -154,13 +155,13 @@ public class ViewDataDictionary : IDictionary<string, object?> {
       _innerDictionary.CopyTo(array, arrayIndex);
 
    public object?
-   Eval(string expression) {
+   Eval(string? expression) {
       var info = GetViewDataInfo(expression);
       return info?.Value;
    }
 
    public string?
-   Eval(string expression, string? format) {
+   Eval(string? expression, string? format) {
 
       var value = Eval(expression);
 
@@ -189,12 +190,8 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    GetEnumerator() => _innerDictionary.GetEnumerator();
 
    public ViewDataInfo?
-   GetViewDataInfo(string expression) {
-
-      ArgumentException.ThrowIfNullOrEmpty(expression);
-
-      return ViewDataEvaluator.Eval(this, expression);
-   }
+   GetViewDataInfo(string? expression) =>
+      ViewDataEvaluator.Eval(this, expression);
 
    public bool
    Remove(KeyValuePair<string, object?> item) =>
@@ -221,70 +218,91 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    internal static class ViewDataEvaluator {
 
       public static ViewDataInfo?
-      Eval(ViewDataDictionary vdd, string expression) {
+      Eval(ViewDataDictionary viewData, string? expression) {
 
-         //Given an expression "foo.bar.baz" we look up the following (pseudocode):
-         //  this["foo.bar.baz.quux"]
-         //  this["foo.bar.baz"]["quux"]
-         //  this["foo.bar"]["baz.quux]
-         //  this["foo.bar"]["baz"]["quux"]
-         //  this["foo"]["bar.baz.quux"]
-         //  this["foo"]["bar.baz"]["quux"]
-         //  this["foo"]["bar"]["baz.quux"]
-         //  this["foo"]["bar"]["baz"]["quux"]
+         ArgumentNullException.ThrowIfNull(viewData);
 
-         var evaluated = EvalComplexExpression(vdd, expression);
-         return evaluated;
+         if (String.IsNullOrEmpty(expression)) {
+            // Null or empty expression name means current model even if that model is null.
+            return new ViewDataInfo {
+               Container = viewData,
+               Value = viewData.Model
+            };
+         } else {
+            return EvalComplexExpression(viewData.Model, expression);
+         }
       }
 
       static ViewDataInfo?
-      EvalComplexExpression(object indexableObject, string expression) {
+      EvalComplexExpression(object? indexableObject, string? expression) {
 
-         foreach (ExpressionPair expressionPair in GetRightToLeftExpressions(expression)) {
+         if (indexableObject is null) {
+            return null;
+         }
 
-            var subExpression = expressionPair.Left;
-            var postExpression = expressionPair.Right;
+         // In case a Dictionary indexableObject contains a "" entry, don't short-circuit the logic below.
+         expression ??= String.Empty;
 
-            var subTargetInfo = GetPropertyValue(indexableObject, subExpression);
+         return InnerEvalComplexExpression(indexableObject, expression);
+      }
 
-            if (subTargetInfo != null) {
+      static ViewDataInfo?
+      InnerEvalComplexExpression(object indexableObject, string expression) {
 
-               if (String.IsNullOrEmpty(postExpression)) {
-                  return subTargetInfo;
+         Debug.Assert(expression != null);
+
+         var leftExpression = expression;
+
+         do {
+            var targetInfo = GetPropertyValue(indexableObject, leftExpression);
+
+            if (targetInfo != null) {
+
+               if (leftExpression.Length == expression.Length) {
+                  // Nothing remaining in expression after leftExpression.
+                  return targetInfo;
                }
 
-               if (subTargetInfo.Value != null) {
+               if (targetInfo.Value != null) {
 
-                  var potential = EvalComplexExpression(subTargetInfo.Value, postExpression);
+                  var rightExpression = expression.Substring(leftExpression.Length + 1);
 
-                  if (potential != null) {
-                     return potential;
+                  targetInfo = InnerEvalComplexExpression(targetInfo.Value, rightExpression);
+
+                  if (targetInfo != null) {
+                     return targetInfo;
                   }
                }
             }
-         }
+
+            leftExpression = GetNextShorterExpression(leftExpression);
+
+         } while (!String.IsNullOrEmpty(leftExpression));
 
          return null;
       }
 
-      static IEnumerable<ExpressionPair>
-      GetRightToLeftExpressions(string expression) {
+      // Given "one.two.three.four" initially, calls return
+      //  "one.two.three"
+      //  "one.two"
+      //  "one"
+      //  ""
+      // Recursion of InnerEvalComplexExpression() further sub-divides these cases to cover the full set of
+      // combinations shown in Eval(ViewDataDictionary, string) comments.
+      static string
+      GetNextShorterExpression(string expression) {
 
-         // Produces an enumeration of all the combinations of complex property names
-         // given a complex expression. See the list above for an example of the result
-         // of the enumeration.
-
-         yield return new ExpressionPair(expression, String.Empty);
+         if (String.IsNullOrEmpty(expression)) {
+            return String.Empty;
+         }
 
          var lastDot = expression.LastIndexOf('.');
 
-         while (lastDot > -1) {
-            var subExpression = expression.Substring(0, lastDot);
-            var postExpression = expression.Substring(lastDot + 1);
-            yield return new ExpressionPair(subExpression, postExpression);
-
-            lastDot = subExpression.LastIndexOf('.');
+         if (lastDot == -1) {
+            return String.Empty;
          }
+
+         return expression.Substring(0, lastDot);
       }
 
       static ViewDataInfo?
@@ -300,7 +318,7 @@ public class ViewDataDictionary : IDictionary<string, object?> {
             var tgvDel = TypeHelpers.CreateTryGetValueDelegate(indexableObject.GetType());
 
             if (tgvDel != null) {
-               success = tgvDel(indexableObject, key, out value);
+               success = tgvDel.Invoke(indexableObject, key, out value);
             }
          }
 
@@ -314,31 +332,19 @@ public class ViewDataDictionary : IDictionary<string, object?> {
          return null;
       }
 
+      // This method handles one "segment" of a complex property expression
       static ViewDataInfo?
       GetPropertyValue(object container, string propertyName) {
 
-         // This method handles one "segment" of a complex property expression
-
-         // First, we try to evaluate the property based on its indexer
+         // First, try to evaluate the property based on its indexer.
          var value = GetIndexedPropertyValue(container, propertyName);
 
          if (value != null) {
             return value;
          }
 
-         // If the indexer didn't return anything useful, continue...
-
-         // If the container is a ViewDataDictionary then treat its Model property
-         // as the container instead of the ViewDataDictionary itself.
-
-         if (container is ViewDataDictionary vdd) {
-#pragma warning disable CS8600 // variable reuse
-            container = vdd.Model;
-#pragma warning restore CS8600
-         }
-
-         // If the container is null, we're out of options
-         if (container is null) {
+         // Do not attempt to find a property with an empty name and or of a ViewDataDictionary.
+         if (String.IsNullOrEmpty(propertyName) || container is ViewDataDictionary) {
             return null;
          }
 
@@ -354,21 +360,6 @@ public class ViewDataDictionary : IDictionary<string, object?> {
             Container = container,
             PropertyDescriptor = descriptor
          };
-      }
-
-      struct ExpressionPair {
-
-         public readonly string
-         Left;
-
-         public readonly string
-         Right;
-
-         public
-         ExpressionPair(string left, string right) {
-            Left = left;
-            Right = right;
-         }
       }
    }
 
