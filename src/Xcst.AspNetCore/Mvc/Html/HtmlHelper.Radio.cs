@@ -28,75 +28,81 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
-   Radio(XcstWriter output, string name, object value, string? @class = null) {
-
-      if (value is null) throw new ArgumentNullException(nameof(value));
-
-      var isChecked = RadioValueEquals(value, EvalString(name));
-
-      return GenerateRadio(output, modelExplorer: null, name, value, isChecked, @class);
-   }
+   Radio(XcstWriter output, string name, object value, string? @class = null) =>
+      GenerateRadio(output, modelExplorer: null, name, value, isChecked: null, @class);
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
-   Radio(XcstWriter output, string name, object value, bool isChecked, string? @class = null) {
-
-      if (value is null) throw new ArgumentNullException(nameof(value));
-
-      return GenerateRadio(output, modelExplorer: null, name, value, isChecked, @class);
-   }
+   Radio(XcstWriter output, string name, object value, bool isChecked, string? @class = null) =>
+      GenerateRadio(output, modelExplorer: null, name, value, isChecked, @class);
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    RadioForModel(XcstWriter output, object value, string? @class = null) =>
-      RadioForModelExplorer(output, this.ViewData.ModelExplorer, String.Empty, value, isChecked: null, @class);
+      GenerateRadio(output, this.ViewData.ModelExplorer, String.Empty, value, isChecked: null, @class);
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    RadioForModel(XcstWriter output, object value, bool isChecked, string? @class = null) =>
-      RadioForModelExplorer(output, this.ViewData.ModelExplorer, String.Empty, value, isChecked, @class);
-
-   internal IDisposable
-   RadioForModelExplorer(XcstWriter output, ModelExplorer? modelExplorer, string expression, object value,
-         bool? isChecked, string? @class) {
-
-      var model = modelExplorer?.Model;
-
-      if (isChecked is null
-         && model != null) {
-
-         isChecked = RadioValueEquals(value, model.ToString());
-      }
-
-      return GenerateRadio(output, modelExplorer, expression, value, isChecked, @class);
-   }
+      GenerateRadio(output, this.ViewData.ModelExplorer, String.Empty, value, isChecked, @class);
 
    protected IDisposable
    GenerateRadio(XcstWriter output, ModelExplorer? modelExplorer, string name, object value,
          bool? isChecked, string? @class) {
 
-      return GenerateInput(
-         output,
-         InputType.Radio,
-         type: null,
-         modelExplorer,
-         name,
-         value,
-         useViewData: false,
-         isChecked: isChecked.GetValueOrDefault(),
-         format: null,
-         @class);
+      ArgumentNullException.ThrowIfNull(name);
+      ArgumentNullException.ThrowIfNull(value);
+
+      var fullName = FullNameNonEmpty(name);
+      var valueString = FormatValue(value, null);
+
+      var checkedAttr = default(bool?);
+
+      if (GetModelStateValue(fullName, typeof(string)) is string modelStateValue) {
+         checkedAttr = String.Equals(modelStateValue, valueString, StringComparison.Ordinal);
+      }
+
+      checkedAttr ??= isChecked;
+
+      if (checkedAttr is null) {
+         if (modelExplorer != null) {
+            if (modelExplorer.Model is { } model) {
+               checkedAttr = RadioValueEquals(value, model);
+            }
+         } else {
+            checkedAttr = RadioValueEquals(value, this.ViewData.Eval(name));
+         }
+      }
+
+      output.WriteStartElement("input");
+
+      WriteId(fullName, output);
+
+      output.WriteAttributeString("type", GetInputTypeString(InputType.Radio));
+      output.WriteAttributeString("name", fullName);
+      output.WriteAttributeString("value", valueString);
+
+      WriteBoolean("checked", checkedAttr.GetValueOrDefault(), output);
+
+      var cssClass = (ViewData.ModelState.TryGetValue(fullName, out var modelState)
+         && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
+
+      WriteCssClass(@class, cssClass, output);
+      WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
+
+      return new ElementEndingDisposable(output);
    }
 
-   static bool
-   RadioValueEquals(object value, string viewDataValue) {
+   bool
+   RadioValueEquals(object value, object? viewDataValue) {
 
-      var valueString = Convert.ToString(value, CultureInfo.CurrentCulture);
+      var valueString = FormatValue(value, null);
+      var vdString = FormatValue(viewDataValue, null);
 
-      return String.Equals(viewDataValue, valueString, StringComparison.OrdinalIgnoreCase);
+      return String.Equals(vdString, valueString, StringComparison.OrdinalIgnoreCase);
    }
 }
 
@@ -108,11 +114,11 @@ partial class HtmlHelper<TModel> {
    RadioFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, object value,
          string? @class = null) {
 
-      if (value is null) throw new ArgumentNullException(nameof(value));
+      ArgumentNullException.ThrowIfNull(value);
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return RadioForModelExplorer(output, modelExplorer, expressionString, value, isChecked: null, @class);
+      return GenerateRadio(output, modelExplorer, expressionString, value, isChecked: null, @class);
    }
 }

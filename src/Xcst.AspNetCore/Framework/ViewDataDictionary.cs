@@ -159,9 +159,15 @@ public class ViewDataDictionary : IDictionary<string, object?> {
       return info?.Value;
    }
 
-   public string
+   public string?
    Eval(string expression, string? format) {
+
       var value = Eval(expression);
+
+      if (value is null) {
+         return null;
+      }
+
       return FormatValueInternal(value, format);
    }
 
@@ -173,7 +179,7 @@ public class ViewDataDictionary : IDictionary<string, object?> {
       }
 
       if (String.IsNullOrEmpty(format)) {
-         return Convert.ToString(value, CultureInfo.CurrentCulture);
+         return Convert.ToString(value, CultureInfo.CurrentCulture) ?? String.Empty;
       } else {
          return String.Format(CultureInfo.CurrentCulture, format, value);
       }
@@ -185,7 +191,7 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    public ViewDataInfo?
    GetViewDataInfo(string expression) {
 
-      ArgumentNullException.ThrowIfNullOrEmpty(expression);
+      ArgumentException.ThrowIfNullOrEmpty(expression);
 
       return ViewDataEvaluator.Eval(this, expression);
    }

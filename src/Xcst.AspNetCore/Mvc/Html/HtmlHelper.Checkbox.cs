@@ -42,30 +42,13 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public CheckboxDisposable
    CheckboxForModel(ISequenceWriter<XElement> output, string? @class = null) =>
-      CheckboxForModelExplorer(output, this.ViewData.ModelExplorer, expression: String.Empty, isChecked: null, @class);
+      GenerateCheckbox(output, this.ViewData.ModelExplorer, name: String.Empty, isChecked: null, @class);
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public CheckboxDisposable
    CheckboxForModel(ISequenceWriter<XElement> output, bool isChecked, string? @class = null) =>
-      CheckboxForModelExplorer(output, this.ViewData.ModelExplorer, expression: String.Empty, isChecked, @class);
-
-   internal CheckboxDisposable
-   CheckboxForModelExplorer(ISequenceWriter<XElement> output, ModelExplorer? modelExplorer, string expression,
-         bool? isChecked, string? @class) {
-
-      var model = modelExplorer?.Model;
-
-      if (isChecked is null
-         && model != null) {
-
-         if (Boolean.TryParse(model.ToString(), out bool modelChecked)) {
-            isChecked = modelChecked;
-         }
-      }
-
-      return GenerateCheckbox(output, modelExplorer, expression, isChecked, @class);
-   }
+      GenerateCheckbox(output, this.ViewData.ModelExplorer, name: String.Empty, isChecked, @class);
 
    protected internal CheckboxDisposable
    GenerateCheckbox(ISequenceWriter<XElement> output, ModelExplorer? modelExplorer, string name,
@@ -74,21 +57,13 @@ partial class HtmlHelper {
       var inputWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
       var hiddenWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
 
-      var explicitChecked = isChecked.HasValue;
-
-      var inputDisposable = GenerateInput(
+      var inputDisposable = GenerateCheckboxInput(
          inputWriter,
-         InputType.CheckBox,
-         type: null,
          modelExplorer,
          name,
-         value: "true",
-         useViewData: !explicitChecked,
-         isChecked: isChecked ?? false,
-         format: null,
-         @class: @class);
-
-      var fullName = Name(name);
+         isChecked,
+         @class,
+         out var fullName);
 
       // Render an additional <input type="hidden".../> for checkboxes. This
       // addresses scenarios where unchecked checkboxes are not sent in the request.
@@ -96,6 +71,60 @@ partial class HtmlHelper {
       // on the page when the request was submitted.
 
       return new CheckboxDisposable(inputDisposable, inputWriter, hiddenWriter, fullName);
+   }
+
+   IDisposable
+   GenerateCheckboxInput(XcstWriter output, ModelExplorer? modelExplorer, string name,
+         bool? isChecked, string? @class, out string fullName) {
+
+      ArgumentNullException.ThrowIfNull(name);
+
+      fullName = FullNameNonEmpty(name);
+
+      var value = "true";
+
+      bool? checkedAttr;
+
+      try {
+         checkedAttr = GetModelStateValue(fullName, typeof(bool)) as bool?;
+      } catch (InvalidOperationException) {
+
+         checkedAttr = (GetModelStateValue(fullName, typeof(string)) is string modelStateValue) ?
+            String.Equals(modelStateValue, value, StringComparison.Ordinal)
+            : null;
+      }
+
+      checkedAttr ??= isChecked;
+
+      if (checkedAttr is null) {
+         if (modelExplorer != null) {
+            if (modelExplorer.Model is { } model
+               && Boolean.TryParse(model.ToString(), out var modelChecked)) {
+
+               checkedAttr = modelChecked;
+            }
+         } else {
+            checkedAttr = EvalBoolean(fullName);
+         }
+      }
+
+      output.WriteStartElement("input");
+
+      WriteId(fullName, output);
+
+      output.WriteAttributeString("type", GetInputTypeString(InputType.CheckBox));
+      output.WriteAttributeString("name", fullName);
+      output.WriteAttributeString("value", value);
+
+      WriteBoolean("checked", checkedAttr.GetValueOrDefault(), output);
+
+      var cssClass = (ViewData.ModelState.TryGetValue(fullName, out var modelState)
+         && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
+
+      WriteCssClass(@class, cssClass, output);
+      WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
+
+      return new ElementEndingDisposable(output);
    }
 
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -179,11 +208,11 @@ partial class HtmlHelper<TModel> {
    public CheckboxDisposable
    CheckboxFor(ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression, string? @class = null) {
 
-      if (expression is null) throw new ArgumentNullException(nameof(expression));
+      ArgumentNullException.ThrowIfNull(expression);
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return CheckboxForModelExplorer(output, modelExplorer, expressionString, isChecked: null, @class);
+      return GenerateCheckbox(output, modelExplorer, expressionString, isChecked: null, @class);
    }
 }

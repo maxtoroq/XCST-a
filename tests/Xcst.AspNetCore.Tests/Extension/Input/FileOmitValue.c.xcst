@@ -27,9 +27,9 @@
       <div>
          <input type='file' id='f' name='f'/>
          <input type='file' id='f' name='f'/>
+         <input type='file' id='f' name='f' value='explicit'/>
          <input type='file' id='f' name='f'/>
-         <input type='file' id='f' name='f'/>
-         <input type='file' id='f' name='f'/>
+         <input type='file' id='f' name='f' value='explicit'/>
       </div>
    </c:template>
 

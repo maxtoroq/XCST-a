@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='b' as='bool?' value='true'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <div>
+         <a:model value='new Foo()'>
+            <a:editor for='b'/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <select id='b' name='b' class='list-box tri-state'>
+            <option value=''>Not Set</option>
+            <option value='true' selected='selected'>True</option>
+            <option value='false'>False</option>
+         </select>
+      </div>
+   </c:template>
+
+</c:module>

@@ -182,11 +182,11 @@ public partial class HtmlHelper {
    ObjectToDictionary(object value) =>
       TypeHelpers.ObjectToDictionary(value);
 
-   internal string
+   internal string?
    EvalString(string key) =>
       Convert.ToString(this.ViewData.Eval(key), CultureInfo.CurrentCulture);
 
-   internal string
+   internal string?
    EvalString(string key, string? format) =>
       Convert.ToString(this.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
 
@@ -428,6 +428,20 @@ public partial class HtmlHelper {
       }
 
       return resolvedValue;
+   }
+
+   // extension helpers
+
+   string
+   FullNameNonEmpty(string name) {
+
+      var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+
+      if (String.IsNullOrEmpty(fullName)) {
+         throw new ArgumentException("The name of an HTML field cannot be null or empty.", nameof(name));
+      }
+
+      return fullName;
    }
 
    internal void

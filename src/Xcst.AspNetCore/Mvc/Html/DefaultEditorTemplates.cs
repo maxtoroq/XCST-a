@@ -63,6 +63,7 @@ static class DefaultEditorTemplates {
       var value = default(bool?);
 
       if (viewData.Model != null) {
+         // FIX: conversion logic duplicated with GenerateCheckbox()
          value = Convert.ToBoolean(viewData.Model, CultureInfo.InvariantCulture);
       }
 
@@ -72,10 +73,13 @@ static class DefaultEditorTemplates {
          var className = GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
-         using var disp = html.Select(
+         using var disp = html.GenerateSelect(
             output,
+            viewData.ModelExplorer,
             String.Empty,
-            selectList: TriStateValues(value),
+            default(object),
+            TriStateValues(value),
+            multiple: false,
             @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
          htmlAttributes.WriteTo(output);
@@ -88,7 +92,7 @@ static class DefaultEditorTemplates {
 
          using var disp = html.GenerateCheckbox(
             seqOutput,
-            modelExplorer: null,
+            modelExplorer: viewData.ModelExplorer,
             name: String.Empty,
             value.GetValueOrDefault(),
             @class: htmlAttributes.RemoveClass(html.CurrentPackage.Context.SimpleContent));
@@ -201,13 +205,20 @@ static class DefaultEditorTemplates {
          output,
          viewData.ModelExplorer,
          String.Empty,
-         value: null,
+         default(object),
          options,
-         optionLabel,
          multiple: false,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
       htmlAttributes.WriteTo(output);
+
+      if (optionLabel != null) {
+         html.WriteOption(new SelectListItem {
+            Text = optionLabel,
+            Value = String.Empty
+         }, null, output);
+      }
+
       disp.EndOfConstructor();
    }
 
@@ -243,13 +254,18 @@ static class DefaultEditorTemplates {
          output,
          viewData.ModelExplorer,
          String.Empty,
-         value: null,
+         default(object),
          options,
-         optionLabel,
          multiple: false,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
       htmlAttributes.WriteTo(output);
+
+      html.WriteOption(new SelectListItem {
+         Text = optionLabel,
+         Value = String.Empty
+      }, null, output);
+
       disp.EndOfConstructor();
    }
 
@@ -263,28 +279,26 @@ static class DefaultEditorTemplates {
       }
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-      var model = viewData.Model;
+      var value = viewData.TemplateInfo.FormattedModelValue;
 
       var className = GetEditorCssClass(_hiddenInputInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using var disp = html.Input(
+      using var disp = html.GenerateInput(
          output,
-         name: String.Empty,
-         model,
-         type: "hidden",
+         "hidden",
+         viewData.ModelExplorer,
+         String.Empty,
+         value,
+         default(string),
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
       htmlAttributes.WriteTo(output);
    }
 
    public static void
-   IFormFileTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
-
-      const string templateName = nameof(IFormFile);
-
-      HtmlInputTemplateHelper(html, seqOutput, templateName, inputType: "file");
-   }
+   IFormFileTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+      HtmlInputTemplateHelper(html, seqOutput, nameof(IFormFile), inputType: "file");
 
    public static void
    ListBoxTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
@@ -301,9 +315,8 @@ static class DefaultEditorTemplates {
          output,
          viewData.ModelExplorer,
          String.Empty,
-         value: null,
+         default(object),
          options,
-         optionLabel: null,
          multiple: true,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
@@ -316,12 +329,14 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var value = html.ViewData.TemplateInfo.FormattedModelValue;
+      var viewData = html.ViewData;
+      var value = viewData.TemplateInfo.FormattedModelValue;
       var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      using var disp = html.Textarea(
+      using var disp = html.GenerateTextarea(
          output,
+         viewData.ModelExplorer,
          name: String.Empty,
          value,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
@@ -426,11 +441,13 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(_passwordInfo, "text-box single-line password");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      using var _ = html.Input(
+      using var _ = html.GenerateInput(
          output,
-         name: String.Empty,
-         value: null,
          type: "password",
+         html.ViewData.ModelExplorer,
+         String.Empty,
+         default(object),
+         default(string),
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
       htmlAttributes.WriteTo(output);
@@ -464,16 +481,21 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var value = html.ViewData.TemplateInfo.FormattedModelValue;
+      var viewData = html.ViewData;
+
+      var value = (inputType == "file") ? null
+         : viewData.TemplateInfo.FormattedModelValue;
 
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
       var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
 
-      using var _ = html.Input(
+      using var _ = html.GenerateInput(
          output,
-         name: String.Empty,
+         inputType,
+         viewData.ModelExplorer,
+         String.Empty,
          value,
-         type: inputType,
+         default(string),
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
       htmlAttributes.WriteTo(output);

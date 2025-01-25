@@ -27,73 +27,33 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
-   Input(XcstWriter output, string name, object? value = null, string? type = null, string? format = null, string? @class = null) =>
-      InputImpl(output, type, modelExplorer: null, name, value, useViewData: null, format, @class);
+   Input(XcstWriter output, string name, object? value = null, string? type = null,
+         string? format = null, string? @class = null) =>
+      GenerateInput(output, type, default(ModelExplorer), name, value, format, @class);
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    InputForModel(XcstWriter output, object? value = null, string? type = null,
          string? format = null, string? @class = null) =>
-      InputForModelExplorer(output, type, this.ViewData.ModelExplorer, expression: String.Empty, value, format, @class);
+      GenerateInput(output, type, this.ViewData.ModelExplorer, name: String.Empty, value, format, @class);
 
-   internal IDisposable
-   InputForModelExplorer(XcstWriter output, string? type, ModelExplorer? modelExplorer, string expression, object? value,
+   protected internal IDisposable
+   GenerateInput(XcstWriter output, string? type, ModelExplorer? modelExplorer, string name, object? value,
          string? format, string? @class) {
 
-      if (value is null
-         && modelExplorer != null
-         && GetInputType(type) != InputType.Password) {
+      ArgumentNullException.ThrowIfNull(name);
 
-         value = modelExplorer.Model;
-      }
+      var fullName = FullNameNonEmpty(name);
+      var inputType = GetInputType(type) ?? InputType.Text;
+      var valueOrModel = value ?? modelExplorer?.Model;
 
-      return InputImpl(output, type, modelExplorer, expression, value, useViewData: false, format, @class);
-   }
+      var valueAttr = (string?)GetModelStateValue(fullName, typeof(string));
 
-   IDisposable
-   InputImpl(XcstWriter output, string? type, ModelExplorer? modelExplorer, string expression, object? value,
-         bool? useViewData, string? format, string? @class) {
-
-      var inputType = GetInputType(type);
-      var checkBoxOrRadio = inputType is InputType.CheckBox or InputType.Radio;
-
-      if (checkBoxOrRadio) {
-         // Don't want Input() to behave like RadioButton() or CheckBox()
-         inputType = null;
-      }
-
-      if (inputType == InputType.Hidden) {
-
-         if (value is byte[] byteArrayValue) {
-            value = Convert.ToBase64String(byteArrayValue);
-         }
-      }
-
-      useViewData ??= (value is null);
-
-      return GenerateInput(
-         output,
-         inputType ?? InputType.Text,
-         type,
-         modelExplorer,
-         name: expression,
-         value,
-         useViewData: useViewData.Value,
-         isChecked: false,
-         format,
-         @class);
-   }
-
-   protected IDisposable
-   GenerateInput(XcstWriter output, InputType inputType, string? type, ModelExplorer? modelExplorer, string name, object? value,
-         bool useViewData, bool isChecked, string? format, string? @class) {
-
-      var fullName = Name(name);
-
-      if (String.IsNullOrEmpty(fullName)) {
-         throw new ArgumentNullException(nameof(name));
-      }
+      valueAttr ??= (inputType == InputType.Hidden
+         && valueOrModel is byte[] byteArrayValue) ? Convert.ToBase64String(byteArrayValue)
+         : (value != null || modelExplorer != null) ? FormatValue(valueOrModel, format)
+         : EvalString(fullName, format);
 
       output.WriteStartElement("input");
 
@@ -102,87 +62,19 @@ partial class HtmlHelper {
       output.WriteAttributeString("type", type ?? GetInputTypeString(inputType));
       output.WriteAttributeString("name", fullName);
 
-      var valueParameter = FormatValue(value, format);
-      var usedModelState = false;
+      if (inputType == InputType.Password
+         || String.Equals(type, "file", StringComparison.OrdinalIgnoreCase)
+         || String.Equals(type, "image", StringComparison.OrdinalIgnoreCase)) {
 
-      switch (inputType) {
-         case InputType.CheckBox:
+         if (value != null) {
+            output.WriteAttributeString("value", valueAttr);
+         }
 
-            bool? modelStateWasChecked;
-
-            try {
-               modelStateWasChecked = GetModelStateValue(fullName, typeof(bool)) as bool?;
-            } catch (InvalidOperationException) {
-               modelStateWasChecked = null;
-            }
-
-            if (modelStateWasChecked.HasValue) {
-               isChecked = modelStateWasChecked.Value;
-               usedModelState = true;
-            }
-
-            goto case InputType.Radio;
-
-         case InputType.Radio:
-
-            if (!usedModelState) {
-               if (GetModelStateValue(fullName, typeof(string)) is string modelStateValue) {
-
-                  // for CheckBox, valueParameter is "true"
-
-                  isChecked = String.Equals(modelStateValue, valueParameter, StringComparison.Ordinal);
-                  usedModelState = true;
-               }
-            }
-
-            // useViewData is always false when called from RadioButton
-            // the following condition is for CheckBox
-
-            if (!usedModelState && useViewData) {
-               isChecked = EvalBoolean(fullName);
-            }
-
-            output.WriteAttributeString("value", valueParameter);
-
-            WriteBoolean("checked", isChecked, output);
-
-            break;
-
-         case InputType.Password:
-
-            if (value != null) {
-               output.WriteAttributeString("value", valueParameter);
-            }
-
-            break;
-
-         default:
-
-            var writeValue = true;
-
-            if (String.Equals(type, "file", StringComparison.OrdinalIgnoreCase)
-               || String.Equals(type, "image", StringComparison.OrdinalIgnoreCase)) {
-
-               // 'value' attribute is not needed for 'file' and 'image' input types.
-               writeValue = false;
-            }
-
-            if (writeValue) {
-
-               var attemptedValue = (string?)GetModelStateValue(fullName, typeof(string));
-
-               var valueAttr = attemptedValue
-                  ?? ((useViewData) ? EvalString(fullName, format) : valueParameter);
-
-               output.WriteAttributeString("value", valueAttr);
-            }
-
-            break;
+      } else {
+         output.WriteAttributeString("value", valueAttr);
       }
 
-      // If there are any errors for a named field, we add the css attribute.
-
-      var cssClass = (ViewData.ModelState.TryGetValue(fullName, out var modelState)
+      var cssClass = (this.ViewData.ModelState.TryGetValue(fullName, out var modelState)
          && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
@@ -214,6 +106,6 @@ partial class HtmlHelper<TModel> {
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var exprString = ExpressionHelper.GetExpressionText(expression);
 
-      return InputForModelExplorer(output, type, modelExplorer, exprString, value: null, format, @class);
+      return GenerateInput(output, type, modelExplorer, name: exprString, value: null, format, @class);
    }
 }

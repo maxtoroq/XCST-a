@@ -18,7 +18,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq.Expressions;
 
 namespace Xcst.Web.Mvc;
@@ -36,42 +35,45 @@ partial class HtmlHelper {
          modelExplorer = new ModelExplorer(this.ViewData.MetadataProvider, modelExplorer.Container, modelExplorer.Metadata, value);
       }
 
-      return GenerateTextarea(output, modelExplorer, name, @class);
+      return GenerateTextarea(output, modelExplorer, name, default(object), @class);
    }
 
-   protected TextareaDisposable
-   GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string name,
-         string? @class, string? innerHtmlPrefix = null) {
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public TextareaDisposable
+   TextareaForModel(XcstWriter output, object? value = null, string? @class = null) =>
+      Textarea(output, String.Empty, value, @class);
 
-      var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+   protected internal TextareaDisposable
+   GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string name, object? value, string? @class) {
 
-      if (String.IsNullOrEmpty(fullName)) {
-         throw new ArgumentNullException(nameof(name));
-      }
+      ArgumentNullException.ThrowIfNull(name);
 
-      output.WriteStartElement("textarea");
-      WriteId(fullName, output);
-      output.WriteAttributeString("name", fullName);
+      var fullName = FullNameNonEmpty(name);
 
       this.ViewData.ModelState.TryGetValue(fullName, out var modelState);
 
-      var cssClass = (modelState?.Errors.Count > 0) ?
-         ValidationInputCssClassName
-         : null;
-
-      WriteCssClass(@class, cssClass, output);
-      WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
-
-      var value = (modelState != null) ? modelState.AttemptedValue
-         : (modelExplorer.Model != null) ? Convert.ToString(modelExplorer.Model, CultureInfo.CurrentCulture)
-         : String.Empty;
+      var valueString = (modelState != null) ? modelState.AttemptedValue
+         : FormatValue(value ?? modelExplorer.Model, null);
 
       // The first newline is always trimmed when a TextArea is rendered, so we add an extra one
       // in case the value being rendered is something like "\r\nHello".
 
-      var text = (!String.IsNullOrEmpty(value)) ?
-         (innerHtmlPrefix ?? Environment.NewLine) + value
-         : value ?? String.Empty;
+      var text = (!String.IsNullOrEmpty(valueString)) ?
+         Environment.NewLine + valueString
+         : valueString ?? String.Empty;
+
+      output.WriteStartElement("textarea");
+
+      WriteId(fullName, output);
+
+      output.WriteAttributeString("name", fullName);
+
+      var cssClass = (modelState?.Errors.Count > 0) ?
+         ValidationInputCssClassName : null;
+
+      WriteCssClass(@class, cssClass, output);
+      WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
 
       return new TextareaDisposable(output, text);
    }
@@ -141,11 +143,11 @@ partial class HtmlHelper<TModel> {
    public TextareaDisposable
    TextareaFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, string? @class = null) {
 
-      if (expression is null) throw new ArgumentNullException(nameof(expression));
+      ArgumentNullException.ThrowIfNull(expression);
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateTextarea(output, modelExplorer, expressionString, @class);
+      return GenerateTextarea(output, modelExplorer, expressionString, default(object), @class);
    }
 }

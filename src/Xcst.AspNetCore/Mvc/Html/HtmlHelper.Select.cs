@@ -33,41 +33,25 @@ partial class HtmlHelper {
    public SelectDisposable
    Select(XcstWriter output, string name, object? value = null, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, string? @class = null) =>
-      GenerateSelect(output, default(ModelExplorer), name, value, selectList, default(string), multiple, @class);
+      GenerateSelect(output, default(ModelExplorer), name, value, selectList, multiple, @class);
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
    SelectForModel(XcstWriter output, object? value = null, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, string? @class = null) =>
-      GenerateSelect(output, this.ViewData.ModelExplorer, String.Empty, value, selectList, default(string), multiple, @class);
+      GenerateSelect(output, this.ViewData.ModelExplorer, String.Empty, value, selectList, multiple, @class);
 
    protected internal SelectDisposable
    GenerateSelect(XcstWriter output, ModelExplorer? modelExplorer, string name, object? value, IEnumerable<SelectListItem>? selectList,
-         string? optionLabel, bool multiple, string? @class) {
+         bool multiple, string? @class) {
 
       var viewData = this.ViewData;
-      var fullName = viewData.TemplateInfo.GetFullHtmlFieldName(name);
-
-      if (String.IsNullOrEmpty(fullName)) {
-         throw new ArgumentNullException(nameof(name));
-      }
-
-      var usedViewData = false;
-
-      // If we got a null selectList, try to use ViewData to get the list of items.
-
-      if (selectList is null) {
-         //selectList = getSelectData(name);
-         //usedViewData = true;
-      }
+      var fullName = FullNameNonEmpty(name);
 
       var defaultValue = (multiple) ?
          GetModelStateValue(fullName, typeof(string[]))
          : GetModelStateValue(fullName, typeof(string));
-
-      // If we haven't already used ViewData to get the entire list of items then we need to
-      // use the ViewData-supplied value before using the parameter-supplied value.
 
       if (defaultValue is null) {
 
@@ -79,9 +63,7 @@ partial class HtmlHelper {
 
          } else {
 
-            if (!usedViewData
-               && !String.IsNullOrEmpty(name)) {
-
+            if (!String.IsNullOrEmpty(name)) {
                defaultValue = viewData.Eval(name);
             }
          }
@@ -90,7 +72,9 @@ partial class HtmlHelper {
       var selectedValues = getSelectedValues(defaultValue, multiple);
 
       output.WriteStartElement("select");
+
       WriteId(fullName, output);
+
       output.WriteAttributeString("name", fullName);
       WriteBoolean("multiple", multiple, output);
 
@@ -101,17 +85,6 @@ partial class HtmlHelper {
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, excludeMinMaxLength: !multiple, output);
 
       return new SelectDisposable(output, writeList, isSelected);
-
-      IEnumerable<SelectListItem> getSelectData(string name) {
-
-         var o = this.ViewData?.Eval(name)
-            ?? throw new InvalidOperationException($"There is no ViewData item of type 'IEnumerable<SelectListItem>' that has the key '{name}'.");
-
-         var selectList = o as IEnumerable<SelectListItem>
-            ?? throw new InvalidOperationException($"The ViewData item that has the key '{name}' is of type '{o.GetType().FullName}' but must be of type 'IEnumerable<SelectListItem>'.");
-
-         return selectList;
-      }
 
       static HashSet<string> getSelectedValues(object? defaultValue, bool allowMultiple) {
 
@@ -154,15 +127,6 @@ partial class HtmlHelper {
             : selectedDefault;
 
       void writeList(XcstWriter output) {
-
-         // Make optionLabel the first item that gets rendered.
-
-         if (optionLabel != null) {
-            WriteOption(new SelectListItem {
-               Text = optionLabel,
-               Value = String.Empty
-            }, null, output);
-         }
 
          if (selectList is null) {
             return;
@@ -326,11 +290,11 @@ partial class HtmlHelper<TModel> {
    SelectFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, IEnumerable<SelectListItem>? selectList = null,
          bool multiple = false, string? @class = null) {
 
-      if (expression is null) throw new ArgumentNullException(nameof(expression));
+      ArgumentNullException.ThrowIfNull(expression);
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateSelect(output, modelExplorer, expressionString, null, selectList, default(string), multiple, @class);
+      return GenerateSelect(output, modelExplorer, expressionString, default(object), selectList,  multiple, @class);
    }
 }
