@@ -22,17 +22,25 @@
          <a:select class='b' name='color' value='"red"'
             options='new SelectListItem[] { new() { Text = "red" }, new() { Text = "blue", Selected = true } }'/>
          <!-- model selected -->
-         <a:model value='"blue"' field-prefix='color'>
+         <a:model value='"blue"' field-prefix='color' helper-name='htm'>
+            <c:set ref='htm.ViewData[""]'>red</c:set>
+            <c:set ref='htm.ViewData["color"]'>red</c:set>
             <a:select class='c'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
+         </a:model>
+         <a:model value='"blue"' field-prefix='color' helper-name='htm'>
+            <c:set ref='htm.ViewData[""]'>green</c:set>
+            <c:set ref='htm.ViewData["color"]'>green</c:set>
             <a:select class='d' value='"red"'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
+               <a:option>green</a:option>
             </a:select>
          </a:model>
-         <a:model value='new Foo { color = "blue" }'>
+         <a:model value='new Foo { color = "blue" }' helper-name='htm'>
+            <c:set ref='htm.ViewData["color"]'>red</c:set>
             <a:select class='e' for='color'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
@@ -41,9 +49,13 @@
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
+         </a:model>
+         <a:model value='new Foo { color = "blue" }' helper-name='htm'>
+            <c:set ref='htm.ViewData["color"]'>green</c:set>
             <a:select class='g' name='color' value='"red"'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
+               <a:option>green</a:option>
             </a:select>
          </a:model>
          <a:model value='new Foo { color = "blue" }' field-prefix='x'>
@@ -56,6 +68,11 @@
                <a:option>blue</a:option>
             </a:select>
          </a:model>
+         <c:set ref='ViewData["color"]'>blue</c:set>
+         <a:select class='j' name='color'>
+            <a:option>red</a:option>
+            <a:option>blue</a:option>
+         </a:select>
       </div>
    </c:template>
 
@@ -65,37 +82,52 @@
             <option selected="selected">red</option>
             <option>blue</option>
          </select>
+
          <select class="b" name="color" id="color">
             <option selected="selected">red</option>
             <option>blue</option>
          </select>
+
          <select class="c" name="color" id="color">
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
+
          <select class="d" name="color" id="color">
             <option selected="selected">red</option>
             <option>blue</option>
+            <option>green</option>
          </select>
+
          <select class="e" name="color" id="color">
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
+
          <select class="f" name="color" id="color">
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
+
          <select class="g" name="color" id="color">
             <option selected="selected">red</option>
             <option>blue</option>
+            <option>green</option>
          </select>
+
          <select class="h" name="x.color" id="x_color">
             <option>red</option>
             <option selected="selected">blue</option>
          </select>
+
          <select class="i" name="x.color" id="x_color">
             <option>red</option>
             <option selected="selected">blue</option>
+         </select>
+
+         <select class="j" name="color" id="color">
+            <option>red</option>
+            <option>blue</option>
          </select>
       </div>
    </c:template>

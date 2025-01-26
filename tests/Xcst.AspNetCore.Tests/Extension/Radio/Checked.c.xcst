@@ -11,10 +11,14 @@
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
-         <a:model value='new Foo { p = "property" }'>
+         <a:model value='new Foo { p = "property" }' helper-name='htm'>
+            <c:set ref='htm.ViewData["p"]'>foo</c:set>
+
             <!-- different value -->
             <a:radio class='a' for='p' value='"foo"'/>
             <a:radio class='b' name='p' value='"foo"'/>
+         </a:model>
+         <a:model value='new Foo { p = "property" }'>
 
             <!-- same value -->
             <a:radio class='c' for='p' value='"property"'/>
@@ -24,9 +28,14 @@
             <a:radio class='e' name='p' value='"foo"' checked='yes'/>
             <a:radio class='f' name='p' value='"property"' checked='no'/>
          </a:model>
-         <a:model value='"model"' field-prefix='p'>
+         <a:model value='"model"' field-prefix='p' helper-name='htm'>
+            <c:set ref='htm.ViewData[""]'>foo</c:set>
+            <c:set ref='htm.ViewData["p"]'>foo</c:set>
+
             <!-- different value -->
             <a:radio class='j' value='"foo"'/>
+         </a:model>
+         <a:model value='"model"' field-prefix='p'>
 
             <!-- same value -->
             <a:radio class='k' value='"model"'/>
@@ -39,6 +48,8 @@
             <a:radio class='p' for='p' value='"property"'/>
             <a:radio class='q' name='p' value='"property"'/>
          </a:model>
+         <c:set ref='ViewData["p"]'>foo</c:set>
+         <a:radio class='r' name='p' value='"foo"'/>
       </div>
    </c:template>
 
@@ -56,6 +67,7 @@
          <input class='m' type='radio' id='p' name='p' value='model'/>
          <input class='p' type='radio' id='x_p' name='x.p' value='property' checked='checked'/>
          <input class='q' type='radio' id='x_p' name='x.p' value='property' checked='checked'/>
+         <input class='r' type='radio' id='p' name='p' value='foo'/>
       </div>
    </c:template>
 

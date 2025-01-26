@@ -11,21 +11,24 @@
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
-         <a:model value='new Foo { p = "property" }'>
+         <a:model value='new Foo { p = "property" }' helper-name='htm'>
+            <c:set ref='htm.ViewData["p"]'>viewdata</c:set>
             <a:hidden class='a' for='p'/>
             <a:hidden class='b' name='p'/>
             <a:hidden class='c' name='p' value='"explicit"'/>
          </a:model>
-         <a:model value='"model"' field-prefix='p'>
+         <a:model value='"model"' field-prefix='p' helper-name='htm'>
+            <c:set ref='htm.ViewData[""]'>viewdata</c:set>
+            <c:set ref='htm.ViewData["p"]'>viewdata</c:set>
             <a:hidden class='d'/>
             <a:hidden class='e' value='"explicit"'/>
          </a:model>
          <a:model value='new Foo { p = "property" }' field-prefix='x'>
             <a:hidden class='f' for='p'/>
-            <!--
             <a:hidden class='g' name='p'/>
-            -->
          </a:model>
+         <c:set ref='ViewData["p"]'>viewdata</c:set>
+         <a:hidden class='h' name='p'/>
       </div>
    </c:template>
 
@@ -37,9 +40,8 @@
          <input class='d' type='hidden' id='p' name='p' value='model'/>
          <input class='e' type='hidden' id='p' name='p' value='explicit'/>
          <input class='f' type='hidden' id='x_p' name='x.p' value='property'/>
-         <!--
          <input class='g' type='hidden' id='x_p' name='x.p' value='property'/>
-         -->
+         <input class='h' type='hidden' id='p' name='p' value=''/>
       </div>
    </c:template>
 
