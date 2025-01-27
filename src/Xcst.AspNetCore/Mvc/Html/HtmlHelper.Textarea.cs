@@ -61,7 +61,7 @@ partial class HtmlHelper {
 
       var text = (!String.IsNullOrEmpty(valueString)) ?
          Environment.NewLine + valueString
-         : valueString ?? String.Empty;
+         : String.Empty;
 
       output.WriteStartElement("textarea");
 
@@ -78,7 +78,6 @@ partial class HtmlHelper {
       return new TextareaDisposable(output, text);
    }
 
-   [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public class TextareaDisposable : ElementEndingDisposable {
 
@@ -102,11 +101,13 @@ partial class HtmlHelper {
          _text = text;
       }
 
+      [GeneratedCodeReference]
       public void
       EndOfConstructor() {
          _eoc = true;
       }
 
+      [GeneratedCodeReference]
       public TextareaDisposable
       NoConstructor() {
          _eoc = true;
