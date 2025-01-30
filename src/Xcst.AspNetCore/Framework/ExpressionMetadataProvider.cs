@@ -106,7 +106,7 @@ static class ExpressionMetadataProvider {
 
       metadataProvider ??= viewData.MetadataProvider;
 
-      var viewDataInfo = viewData.GetViewDataInfo(expression);
+      var viewDataInfo = ViewDataEvaluator.Eval(viewData, expression);
 
       if (viewDataInfo is null) {
 
