@@ -204,69 +204,21 @@ partial class HtmlHelper {
          ?? String.Empty;
 
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public class SelectDisposable : ElementEndingDisposable {
-
-      readonly XcstWriter
-      _output;
-
-      readonly Action<XcstWriter>
-      _listBuilder;
+   public class SelectDisposable : DefaultContentDisposable {
 
       readonly Func<string, bool, bool>
       _isSelectedFn;
 
-      bool
-      _eoc;
-
-      bool
-      _disposed;
-
       internal
       SelectDisposable(XcstWriter output, Action<XcstWriter> listBuilder, Func<string, bool, bool> isSelectedFn)
-         : base(output) {
+         : base(output, elementStarted: true, listBuilder) {
 
-         _output = output;
-         _listBuilder = listBuilder;
          _isSelectedFn = isSelectedFn;
       }
 
-      public bool
+      internal bool
       IsSelected(string value, bool selectedDefault) =>
          _isSelectedFn.Invoke(value, selectedDefault);
-
-      [GeneratedCodeReference]
-      public void
-      EndOfConstructor() {
-         _eoc = true;
-      }
-
-      [GeneratedCodeReference]
-      public SelectDisposable
-      NoConstructor() {
-         _eoc = this.ElementStarted;
-         return this;
-      }
-
-      protected override void
-      Dispose(bool disposing) {
-
-         if (_disposed) {
-            return;
-         }
-
-         // don't write list when end of constructor is not reached
-         // e.g. an exception occurred, c:return, etc.
-
-         if (disposing
-            && _eoc) {
-
-            _listBuilder?.Invoke(_output);
-         }
-
-         base.Dispose(disposing);
-
-         _disposed = true;
-      }
    }
 }
 
@@ -283,6 +235,6 @@ partial class HtmlHelper<TModel> {
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateSelect(output, modelExplorer, expressionString, default(object), selectList,  multiple, @class);
+      return GenerateSelect(output, modelExplorer, expressionString, default(object), selectList, multiple, @class);
    }
 }

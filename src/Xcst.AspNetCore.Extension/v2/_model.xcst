@@ -26,11 +26,21 @@
    <template match='XElement el &amp;&amp; el.Name == a + "form"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
+      <variable name='clientAttributes' as='string[]'>
+         <object value='html_attributes'/>
+         <object>action</object>
+         <object>autocomplete</object>
+         <object>enctype</object>
+         <object>method</object>
+      </variable>
+
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='required' value='new[] { "method" }'/>
          <with-param name='optional' value='
-            new[] { "model-value", "model-type", "id", "action", "autocomplete", "enctype", "class", "field-prefix", "helper-name", "antiforgery" }'/>
+            new[] { "model-value", "model-type", "field-prefix", "helper-name", "antiforgery" }
+               .Concat(clientAttributes.Where(p => p != "method"))
+               .ToArray()'/>
       </call-template>
 
       <variable name='methodAttr' value='el.Attribute("method")'/>
@@ -53,6 +63,11 @@
          <with-param name='docOutput' value='docOutput'/>
       </call-template>
 
+      <variable name='clientAttribs' value='attributes(el)
+         .Where(p => p.Name.Namespace == XNamespace.None
+            &amp;&amp; clientAttributes.Contains(p.Name.LocalName))
+         .ToArray()'/>
+
       <code:method-call name='WriteStartElement'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <copy-of value='outputRef'/>
@@ -63,13 +78,7 @@
 
       <code:try line-hidden='true'>
          <code:block>
-
-            <variable name='attribs' value='attributes(el)
-               .Where(p => p.Name.Namespace == XNamespace.None
-                  &amp;&amp; p.Name.LocalName is "method" or "id" or "action" or "autocomplete" or "enctype" or "class")
-               .ToArray()'/>
-
-            <for-each name='attr' in='attribs'>
+            <for-each name='attr' in='clientAttribs'>
                <code:method-call name='WriteAttributeString'>
                   <copy-of value='outputRef'/>
                   <code:arguments>

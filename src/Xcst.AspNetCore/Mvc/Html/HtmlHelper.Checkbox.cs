@@ -55,9 +55,8 @@ partial class HtmlHelper {
          bool? isChecked, string? @class) {
 
       var inputWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
-      var hiddenWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
 
-      var inputDisposable = GenerateCheckboxInput(
+      GenerateCheckboxInput(
          inputWriter,
          modelExplorer,
          name,
@@ -65,15 +64,26 @@ partial class HtmlHelper {
          @class,
          out var fullName);
 
+      return new CheckboxDisposable(inputWriter, writeHiddenInput);
+
       // Render an additional <input type="hidden".../> for checkboxes. This
       // addresses scenarios where unchecked checkboxes are not sent in the request.
       // Sending a hidden input makes it possible to know that the checkbox was present
       // on the page when the request was submitted.
 
-      return new CheckboxDisposable(inputDisposable, inputWriter, hiddenWriter, fullName);
+      void writeHiddenInput() {
+
+         var hiddenWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
+
+         hiddenWriter.WriteStartElement("input");
+         hiddenWriter.WriteAttributeString("type", "hidden");
+         hiddenWriter.WriteAttributeString("name", fullName);
+         hiddenWriter.WriteAttributeString("value", "false");
+         hiddenWriter.WriteEndElement();
+      }
    }
 
-   IDisposable
+   void
    GenerateCheckboxInput(XcstWriter output, ModelExplorer? modelExplorer, string name,
          bool? isChecked, string? @class, out string fullName) {
 
@@ -123,38 +133,27 @@ partial class HtmlHelper {
 
       WriteCssClass(@class, cssClass, output);
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
-
-      return new ElementEndingDisposable(output);
    }
 
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public class CheckboxDisposable : IDisposable {
+   public class CheckboxDisposable : ElementEndingDisposable {
 
-      readonly IDisposable
-      _checkboxCloser;
-
-      readonly XcstWriter
-      _hiddenOutput;
-
-      readonly string
-      _fullName;
+      readonly Action
+      _hiddenFn;
 
       bool
       _eoc;
-
-      bool
-      _disposed;
 
       [GeneratedCodeReference]
       public XcstWriter
       CheckboxOutput { get; }
 
       public
-      CheckboxDisposable(IDisposable checkboxCloser, XcstWriter checkboxOutput, XcstWriter hiddenOutput, string fullName) {
-         _checkboxCloser = checkboxCloser;
-         this.CheckboxOutput = checkboxOutput;
-         _hiddenOutput = hiddenOutput;
-         _fullName = fullName;
+      CheckboxDisposable(XcstWriter output, Action hiddenFn)
+         : base(output, elementStarted: true) {
+
+         _hiddenFn = hiddenFn;
+         this.CheckboxOutput = output;
       }
 
       [GeneratedCodeReference]
@@ -170,34 +169,19 @@ partial class HtmlHelper {
          return this;
       }
 
-      void
-      WriteHiddenInput() {
+      protected override void
+      Dispose(bool disposing) {
 
-         _hiddenOutput.WriteStartElement("input");
-         _hiddenOutput.WriteAttributeString("type", "hidden");
-         _hiddenOutput.WriteAttributeString("name", _fullName);
-         _hiddenOutput.WriteAttributeString("value", "false");
-         _hiddenOutput.WriteEndElement();
-      }
-
-      [GeneratedCodeReference]
-      public void
-      Dispose() {
-
-         if (_disposed) {
-            return;
-         }
-
-         _checkboxCloser.Dispose();
+         base.Dispose(disposing);
 
          // don't write hidden input when end of constructor is not reached
          // e.g. an exception occurred, c:return, etc.
 
-         if (_eoc) {
-            WriteHiddenInput();
-         }
+         if (disposing
+            && _eoc) {
 
-         _disposed = true;
+            _hiddenFn.Invoke();
+         }
       }
    }
 }

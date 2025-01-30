@@ -5,11 +5,37 @@
    extension-element-prefixes='a'>
 
    <c:template name='c:initial-template'>
-      <a:validation-message name='a'>abc</a:validation-message>
+      <c:void value='ModelState.AddModelError("b", "b error")'/>
+      <div>
+         <a:validation-message name='a'>abc</a:validation-message>
+         <a:validation-message name='b'/>
+         <a:validation-message name='b'>
+            <c:attribute name='data-foo'>foo</c:attribute>
+         </a:validation-message>
+         <a:validation-message name='b'>
+            <c:attribute name='data-foo'>foo</c:attribute>
+            <c:text>custom error</c:text>
+         </a:validation-message>
+      </div>
    </c:template>
 
    <c:template name='expected'>
-      <span class='field-validation-valid' data-valmsg-for='a' data-valmsg-replace='false'>abc</span>
+      <div>
+         <span class='field-validation-valid'
+               data-valmsg-for='a'
+               data-valmsg-replace='false'>abc</span>
+         <span class='field-validation-error'
+               data-valmsg-for='b'
+               data-valmsg-replace='true'>b error</span>
+         <span class='field-validation-error'
+               data-valmsg-for='b'
+               data-valmsg-replace='false'
+               data-foo='foo'/>
+         <span class='field-validation-error'
+               data-valmsg-for='b'
+               data-valmsg-replace='false'
+               data-foo='foo'>custom error</span>
+      </div>
    </c:template>
 
 </c:module>

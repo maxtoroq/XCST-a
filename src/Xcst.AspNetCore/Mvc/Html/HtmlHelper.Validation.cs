@@ -29,30 +29,29 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public ElementEndingDisposable
-   ValidationMessage(XcstWriter output, string modelName, bool hasDefaultText = false,
-         string? @class = null) {
+   public DefaultContentDisposable
+   ValidationMessage(XcstWriter output, string name, bool hasDefaultText = false, string? @class = null) {
 
-      if (modelName is null) throw new ArgumentNullException(nameof(modelName));
+      ArgumentNullException.ThrowIfNull(name);
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(modelName, this.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
 
-      return GenerateValidationMessage(output, modelExplorer, modelName, hasDefaultText, @class);
+      return GenerateValidationMessage(output, modelExplorer, name, hasDefaultText, @class);
    }
 
-   protected internal ElementEndingDisposable
+   protected internal DefaultContentDisposable
    GenerateValidationMessage(
-         XcstWriter output, ModelExplorer modelExplorer, string expression, bool hasDefaultText, string? @class) {
+         XcstWriter output, ModelExplorer modelExplorer, string name, bool hasDefaultText, string? @class) {
 
       var viewData = this.ViewData;
 
-      var modelName = viewData.TemplateInfo.GetFullHtmlFieldName(expression);
+      var modelName = viewData.TemplateInfo.GetFullHtmlFieldName(name);
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
       if (!viewData.ModelState.ContainsKey(modelName)
          && formContext is null) {
 
-         return new ElementEndingDisposable(output, elementStarted: false);
+         return new DefaultContentDisposable(output, elementStarted: false, null);
       }
 
       var modelState = viewData.ModelState[modelName];
@@ -64,7 +63,7 @@ partial class HtmlHelper {
       if (modelError is null
          && formContext is null) {
 
-         return new ElementEndingDisposable(output, elementStarted: false);
+         return new DefaultContentDisposable(output, elementStarted: false, null);
       }
 
       var tag = this.ViewContext.ValidationMessageElement;
@@ -84,11 +83,18 @@ partial class HtmlHelper {
          output.WriteAttributeString("data-valmsg-replace", replaceValidationMessageContents.ToString().ToLowerInvariant());
       }
 
-      if (!hasDefaultText && modelError != null) {
-         output.WriteString(getModelErrorMessageOrDefault(modelError, modelState!, modelExplorer));
-      }
+      var text = (!hasDefaultText && modelError != null) ?
+         getModelErrorMessageOrDefault(modelError, modelState!, modelExplorer)
+         : null;
 
-      return new ElementEndingDisposable(output);
+      return new DefaultContentDisposable(output, elementStarted: true, contentFn);
+
+      void contentFn(XcstWriter output) {
+
+         if (text != null) {
+            output.WriteString(text);
+         }
+      }
 
       static string? getModelErrorMessageOrDefault(ModelError error, ModelStateEntry modelState, ModelExplorer modelExplorer) {
 
@@ -104,9 +110,8 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public ValidationSummaryDisposable
-   ValidationSummary(XcstWriter output, bool includePropertyErrors = false,
-         string? @class = null) {
+   public DefaultContentDisposable
+   ValidationSummary(XcstWriter output, bool includePropertyErrors = false, string? @class = null) {
 
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
@@ -115,7 +120,7 @@ partial class HtmlHelper {
          if (!this.ViewContext.ClientValidationEnabled
             || !includePropertyErrors) {
 
-            return new ValidationSummaryDisposable(output, null);
+            return new DefaultContentDisposable(output, elementStarted: false, null);
          }
       }
 
@@ -133,9 +138,9 @@ partial class HtmlHelper {
          output.WriteAttributeString("data-valmsg-summary", "true");
       }
 
-      return new ValidationSummaryDisposable(output, listBuilder);
+      return new DefaultContentDisposable(output, elementStarted: true, contentFn);
 
-      void listBuilder(XcstWriter output) {
+      void contentFn(XcstWriter output) {
 
          output.WriteStartElement("ul");
 
@@ -211,71 +216,13 @@ partial class HtmlHelper {
          return String.Empty;
       }
    }
-
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public class ValidationSummaryDisposable : ElementEndingDisposable {
-
-      readonly XcstWriter
-      _output;
-
-      readonly Action<XcstWriter>?
-      _listBuilder;
-
-      bool
-      _eoc;
-
-      bool
-      _disposed;
-
-      internal
-      ValidationSummaryDisposable(XcstWriter output, Action<XcstWriter>? listBuilder)
-         : base(output, listBuilder != null) {
-
-         _output = output;
-         _listBuilder = listBuilder;
-      }
-
-      [GeneratedCodeReference]
-      public void
-      EndOfConstructor() {
-         _eoc = true;
-      }
-
-      [GeneratedCodeReference]
-      public ValidationSummaryDisposable
-      NoConstructor() {
-         _eoc = this.ElementStarted;
-         return this;
-      }
-
-      protected override void
-      Dispose(bool disposing) {
-
-         if (_disposed) {
-            return;
-         }
-
-         // don't write list when end of constructor is not reached
-         // e.g. an exception occurred, c:return, etc.
-
-         if (disposing
-            && _eoc) {
-
-            _listBuilder?.Invoke(_output);
-         }
-
-         base.Dispose(disposing);
-
-         _disposed = true;
-      }
-   }
 }
 
 partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public ElementEndingDisposable
+   public DefaultContentDisposable
    ValidationMessageFor<TResult>(
          XcstWriter output, Expression<Func<TModel, TResult>> expression, bool hasDefaultText = false,
          string? @class = null) {

@@ -5,11 +5,25 @@
    extension-element-prefixes='a'>
 
    <c:template name='c:initial-template'>
-      <a:label name='a'>abc</a:label>
+      <div>
+         <a:label name='a'/>
+         <a:label name='b'>custom</a:label>
+         <a:label name='c'>
+            <c:text/>
+         </a:label>
+         <a:label name='d'>
+            <c:attribute name='data-foo'>foo</c:attribute>
+         </a:label>
+      </div>
    </c:template>
 
    <c:template name='expected'>
-      <label for='a'>abc</label>
+      <div>
+         <label for='a'>a</label>
+         <label for='b'>custom</label>
+         <label for='c'/>
+         <label for='d' data-foo='foo'/>
+      </div>
    </c:template>
 
 </c:module>

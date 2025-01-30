@@ -370,6 +370,9 @@
       <define name="_html-attribs">
          <zeroOrMore>
             <choice>
+               <attribute name="id">
+                  <ref name="avt"/>
+               </attribute>
                <attribute name="class">
                   <ref name="avt"/>
                </attribute>
@@ -596,9 +599,6 @@
             </oneOrMore>
             <zeroOrMore>
                <choice>
-                  <attribute name="id">
-                     <ref name="avt"/>
-                  </attribute>
                   <attribute name="action">
                      <ref name="avt"/>
                   </attribute>

@@ -1,17 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xcst-test disable-warning="CS0162" ?>
 <c:module version='1.0' language='C#'
    xmlns:c='http://maxtoroq.github.io/XCST'
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <c:import-namespace ns='System'/>
+
    <c:template name='c:initial-template'>
-      <a:textarea name='a'>
-         <c:attribute name='data-foo'>foo</c:attribute>
-      </a:textarea>
+      <div>
+         <a:textarea name='a'>
+            <c:attribute name='data-foo'>foo</c:attribute>
+         </a:textarea>
+         <a:textarea name='b' value='"explicit"'>
+            <c:attribute name='data-foo'>foo</c:attribute>
+         </a:textarea>
+         <a:textarea name='c' value='"explicit"'>
+            <c:attribute name='data-foo'>foo</c:attribute>
+            <c:return/>
+         </a:textarea>
+      </div>
    </c:template>
 
-   <c:template name='expected'>
-      <textarea id='a' name='a' data-foo='foo'/>
+   <c:template name='expected' expand-text='yes'>
+      <div>
+         <textarea id='a' name='a' data-foo='foo'/>
+         <textarea id='b' name='b' data-foo='foo'>{Environment.NewLine}explicit</textarea>
+         <textarea id='c' name='c' data-foo='foo'/>
+      </div>
    </c:template>
 
 </c:module>

@@ -232,6 +232,7 @@
       </xs:complexType>
    </xs:element>
    <xs:attributeGroup name="_html-attribs">
+      <xs:attribute name="id" type="a:avt" />
       <xs:attribute name="class" type="a:avt" />
    </xs:attributeGroup>
    <xs:element name="editor" substitutionGroup="a:extension-instruction">
@@ -366,7 +367,6 @@
                <xs:attribute name="method" use="required" type="a:form-method" />
                <xs:attribute name="model-value" type="a:expression" />
                <xs:attribute name="model-type" type="a:type_name" />
-               <xs:attribute name="id" type="a:avt" />
                <xs:attribute name="action" type="a:avt" />
                <xs:attribute name="autocomplete" type="a:avt" />
                <xs:attribute name="enctype" type="a:avt" />

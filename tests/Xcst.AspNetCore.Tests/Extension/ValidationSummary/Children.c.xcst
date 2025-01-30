@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xcst-test disable-warning="CS0162" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:template name='c:initial-template'>
+      <ol>
+         <li>
+            <a:validation-summary/>
+         </li>
+         <c:void value='ModelState.AddModelError("", "a error")'/>
+         <li>
+            <a:validation-summary>
+               <c:attribute name='data-foo'>foo</c:attribute>
+            </a:validation-summary>
+         </li>
+         <li>
+            <a:validation-summary>text</a:validation-summary>
+         </li>
+         <li>
+            <a:validation-summary>
+               <c:attribute name='data-foo'>foo</c:attribute>
+               <c:return/>
+            </a:validation-summary>
+         </li>
+      </ol>
+   </c:template>
+
+   <c:template name='expected'>
+      <ol>
+         <li/>
+         <li>
+            <div class='validation-summary-errors' data-foo='foo'>
+               <ul>
+                  <li>a error</li>
+               </ul>
+            </div>
+         </li>
+         <li>
+            <div class='validation-summary-errors'>
+               <c:text>text</c:text>
+               <ul>
+                  <li>a error</li>
+               </ul>
+            </div>
+         </li>
+         <li>
+            <div class='validation-summary-errors' data-foo='foo'/>
+         </li>
+      </ol>
+   </c:template>
+
+</c:module>

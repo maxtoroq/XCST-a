@@ -27,43 +27,44 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public IDisposable
-   Label(XcstWriter output, string expression, bool hasDefaultText = false, string? @class = null) {
+   public DefaultContentDisposable
+   Label(XcstWriter output, string name, bool hasDefaultText = false) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, this.ViewData);
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
 
-      return GenerateLabel(output, modelExplorer, expression, hasDefaultText, @class);
+      return GenerateLabel(output, modelExplorer, name, hasDefaultText);
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public IDisposable
-   LabelForModel(XcstWriter output, bool hasDefaultText = false, string? @class = null) =>
-      GenerateLabel(output, this.ViewData.ModelExplorer, String.Empty, hasDefaultText, @class);
+   public DefaultContentDisposable
+   LabelForModel(XcstWriter output, bool hasDefaultText = false) =>
+      GenerateLabel(output, this.ViewData.ModelExplorer, String.Empty, hasDefaultText);
 
-   protected internal IDisposable
-   GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string expression, bool hasDefaultText, string? @class) {
+   protected internal DefaultContentDisposable
+   GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string name, bool hasDefaultText) {
 
-      var htmlFieldName = expression;
+      var htmlFieldName = name;
       var fullFieldName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName);
       var id = TagBuilder.CreateSanitizedId(fullFieldName);
 
       output.WriteStartElement("label");
       output.WriteAttributeString("for", id);
-      WriteCssClass(@class, null, output);
 
-      if (!hasDefaultText) {
+      var text = (!hasDefaultText) ?
+         modelExplorer.Metadata.DisplayName
+            ?? modelExplorer.Metadata.PropertyName
+            ?? htmlFieldName.Split('.').Last()
+         : null;
 
-         var metadata = modelExplorer.Metadata;
+      return new DefaultContentDisposable(output, elementStarted: true, contentFn);
 
-         var resolvedLabelText = metadata.DisplayName
-            ?? metadata.PropertyName
-            ?? htmlFieldName.Split('.').Last();
+      void contentFn(XcstWriter output) {
 
-         output.WriteString(resolvedLabelText);
+         if (text != null) {
+            output.WriteString(text);
+         }
       }
-
-      return new ElementEndingDisposable(output);
    }
 }
 
@@ -71,13 +72,12 @@ partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public IDisposable
-   LabelFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, bool hasDefaultText = false,
-         string? @class = null) {
+   public DefaultContentDisposable
+   LabelFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, bool hasDefaultText = false) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateLabel(output, modelExplorer, expressionString, hasDefaultText, @class);
+      return GenerateLabel(output, modelExplorer, expressionString, hasDefaultText);
    }
 }

@@ -26,7 +26,7 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public TextareaDisposable
+   public DefaultContentDisposable
    Textarea(XcstWriter output, string name, object? value = null, string? @class = null) {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
@@ -40,11 +40,11 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public TextareaDisposable
+   public DefaultContentDisposable
    TextareaForModel(XcstWriter output, object? value = null, string? @class = null) =>
       Textarea(output, String.Empty, value, @class);
 
-   protected internal TextareaDisposable
+   protected internal DefaultContentDisposable
    GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string name, object? value, string? @class) {
 
       ArgumentNullException.ThrowIfNull(name);
@@ -75,64 +75,10 @@ partial class HtmlHelper {
       WriteCssClass(@class, cssClass, output);
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
 
-      return new TextareaDisposable(output, text);
-   }
+      return new DefaultContentDisposable(output, elementStarted: true, contentFn);
 
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public class TextareaDisposable : ElementEndingDisposable {
-
-      readonly XcstWriter
-      _output;
-
-      readonly string
-      _text;
-
-      bool
-      _eoc;
-
-      bool
-      _disposed;
-
-      internal
-      TextareaDisposable(XcstWriter output, string text)
-         : base(output, true) {
-
-         _output = output;
-         _text = text;
-      }
-
-      [GeneratedCodeReference]
-      public void
-      EndOfConstructor() {
-         _eoc = true;
-      }
-
-      [GeneratedCodeReference]
-      public TextareaDisposable
-      NoConstructor() {
-         _eoc = true;
-         return this;
-      }
-
-      protected override void
-      Dispose(bool disposing) {
-
-         if (_disposed) {
-            return;
-         }
-
-         // don't write text when end of constructor is not reached
-         // e.g. an exception occurred, c:return, etc.
-
-         if (disposing
-            && _eoc) {
-
-            _output.WriteString(_text);
-         }
-
-         base.Dispose(disposing);
-
-         _disposed = true;
+      void contentFn(XcstWriter output) {
+         output.WriteString(text);
       }
    }
 }
@@ -141,7 +87,7 @@ partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public TextareaDisposable
+   public DefaultContentDisposable
    TextareaFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, string? @class = null) {
 
       ArgumentNullException.ThrowIfNull(expression);

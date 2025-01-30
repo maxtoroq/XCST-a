@@ -98,7 +98,7 @@ static class DefaultEditorTemplates {
             @class: htmlAttributes.RemoveClass(html.CurrentPackage.Context.SimpleContent));
 
          htmlAttributes.WriteTo(disp.CheckboxOutput);
-         disp.NoConstructor();
+         disp.EndOfConstructor();
       }
    }
 
@@ -398,7 +398,8 @@ static class DefaultEditorTemplates {
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "editor-label");
 
-               html.GenerateLabel(labelWriter, propertyExplorer, propertyMeta.PropertyName!, default, default)
+               html.GenerateLabel(labelWriter, propertyExplorer, propertyMeta.PropertyName!, default)
+                  .NoConstructor()
                   .Dispose();
 
                labelWriter.WriteEndElement();
@@ -421,6 +422,7 @@ static class DefaultEditorTemplates {
                fieldWriter!.WriteString(" ");
 
                html.GenerateValidationMessage(fieldWriter, propertyExplorer, propertyMeta.PropertyName!, default, default)
+                  .NoConstructor()
                   .Dispose();
 
                fieldWriter.WriteEndElement(); // </div>
