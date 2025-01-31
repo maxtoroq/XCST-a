@@ -39,6 +39,12 @@ partial class HtmlHelper {
       return GenerateValidationMessage(output, modelExplorer, name, hasDefaultText, @class);
    }
 
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public DefaultContentDisposable
+   ValidationMessageForModel(XcstWriter output, bool hasDefaultText = false, string? @class = null) =>
+      ValidationMessage(output, String.Empty, hasDefaultText, @class);
+
    protected internal DefaultContentDisposable
    GenerateValidationMessage(
          XcstWriter output, ModelExplorer modelExplorer, string name, bool hasDefaultText, string? @class) {

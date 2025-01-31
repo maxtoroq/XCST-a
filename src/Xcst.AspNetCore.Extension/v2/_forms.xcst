@@ -1532,11 +1532,13 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
+      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <attribute name='name'>
             <text>ValidationMessage</text>
-            <if test='forAttr != null'>For</if>
+            <if test='forAttr != null || forModel'>For</if>
+            <if test='forModel'>Model</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
@@ -1557,13 +1559,12 @@
                <when test='nameAttr != null'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                </when>
-               <otherwise>
-                  <code:string/>
-               </otherwise>
             </choose>
-            <code:argument name='hasDefaultText'>
-               <code:bool value='{fn_string(!isEmpty)}'/>
-            </code:argument>
+            <if test='!isEmpty'>
+               <code:argument name='hasDefaultText'>
+                  <code:bool value='true'/>
+               </code:argument>
+            </if>
             <if test='el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
