@@ -33,13 +33,16 @@ The extension on v2 can generate code for runtime v1 or v2 (the default). This n
 
 Breaking Changes
 ----------------
+
 ### Entension
+
+- [Removed 'attributes' attribute from all html instructions (can now use sequence constructor to add attributes)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
 - [Not using ViewDataDictionary value on form instructions](https://github.com/maxtoroq/XCST-a/commit/c23401630f2dbcef8bf6ff041bc281296b1665a1)
+- [Not adding blank option on a:select (a:editor still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
+- [Not looking for items in ViewData on a:select](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
+- [Not prepending new line on a:textarea when value is empty](https://github.com/maxtoroq/XCST-a/commit/7df19560060f7ac8a1ed09aab1ff833b961a09b5)
 - [Text-only sequence constructor for a:with-options/a:option](https://github.com/maxtoroq/XCST-a/commit/a168d65dcaec34680f0ad15e2bf3b7821e0bf00a)
 - [Renamed a:model's 'as' attribute to 'type'](https://github.com/maxtoroq/XCST-a/commit/3ac2492e377e7be181f0aa49e981e20c67010608)
-- [Removed 'attributes' attribute from all html instructions (can now use sequence constructor to add attributes)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
-- [Not adding blank option on a:select (a:editor still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
-- [Not prepending new line on a:textarea when value is empty](https://github.com/maxtoroq/XCST-a/commit/7df19560060f7ac8a1ed09aab1ff833b961a09b5)
 - [Using single Number template for integral types](https://github.com/maxtoroq/XCST-a/commit/6787fb48ee29127f536dcb52c267082be7791cee)
 
 ### Runtime
