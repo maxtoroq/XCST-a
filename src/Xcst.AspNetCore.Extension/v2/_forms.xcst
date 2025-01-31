@@ -543,12 +543,10 @@
                      <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                   </if>
                   <if test='el.Attribute("checked") is { } checkedAttr'>
-                     <code:argument name='isChecked'>
-                        <call-template name='src:boolean'>
-                           <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
-                           <with-param name='avt' value='checkedAttr'/>
-                        </call-template>
-                     </code:argument>
+                     <call-template name='src:boolean'>
+                        <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
+                        <with-param name='avt' value='checkedAttr'/>
+                     </call-template>
                   </if>
                </otherwise>
             </choose>
@@ -705,12 +703,10 @@
             <code:expression value='{xcst_expression(el.Attribute("value")!)}'/>
             <if test='forAttr is null
                   &amp;&amp; el.Attribute("checked") is { } checkedAttr'>
-               <code:argument name='isChecked'>
-                  <call-template name='src:boolean'>
-                     <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
-                     <with-param name='avt' value='checkedAttr'/>
-                  </call-template>
-               </code:argument>
+               <call-template name='src:boolean'>
+                  <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
+                  <with-param name='avt' value='checkedAttr'/>
+               </call-template>
             </if>
             <if test='el.Attribute("class") is { } classAttr'>
                <code:argument name='class' verbatim='true'>
@@ -928,25 +924,24 @@
                   <if test='nameAttr != null'>
                      <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                   </if>
-                  <choose>
-                     <when test='el.Attribute("value") is { } valueAttr'>
+                  <if test='el.Attribute("value") is { } valueAttr'>
+                     <code:argument name='value'>
                         <code:expression value='{xcst_expression(valueAttr)}'/>
-                     </when>
-                     <otherwise>
-                        <code:default>
-                           <copy-of value='src_object_type'/>
-                        </code:default>
-                     </otherwise>
-                  </choose>
+                     </code:argument>
+                  </if>
                </otherwise>
             </choose>
-            <variable name='multiple' value='(el.Attribute("multiple") is { } multipleAttr) ?
-               xcst_boolean(multipleAttr)!.Value : false'/>
-            <call-template name='option-list'>
-               <with-param name='el' value='el'/>
-               <with-param name='multiple' value='multiple'/>
-            </call-template>
-            <if test='multiple'>
+            <if test='el.Attribute("options") is { } optionsAttr'>
+               <code:argument name='options'>
+                  <call-template name='option-list'>
+                     <with-param name='el' value='el'/>
+                     <with-param name='optionsAttr' value='optionsAttr'/>
+                     <with-param name='optionEls' value='System.Array.Empty&lt;XElement>()'/>
+                  </call-template>
+               </code:argument>
+            </if>
+            <if test='el.Attribute("multiple") is { } multipleAttr
+                  &amp;&amp; xcst_boolean(multipleAttr)!.Value'>
                <code:argument name='multiple'>
                   <code:bool value='true'/>
                </code:argument>
@@ -1068,12 +1063,8 @@
 
    <template name='option-list'>
       <param name='el' as='XElement' required='yes'/>
-      <param name='multiple' value='false' as='bool'/>
-
-      <variable name='optionsAttr' value='el.Attribute("options")'/>
-      <variable name='optionEls' value='(el.Name.LocalName != "select") ?
-         select(el, a + "option").ToArray()
-         : System.Array.Empty&lt;XElement>()'/>
+      <param name='optionsAttr' as='XAttribute' required='yes'/>
+      <param name='optionEls' as='XElement[]' required='yes'/>
 
       <choose>
          <when test='optionsAttr != null
@@ -1312,9 +1303,11 @@
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                </when>
             </choose>
-            <code:argument name='hasDefaultText'>
-               <code:bool value='{fn_string(!isEmpty)}'/>
-            </code:argument>
+            <if test='!isEmpty'>
+               <code:argument name='hasDefaultText'>
+                  <code:bool value='true'/>
+               </code:argument>
+            </if>
          </code:arguments>
       </code:method-call>
    </template>

@@ -305,6 +305,8 @@
          </code:method-call>
          <call-template name='option-list'>
             <with-param name='el' value='el'/>
+            <with-param name='optionsAttr' value='el.Attribute("options")'/>
+            <with-param name='optionEls' value='select(el, a + "option").ToArray()'/>
          </call-template>
       </code:collection-initializer>
    </template>

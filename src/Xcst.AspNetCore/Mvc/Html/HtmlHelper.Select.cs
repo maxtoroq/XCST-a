@@ -31,19 +31,19 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
-   Select(XcstWriter output, string name, object? value = null, IEnumerable<SelectListItem>? selectList = null,
+   Select(XcstWriter output, string name, object? value = null, IEnumerable<SelectListItem>? options = null,
          bool multiple = false, string? @class = null) =>
-      GenerateSelect(output, default(ModelExplorer), name, value, selectList, multiple, @class);
+      GenerateSelect(output, default(ModelExplorer), name, value, options, multiple, @class);
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
-   SelectForModel(XcstWriter output, object? value = null, IEnumerable<SelectListItem>? selectList = null,
+   SelectForModel(XcstWriter output, object? value = null, IEnumerable<SelectListItem>? options = null,
          bool multiple = false, string? @class = null) =>
-      GenerateSelect(output, this.ViewData.ModelExplorer, String.Empty, value, selectList, multiple, @class);
+      GenerateSelect(output, this.ViewData.ModelExplorer, String.Empty, value, options, multiple, @class);
 
    protected internal SelectDisposable
-   GenerateSelect(XcstWriter output, ModelExplorer? modelExplorer, string name, object? value, IEnumerable<SelectListItem>? selectList,
+   GenerateSelect(XcstWriter output, ModelExplorer? modelExplorer, string name, object? value, IEnumerable<SelectListItem>? options,
          bool multiple, string? @class) {
 
       var viewData = this.ViewData;
@@ -116,7 +116,7 @@ partial class HtmlHelper {
 
       void writeList(XcstWriter output) {
 
-         if (selectList is null) {
+         if (options is null) {
             return;
          }
 
@@ -124,7 +124,7 @@ partial class HtmlHelper {
          // Treat each item with Group == null as a member of a unique group
          // so they are added according to the original order.
 
-         var groupedSelectList = selectList.GroupBy(i =>
+         var groupedSelectList = options.GroupBy(i =>
             (i.Group is null) ? i.GetHashCode() : i.Group.GetHashCode());
 
          foreach (var group in groupedSelectList) {
@@ -227,7 +227,7 @@ partial class HtmlHelper<TModel> {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
-   SelectFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, IEnumerable<SelectListItem>? selectList = null,
+   SelectFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, IEnumerable<SelectListItem>? options = null,
          bool multiple = false, string? @class = null) {
 
       ArgumentNullException.ThrowIfNull(expression);
@@ -235,6 +235,6 @@ partial class HtmlHelper<TModel> {
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateSelect(output, modelExplorer, expressionString, default(object), selectList, multiple, @class);
+      return GenerateSelect(output, modelExplorer, expressionString, default(object), options, multiple, @class);
    }
 }
