@@ -55,9 +55,6 @@ public partial class HtmlHelper {
    static string?
    _idAttributeDotReplacement;
 
-   DynamicViewDataDictionary?
-   _viewBag;
-
    DefaultValidationHtmlAttributeProvider?
    _validationAttributeProvider;
 
@@ -71,10 +68,6 @@ public partial class HtmlHelper {
       }
       set => _idAttributeDotReplacement = value;
    }
-
-   public dynamic
-   ViewBag =>
-      _viewBag ??= new DynamicViewDataDictionary(() => ViewData);
 
    public ViewContext
    ViewContext { get; }

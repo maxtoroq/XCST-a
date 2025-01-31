@@ -39,9 +39,6 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    IModelMetadataProvider?
    _modelMetadataProvider;
 
-   DynamicViewDataDictionary?
-   _viewBag;
-
    HtmlHelper?
    _html;
 
@@ -87,10 +84,6 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       }
       set => SetViewData(value);
    }
-
-   public dynamic
-   ViewBag =>
-      _viewBag ??= new DynamicViewDataDictionary(() => ViewData);
 
    public object?
    Model => ViewData.Model;
