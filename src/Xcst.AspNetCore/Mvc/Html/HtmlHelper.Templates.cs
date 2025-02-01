@@ -44,7 +44,7 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public TemplateHelper
    DisplayForModel() =>
-      new TemplateHelper(this, true, null, this.ViewData.ModelExplorer);
+      Display(String.Empty);
 
    /// <summary>
    /// Returns the properties that should be shown in a display template, based on the
@@ -111,7 +111,7 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public TemplateHelper
    EditorForModel() =>
-      new TemplateHelper(this, false, null, this.ViewData.ModelExplorer);
+      Editor(String.Empty);
 
    /// <summary>
    /// Returns the properties that should be shown in an editor template, based on the
@@ -242,14 +242,14 @@ public class TemplateHelper {
    readonly bool
    _displayMode;
 
-   readonly string?
+   readonly string
    _expression;
 
    readonly ModelExplorer
    _modelExplorer;
 
    internal
-   TemplateHelper(HtmlHelper html, bool displayMode, string? expression, ModelExplorer modelExplorer) {
+   TemplateHelper(HtmlHelper html, bool displayMode, string expression, ModelExplorer modelExplorer) {
       _html = html;
       _displayMode = displayMode;
       _expression = expression;

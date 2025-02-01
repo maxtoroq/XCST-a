@@ -7,15 +7,15 @@
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <ol>
-         <li>
-            <a:editor name='foo'/>
+         <li class='a'>
+            <a:display name='foo'/>
          </li>
-         <a:model type='object' field-prefix='foo'>
-            <li>
-               <a:editor/>
+         <a:model type='object' value='new object()' field-prefix='foo'>
+            <li class='b'>
+               <a:display/>
             </li>
-            <li>
-               <a:editor name=''/>
+            <li class='c'>
+               <a:display name=''/>
             </li>
          </a:model>
       </ol>
@@ -23,11 +23,9 @@
 
    <c:template name='expected'>
       <ol>
-         <c:for-each name='i' in='System.Linq.Enumerable.Range(1, 3)'>
-            <li>
-               <input type='text' id='foo' name='foo' value='' class='text-box single-line'/>
-            </li>
-         </c:for-each>
+         <li class='a'/>
+         <li class='b'>System.Object</li>
+         <li class='c'>System.Object</li>
       </ol>
    </c:template>
 
