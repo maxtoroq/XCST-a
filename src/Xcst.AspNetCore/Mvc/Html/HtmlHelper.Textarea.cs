@@ -31,18 +31,14 @@ partial class HtmlHelper {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
 
-      if (value != null) {
-         modelExplorer = new ModelExplorer(this.ViewData.MetadataProvider, modelExplorer.Container, modelExplorer.Metadata, value);
-      }
-
-      return GenerateTextarea(output, modelExplorer, name, default(object), @class);
+      return GenerateTextarea(output, modelExplorer, name, value, @class);
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
    TextareaForModel(XcstWriter output, object? value = null, string? @class = null) =>
-      Textarea(output, String.Empty, value, @class);
+      GenerateTextarea(output, this.ViewData.ModelExplorer, String.Empty, value, @class);
 
    protected internal DefaultContentDisposable
    GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string name, object? value, string? @class) {
@@ -95,6 +91,6 @@ partial class HtmlHelper<TModel> {
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateTextarea(output, modelExplorer, expressionString, default(object), @class);
+      return GenerateTextarea(output, modelExplorer, expressionString, value: null, @class);
    }
 }

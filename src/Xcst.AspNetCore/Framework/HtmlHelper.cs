@@ -236,26 +236,26 @@ public partial class HtmlHelper {
    GetUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer) =>
       GetUnobtrusiveValidationAttributes(name, modelExplorer, false);
 
-   internal IDictionary<string, string>
+   IDictionary<string, string>
    GetUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength) {
 
       var results = new Dictionary<string, string>();
 
       WriteUnobtrusiveValidationAttributes(
-         name, modelExplorer, excludeMinMaxLength, (key, value) => results[key] = value);
+         name, modelExplorer!, excludeMinMaxLength, (key, value) => results[key] = value);
 
       return results;
    }
 
    internal void
-   WriteUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength, XcstWriter output) {
+   WriteUnobtrusiveValidationAttributes(string name, ModelExplorer modelExplorer, bool excludeMinMaxLength, XcstWriter output) {
 
       WriteUnobtrusiveValidationAttributes(
          name, modelExplorer, excludeMinMaxLength, (key, value) => output.WriteAttributeString(key, value));
    }
 
-   internal void
-   WriteUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength, Action<string, string> writeFn) {
+   void
+   WriteUnobtrusiveValidationAttributes(string name, ModelExplorer modelExplorer, bool excludeMinMaxLength, Action<string, string> writeFn) {
 
       // The ordering of these 3 checks (and the early exits) is for performance reasons.
 

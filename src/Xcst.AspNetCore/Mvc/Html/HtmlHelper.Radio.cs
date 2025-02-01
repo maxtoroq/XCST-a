@@ -28,14 +28,22 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
-   Radio(XcstWriter output, string name, object value, string? @class = null) =>
-      GenerateRadio(output, modelExplorer: null, name, value, isChecked: null, @class);
+   Radio(XcstWriter output, string name, object value, string? @class = null) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateRadio(output, modelExplorer, name, value, isChecked: null, @class);
+   }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
-   Radio(XcstWriter output, string name, object value, bool isChecked, string? @class = null) =>
-      GenerateRadio(output, modelExplorer: null, name, value, isChecked, @class);
+   Radio(XcstWriter output, string name, object value, bool isChecked, string? @class = null) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateRadio(output, modelExplorer, name, value, isChecked, @class);
+   }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -50,7 +58,7 @@ partial class HtmlHelper {
       GenerateRadio(output, this.ViewData.ModelExplorer, String.Empty, value, isChecked, @class);
 
    protected IDisposable
-   GenerateRadio(XcstWriter output, ModelExplorer? modelExplorer, string name, object value,
+   GenerateRadio(XcstWriter output, ModelExplorer modelExplorer, string name, object value,
          bool? isChecked, string? @class) {
 
       ArgumentNullException.ThrowIfNull(name);
@@ -67,14 +75,10 @@ partial class HtmlHelper {
 
       checkedAttr ??= isChecked;
 
-      if (checkedAttr is null) {
-         if (modelExplorer != null) {
-            if (modelExplorer.Model is { } model) {
-               checkedAttr = RadioValueEquals(value, model);
-            }
-         } else {
-            checkedAttr = RadioValueEquals(value, this.ViewData.Eval(name));
-         }
+      if (checkedAttr is null
+         && modelExplorer.Model is { } model) {
+
+         checkedAttr = RadioValueEquals(value, model);
       }
 
       output.WriteStartElement("input");

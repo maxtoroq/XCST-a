@@ -28,8 +28,12 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    Input(XcstWriter output, string name, object? value = null, string? type = null,
-         string? format = null, string? @class = null) =>
-      GenerateInput(output, type, default(ModelExplorer), name, value, format, @class);
+         string? format = null, string? @class = null) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateInput(output, type, modelExplorer, name, value, format, @class);
+   }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -39,21 +43,20 @@ partial class HtmlHelper {
       GenerateInput(output, type, this.ViewData.ModelExplorer, name: String.Empty, value, format, @class);
 
    protected internal IDisposable
-   GenerateInput(XcstWriter output, string? type, ModelExplorer? modelExplorer, string name, object? value,
+   GenerateInput(XcstWriter output, string? type, ModelExplorer modelExplorer, string name, object? value,
          string? format, string? @class) {
 
       ArgumentNullException.ThrowIfNull(name);
 
       var fullName = FullNameNonEmpty(name);
       var inputType = GetInputType(type) ?? InputType.Text;
-      var valueOrModel = value ?? modelExplorer?.Model;
+      var valueOrModel = value ?? modelExplorer.Model;
 
       var valueAttr = (string?)GetModelStateValue(fullName, typeof(string));
 
       valueAttr ??= (inputType == InputType.Hidden
          && valueOrModel is byte[] byteArrayValue) ? Convert.ToBase64String(byteArrayValue)
-         : (value != null || modelExplorer != null) ? FormatValue(valueOrModel, format)
-         : EvalString(name, format);
+         : FormatValue(valueOrModel, format);
 
       output.WriteStartElement("input");
 
@@ -106,6 +109,6 @@ partial class HtmlHelper<TModel> {
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var exprString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateInput(output, type, modelExplorer, name: exprString, value: null, format, @class);
+      return GenerateInput(output, type, modelExplorer, exprString, value: null, format, @class);
    }
 }

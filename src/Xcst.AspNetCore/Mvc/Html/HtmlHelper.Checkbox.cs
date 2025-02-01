@@ -29,14 +29,22 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public CheckboxDisposable
-   Checkbox(ISequenceWriter<XElement> output, string name, string? @class = null) =>
-      GenerateCheckbox(output, modelExplorer: null, name, isChecked: null, @class);
+   Checkbox(ISequenceWriter<XElement> output, string name, string? @class = null) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateCheckbox(output, modelExplorer, name, isChecked: null, @class);
+   }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public CheckboxDisposable
-   Checkbox(ISequenceWriter<XElement> output, string name, bool isChecked, string? @class = null) =>
-      GenerateCheckbox(output, modelExplorer: null, name, isChecked, @class);
+   Checkbox(ISequenceWriter<XElement> output, string name, bool isChecked, string? @class = null) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateCheckbox(output, modelExplorer, name, isChecked, @class);
+   }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -51,7 +59,7 @@ partial class HtmlHelper {
       GenerateCheckbox(output, this.ViewData.ModelExplorer, name: String.Empty, isChecked, @class);
 
    protected internal CheckboxDisposable
-   GenerateCheckbox(ISequenceWriter<XElement> output, ModelExplorer? modelExplorer, string name,
+   GenerateCheckbox(ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string name,
          bool? isChecked, string? @class) {
 
       var inputWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
@@ -84,7 +92,7 @@ partial class HtmlHelper {
    }
 
    void
-   GenerateCheckboxInput(XcstWriter output, ModelExplorer? modelExplorer, string name,
+   GenerateCheckboxInput(XcstWriter output, ModelExplorer modelExplorer, string name,
          bool? isChecked, string? @class, out string fullName) {
 
       ArgumentNullException.ThrowIfNull(name);
@@ -106,16 +114,11 @@ partial class HtmlHelper {
 
       checkedAttr ??= isChecked;
 
-      if (checkedAttr is null) {
-         if (modelExplorer != null) {
-            if (modelExplorer.Model is { } model
-               && Boolean.TryParse(model.ToString(), out var modelChecked)) {
+      if (checkedAttr is null
+         && modelExplorer.Model is { } model
+         && Boolean.TryParse(model.ToString(), out var modelChecked)) {
 
-               checkedAttr = modelChecked;
-            }
-         } else {
-            checkedAttr = EvalBoolean(name);
-         }
+         checkedAttr = modelChecked;
       }
 
       output.WriteStartElement("input");

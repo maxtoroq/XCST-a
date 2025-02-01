@@ -32,8 +32,12 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
    Select(XcstWriter output, string name, object? value = null, IEnumerable<SelectListItem>? options = null,
-         bool multiple = false, string? @class = null) =>
-      GenerateSelect(output, default(ModelExplorer), name, value, options, multiple, @class);
+         bool multiple = false, string? @class = null) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateSelect(output, modelExplorer, name, value, options, multiple, @class);
+   }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -43,7 +47,7 @@ partial class HtmlHelper {
       GenerateSelect(output, this.ViewData.ModelExplorer, String.Empty, value, options, multiple, @class);
 
    protected internal SelectDisposable
-   GenerateSelect(XcstWriter output, ModelExplorer? modelExplorer, string name, object? value, IEnumerable<SelectListItem>? options,
+   GenerateSelect(XcstWriter output, ModelExplorer modelExplorer, string name, object? value, IEnumerable<SelectListItem>? options,
          bool multiple, string? @class) {
 
       var viewData = this.ViewData;
@@ -53,9 +57,7 @@ partial class HtmlHelper {
          GetModelStateValue(fullName, typeof(string[]))
          : GetModelStateValue(fullName, typeof(string));
 
-      defaultValue ??= (value != null || modelExplorer != null) ?
-         value ?? modelExplorer?.Model
-         : viewData.Eval(name);
+      defaultValue ??= value ?? modelExplorer.Model;
 
       var selectedValues = getSelectedValues(defaultValue, multiple);
 
@@ -235,6 +237,6 @@ partial class HtmlHelper<TModel> {
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateSelect(output, modelExplorer, expressionString, default(object), options, multiple, @class);
+      return GenerateSelect(output, modelExplorer, expressionString, value: null, options, multiple, @class);
    }
 }
