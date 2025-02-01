@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<?model string?>
+<?model ForTemplateModel?>
 <c:module version='1.0' language='C#'
    xmlns:c='http://maxtoroq.github.io/XCST'
    xmlns:a='http://maxtoroq.github.io/XCST/application'
@@ -7,11 +7,11 @@
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
-      <a:input for='Length'/>
+      <a:input for='foo'/>
    </c:template>
 
    <c:template name='expected'>
-      <input type='text' id='Length' name='Length' value=''/>
+      <input type='text' id='foo' name='foo' value=''/>
    </c:template>
 
 </c:module>
