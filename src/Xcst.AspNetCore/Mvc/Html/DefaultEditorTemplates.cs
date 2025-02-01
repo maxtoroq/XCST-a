@@ -332,7 +332,7 @@ static class DefaultEditorTemplates {
       var viewData = html.ViewData;
       var value = viewData.TemplateInfo.FormattedModelValue;
       var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
-      var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
+      var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateTextarea(
          output,
@@ -441,7 +441,7 @@ static class DefaultEditorTemplates {
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_passwordInfo, "text-box single-line password");
-      var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
+      var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var _ = html.GenerateInput(
          output,
@@ -489,7 +489,7 @@ static class DefaultEditorTemplates {
          : viewData.TemplateInfo.FormattedModelValue;
 
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
-      var htmlAttributes = CreateHtmlAttributes(html, className, addMetadataAttributes: true);
+      var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var _ = html.GenerateInput(
          output,
@@ -527,28 +527,11 @@ static class DefaultEditorTemplates {
    }
 
    static HtmlAttributeDictionary
-   CreateHtmlAttributes(HtmlHelper html, string? className, string? inputType = null,
-         bool addMetadataAttributes = false) {
+   CreateHtmlAttributes(HtmlHelper html, string? className) {
 
       var htmlAttributes = new HtmlAttributeDictionary();
 
-      if (inputType != null) {
-         htmlAttributes.Add("type", inputType);
-      }
-
       htmlAttributes.AddClass(className);
-
-      if (addMetadataAttributes) {
-
-         var metadata = html.ViewData.ModelMetadata;
-
-         if (!String.IsNullOrEmpty(metadata.Placeholder)) {
-            htmlAttributes["placeholder"] = metadata.Placeholder;
-         }
-
-         htmlAttributes.SetBoolean("readonly", metadata.IsReadOnly);
-      }
-
       htmlAttributes.SetAttributes(html.ViewData.TemplateInfo.HtmlAttributes);
 
       return htmlAttributes;

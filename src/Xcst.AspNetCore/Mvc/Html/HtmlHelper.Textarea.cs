@@ -69,6 +69,12 @@ partial class HtmlHelper {
          ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
+      WriteBoolean("readonly", modelExplorer.Metadata.IsReadOnly, output);
+
+      if (!String.IsNullOrEmpty(modelExplorer.Metadata.Placeholder)) {
+         output.WriteAttributeString("placeholder", modelExplorer.Metadata.Placeholder);
+      }
+
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
 
       return new DefaultContentDisposable(output, elementStarted: true, contentFn);

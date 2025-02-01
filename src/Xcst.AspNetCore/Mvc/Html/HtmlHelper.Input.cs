@@ -81,6 +81,12 @@ partial class HtmlHelper {
          && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
+      WriteBoolean("readonly", modelExplorer.Metadata.IsReadOnly, output);
+
+      if (!String.IsNullOrEmpty(modelExplorer.Metadata.Placeholder)) {
+         output.WriteAttributeString("placeholder", modelExplorer.Metadata.Placeholder);
+      }
+
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
 
       return new ElementEndingDisposable(output);
