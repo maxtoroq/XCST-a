@@ -147,7 +147,7 @@ static class DefaultEditorTemplates {
             var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-            new TemplateHelper(html, false, null, itemExplorer)
+            new TemplateHelper(html, false, String.Empty, itemExplorer)
                .Render(seqOutput, htmlFieldName: fieldName);
          }
 
@@ -411,7 +411,7 @@ static class DefaultEditorTemplates {
                fieldWriter.WriteAttributeString("class", "editor-field");
             }
 
-            new TemplateHelper(html, false, null, propertyExplorer)
+            new TemplateHelper(html, false, String.Empty, propertyExplorer)
                .Render(
                   fieldWriter ?? fieldsetWriter ?? seqOutput,
                   htmlFieldName: propertyMeta.PropertyName

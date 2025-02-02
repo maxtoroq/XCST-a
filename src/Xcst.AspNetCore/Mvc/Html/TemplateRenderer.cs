@@ -29,9 +29,6 @@ using TemplateAction = Action<HtmlHelper, ISequenceWriter<object>>;
 
 sealed class TemplateRenderer {
 
-   static readonly string
-   _cacheItemId = Guid.NewGuid().ToString();
-
    static readonly Dictionary<string, TemplateAction>
    _defaultDisplayActions = new(StringComparer.OrdinalIgnoreCase) {
 
@@ -149,7 +146,7 @@ sealed class TemplateRenderer {
          }
 
          if (defaultActions.TryGetValue(viewName, out var defaultAction)) {
-            defaultAction.Invoke(MakeHtmlHelper(_viewContext, _viewData), output);
+            defaultAction.Invoke(MakeHtmlHelper(), output);
             return;
          }
       }
@@ -232,8 +229,8 @@ sealed class TemplateRenderer {
    }
 
    HtmlHelper
-   MakeHtmlHelper(ViewContext viewContext, ViewDataDictionary viewData) =>
-      new HtmlHelper(new ViewContext(viewContext), new ViewDataContainer(viewData), _package);
+   MakeHtmlHelper() =>
+      new HtmlHelper(new ViewContext(_viewContext), new ViewDataContainer(_viewData), _package);
 
    void
    RenderViewPage(XcstViewPage viewPage, ISequenceWriter<object> output) {

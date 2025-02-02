@@ -122,7 +122,7 @@ static class DefaultDisplayTemplates {
             var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
-            new TemplateHelper(html, true, null, itemExplorer)
+            new TemplateHelper(html, true, String.Empty, itemExplorer)
                .Render(seqOutput, htmlFieldName: fieldName);
          }
 
@@ -266,7 +266,7 @@ static class DefaultDisplayTemplates {
                fieldWriter.WriteAttributeString("class", "display-field");
             }
 
-            new TemplateHelper(html, true, null, propertyExplorer)
+            new TemplateHelper(html, true, String.Empty, propertyExplorer)
                .Render(
                   fieldWriter ?? fieldsetWriter ?? seqOutput,
                   htmlFieldName: propertyMeta.PropertyName
