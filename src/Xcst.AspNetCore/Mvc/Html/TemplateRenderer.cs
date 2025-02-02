@@ -20,6 +20,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xcst.Runtime;
 using Xcst.Web.Builder;
 
@@ -134,7 +136,7 @@ sealed class TemplateRenderer {
 
       var config = XcstWebOptions.Instance;
 
-      foreach (var viewName in GetViewNames(templateHints)) {
+      foreach (var viewName in GetViewNames()) {
 
          var viewPage = ((_readOnly) ?
             config.DisplayTemplateFactory
@@ -160,9 +162,20 @@ sealed class TemplateRenderer {
          : _defaultEditorActions;
 
    IEnumerable<string>
-   GetViewNames(params string?[] templateHints) {
+   GetViewNames() {
 
       var metadata = _viewData.ModelMetadata;
+      var options = _viewData.TemplateInfo.OptionsForModel();
+
+      var templateHints = new[] {
+         _templateName,
+         metadata.TemplateHint,
+         ((options != null) ?
+            metadata.IsEnumerableType ? "ListBox"
+            : "DropDownList"
+            : null),
+         metadata.DataTypeName
+      };
 
       foreach (var templateHint in templateHints.Where(s => !String.IsNullOrEmpty(s))) {
          yield return templateHint!;
@@ -172,25 +185,28 @@ sealed class TemplateRenderer {
 
       var fieldType = metadata.UnderlyingOrModelType;
 
-      // TODO: Make better string names for generic types
+      foreach (var typeName in GetTypeNames(metadata, fieldType)) {
+         yield return typeName;
+      }
+   }
+
+   internal static IEnumerable<string>
+   GetTypeNames(ModelMetadata metadata, Type fieldType) {
 
       yield return fieldType.Name;
 
       if (fieldType == typeof(string)) {
 
          // Nothing more to provide
-
          yield break;
       }
 
       if (!metadata.IsComplexType) {
 
          // IsEnum is false for the Enum class itself
-
          if (fieldType.IsEnum) {
 
             // Same as fieldType.BaseType.Name in this case
-
             yield return nameof(Enum);
 
          } else if (fieldType == typeof(DateTimeOffset)) {
@@ -198,34 +214,38 @@ sealed class TemplateRenderer {
          }
 
          yield return nameof(String);
+         yield break;
+      }
 
-      } else if (fieldType.IsInterface) {
+      if (!fieldType.IsInterface) {
 
-         if (typeof(IEnumerable).IsAssignableFrom(fieldType)) {
-            yield return "Collection";
-         }
-
-         yield return nameof(Object);
-
-      } else {
-
-         var isEnumerable = typeof(IEnumerable).IsAssignableFrom(fieldType);
+         var baseType = fieldType;
 
          while (true) {
 
-            fieldType = fieldType.BaseType;
+            baseType = fieldType.BaseType;
 
-            if (fieldType is null) {
+            if (baseType is null
+               || baseType == typeof(object)) {
+
                break;
             }
 
-            if (isEnumerable && fieldType == typeof(Object)) {
-               yield return "Collection";
-            }
-
-            yield return fieldType.Name;
+            yield return baseType.Name;
          }
       }
+
+      if (fieldType != typeof(IFormFile)
+         && typeof(IFormFile).IsAssignableFrom(fieldType)) {
+
+         yield return nameof(IFormFile);
+      }
+
+      if (typeof(IEnumerable).IsAssignableFrom(fieldType)) {
+         yield return "Collection";
+      }
+
+      yield return nameof(Object);
    }
 
    HtmlHelper

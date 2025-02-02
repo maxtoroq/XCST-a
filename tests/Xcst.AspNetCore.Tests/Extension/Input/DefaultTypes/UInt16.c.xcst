@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='p1' as='System.UInt16'/>
+      <c:member name='p2' as='System.UInt16?'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <div>
+         <a:model type='Foo'>
+            <a:input for='p1'/>
+            <a:input for='p2'/>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected' expand-text='yes'>
+      <div>
+         <input type='number' id='p1' name='p1' value=''/>
+         <input type='number' id='p2' name='p2' value=''/>
+      </div>
+   </c:template>
+
+</c:module>

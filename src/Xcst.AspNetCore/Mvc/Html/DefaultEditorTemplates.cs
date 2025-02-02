@@ -461,7 +461,7 @@ static class DefaultEditorTemplates {
 
    public static void
    StringTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, seqOutput, "String");
+      HtmlInputTemplateHelper(html, seqOutput, "String", inputType: "text");
 
    public static void
    TimeTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
@@ -485,7 +485,7 @@ static class DefaultEditorTemplates {
 
       var viewData = html.ViewData;
 
-      var value = (inputType == "file") ? null
+      var value = (HtmlHelper.OmitInputValue(inputType)) ? null
          : viewData.TemplateInfo.FormattedModelValue;
 
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
