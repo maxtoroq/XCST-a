@@ -119,7 +119,8 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    public async Task<bool>
    TryUpdateModelAsync(
-         object model, Type? modelType = null, string? prefix = null, IValueProvider? valueProvider = null) {
+         object model, Type? modelType = null, string? prefix = null,
+         IValueProvider? valueProvider = null, Func<ModelMetadata, bool>? propertyFilter = null) {
 
       var modelBinderFactory = this.HttpContext.RequestServices
          .GetRequiredService<IModelBinderFactory>();
@@ -150,7 +151,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       var modelBindingContext = DefaultModelBindingContext
          .CreateBindingContext(actionContext, valueProvider, metadataForType, null, prefix ?? String.Empty);
       modelBindingContext.Model = model;
-      //modelBindingContext.PropertyFilter = propertyFilter;
+      modelBindingContext.PropertyFilter = propertyFilter;
 
       var context = new ModelBinderFactoryContext {
          Metadata = metadataForType,
