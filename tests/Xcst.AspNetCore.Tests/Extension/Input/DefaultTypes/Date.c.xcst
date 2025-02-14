@@ -4,25 +4,46 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <c:import-namespace ns='System.Globalization'/>
+
    <c:type name='Foo'>
       <c:member name='p1' as='System.DateTime' data-type='Date'/>
       <c:member name='p2' as='System.DateTime?' data-type='Date'/>
+      <c:member name='p3' as='object' data-type='Date'/>
+      <c:member name='p4' as='System.DateTime' data-type='Date' template='Text'/>
    </c:type>
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <c:set ref='CultureInfo.CurrentCulture' value='CultureInfo.GetCultureInfo("en-US")'/>
       <div>
          <a:model type='Foo'>
             <a:input for='p1'/>
             <a:input for='p2'/>
          </a:model>
+         <a:model value='new Foo {
+               p1 = new System.DateTime(1999, 12, 31),
+               p3 = new System.DateTime(1999, 12, 31),
+               p4 = new System.DateTime(1999, 12, 31)
+            }'>
+            <a:input for='p1'/>
+            <a:input for='p3'/>
+            <a:input for='p4'/>
+         </a:model>
+         <a:input name='n1' value='new System.DateTime(1999, 12, 31)'/>
+         <a:input name='n2' type='date' value='new System.DateTime(1999, 12, 31)'/>
       </div>
    </c:template>
 
-   <c:template name='expected' expand-text='yes'>
+   <c:template name='expected'>
       <div>
          <input type='date' id='p1' name='p1' value=''/>
          <input type='date' id='p2' name='p2' value=''/>
+         <input type='date' id='p1' name='p1' value='1999-12-31'/>
+         <input type='date' id='p3' name='p3' value='1999-12-31'/>
+         <input type='text' id='p4' name='p4' value='12/31/1999'/>
+         <input type='text' id='n1' name='n1' value='12/31/1999 12:00:00 AM'/>
+         <input type='date' id='n2' name='n2' value='1999-12-31'/>
       </div>
    </c:template>
 

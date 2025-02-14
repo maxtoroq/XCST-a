@@ -19,7 +19,7 @@
       </div>
    </c:template>
 
-   <c:template name='expected' expand-text='yes'>
+   <c:template name='expected'>
       <div>
          <input type='time' id='p1' name='p1' value=''/>
          <input type='time' id='p2' name='p2' value=''/>

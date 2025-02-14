@@ -4,10 +4,8 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='System'/>
-
    <c:type name='Foo'>
-      <c:member name='d' as='DateTime' value='new DateTime()' template='DateTime-local'/>
+      <c:member name='d' as='System.DateTime' value='new()' template='DateTime-local'/>
    </c:type>
 
    <c:template name='c:initial-template'>

@@ -20,7 +20,7 @@
       </div>
    </c:template>
 
-   <c:template name='expected' expand-text='yes'>
+   <c:template name='expected'>
       <div>
          <textarea id='p' name='p' placeholder='Enter something...' readonly='readonly'/>
          <textarea id='p' name='p' placeholder='Enter something...' readonly='readonly'/>

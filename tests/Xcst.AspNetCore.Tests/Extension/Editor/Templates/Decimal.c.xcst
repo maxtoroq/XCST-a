@@ -4,26 +4,22 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <c:import-namespace ns='System.Globalization'/>
+
    <c:type name='Foo'>
-      <c:member name='p1' as='System.Int16'/>
-      <c:member name='p2' as='System.Int16?'/>
+      <c:member name='p1' as='decimal'/>
    </c:type>
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
-      <div>
-         <a:model type='Foo'>
-            <a:input for='p1'/>
-            <a:input for='p2'/>
-         </a:model>
-      </div>
+      <c:set ref='CultureInfo.CurrentCulture' value='CultureInfo.GetCultureInfo("fr-FR")'/>
+      <a:model value='new Foo()'>
+         <a:editor for='p1'/>
+      </a:model>
    </c:template>
 
    <c:template name='expected'>
-      <div>
-         <input type='number' id='p1' name='p1' value=''/>
-         <input type='number' id='p2' name='p2' value=''/>
-      </div>
+      <input type='text' id='p1' name='p1' value='0,00' class='text-box single-line'/>
    </c:template>
 
 </c:module>

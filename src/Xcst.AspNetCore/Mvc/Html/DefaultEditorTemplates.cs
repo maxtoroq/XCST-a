@@ -77,7 +77,7 @@ static class DefaultEditorTemplates {
             output,
             viewData.ModelExplorer,
             String.Empty,
-            default(object),
+            value: null,
             TriStateValues(value),
             multiple: false,
             @class: htmlAttributes.RemoveClass(output.SimpleContent));
@@ -93,7 +93,7 @@ static class DefaultEditorTemplates {
          using var disp = html.GenerateCheckbox(
             seqOutput,
             modelExplorer: viewData.ModelExplorer,
-            name: String.Empty,
+            String.Empty,
             value.GetValueOrDefault(),
             @class: htmlAttributes.RemoveClass(html.CurrentPackage.Context.SimpleContent));
 
@@ -159,29 +159,38 @@ static class DefaultEditorTemplates {
    public static void
    DateTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-dd}");
-      HtmlInputTemplateHelper(html, seqOutput, "Date", inputType: "date");
+      var inputType = "date";
+
+      ApplyRfc3339DateFormattingIfNeeded(html, inputType);
+      HtmlInputTemplateHelper(html, seqOutput, "Date", inputType);
    }
 
    public static void
    DateTimeLocalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      ApplyRfc3339DateFormattingIfNeeded(html, "{0:yyyy-MM-ddTHH:mm:ss.fff}");
-      HtmlInputTemplateHelper(html, seqOutput, "DateTime-local", inputType: "datetime-local");
+      var inputType = "datetime-local";
+
+      ApplyRfc3339DateFormattingIfNeeded(html, inputType);
+      HtmlInputTemplateHelper(html, seqOutput, "DateTime-local", inputType);
    }
 
    public static void
    DecimalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
+      var value = viewData.ModelExplorer.Model;
 
-      if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelExplorer.Model) {
+      var templateName = "Decimal";
+      var inputType = "text";
 
-         viewData.TemplateInfo.FormattedModelValue =
-            String.Format(CultureInfo.CurrentCulture, "{0:0.00}", viewData.ModelExplorer.Model);
+      if (viewData.TemplateInfo.FormattedModelValue == value) {
+
+         var format = html.GetDataTypeFormat(viewData.ModelMetadata, inputType, templateName)!;
+
+         viewData.TemplateInfo.FormattedModelValue = html.FormatValue(value, format);
       }
 
-      HtmlInputTemplateHelper(html, seqOutput, "Decimal");
+      HtmlInputTemplateHelper(html, seqOutput, templateName, inputType);
    }
 
    public static void
@@ -205,7 +214,7 @@ static class DefaultEditorTemplates {
          output,
          viewData.ModelExplorer,
          String.Empty,
-         default(object),
+         value: null,
          options,
          multiple: false,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
@@ -221,10 +230,6 @@ static class DefaultEditorTemplates {
 
       disp.EndOfConstructor();
    }
-
-   public static void
-   EmailAddressTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, seqOutput, "EmailAddress", inputType: "email");
 
    public static void
    EnumTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
@@ -254,7 +259,7 @@ static class DefaultEditorTemplates {
          output,
          viewData.ModelExplorer,
          String.Empty,
-         default(object),
+         value: null,
          options,
          multiple: false,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
@@ -290,7 +295,7 @@ static class DefaultEditorTemplates {
          viewData.ModelExplorer,
          String.Empty,
          value,
-         default(string),
+         format: null,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
       htmlAttributes.WriteTo(output);
@@ -315,13 +320,22 @@ static class DefaultEditorTemplates {
          output,
          viewData.ModelExplorer,
          String.Empty,
-         default(object),
+         value: null,
          options,
          multiple: true,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
       htmlAttributes.WriteTo(output);
       disp.EndOfConstructor();
+   }
+
+   public static void
+   MonthTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
+
+      var inputType = "month";
+
+      ApplyRfc3339DateFormattingIfNeeded(html, inputType);
+      HtmlInputTemplateHelper(html, seqOutput, "Month", inputType);
    }
 
    public static void
@@ -337,7 +351,7 @@ static class DefaultEditorTemplates {
       using var disp = html.GenerateTextarea(
          output,
          viewData.ModelExplorer,
-         name: String.Empty,
+         String.Empty,
          value,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
@@ -448,35 +462,31 @@ static class DefaultEditorTemplates {
          type: "password",
          html.ViewData.ModelExplorer,
          String.Empty,
-         default(object),
-         default(string),
+         value: null,
+         format: null,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
       htmlAttributes.WriteTo(output);
    }
 
    public static void
-   PhoneNumberTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, seqOutput, "PhoneNumber", inputType: "tel");
-
-   public static void
    StringTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, seqOutput, "String", inputType: "text");
+      // String is the fallback template for non-complex types. Not using an explicit
+      // input type allows GenerateInput() to infer from metadata.
+      HtmlInputTemplateHelper(html, seqOutput, "String");
 
    public static void
    TimeTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      ApplyRfc3339DateFormattingIfNeeded(html, "{0:HH:mm:ss.fff}");
-      HtmlInputTemplateHelper(html, seqOutput, "Time", inputType: "time");
+      var inputType = "time";
+
+      ApplyRfc3339DateFormattingIfNeeded(html, inputType);
+      HtmlInputTemplateHelper(html, seqOutput, "Time", inputType);
    }
 
    public static void
    UploadTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
       HtmlInputTemplateHelper(html, seqOutput, "Upload", inputType: "file");
-
-   public static void
-   UrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, seqOutput, "Url", inputType: "url");
 
    static void
    HtmlInputTemplateHelper(HtmlHelper html, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
@@ -497,18 +507,14 @@ static class DefaultEditorTemplates {
          viewData.ModelExplorer,
          String.Empty,
          value,
-         default(string),
+         format: null,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
 
       htmlAttributes.WriteTo(output);
    }
 
    static void
-   ApplyRfc3339DateFormattingIfNeeded(HtmlHelper html, string format) {
-
-      if (html.ViewContext.Html5DateRenderingMode != Html5DateRenderingMode.Rfc3339) {
-         return;
-      }
+   ApplyRfc3339DateFormattingIfNeeded(HtmlHelper html, string inputType) {
 
       var viewData = html.ViewData;
       var value = viewData.ModelExplorer.Model;
@@ -516,8 +522,12 @@ static class DefaultEditorTemplates {
       if (viewData.TemplateInfo.FormattedModelValue != value
          && viewData.ModelMetadata.HasNonDefaultEditFormat) {
 
+         // non-default current culture formatting applied
+
          return;
       }
+
+      var format = html.GetDataTypeFormat(viewData.ModelMetadata, inputType, null)!;
 
       if (value is DateTime
          || value is DateTimeOffset) {

@@ -34,18 +34,21 @@ sealed class TemplateRenderer {
    static readonly Dictionary<string, TemplateAction>
    _defaultDisplayActions = new(StringComparer.OrdinalIgnoreCase) {
 
-      // System.ComponentModel.DataAnnotations.DataType templates
+      // System.ComponentModel.DataAnnotations.DataType
       { "EmailAddress", DefaultDisplayTemplates.EmailAddressTemplate },
       { "Html", DefaultDisplayTemplates.HtmlTemplate },
       { "ImageUrl", DefaultDisplayTemplates.ImageUrlTemplate },
       { "Text", DefaultDisplayTemplates.StringTemplate },
       { "Url", DefaultDisplayTemplates.UrlTemplate },
 
-      // primitive templates
+      // primitive
       { "Boolean", DefaultDisplayTemplates.BooleanTemplate },
       { "Decimal", DefaultDisplayTemplates.DecimalTemplate },
       { "Enum", DefaultDisplayTemplates.EnumTemplate },
       { "String", DefaultDisplayTemplates.StringTemplate },
+
+      // other
+      { "Month", DefaultDisplayTemplates.MonthTemplate },
 
       // "special" templates
       { "Object", DefaultDisplayTemplates.ObjectTemplate },
@@ -56,20 +59,17 @@ sealed class TemplateRenderer {
    static readonly Dictionary<string, TemplateAction>
    _defaultEditorActions = new(StringComparer.OrdinalIgnoreCase) {
 
-      // System.ComponentModel.DataAnnotations.DataType templates
+      // System.ComponentModel.DataAnnotations.DataType
       { "Date", DefaultEditorTemplates.DateTemplate },
       { "DateTime", DefaultEditorTemplates.DateTimeLocalTemplate },
       { "DateTime-local", DefaultEditorTemplates.DateTimeLocalTemplate },
-      { "EmailAddress", DefaultEditorTemplates.EmailAddressTemplate },
       { "MultilineText", DefaultEditorTemplates.MultilineTextTemplate },
       { "Password", DefaultEditorTemplates.PasswordTemplate },
-      { "PhoneNumber", DefaultEditorTemplates.PhoneNumberTemplate },
       { "Text", DefaultEditorTemplates.StringTemplate },
       { "Time", DefaultEditorTemplates.TimeTemplate },
       { "Upload", DefaultEditorTemplates.UploadTemplate },
-      { "Url", DefaultEditorTemplates.UrlTemplate },
 
-      // primitive templates
+      // primitive
       { "Boolean", DefaultEditorTemplates.BooleanTemplate },
       { "Byte", DefaultEditorTemplates.NumberTemplate },
       { "Decimal", DefaultEditorTemplates.DecimalTemplate },
@@ -80,6 +80,9 @@ sealed class TemplateRenderer {
       { "String", DefaultEditorTemplates.StringTemplate },
       { "UInt32", DefaultEditorTemplates.NumberTemplate },
       { "UInt64", DefaultEditorTemplates.NumberTemplate },
+
+      // other
+      { "Month", DefaultEditorTemplates.MonthTemplate },
 
       // this library's templates
       { "DropDownList", DefaultEditorTemplates.DropDownListTemplate },
@@ -119,20 +122,12 @@ sealed class TemplateRenderer {
    public void
    Render(ISequenceWriter<object> output) {
 
+      _viewData.TemplateInfo.TemplateName = null;
+
       var defaultActions = GetDefaultActions();
 
       var metadata = _viewData.ModelMetadata;
       var options = _viewData.TemplateInfo.OptionsForModel();
-
-      string?[] templateHints = {
-         _templateName,
-         metadata.TemplateHint,
-         ((options != null) ?
-            metadata.IsEnumerableType ? "ListBox"
-            : "DropDownList"
-            : null),
-         metadata.DataTypeName
-      };
 
       var config = XcstWebOptions.Instance;
 
@@ -143,11 +138,13 @@ sealed class TemplateRenderer {
             : config.EditorTemplateFactory)?.Invoke(viewName, _viewContext);
 
          if (viewPage != null) {
+            _viewData.TemplateInfo.TemplateName = viewName;
             RenderViewPage(viewPage, output);
             return;
          }
 
          if (defaultActions.TryGetValue(viewName, out var defaultAction)) {
+            _viewData.TemplateInfo.TemplateName = viewName;
             defaultAction.Invoke(MakeHtmlHelper(), output);
             return;
          }

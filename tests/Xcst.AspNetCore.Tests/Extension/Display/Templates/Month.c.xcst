@@ -4,23 +4,24 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <c:import-namespace ns='System'/>
+   <c:import-namespace ns='System.Globalization'/>
+
    <c:type name='Foo'>
-      <c:member name='p1' as='string' data-type='Password'/>
+      <c:member name='d' as='DateTime' value='new DateTime(1999, 12, 31)' template='Month'/>
    </c:type>
 
    <c:template name='c:initial-template'>
-      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <c:set ref='CultureInfo.CurrentCulture' value='CultureInfo.GetCultureInfo("en-US")'/>
       <div>
-         <a:model type='Foo'>
-            <a:input for='p1'/>
+         <a:model value='new Foo()'>
+            <a:display for='d'/>
          </a:model>
       </div>
    </c:template>
 
    <c:template name='expected'>
-      <div>
-         <input type='password' id='p1' name='p1'/>
-      </div>
+      <div>December 1999</div>
    </c:template>
 
 </c:module>

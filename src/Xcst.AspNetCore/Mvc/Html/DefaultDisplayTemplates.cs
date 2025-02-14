@@ -135,11 +135,14 @@ static class DefaultDisplayTemplates {
    DecimalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var viewData = html.ViewData;
+      var value = viewData.ModelExplorer.Model;
 
-      if (viewData.TemplateInfo.FormattedModelValue == viewData.ModelExplorer.Model) {
+      if (viewData.TemplateInfo.FormattedModelValue == value) {
+
+         var format = html.GetDataTypeFormat(viewData.ModelMetadata, "text", "Decimal")!;
 
          viewData.TemplateInfo.FormattedModelValue =
-            html.CurrentPackage.Context.SimpleContent.Format("{0:0.00}", viewData.ModelExplorer.Model);
+            html.CurrentPackage.Context.SimpleContent.Format(format, value);
       }
 
       StringTemplate(html, seqOutput);
@@ -203,6 +206,21 @@ static class DefaultDisplayTemplates {
          output.WriteAttributeString("src", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
          output.WriteEndElement();
       }
+   }
+
+   public static void
+   MonthTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
+
+      var viewData = html.ViewData;
+      var value = viewData.ModelExplorer.Model;
+
+      if (viewData.TemplateInfo.FormattedModelValue == value) {
+
+         viewData.TemplateInfo.FormattedModelValue =
+            html.CurrentPackage.Context.SimpleContent.Format("{0:y}", value);
+      }
+
+      StringTemplate(html, seqOutput);
    }
 
    public static void

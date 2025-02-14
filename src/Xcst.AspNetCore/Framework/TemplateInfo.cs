@@ -77,6 +77,9 @@ public class TemplateInfo {
    public int
    TemplateDepth => VisitedObjects.Count;
 
+   public string?
+   TemplateName { get; internal set; }
+
    // DDB #224750 - Keep a collection of visited objects to prevent infinite recursion
 
    internal HashSet<object>

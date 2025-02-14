@@ -4,25 +4,42 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <c:import-namespace ns='System.Globalization'/>
+
    <c:type name='Foo'>
       <c:member name='p1' as='System.DateTime' template='Month'/>
       <c:member name='p2' as='System.DateTime?' template='Month'/>
+      <c:member name='p3' as='object' template='Month'/>
    </c:type>
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <c:set ref='CultureInfo.CurrentCulture' value='CultureInfo.GetCultureInfo("en-US")'/>
       <div>
          <a:model type='Foo'>
             <a:input for='p1'/>
             <a:input for='p2'/>
          </a:model>
+         <a:model value='new Foo() {
+               p1 = new System.DateTime(1999, 12, 31),
+               p3 = new System.DateTime(1999, 12, 31)
+            }'>
+            <a:input for='p1'/>
+            <a:input for='p3'/>
+            <a:input for='p1' type='text'/>
+         </a:model>
+         <a:input name='n1' type='month' value='new System.DateTime(1999, 12, 31)'/>
       </div>
    </c:template>
 
-   <c:template name='expected' expand-text='yes'>
+   <c:template name='expected'>
       <div>
          <input type='month' id='p1' name='p1' value=''/>
          <input type='month' id='p2' name='p2' value=''/>
+         <input type='month' id='p1' name='p1' value='1999-12'/>
+         <input type='month' id='p3' name='p3' value='1999-12'/>
+         <input type='text' id='p1' name='p1' value='12/31/1999 12:00:00 AM'/>
+         <input type='month' id='n1' name='n1' value='1999-12'/>
       </div>
    </c:template>
 

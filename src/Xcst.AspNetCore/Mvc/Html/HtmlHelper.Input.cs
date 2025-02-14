@@ -19,8 +19,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Xcst.Web.Mvc;
 
@@ -30,16 +32,16 @@ partial class HtmlHelper {
    _defaultInputTypes = new(StringComparer.OrdinalIgnoreCase) {
 
       // System.ComponentModel.DataAnnotations.DataType
-      { "Date", "date" },
-      { "DateTime", "datetime-local" },
-      { "DateTime-local", "datetime-local" },
-      { "EmailAddress", "email" },
-      { "Password", "password" },
-      { "PhoneNumber", "tel" },
-      { "Text", "text" },
-      { "Time", "time" },
-      { "Upload", "file" },
-      { "Url", "url" },
+      { nameof(DataType.Date), "date" },
+      { nameof(DataType.DateTime), "datetime-local" },
+      { nameof(DataType.DateTime) + "-local", "datetime-local" },
+      { nameof(DataType.EmailAddress), "email" },
+      { nameof(DataType.Password), "password" },
+      { nameof(DataType.PhoneNumber), "tel" },
+      { nameof(DataType.Text), "text" },
+      { nameof(DataType.Time), "time" },
+      { nameof(DataType.Upload), "file" },
+      { nameof(DataType.Url), "url" },
 
       // integer
       { nameof(Byte), "number" },
@@ -64,6 +66,15 @@ partial class HtmlHelper {
       { "Month", "month" },
       { nameof(String), "text" },
       { "Week", "week" },
+   };
+
+   static readonly Dictionary<string, string>
+   _rfc3339Formats = new(StringComparer.Ordinal) {
+      { "date", "{0:yyyy-MM-dd}" },
+      { "datetime", @"{0:yyyy-MM-ddTHH\:mm\:ss.fffK}" },
+      { "datetime-local", @"{0:yyyy-MM-ddTHH\:mm\:ss.fff}" },
+      { "month", "{0:yyyy-MM}" },
+      { "time", @"{0:HH\:mm\:ss.fff}" },
    };
 
    [GeneratedCodeReference]
@@ -91,7 +102,11 @@ partial class HtmlHelper {
       ArgumentNullException.ThrowIfNull(name);
 
       var fullName = FullNameNonEmpty(name);
-      var inputType = type ?? GetInputType(modelExplorer, out var inputTypeHint);
+
+      var inputTypeHint = default(string);
+      var inputType = type ?? GetInputType(modelExplorer, out inputTypeHint);
+
+      format ??= GetFormat(modelExplorer.Metadata, name, inputType, inputTypeHint);
 
       var valueOrModel = value ?? modelExplorer.Model;
       var valueAttr = (string?)GetModelStateValue(fullName, typeof(string));
@@ -139,34 +154,78 @@ partial class HtmlHelper {
    static string
    GetInputType(ModelExplorer modelExplorer, out string inputTypeHint) {
 
-      foreach (var hint in GetInputTypeHints(modelExplorer)) {
+      foreach (var hint in GetInputTypeHints(modelExplorer.Metadata)) {
          if (_defaultInputTypes.TryGetValue(hint, out var inputType)) {
             inputTypeHint = hint;
             return inputType;
          }
       }
 
-      inputTypeHint = "text";
-      return inputTypeHint;
+      inputTypeHint = nameof(String);
+
+      return "text";
    }
 
    static IEnumerable<string>
-   GetInputTypeHints(ModelExplorer modelExplorer) {
+   GetInputTypeHints(ModelMetadata metadata) {
 
-      if (!String.IsNullOrEmpty(modelExplorer.Metadata.TemplateHint)) {
-         yield return modelExplorer.Metadata.TemplateHint;
+      if (!String.IsNullOrEmpty(metadata.TemplateHint)) {
+         yield return metadata.TemplateHint;
       }
 
-      if (!String.IsNullOrEmpty(modelExplorer.Metadata.DataTypeName)) {
-         yield return modelExplorer.Metadata.DataTypeName;
+      if (!String.IsNullOrEmpty(metadata.DataTypeName)) {
+         yield return metadata.DataTypeName;
       }
 
-      var fieldType = modelExplorer.Metadata.UnderlyingOrModelType;
+      var fieldType = metadata.UnderlyingOrModelType;
 
-      foreach (var typeName in TemplateRenderer.GetTypeNames(modelExplorer.Metadata, fieldType)) {
+      foreach (var typeName in TemplateRenderer.GetTypeNames(metadata, fieldType)) {
          yield return typeName;
       }
    }
+
+   string?
+   GetFormat(ModelMetadata metadata, string name, string inputType, string? inputTypeHint) {
+
+      if (UsingFormattedModelValue(name)) {
+
+         // Calling from an editor/display template, getting format for
+         // the top model (not a property). Formatting is already done and should be
+         // using ViewData.TemplateInfo.FormattedModelValue as value.
+
+         return null;
+      }
+
+      if (metadata.HasNonDefaultEditFormat) {
+         return metadata.EditFormatString;
+      }
+
+      return GetDataTypeFormat(metadata, inputType, inputTypeHint)
+         ?? metadata.EditFormatString;
+   }
+
+   internal string?
+   GetDataTypeFormat(ModelMetadata metadata, string inputType, string? inputTypeHint) {
+
+      // inputTypeHint should always take precedence over UnderlyingOrModelType
+
+      if (_defaultInputTypes.Comparer.Equals(inputTypeHint, nameof(Decimal))
+         || metadata.UnderlyingOrModelType == typeof(Decimal)) {
+
+         return "{0:0.00}";
+      }
+
+      if (_rfc3339Formats.TryGetValue(inputType, out var rfc3339Format)) {
+         return rfc3339Format;
+      }
+
+      return null;
+   }
+
+   bool
+   UsingFormattedModelValue(string name) =>
+      this.ViewData.TemplateInfo.TemplateName != null
+         && String.IsNullOrEmpty(name);
 }
 
 partial class HtmlHelper<TModel> {

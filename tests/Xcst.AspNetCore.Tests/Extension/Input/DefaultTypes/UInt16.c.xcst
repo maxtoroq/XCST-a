@@ -19,7 +19,7 @@
       </div>
    </c:template>
 
-   <c:template name='expected' expand-text='yes'>
+   <c:template name='expected'>
       <div>
          <input type='number' id='p1' name='p1' value=''/>
          <input type='number' id='p2' name='p2' value=''/>

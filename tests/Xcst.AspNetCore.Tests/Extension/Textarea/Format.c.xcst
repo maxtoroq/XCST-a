@@ -4,31 +4,28 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
+   <c:import-namespace ns='System'/>
    <c:import-namespace ns='System.Globalization'/>
 
    <c:type name='Foo'>
-      <c:member name='p1' as='System.Decimal'/>
-      <c:member name='p2' as='System.Decimal?'/>
-      <c:member name='p3' as='System.Decimal' data-type='Text'/>
+      <c:member name='p' as='decimal' format='{0:0.00}' apply-format-in-edit-mode='yes'/>
    </c:type>
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <c:set ref='CultureInfo.CurrentCulture' value='CultureInfo.GetCultureInfo("fr-FR")'/>
       <div>
-         <a:model value='new Foo()'>
-            <a:input for='p1'/>
-            <a:input for='p2'/>
-            <a:input for='p3'/>
+         <a:model value='new Foo { p = 9.5m }'>
+            <a:textarea for='p'/>
+            <a:textarea name='p'/>
          </a:model>
       </div>
    </c:template>
 
-   <c:template name='expected'>
+   <c:template name='expected' expand-text='yes'>
       <div>
-         <input type='text' id='p1' name='p1' value='0,00'/>
-         <input type='text' id='p2' name='p2' value=''/>
-         <input type='text' id='p3' name='p3' value='0,00'/>
+         <textarea id='p' name='p'>{Environment.NewLine}9,50</textarea>
+         <textarea id='p' name='p'>{Environment.NewLine}9,50</textarea>
       </div>
    </c:template>
 

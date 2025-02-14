@@ -179,9 +179,9 @@ public class ViewDataDictionary : IDictionary<string, object?> {
 
       if (String.IsNullOrEmpty(format)) {
          return Convert.ToString(value, CultureInfo.CurrentCulture) ?? String.Empty;
-      } else {
-         return String.Format(CultureInfo.CurrentCulture, format, value);
       }
+
+      return String.Format(CultureInfo.CurrentCulture, format, value);
    }
 
    public IEnumerator<KeyValuePair<string, object?>>

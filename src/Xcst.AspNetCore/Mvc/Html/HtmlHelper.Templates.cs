@@ -305,7 +305,7 @@ public class TemplateHelper {
 
          formattedModelValue = (_displayMode) ?
             _html.CurrentPackage.Context.SimpleContent.Format(formatString, model)
-            : String.Format(CultureInfo.CurrentCulture, formatString, model);
+            : _html.FormatValue(model, formatString);
       }
 
       var viewData = new ViewDataDictionary(_html.ViewData) {

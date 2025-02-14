@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:type name='Foo'>
-      <c:member name='f' as='string' data-type='Upload'/>
+      <c:member name='f' as='object' data-type='Upload'/>
    </c:type>
 
    <c:template name='c:initial-template'>

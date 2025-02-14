@@ -49,8 +49,17 @@ partial class HtmlHelper {
 
       this.ViewData.ModelState.TryGetValue(fullName, out var modelState);
 
-      var valueString = (modelState != null) ? modelState.AttemptedValue
-         : FormatValue(value ?? modelExplorer.Model, null);
+      string? valueString;
+
+      if (modelState != null) {
+         valueString = modelState.AttemptedValue;
+      } else {
+
+         var format = (UsingFormattedModelValue(name)) ? null
+            : modelExplorer.Metadata.EditFormatString;
+
+         valueString = FormatValue(value ?? modelExplorer.Model, format);
+      }
 
       // The first newline is always trimmed when a TextArea is rendered, so we add an extra one
       // in case the value being rendered is something like "\r\nHello".
