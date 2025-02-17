@@ -20,7 +20,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -76,7 +75,7 @@ partial class HtmlHelper {
 
       return new SelectDisposable(output, writeList, isSelected);
 
-      static HashSet<string> getSelectedValues(object? defaultValue, bool allowMultiple) {
+      HashSet<string> getSelectedValues(object? defaultValue, bool allowMultiple) {
 
          if (defaultValue is null) {
             return new HashSet<string>(0);
@@ -146,8 +145,8 @@ partial class HtmlHelper {
 
             foreach (var item in group) {
 
-               var value = item.Value ?? item.Text ?? String.Empty;
-               var selected = isSelected(value, item.Selected);
+               var valueOrText = item.Value ?? item.Text ?? String.Empty;
+               var selected = isSelected(valueOrText, item.Selected);
 
                WriteOption(item, selected, output);
             }
@@ -200,10 +199,9 @@ partial class HtmlHelper {
       return new ElementEndingDisposable(output);
    }
 
-   static string
+   string
    SelectValueString(object? value) =>
-      Convert.ToString(value, CultureInfo.CurrentCulture)
-         ?? String.Empty;
+      FormatValue(value, null);
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public class SelectDisposable : DefaultContentDisposable {
