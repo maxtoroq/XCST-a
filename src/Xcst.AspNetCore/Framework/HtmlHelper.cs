@@ -175,24 +175,12 @@ public partial class HtmlHelper {
    ObjectToDictionary(object value) =>
       TypeHelpers.ObjectToDictionary(value);
 
-   internal string?
-   EvalString(string key) =>
-      Convert.ToString(this.ViewData.Eval(key), CultureInfo.CurrentCulture);
-
-   internal string?
-   EvalString(string key, string? format) =>
-      Convert.ToString(this.ViewData.Eval(key, format), CultureInfo.CurrentCulture);
-
    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
    public string
    FormatValue(object? value, string? format) =>
       ViewDataDictionary.FormatValueInternal(value, format);
 
-   internal bool
-   EvalBoolean(string key) =>
-      Convert.ToBoolean(this.ViewData.Eval(key), CultureInfo.InvariantCulture);
-
-   internal object?
+   object?
    GetModelStateValue(string key, Type destinationType) {
 
       if (this.ViewData.ModelState.TryGetValue(key, out var modelState)
@@ -247,7 +235,7 @@ public partial class HtmlHelper {
       return results;
    }
 
-   internal void
+   void
    WriteUnobtrusiveValidationAttributes(string name, ModelExplorer modelExplorer, bool excludeMinMaxLength, XcstWriter output) {
 
       WriteUnobtrusiveValidationAttributes(
@@ -303,7 +291,7 @@ public partial class HtmlHelper {
    DisplayNameForModel() =>
       DisplayNameHelper(this.ViewData.ModelExplorer, String.Empty);
 
-   internal string
+   private protected string
    DisplayNameHelper(ModelExplorer modelExplorer, string htmlFieldName) {
 
       var metadata = modelExplorer.Metadata;
@@ -329,7 +317,7 @@ public partial class HtmlHelper {
    DisplayString(string name) =>
       DisplayStringHelper(ExpressionMetadataProvider.FromStringExpression(name, this.ViewData));
 
-   internal string
+   private protected string
    DisplayStringHelper(ModelExplorer modelExplorer) =>
       modelExplorer.GetSimpleDisplayText();
 
@@ -360,65 +348,32 @@ public partial class HtmlHelper {
    NameForModel() => Name(String.Empty);
 
    public string
-   Value(string name) {
+   Value(string name) =>
+      Value(name, null);
+
+   public string
+   Value(string name, string? format) {
 
       if (name is null) throw new ArgumentNullException(nameof(name));
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
 
-      return ValueHelper(name, value: null, format: modelExplorer.Metadata.EditFormatString, useViewData: true);
+      return ValueHelper(name, modelExplorer, format);
    }
 
    public string
-   Value(string name, string format) {
+   ValueForModel() =>
+      ValueHelper(String.Empty, this.ModelExplorer, format: null);
 
-      if (name is null) throw new ArgumentNullException(nameof(name));
+   private protected string
+   ValueHelper(string name, ModelExplorer modelExplorer, string? format) {
 
-      return ValueHelper(name, value: null, format: format, useViewData: true);
-   }
-
-   public string
-   ValueForModel() {
-
-      var format = this.ViewData.ModelMetadata.EditFormatString;
-
-      return ValueHelper(String.Empty, value: null, format: format, useViewData: true);
-   }
-
-   internal string
-   ValueHelper(string name, object? value, string? format, bool useViewData) {
+      format ??= modelExplorer.Metadata.EditFormatString;
 
       var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
-      var attemptedValue = (string?)GetModelStateValue(fullName, typeof(string));
-      string resolvedValue;
 
-      if (attemptedValue != null) {
-
-         // case 1: if ModelState has a value then it's already formatted so ignore format string
-
-         resolvedValue = attemptedValue;
-
-      } else if (useViewData) {
-
-         if (name.Length == 0) {
-
-            // case 2(a): format the value from ModelMetadata for the current model
-
-            var modelExplorer = ExpressionMetadataProvider.FromStringExpression(String.Empty, this.ViewData);
-            resolvedValue = FormatValue(modelExplorer.Model, format);
-
-         } else {
-
-            // case 2(b): format the value from ViewData
-
-            resolvedValue = EvalString(name, format);
-         }
-      } else {
-
-         // case 3: format the explicit value from ModelMetadata
-
-         resolvedValue = FormatValue(value, format);
-      }
+      var resolvedValue = (string?)GetModelStateValue(fullName, typeof(string))
+         ?? FormatValue(modelExplorer.Model, format);
 
       return resolvedValue;
    }
@@ -437,7 +392,7 @@ public partial class HtmlHelper {
       return fullName;
    }
 
-   internal void
+   void
    WriteId(string name, XcstWriter output) {
 
       var sanitizedId = TagBuilder.CreateSanitizedId(name);
@@ -535,21 +490,16 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
       Name(ExpressionHelper.GetExpressionText(expression));
 
    public string
-   ValueFor<TResult>(Expression<Func<TModel, TResult>> expression) {
-
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
-      var expressionString = ExpressionHelper.GetExpressionText(expression);
-
-      return ValueHelper(expressionString, modelExplorer.Model, format: modelExplorer.Metadata.EditFormatString, useViewData: false);
-   }
+   ValueFor<TResult>(Expression<Func<TModel, TResult>> expression) =>
+      ValueFor(expression, null);
 
    public string
-   ValueFor<TResult>(Expression<Func<TModel, TResult>> expression, string format) {
+   ValueFor<TResult>(Expression<Func<TModel, TResult>> expression, string? format) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return ValueHelper(expressionString, modelExplorer.Model, format, useViewData: false);
+      return ValueHelper(expressionString, modelExplorer, format);
    }
 }
 
