@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<c:package name='aspnetcore.LayoutPackage' version='1.0' language='C#' xmlns:c='http://maxtoroq.github.io/XCST'>
+<c:package name='aspnetcore.LayoutPackage' version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'>
 
    <c:import-namespace ns='System'/>
 

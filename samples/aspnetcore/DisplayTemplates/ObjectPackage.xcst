@@ -13,36 +13,38 @@
    <c:param name='labelColumnClass'>col-md-3</c:param>
    <c:param name='fieldColumnClass'>col-md-9</c:param>
 
-   <c:template name='c:initial-template' visibility='public' expand-text='yes'>
+   <c:template name='c:initial-template' visibility='public'>
+
+      <c:if test='Model is null || ViewData.TemplateInfo.TemplateDepth > 1'>
+         <a:display-text/>
+         <c:return/>
+      </c:if>
+
+      <c:variable name='filteredProperties' value='Html.DisplayProperties()'/>
+      <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => p.Metadata.GetGroupName())'/>
+      <c:variable name='createFieldset' value='groupedProperties.Any(g => g.Key != null)'/>
+
       <c:choose>
-         <c:when test='Model is null || ViewData.TemplateInfo.TemplateDepth > 1'>
-            <a:display-text/>
-         </c:when>
-         <c:otherwise>
-            <c:variable name='filteredProperties' value='Html.DisplayProperties()'/>
-            <c:variable name='groupedProperties' value='filteredProperties.GroupBy(p => p.Metadata.GetGroupName())'/>
-            <c:variable name='createFieldset' value='groupedProperties.Any(g => g.Key != null)'/>
-            <c:choose>
-               <c:when test='createFieldset'>
-                  <c:for-each name='group' in='groupedProperties'>
-                     <fieldset>
-                        <legend>{group.Key}</legend>
-                        <c:for-each name='propertyExplorer' in='group'>
-                           <c:call-template name='property-template'>
-                              <c:with-param name='propertyExplorer' value='propertyExplorer'/>
-                           </c:call-template>
-                        </c:for-each>
-                     </fieldset>
-                  </c:for-each>
-               </c:when>
-               <c:otherwise>
-                  <c:for-each name='propertyExplorer' in='filteredProperties'>
+         <c:when test='createFieldset'>
+            <c:for-each name='group' in='groupedProperties'>
+               <fieldset>
+                  <legend>
+                     <c:value-of value='group.Key'/>
+                  </legend>
+                  <c:for-each name='propertyExplorer' in='group'>
                      <c:call-template name='property-template'>
                         <c:with-param name='propertyExplorer' value='propertyExplorer'/>
                      </c:call-template>
                   </c:for-each>
-               </c:otherwise>
-            </c:choose>
+               </fieldset>
+            </c:for-each>
+         </c:when>
+         <c:otherwise>
+            <c:for-each name='propertyExplorer' in='filteredProperties'>
+               <c:call-template name='property-template'>
+                  <c:with-param name='propertyExplorer' value='propertyExplorer'/>
+               </c:call-template>
+            </c:for-each>
          </c:otherwise>
       </c:choose>
    </c:template>
@@ -53,29 +55,25 @@
       <c:variable name='propertyMeta' value='propertyExplorer.Metadata'/>
       <c:variable name='propertyName' value='propertyMeta.PropertyName'/>
       <c:variable name='templateName' value='propertyMeta.TemplateHint ?? propertyMeta.DataTypeName'/>
-      <c:choose>
-         <c:when test='propertyMeta.HideSurroundingHtml'>
-            <a:display name='{propertyName}' template='{templateName}'/>
-         </c:when>
-         <c:otherwise>
-            <c:variable name='memberTemplate' value='Html.MemberTemplate(propertyExplorer)'/>
-            <c:choose>
-               <c:when test='memberTemplate != null'>
-                  <c:invoke-delegate delegate='memberTemplate'/>
-               </c:when>
-               <c:otherwise>
-                  <div class='form-group row'>
-                     <a:label name='{propertyName}' class='col-form-label {this.labelColumnClass}'/>
-                     <div class='{this.fieldColumnClass}'>
-                        <p class='form-control-plaintext'>
-                           <a:display name='{propertyName}' template='{templateName}'/>
-                        </p>
-                     </div>
-                  </div>
-               </c:otherwise>
-            </c:choose>
-         </c:otherwise>
-      </c:choose>
+
+      <c:if test='propertyMeta.HideSurroundingHtml'>
+         <a:display name='{propertyName}' template='{templateName}'/>
+         <c:return/>
+      </c:if>
+
+      <c:if test='Html.MemberTemplate(propertyExplorer) is { } memberTemplate'>
+         <c:invoke-delegate delegate='memberTemplate'/>
+         <c:return/>
+      </c:if>
+
+      <div class='form-group row'>
+         <a:label name='{propertyName}' class='col-form-label {this.labelColumnClass}'/>
+         <div class='{this.fieldColumnClass}'>
+            <div class='form-control-plaintext'>
+               <a:display name='{propertyName}' template='{templateName}'/>
+            </div>
+         </div>
+      </div>
    </c:template>
 
 </c:package>
