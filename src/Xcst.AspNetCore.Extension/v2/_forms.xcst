@@ -1063,7 +1063,7 @@
 
    <template name='option-list'>
       <param name='el' as='XElement' required='yes'/>
-      <param name='optionsAttr' as='XAttribute' required='yes'/>
+      <param name='optionsAttr' as='XAttribute?' required='yes'/>
       <param name='optionEls' as='XElement[]' required='yes'/>
 
       <choose>

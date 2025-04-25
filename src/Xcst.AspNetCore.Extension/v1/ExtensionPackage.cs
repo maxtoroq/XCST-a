@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -62,4 +63,8 @@ public partial class ExtensionPackageV1 {
 
       return null;
    }
+
+   [GeneratedRegex("/?index$")]
+   private static partial Regex
+   IndexPageRegex();
 }

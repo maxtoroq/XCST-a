@@ -21,7 +21,6 @@
 
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
-   <import-namespace ns='System.Text.RegularExpressions'/>
 
    <template name='src:package-attribute-extra' visibility='public'>
       <param name='el' as='XElement' required='yes'/>
@@ -171,7 +170,7 @@
                      </code:string>
                      <if test='isDefaultPage'>
                         <code:string>
-                           <value-of value='"/" + Regex.Replace(pagePath, "/?index$", "")'/>
+                           <value-of value='"/" + IndexPageRegex().Replace(pagePath, "")'/>
                         </code:string>
                      </if>
                      <copy-of value='pathPartsRef'/>
