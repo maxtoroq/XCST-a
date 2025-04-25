@@ -16,13 +16,10 @@ public class UrlHelper {
    readonly HttpContext
    _httpContext;
 
-   // The default constructor is intended for use by unit testing only.
-   //public UrlHelper() { }
-
    public
    UrlHelper(HttpContext httpContext) {
 
-      if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
+      ArgumentNullException.ThrowIfNull(httpContext);
 
       _httpContext = httpContext;
    }
@@ -34,17 +31,14 @@ public class UrlHelper {
    public static string
    GenerateContentUrl(string contentPath, HttpContext httpContext) {
 
-      if (String.IsNullOrEmpty(contentPath)) {
-         throw new ArgumentException(nameof(contentPath) + " cannot be null or empty.", nameof(contentPath));
-      }
-
-      if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
+      ArgumentException.ThrowIfNullOrEmpty(contentPath);
+      ArgumentNullException.ThrowIfNull(httpContext);
 
       if (contentPath[0] == '~') {
          return GenerateClientUrl(httpContext, contentPath);
-      } else {
-         return contentPath;
       }
+
+      return contentPath;
    }
 
    public string
@@ -65,9 +59,9 @@ public class UrlHelper {
 
       if (String.IsNullOrEmpty(query)) {
          return GenerateClientUrlInternal(_httpContext, processedPath);
-      } else {
-         return GenerateClientUrlInternal(_httpContext, processedPath) + query;
       }
+
+      return GenerateClientUrlInternal(_httpContext, processedPath) + query;
    }
 
    public string
@@ -111,9 +105,9 @@ public class UrlHelper {
 
       if (String.IsNullOrEmpty(query)) {
          return GenerateClientUrlInternal(httpContext, contentPath);
-      } else {
-         return GenerateClientUrlInternal(httpContext, contentPath) + query;
       }
+
+      return GenerateClientUrlInternal(httpContext, contentPath) + query;
    }
 
    [return: NotNullIfNotNull(nameof(contentPath))]
@@ -144,10 +138,10 @@ public class UrlHelper {
       if (queryIndex >= 0) {
          query = path.Substring(queryIndex);
          return path.Substring(0, queryIndex);
-      } else {
-         query = null;
-         return path;
       }
+
+      query = null;
+      return path;
    }
 
    [GeneratedCodeReference]
@@ -273,11 +267,7 @@ public class UrlHelper {
 
          foreach (var item in dictionary) {
 
-            if (queryString.Length == 0) {
-               queryString.Append('?');
-            } else {
-               queryString.Append('&');
-            }
+            queryString.Append((queryString.Length == 0) ? '?' : '&');
 
             var stringValue = Convert.ToString(item.Value, CultureInfo.InvariantCulture);
 
@@ -312,9 +302,9 @@ public class UrlHelper {
 
          if (String.IsNullOrEmpty(query)) {
             return GenerateClientUrlInternal(httpContext, processedPath);
-         } else {
-            return GenerateClientUrlInternal(httpContext, processedPath) + query;
          }
+
+         return GenerateClientUrlInternal(httpContext, processedPath) + query;
       }
 
       static string

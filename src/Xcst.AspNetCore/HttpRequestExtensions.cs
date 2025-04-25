@@ -14,7 +14,7 @@ public static class HttpRequestExtensions {
    public static string
    GetHttpMethodOverride(this HttpRequest request) {
 
-      if (request is null) throw new ArgumentNullException(nameof(request));
+      ArgumentNullException.ThrowIfNull(request);
 
       var incomingVerb = request.Method;
 
@@ -57,7 +57,7 @@ public static class HttpRequestExtensions {
    public static bool
    IsAjaxRequest(this HttpRequest request) {
 
-      if (request is null) throw new ArgumentNullException(nameof(request));
+      ArgumentNullException.ThrowIfNull(request);
 
       return request.Item("X-Requested-With") == "XMLHttpRequest"
          || request.Headers["X-Requested-With"] == "XMLHttpRequest";

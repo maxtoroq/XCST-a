@@ -8,7 +8,7 @@ using Xcst.Compiler;
 
 namespace tests_codegen;
 
-class Program {
+partial class Program {
 
    readonly Uri
    _projectUri;
@@ -40,7 +40,7 @@ class Program {
    WriteLine(string line = "") =>
       _output.WriteLine(_indent + line);
 
-   XElement
+   static XElement
    TestConfig(string file) {
 
       var readerSettings = new XmlReaderSettings() {
@@ -141,9 +141,8 @@ class Program {
          foreach (var file in tests) {
 
             var fileName = Path.GetFileNameWithoutExtension(file.Name);
-            var testName = Regex.Replace(
+            var testName = TestNameRegex().Replace(
                fileName.Replace('.', '_').Replace('-', '_'),
-               "([a-z])([A-Z])",
                "$1_$2"
             );
 
@@ -226,6 +225,10 @@ class Program {
          GenerateTestsForDirectory(subDirectory, relativeNs + "." + subDirectory.Name);
       }
    }
+
+   [GeneratedRegex("([a-z])([A-Z])")]
+   private static partial Regex
+   TestNameRegex();
 
    static void
    Main(string[] args) {

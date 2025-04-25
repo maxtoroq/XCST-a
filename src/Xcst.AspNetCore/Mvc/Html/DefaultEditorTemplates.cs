@@ -113,7 +113,7 @@ static class DefaultEditorTemplates {
       }
 
       var collection = model as IEnumerable
-         ?? throw new InvalidOperationException($"The Collection template was used with an object of type '{model.GetType().FullName}', which does not implement System.IEnumerable.");
+         ?? throw new InvalidOperationException($"The Collection template was used with an object of type '{model.GetType()}', which does not implement System.IEnumerable.");
 
       var typeInCollection = typeof(string);
       var genericEnumerableType = TypeHelpers.ExtractGenericInterface(collection.GetType(), typeof(IEnumerable<>));

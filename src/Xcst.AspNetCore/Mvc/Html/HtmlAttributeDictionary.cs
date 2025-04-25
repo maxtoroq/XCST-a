@@ -57,7 +57,7 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
    public HtmlAttributeDictionary
    SetAttribute(string key, object? value) {
 
-      if (String.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
+      ArgumentException.ThrowIfNullOrEmpty(key);
 
       this[key] = value;
 

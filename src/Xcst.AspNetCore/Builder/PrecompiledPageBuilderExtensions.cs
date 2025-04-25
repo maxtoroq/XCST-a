@@ -23,8 +23,8 @@ public static class PrecompiledPageBuilderExtensions {
    public static IApplicationBuilder
    UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules) {
 
-      if (app is null) throw new ArgumentNullException(nameof(app));
-      if (appModules is null) throw new ArgumentNullException(nameof(appModules));
+      ArgumentNullException.ThrowIfNull(app);
+      ArgumentNullException.ThrowIfNull(appModules);
 
       app.UseMiddleware<PrecompiledPageMiddleware>((object)appModules);
 
@@ -34,11 +34,11 @@ public static class PrecompiledPageBuilderExtensions {
    public static IApplicationBuilder
    UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules, Action<XcstWebOptions> config) {
 
-      if (config is null) throw new ArgumentNullException(nameof(config));
+      ArgumentNullException.ThrowIfNull(config);
 
       UseXcstPrecompiledPages(app, appModules);
 
-      config(XcstWebOptions.Instance);
+      config.Invoke(XcstWebOptions.Instance);
 
       return app;
    }

@@ -22,7 +22,9 @@ class ValueProviderResult {
 
       var valueAsString = value as string;
 
-      if (valueAsString != null && String.IsNullOrWhiteSpace(valueAsString)) {
+      if (valueAsString != null
+         && String.IsNullOrWhiteSpace(valueAsString)) {
+
          return null;
       }
 
@@ -130,12 +132,11 @@ class ValueProviderResult {
          if (valueAsArray.Length > 0) {
             value = valueAsArray.GetValue(0);
             return ConvertSimpleType(culture, value, destinationType);
-         } else {
-
-            // case 3(a): source is empty array, so can't perform conversion
-
-            return null;
          }
+
+         // case 3(a): source is empty array, so can't perform conversion
+
+         return null;
       }
 
       // case 4: both destination + source type are single elements, so convert

@@ -240,9 +240,7 @@ public class ViewDataDictionary<TModel> : ViewDataDictionary {
 
       var castWillSucceed = TypeHelpers.IsCompatibleObject<TModel>(value);
 
-      if (castWillSucceed) {
-         base.SetModel((TModel?)value);
-      } else {
+      if (!castWillSucceed) {
 
          var errorMessage = (value != null) ?
             $"The model item passed into the dictionary is of type '{value.GetType()}', but this dictionary requires a model item of type '{typeof(TModel)}'."
@@ -250,5 +248,7 @@ public class ViewDataDictionary<TModel> : ViewDataDictionary {
 
          throw new InvalidOperationException(errorMessage);
       }
+
+      base.SetModel((TModel?)value);
    }
 }

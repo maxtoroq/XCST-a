@@ -68,9 +68,7 @@ static class CachedExpressionCompiler {
 
             // don't need to lock, as all identity funcs are identical
 
-            if (_identityFunc is null) {
-               _identityFunc = expr.Compile();
-            }
+            _identityFunc ??= expr.Compile();
 
             return _identityFunc;
          }
@@ -93,7 +91,7 @@ static class CachedExpressionCompiler {
                return hoistedExpr.Compile();
             });
 
-            return model => del(model, capturedConstants!);
+            return model => del.Invoke(model, capturedConstants!);
          }
 
          // couldn't be fingerprinted
@@ -134,7 +132,7 @@ static class CachedExpressionCompiler {
 
                var capturedLocal = constExpr.Value;
 
-               return _ => del(capturedLocal);
+               return _ => del.Invoke(capturedLocal);
             }
          }
 

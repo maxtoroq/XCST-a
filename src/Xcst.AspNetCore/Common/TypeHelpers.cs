@@ -58,7 +58,9 @@ static class TypeHelpers {
 
       // wrap a call to the underlying IDictionary.Item()
 
-      if (result is null && typeof(IDictionary).IsAssignableFrom(targetType)) {
+      if (result is null
+         && typeof(IDictionary).IsAssignableFrom(targetType)) {
+
          result = TryGetValueFromNonGenericDictionary;
       }
 
@@ -176,11 +178,13 @@ static class TypeHelpers {
    public static Dictionary<string, object?>
    ObjectToDictionary(object? value) {
 
+      var comparer = StringComparer.OrdinalIgnoreCase;
+
       if (value is IDictionary<string, object?> dictionary) {
-         return new Dictionary<string, object?>(dictionary, StringComparer.OrdinalIgnoreCase);
+         return new Dictionary<string, object?>(dictionary, comparer);
       }
 
-      var result = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+      var result = new Dictionary<string, object?>(comparer);
 
       if (value != null) {
          foreach (var helper in PropertyHelper.GetProperties(value)) {
@@ -195,7 +199,7 @@ static class TypeHelpers {
    public static bool
    IsAnonymousType(Type type) {
 
-      if (type is null) throw new ArgumentNullException(nameof(type));
+      ArgumentNullException.ThrowIfNull(type);
 
       // TODO: The only way to detect anonymous types right now.
 

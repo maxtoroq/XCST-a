@@ -73,7 +73,7 @@ partial class HtmlHelper {
    bool
    ShowForDisplay(ModelExplorer propertyExplorer) {
 
-      if (propertyExplorer is null) throw new ArgumentNullException(nameof(propertyExplorer));
+      ArgumentNullException.ThrowIfNull(propertyExplorer);
 
       var templateInfo = this.ViewData.TemplateInfo;
       var propertyMetadata = propertyExplorer.Metadata;
@@ -140,7 +140,7 @@ partial class HtmlHelper {
    bool
    ShowForEdit(ModelExplorer propertyExplorer) {
 
-      if (propertyExplorer is null) throw new ArgumentNullException(nameof(propertyExplorer));
+      ArgumentNullException.ThrowIfNull(propertyExplorer);
 
       var templateInfo = this.ViewData.TemplateInfo;
       var propertyMetadata = propertyExplorer.Metadata;
@@ -176,7 +176,7 @@ partial class HtmlHelper {
    public XcstDelegate<object?>?
    MemberTemplate(ModelExplorer propertyExplorer) {
 
-      if (propertyExplorer is null) throw new ArgumentNullException(nameof(propertyExplorer));
+      ArgumentNullException.ThrowIfNull(propertyExplorer);
 
       if (this.ViewData.TemplateInfo.MemberTemplate is { } memberTemplate) {
 
@@ -191,7 +191,7 @@ partial class HtmlHelper {
    HtmlHelper
    MakeHtmlHelperForMemberTemplate(ModelExplorer memberExplorer) {
 
-      if (memberExplorer is null) throw new ArgumentNullException(nameof(memberExplorer));
+      ArgumentNullException.ThrowIfNull(memberExplorer);
 
       var currentViewData = this.ViewData;
       var templateInfo = currentViewData.TemplateInfo;

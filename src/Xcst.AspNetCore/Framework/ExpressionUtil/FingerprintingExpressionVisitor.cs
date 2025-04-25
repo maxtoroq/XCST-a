@@ -48,10 +48,10 @@ sealed class FingerprintingExpressionVisitor : ExpressionVisitor {
       if (visitor._gaveUp) {
          capturedConstants = null;
          return null;
-      } else {
-         capturedConstants = visitor._seenConstants;
-         return visitor._currentChain;
       }
+
+      capturedConstants = visitor._seenConstants;
+      return visitor._currentChain;
    }
 
    public override Expression?
@@ -60,9 +60,9 @@ sealed class FingerprintingExpressionVisitor : ExpressionVisitor {
       if (node is null) {
          _currentChain.Elements.Add(null);
          return null;
-      } else {
-         return base.Visit(node);
       }
+
+      return base.Visit(node);
    }
 
    protected override Expression

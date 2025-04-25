@@ -24,7 +24,7 @@ partial class HtmlHelper {
    public HtmlHelper<TModel>
    NewModelHelper<TModel>(IXcstPackage currentPackage, TModel? model, string? htmlFieldPrefix = null) {
 
-      if (currentPackage is null) throw new ArgumentNullException(nameof(currentPackage));
+      ArgumentNullException.ThrowIfNull(currentPackage);
 
       var container = new ViewDataContainer(
          new ViewDataDictionary<TModel>(this.ViewData) {

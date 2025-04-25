@@ -54,7 +54,7 @@ class UrlDataList : IList<string> {
       if (String.IsNullOrEmpty(pathInfo)) {
          _urlData = new List<string>();
       } else {
-         _urlData = pathInfo.Split(new char[] { '/' }).ToList();
+         _urlData = pathInfo.Split('/').ToList();
       }
    }
 

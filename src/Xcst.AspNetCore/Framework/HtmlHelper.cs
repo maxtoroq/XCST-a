@@ -95,9 +95,13 @@ public partial class HtmlHelper {
    public
    HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IXcstPackage currentPackage) {
 
-      this.ViewContext = viewContext ?? throw new ArgumentNullException(nameof(viewContext));
-      this.ViewDataContainer = viewDataContainer ?? throw new ArgumentNullException(nameof(viewDataContainer));
-      this.CurrentPackage = currentPackage ?? throw new ArgumentNullException(nameof(currentPackage));
+      ArgumentNullException.ThrowIfNull(viewContext);
+      ArgumentNullException.ThrowIfNull(viewDataContainer);
+      ArgumentNullException.ThrowIfNull(currentPackage);
+
+      this.ViewContext = viewContext;
+      this.ViewDataContainer = viewDataContainer;
+      this.CurrentPackage = currentPackage;
    }
 
    /// <summary>
@@ -113,11 +117,13 @@ public partial class HtmlHelper {
    public static IDictionary<string, object?>
    AnonymousObjectToHtmlAttributes(object? htmlAttributes) {
 
+      var comparer = StringComparer.OrdinalIgnoreCase;
+
       if (htmlAttributes is IDictionary<string, object?> dictionary) {
-         return new Dictionary<string, object?>(dictionary, StringComparer.OrdinalIgnoreCase);
+         return new Dictionary<string, object?>(dictionary, comparer);
       }
 
-      var result = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+      var result = new Dictionary<string, object?>(comparer);
 
       if (htmlAttributes != null) {
          foreach (var property in HtmlAttributePropertyHelper.GetProperties(htmlAttributes)) {
@@ -135,8 +141,8 @@ public partial class HtmlHelper {
    public static string
    GenerateIdFromName(string name, string idAttributeDotReplacement) {
 
-      if (name is null) throw new ArgumentNullException(nameof(name));
-      if (idAttributeDotReplacement is null) throw new ArgumentNullException(nameof(idAttributeDotReplacement));
+      ArgumentNullException.ThrowIfNull(name);
+      ArgumentNullException.ThrowIfNull(idAttributeDotReplacement);
 
       // TagBuilder.CreateSanitizedId returns null for empty strings, return String.Empty instead to avoid breaking change
 
@@ -354,7 +360,7 @@ public partial class HtmlHelper {
    public string
    Value(string name, string? format) {
 
-      if (name is null) throw new ArgumentNullException(nameof(name));
+      ArgumentNullException.ThrowIfNull(name);
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
 
@@ -530,9 +536,7 @@ static class TagBuilder {
          return null;
       }
 
-      if (invalidCharReplacement is null) {
-         throw new ArgumentNullException(nameof(invalidCharReplacement));
-      }
+      ArgumentNullException.ThrowIfNull(invalidCharReplacement);
 
       var firstChar = originalId[0];
 
@@ -565,18 +569,8 @@ static class TagBuilder {
          (IsLetter(c) || IsDigit(c) || IsAllowableSpecialCharacter(c));
 
       static bool
-      IsAllowableSpecialCharacter(char c) {
-         switch (c) {
-            case '-':
-            case '_':
-            case ':':
-               // note that we're specifically excluding the '.' character
-               return true;
-
-            default:
-               return false;
-         }
-      }
+      IsAllowableSpecialCharacter(char c) =>
+         c is '-' or '_' or ':';
 
       static bool
       IsDigit(char c) =>

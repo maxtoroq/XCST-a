@@ -85,7 +85,7 @@ public static class ExpressionHelper {
       Func<object?, object> func;
 
       try {
-         func = CachedExpressionCompiler.Process(lambda);
+         func = CachedExpressionCompiler.Process(lambda)!;
 
       } catch (InvalidOperationException ex) {
 
@@ -94,7 +94,7 @@ public static class ExpressionHelper {
             ex);
       }
 
-      return "[" + Convert.ToString(func(null), CultureInfo.InvariantCulture) + "]";
+      return String.Concat("[", Convert.ToString(func.Invoke(null), CultureInfo.InvariantCulture), "]");
    }
 
    internal static bool

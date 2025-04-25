@@ -150,7 +150,7 @@ sealed class TemplateRenderer {
          }
       }
 
-      throw new InvalidOperationException($"Unable to locate an appropriate template for type {metadata.UnderlyingOrModelType.FullName}.");
+      throw new InvalidOperationException($"Unable to locate an appropriate template for type {metadata.UnderlyingOrModelType}.");
    }
 
    Dictionary<string, TemplateAction>

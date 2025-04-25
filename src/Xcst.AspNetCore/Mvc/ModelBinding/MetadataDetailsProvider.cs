@@ -77,7 +77,7 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
    internal static bool?
    GetShowForDisplay(ModelMetadata metadata) {
 
-      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+      ArgumentNullException.ThrowIfNull(metadata);
 
       if (metadata.AdditionalValues.TryGetValue(_showForDisplayKey, out var obj)
          && obj is bool b) {
@@ -91,7 +91,7 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
    internal static bool?
    GetShowForEdit(ModelMetadata metadata) {
 
-      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+      ArgumentNullException.ThrowIfNull(metadata);
 
       if (metadata.AdditionalValues.TryGetValue(_showForEditKey, out var obj)
          && obj is bool b) {
@@ -105,7 +105,7 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
    internal static string?
    GetGroupName(ModelMetadata metadata) {
 
-      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+      ArgumentNullException.ThrowIfNull(metadata);
 
       if (metadata.AdditionalValues.TryGetValue(_groupName, out var obj)
          && obj is string str) {
@@ -119,7 +119,7 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
    internal static string?
    GetShortName(ModelMetadata metadata) {
 
-      if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+      ArgumentNullException.ThrowIfNull(metadata);
 
       if (metadata.AdditionalValues.TryGetValue(_shortName, out var obj)
          && obj is string str) {

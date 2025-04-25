@@ -111,7 +111,8 @@ class PrecompiledPageMiddleware {
       Debug.Assert(requestPath != null);
       Debug.Assert(!requestPath.StartsWith("~/"));
 
-      // We can skip the file exists check and normal lookup for empty paths, but we still need to look for default pages
+      // We can skip the file exists check and normal lookup for empty paths,
+      // but we still need to look for default pages
 
       if (!String.IsNullOrEmpty(requestPath)) {
 
@@ -141,17 +142,15 @@ class PrecompiledPageMiddleware {
                // If there are no more slashes, we're done
 
                break;
-
-            } else {
-
-               // Chop off the last path segment to get to the next one
-
-               currentLevel = currentLevel.Substring(0, indexOfLastSlash);
-
-               // And save the path info in case there is a match
-
-               currentPathInfo = requestPath.Substring(indexOfLastSlash + 1);
             }
+
+            // Chop off the last path segment to get to the next one
+
+            currentLevel = currentLevel.Substring(0, indexOfLastSlash);
+
+            // And save the path info in case there is a match
+
+            currentPathInfo = requestPath.Substring(indexOfLastSlash + 1);
          }
       }
 
@@ -177,10 +176,12 @@ class PrecompiledPageMiddleware {
       string currentLevelIndex;
 
       if (String.IsNullOrEmpty(currentLevel)) {
+
          currentLevelIndex = defaultDocument;
+
       } else {
 
-         if (currentLevel[currentLevel.Length - 1] != '/') {
+         if (currentLevel[^1] != '/') {
             currentLevel += "/";
          }
 

@@ -103,7 +103,7 @@ public class TemplateInfo {
          return partialFieldName;
       }
 
-      if (partialFieldName.StartsWith("[", StringComparison.Ordinal)) {
+      if (partialFieldName.StartsWith('[')) {
 
          // See Codeplex #544 - the partialFieldName might represent an indexer access, in which case combining
          // with a 'dot' would be invalid.
@@ -111,7 +111,7 @@ public class TemplateInfo {
          return this.HtmlFieldPrefix + partialFieldName;
       }
 
-      return this.HtmlFieldPrefix + "." + partialFieldName;
+      return String.Concat(this.HtmlFieldPrefix, ".", partialFieldName);
    }
 
    public bool

@@ -144,11 +144,11 @@ class PropertyHelper {
 
    static readonly MethodInfo
    _callPropertyGetterOpenGenericMethod = typeof(PropertyHelper)
-      .GetMethod(nameof(CallPropertyGetter), BindingFlags.NonPublic | BindingFlags.Static);
+      .GetMethod(nameof(CallPropertyGetter), BindingFlags.NonPublic | BindingFlags.Static)!;
 
    static readonly MethodInfo
    _callPropertyGetterByReferenceOpenGenericMethod = typeof(PropertyHelper)
-      .GetMethod(nameof(CallPropertyGetterByReference), BindingFlags.NonPublic | BindingFlags.Static);
+      .GetMethod(nameof(CallPropertyGetterByReference), BindingFlags.NonPublic | BindingFlags.Static)!;
 
    static object?
    CallPropertyGetter<TDeclaringType, TValue>(Func<TDeclaringType, TValue> getter, object @this) =>
@@ -165,11 +165,11 @@ class PropertyHelper {
 
    static readonly MethodInfo
    _callPropertySetterOpenGenericMethod = typeof(PropertyHelper)
-      .GetMethod(nameof(CallPropertySetter), BindingFlags.NonPublic | BindingFlags.Static);
+      .GetMethod(nameof(CallPropertySetter), BindingFlags.NonPublic | BindingFlags.Static)!;
 
    static void
    CallPropertySetter<TDeclaringType, TValue>(Action<TDeclaringType, TValue> setter, object @this, object value) =>
-      setter((TDeclaringType)@this, (TValue)value);
+      setter.Invoke((TDeclaringType)@this, (TValue)value);
 
    protected static PropertyHelper[]
    GetProperties(object instance, Func<PropertyInfo, PropertyHelper> createPropertyHelper, ConcurrentDictionary<Type, PropertyHelper[]> cache) {
@@ -190,7 +190,7 @@ class PropertyHelper {
 
          foreach (var property in properties) {
 
-            var propertyHelper = createPropertyHelper(property);
+            var propertyHelper = createPropertyHelper.Invoke(property);
 
             newHelpers.Add(propertyHelper);
          }
