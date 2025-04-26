@@ -172,7 +172,7 @@ static class ExpressionMetadataProvider {
       if (viewData.ModelMetadata.ModelType == typeof(object)) {
 
          // Use common simple type rather than object so e.g. Editor() at least generates a TextBox.
-         var model = (viewData.Model == null) ? null : Convert.ToString(viewData.Model, CultureInfo.CurrentCulture);
+         var model = (viewData.Model is null) ? null : Convert.ToString(viewData.Model, CultureInfo.CurrentCulture);
          return metadataProvider.GetModelExplorerForType(typeof(string), model);
       }
 

@@ -199,7 +199,7 @@ public partial class HtmlHelper {
 
       static object? ConvertTo(object? value, Type type, CultureInfo? culture) {
 
-         if (value == null) {
+         if (value is null) {
 
             if (!type.IsValueType) {
                return null;
