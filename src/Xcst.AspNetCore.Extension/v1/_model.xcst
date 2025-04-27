@@ -95,7 +95,6 @@
                   <with-param name='el' value='el'/>
                   <with-param name='omitParam' value='true'/>
                </call-template>
-               <on-empty value='default(object)'/>
             </variable>
 
             <if test='attributesArg != null'>
@@ -195,7 +194,6 @@
          <if test='typeAttr != null'>
             <code:type-reference name='{xcst_type(typeAttr)}'/>
          </if>
-         <on-empty value='default(XElement)'/>
       </variable>
 
       <code:variable name='{newHelper.Attribute("name")!.Value}'>
@@ -217,10 +215,7 @@
                   </when>
                   <otherwise>
                      <code:default>
-                        <copy-of value='type'/>
-                        <on-empty>
-                           <copy-of value='src_object_type'/>
-                        </on-empty>
+                        <copy-of value='type ?? src_object_type'/>
                      </code:default>
                   </otherwise>
                </choose>
