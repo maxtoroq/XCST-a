@@ -38,19 +38,24 @@ public class HtmlAttributeDictionary : Dictionary<string, object?> {
    public HtmlAttributeDictionary
    AddClass(object? cssClass) {
 
+      AddClass(this, cssClass);
+      return this;
+   }
+
+   internal static void
+   AddClass(IDictionary<string, object?> dictionary, object? cssClass) {
+
       if (!(cssClass is null or string and { Length: 0 })) {
 
-         if (TryGetValue("class", out var existingObj)
+         if (dictionary.TryGetValue("class", out var existingObj)
             && existingObj != null) {
 
-            this["class"] = $"{existingObj} {cssClass}";
+            dictionary["class"] = $"{existingObj} {cssClass}";
 
          } else {
-            this["class"] = cssClass;
+            dictionary["class"] = cssClass;
          }
       }
-
-      return this;
    }
 
    [GeneratedCodeReference]

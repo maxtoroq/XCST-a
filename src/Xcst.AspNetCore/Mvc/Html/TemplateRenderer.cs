@@ -255,13 +255,9 @@ sealed class TemplateRenderer {
       viewPage.ViewContext = new ViewContext(_viewContext);
       viewPage.ViewData = _viewData;
 
-      var evaluator = XcstEvaluator.Using((object)viewPage);
-
-      foreach (var item in _viewData.TemplateInfo.TemplateParameters) {
-         evaluator.WithParam(item.Key, item.Value);
-      }
-
-      evaluator.CallInitialTemplate()
+      XcstEvaluator.Using((object)viewPage)
+         .WithParams(_viewData.TemplateInfo.TemplateParameters)
+         .CallInitialTemplate()
          .OutputToRaw(output)
          .Run();
    }

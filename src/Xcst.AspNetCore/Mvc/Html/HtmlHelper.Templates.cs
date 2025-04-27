@@ -192,19 +192,14 @@ partial class HtmlHelper {
 
       ArgumentNullException.ThrowIfNull(memberExplorer);
 
-      var currentViewData = this.ViewData;
-      var templateInfo = currentViewData.TemplateInfo;
-
       var container = new ViewDataContainer(
-         new ViewDataDictionary(currentViewData) {
+         new ViewDataDictionary(this.ViewData) {
             ModelExplorer = memberExplorer,
-            TemplateInfo = new TemplateInfo {
-               HtmlFieldPrefix = templateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
+            TemplateInfo = new TemplateInfo(this.ViewData.TemplateInfo) {
+               HtmlFieldPrefix = this.ViewData.TemplateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
             }
          }
       );
-
-      container.ViewData.TemplateInfo.InheritParentState(templateInfo);
 
       return new HtmlHelper(this.ViewContext, container, this.CurrentPackage);
    }
@@ -315,26 +310,33 @@ public class TemplateHelper {
 
       var viewData = new ViewDataDictionary(_html.ViewData) {
          ModelExplorer = _modelExplorer.GetExplorerForModel(model),
-         TemplateInfo = new TemplateInfo {
+         TemplateInfo = new TemplateInfo(_html.ViewData.TemplateInfo, inheritVisitedObjects: true) {
             FormattedModelValue = formattedModelValue,
             HtmlFieldPrefix = _html.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
             MembersNames = membersNames,
-            MembersOptions = membersOptions,
-            MemberTemplate = memberTemplate,
-            HtmlAttributes = (htmlAttributes != null) ?
-               HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)
-               : null
          }
       };
 
-      if (withParams != null) {
-         foreach (var kvp in HtmlHelper.ObjectToDictionary(withParams)) {
-            viewData.TemplateInfo.TemplateParameters.Add(kvp);
+      if (htmlAttributes != null) {
+         viewData.TemplateInfo.MergeHtmlAttributes(htmlAttributes);
+      }
+
+      if (membersOptions != null) {
+         foreach (var kvp in membersOptions) {
+            viewData.TemplateInfo.MembersOptions[kvp.Key] = kvp.Value;
          }
       }
 
-      viewData.TemplateInfo.InheritParentState(_html.ViewData.TemplateInfo);
-      viewData.TemplateInfo.InheritVisitedObjects(_html.ViewData.TemplateInfo);
+      if (memberTemplate != null) {
+         viewData.TemplateInfo.MemberTemplate = memberTemplate;
+      }
+
+      if (withParams != null) {
+         foreach (var kvp in HtmlHelper.ObjectToDictionary(withParams)) {
+            viewData.TemplateInfo.TemplateParameters[kvp.Key] = kvp.Value;
+         }
+      }
+
       viewData.TemplateInfo.VisitedObjects.Add(visitedObjectsKey);
 
       new TemplateRenderer(_html.CurrentPackage, _html.ViewContext, viewData, templateName, _displayMode)

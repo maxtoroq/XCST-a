@@ -28,11 +28,17 @@ public class TemplateInfo {
    string?
    _htmlFieldPrefix;
 
+   IDictionary<string, object?>?
+   _htmlAttributes;
+
    object?
    _formattedModelValue;
 
    IList<string>?
    _membersNames;
+
+   IDictionary<string, IEnumerable<SelectListItem>>?
+   _membersOptions;
 
    IDictionary<string, object?>?
    _templateParameters;
@@ -54,18 +60,26 @@ public class TemplateInfo {
       set => _htmlFieldPrefix = value;
    }
 
-   public IDictionary<string, object?>?
-   HtmlAttributes { get; set; }
+   [AllowNull]
+   public IDictionary<string, object?>
+   HtmlAttributes {
+      get => _htmlAttributes ??= new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+      set => _htmlAttributes = value;
+   }
 
    [AllowNull]
    public IList<string>
    MembersNames {
       get => _membersNames ?? Array.Empty<string>();
-      set => _membersNames = value;
+      internal set => _membersNames = value;
    }
 
-   public IDictionary<string, IEnumerable<SelectListItem>>?
-   MembersOptions { get; set; }
+   [AllowNull]
+   public IDictionary<string, IEnumerable<SelectListItem>>
+   MembersOptions {
+      get => _membersOptions ??= new Dictionary<string, IEnumerable<SelectListItem>>();
+      set => _membersOptions = value;
+   }
 
    internal Action<HtmlHelper, ISequenceWriter<object?>>?
    MemberTemplate { get; set; }
@@ -86,6 +100,45 @@ public class TemplateInfo {
    VisitedObjects {
       get => _visitedObjects ??= new HashSet<object>();
       set => _visitedObjects = value;
+   }
+
+   public
+   TemplateInfo() { }
+
+   public
+   TemplateInfo(TemplateInfo templateInfo) {
+
+      ArgumentNullException.ThrowIfNull(templateInfo);
+
+      _htmlFieldPrefix = templateInfo._htmlFieldPrefix;
+
+      if (templateInfo._htmlAttributes is { } htmlAttribs and { Count: > 0 }) {
+         _htmlAttributes = new CopyOnWriteDictionary<string, object?>(htmlAttribs, StringComparer.OrdinalIgnoreCase);
+      }
+
+      if (templateInfo._membersOptions is { } memberOpts and { Count: > 0 }) {
+         _membersOptions = new CopyOnWriteDictionary<string, IEnumerable<SelectListItem>>(memberOpts, EqualityComparer<string>.Default);
+      }
+
+      this.MemberTemplate = templateInfo.MemberTemplate;
+
+      if (templateInfo._templateParameters is { } templateParams and { Count: > 0 }) {
+         _templateParameters = new CopyOnWriteDictionary<string, object?>(templateParams, EqualityComparer<string>.Default);
+      }
+   }
+
+   internal
+   TemplateInfo(TemplateInfo templateInfo, bool inheritVisitedObjects)
+      : this(templateInfo) {
+
+      if (inheritVisitedObjects) {
+
+         ArgumentNullException.ThrowIfNull(templateInfo);
+
+         if (templateInfo._visitedObjects is { } visitedObjs and { Count: > 0 }) {
+            _visitedObjects = new HashSet<object>(visitedObjs);
+         }
+      }
    }
 
    public string
@@ -119,111 +172,30 @@ public class TemplateInfo {
       this.VisitedObjects.Contains(modelExplorer.Model ?? modelExplorer.Metadata.ModelType);
 
    public void
-   InheritParentState(TemplateInfo parentInfo) {
-      InheritHtmlAttributes(parentInfo);
-      InheritMembersOptions(parentInfo);
-      InheritMemberTemplate(parentInfo);
-      InheritTemplateParameters(parentInfo);
-   }
+   MergeHtmlAttributes(object? htmlAttributes) {
 
-   internal void
-   InheritVisitedObjects(TemplateInfo parentInfo) {
-
-      var parentObjects = parentInfo._visitedObjects;
-
-      if (parentObjects is null or { Count: 0 }) {
+      if (htmlAttributes is null) {
          return;
       }
 
-      if (_visitedObjects is null) {
-         _visitedObjects = new HashSet<object>(parentObjects);
-         return;
-      }
+      var dict = htmlAttributes as IDictionary<string, object?>
+         ?? HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
 
-      foreach (var item in parentObjects) {
-         _visitedObjects.Add(item);
-      }
-   }
+      foreach (var kvp in dict) {
 
-   void
-   InheritHtmlAttributes(TemplateInfo parentInfo) {
-
-      var parentAttribs = parentInfo.HtmlAttributes;
-
-      if (parentAttribs is null) {
-         return;
-      }
-
-      if (this.HtmlAttributes is null) {
-         this.HtmlAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(parentAttribs);
-         return;
-      }
-
-      var dict = this.HtmlAttributes as HtmlAttributeDictionary
-         ?? new HtmlAttributeDictionary(this.HtmlAttributes);
-
-      foreach (var pair in parentAttribs) {
-
-         if (dict.Comparer.Equals(pair.Key, "class")) {
-
-            dict.AddClass(pair.Value);
+         if (StringComparer.OrdinalIgnoreCase.Equals(kvp.Key, "class")) {
+            HtmlAttributeDictionary.AddClass(this.HtmlAttributes, kvp.Value);
             continue;
          }
 
-         if (!dict.ContainsKey(pair.Key)) {
-            dict[pair.Key] = pair.Value;
-         }
-      }
-
-      this.HtmlAttributes = dict;
-   }
-
-   void
-   InheritMembersOptions(TemplateInfo parentInfo) {
-
-      var parentOptions = parentInfo.MembersOptions;
-
-      if (parentOptions is null) {
-         return;
-      }
-
-      if (this.MembersOptions is null) {
-         this.MembersOptions = new Dictionary<string, IEnumerable<SelectListItem>>(parentOptions);
-         return;
-      }
-
-      foreach (var pair in parentOptions) {
-         if (!this.MembersOptions.ContainsKey(pair.Key)) {
-            this.MembersOptions[pair.Key] = pair.Value;
-         }
-      }
-   }
-
-   void
-   InheritMemberTemplate(TemplateInfo parentInfo) {
-      this.MemberTemplate ??= parentInfo.MemberTemplate;
-   }
-
-   void
-   InheritTemplateParameters(TemplateInfo parentInfo) {
-
-      var parentParams = parentInfo._templateParameters;
-
-      if (parentParams is null) {
-         return;
-      }
-
-      foreach (var pair in parentParams) {
-         if (!this.TemplateParameters.ContainsKey(pair.Key)) {
-            this.TemplateParameters[pair.Key] = pair.Value;
-         }
+         this.HtmlAttributes[kvp.Key] = kvp.Value;
       }
    }
 
    public IEnumerable<SelectListItem>?
    OptionsForModel() {
 
-      if (this.MembersOptions?.TryGetValue(this.HtmlFieldPrefix, out var value) == true) {
+      if (_membersOptions?.TryGetValue(this.HtmlFieldPrefix, out var value) == true) {
          return value;
       }
 
