@@ -40,6 +40,7 @@ Breaking Changes
 - [Not using ViewDataDictionary value on form instructions](https://github.com/maxtoroq/XCST-a/commit/c23401630f2dbcef8bf6ff041bc281296b1665a1)
 - [Not adding blank option on a:select (a:editor still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
 - [Not looking for options in ViewData on a:select](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
+- [Not auto-creating IEnumerable<SelectListItem> from various types](https://github.com/maxtoroq/XCST-a/commit/e995a3ffa4589c1c4d30c6622c7be9ddb3744622)
 - [Not prepending new line on a:textarea when value is empty](https://github.com/maxtoroq/XCST-a/commit/7df19560060f7ac8a1ed09aab1ff833b961a09b5)
 - [Adding 'readonly' and 'placeholder' on a:input and a:textarea based on metadata](https://github.com/maxtoroq/XCST-a/commit/12789aff82b056158b4e7f1c7b7d0469dc0a13c1)
 - [Using more specific type on a:input based on metadata](https://github.com/maxtoroq/XCST-a/commit/b46332d98ec618dbfef6147c7747c09ff44ab478)
