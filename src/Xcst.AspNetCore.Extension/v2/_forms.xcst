@@ -933,11 +933,7 @@
             </choose>
             <if test='el.Attribute("options") is { } optionsAttr'>
                <code:argument name='options'>
-                  <call-template name='option-list'>
-                     <with-param name='el' value='el'/>
-                     <with-param name='optionsAttr' value='optionsAttr'/>
-                     <with-param name='optionEls' value='System.Array.Empty&lt;XElement>()'/>
-                  </call-template>
+                  <code:expression value='{xcst_expression(optionsAttr)}'/>
                </code:argument>
             </if>
             <if test='el.Attribute("multiple") is { } multipleAttr
@@ -1055,115 +1051,6 @@
             <if test='text != null'>
                <code:argument name='text'>
                   <invoke-delegate delegate='src_expand_text' with-params='new { el, text }'/>
-               </code:argument>
-            </if>
-         </code:arguments>
-      </code:method-call>
-   </template>
-
-   <template name='option-list'>
-      <param name='el' as='XElement' required='yes'/>
-      <param name='optionsAttr' as='XAttribute?' required='yes'/>
-      <param name='optionEls' as='XElement[]' required='yes'/>
-
-      <choose>
-         <when test='optionsAttr != null
-               || optionEls.Length > 0'>
-            <code:chain>
-               <code:type-reference name='OptionList' namespace='Xcst.Web.Mvc'/>
-               <choose>
-                  <when test='optionEls.Length > 0'>
-                     <code:method-call name='FromStaticList'>
-                        <code:chain-reference/>
-                        <code:arguments>
-                           <code:int value='{optionEls.Length}'/>
-                        </code:arguments>
-                     </code:method-call>
-                  </when>
-                  <otherwise>
-                     <code:method-call name='Create'>
-                        <code:chain-reference/>
-                     </code:method-call>
-                  </otherwise>
-               </choose>
-               <for-each name='opt' in='optionEls'>
-                  <call-template name='option-item'>
-                     <with-param name='el' value='opt'/>
-                  </call-template>
-               </for-each>
-               <if test='optionsAttr != null'>
-                  <code:method-call name='ConcatDynamicList'>
-                     <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-                     <code:chain-reference/>
-                     <code:arguments>
-                        <!-- Don't cast expression, behavior depends on overload resolution -->
-                        <code:expression value='{xcst_expression(optionsAttr)}'/>
-                     </code:arguments>
-                  </code:method-call>
-               </if>
-            </code:chain>
-         </when>
-         <otherwise>
-            <code:default>
-               <code:type-reference name='IEnumerable' namespace='System.Collections.Generic'>
-                  <code:type-arguments>
-                     <code:type-reference name='SelectListItem' namespace='Xcst.Web.Mvc'/>
-                  </code:type-arguments>
-               </code:type-reference>
-            </code:default>
-         </otherwise>
-      </choose>
-   </template>
-
-   <template name='option-item'>
-      <param name='el' as='XElement' required='yes'/>
-
-      <call-template name='validate-option'>
-         <with-param name='el' value='el'/>
-      </call-template>
-
-      <call-template name='text-only'>
-         <with-param name='el' value='el'/>
-      </call-template>
-
-      <variable name='text' value='xcst_text(el, null)'/>
-
-      <!--
-         Casting of xcst_expression avoids turning into a dynamic object when one of the arguments is dynamic.
-         A long method chain on a dynamic object hurts performance.
-      -->
-
-      <code:method-call name='AddStaticOption'>
-         <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
-         <code:chain-reference/>
-         <code:arguments>
-            <if test='el.Attribute("value") is { } valueAttr'>
-               <code:argument name='value'>
-                  <code:cast>
-                     <copy-of value='src_object_type'/>
-                     <code:expression value='{xcst_expression(valueAttr)}'/>
-                  </code:cast>
-               </code:argument>
-            </if>
-            <if test='text != null'>
-               <code:argument name='text'>
-                  <invoke-delegate delegate='src_expand_text' with-params='new { el, text }'/>
-               </code:argument>
-            </if>
-            <if test='el.Attribute("selected") is { } selectedAttr'>
-               <code:argument name='selected'>
-                  <call-template name='src:boolean'>
-                     <with-param name='val' value='xcst_boolean(selectedAttr, true)'/>
-                     <with-param name='avt' value='selectedAttr'/>
-                  </call-template>
-               </code:argument>
-            </if>
-            <if test='el.Attribute("disabled") is { } disabledAttr'>
-               <code:argument name='disabled'>
-                  <call-template name='src:boolean'>
-                     <with-param name='val' value='xcst_boolean(disabledAttr, true)'/>
-                     <with-param name='avt' value='disabledAttr'/>
-                  </call-template>
                </code:argument>
             </if>
          </code:arguments>

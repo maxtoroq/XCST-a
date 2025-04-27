@@ -52,9 +52,8 @@ partial class HtmlHelper {
       var viewData = this.ViewData;
       var fullName = FullNameNonEmpty(name);
 
-      var defaultValue = (multiple) ?
-         GetModelStateValue(fullName, typeof(string[]))
-         : GetModelStateValue(fullName, typeof(string));
+      var defaultValue = GetModelStateValue(fullName,
+         (multiple) ? typeof(string[]) : typeof(string));
 
       defaultValue ??= value ?? modelExplorer.Model;
 
@@ -100,7 +99,7 @@ partial class HtmlHelper {
          var values = from object value in defaultValues
                       select SelectValueString(value);
 
-         // ToString() by default returns an enum value's name.  But selectList may use numeric values.
+         // ToString() by default returns an enum value's name. But selectList may use numeric values.
 
          var enumValues = from value in defaultValues.OfType<Enum>()
                           select value.ToString("d");
@@ -199,7 +198,7 @@ partial class HtmlHelper {
       return new ElementEndingDisposable(output);
    }
 
-   string
+   internal string
    SelectValueString(object? value) =>
       FormatValue(value, null);
 

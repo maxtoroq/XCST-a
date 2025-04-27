@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
@@ -209,6 +208,12 @@ partial class HtmlHelper {
 
       return new HtmlHelper(this.ViewContext, container, this.CurrentPackage);
    }
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public OptionList
+   NewOptionList(int staticOptionsCount) =>
+      new OptionList(staticOptionsCount, this);
 }
 
 partial class HtmlHelper<TModel> {

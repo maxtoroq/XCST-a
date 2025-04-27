@@ -12,12 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 
 namespace Xcst.Web.Mvc;
@@ -29,11 +26,8 @@ public class OptionList : IEnumerable<SelectListItem> {
    readonly List<SelectListItem>
    _staticList;
 
-   readonly HashSet<string>
-   _selectedValues = new(StringComparer.OrdinalIgnoreCase);
-
-   bool
-   _useSelectedValues;
+   readonly HtmlHelper
+   _htmlHelper;
 
    List<SelectListItem>?
    _dynamicList;
@@ -43,57 +37,10 @@ public class OptionList : IEnumerable<SelectListItem> {
       _staticList.Count == 0
          && _dynamicList != null;
 
-   [GeneratedCodeReference]
-   public static OptionList
-   FromStaticList(int staticOptionsCount) {
-
-      Debug.Assert(staticOptionsCount > 0);
-
-      return new OptionList(staticOptionsCount);
-   }
-
-   [GeneratedCodeReference]
-   public static OptionList
-   Create() => new OptionList(0);
-
-   private
-   OptionList(int staticOptionsCount) {
+   internal
+   OptionList(int staticOptionsCount, HtmlHelper htmlHelper) {
       _staticList = new List<SelectListItem>(staticOptionsCount);
-   }
-
-   public OptionList
-   WithSelectedValue(object? selectedValue, bool multiple = false) {
-
-      if (selectedValue != null) {
-
-         if (multiple) {
-
-            _selectedValues.UnionWith(
-               ((IEnumerable)selectedValue).Cast<object>()
-                  .Select(ValueString));
-
-         } else {
-            _selectedValues.Add(ValueString(selectedValue));
-         }
-      }
-
-      _useSelectedValues = true;
-
-      return this;
-   }
-
-   static string
-   ValueString(object? value) =>
-      Convert.ToString(value, CultureInfo.CurrentCulture);
-
-   bool
-   IsSelected(SelectListItem item) {
-
-      if (_useSelectedValues) {
-         return _selectedValues.Contains(item.Value ?? item.Text ?? String.Empty);
-      }
-
-      return item.Selected;
+      _htmlHelper = htmlHelper;
    }
 
    [GeneratedCodeReference]
@@ -107,10 +54,8 @@ public class OptionList : IEnumerable<SelectListItem> {
       };
 
       if (value != null) {
-         item.Value = ValueString(value);
+         item.Value = _htmlHelper.SelectValueString(value);
       }
-
-      item.Selected = IsSelected(item);
 
       _staticList.Add(item);
 
@@ -140,105 +85,8 @@ public class OptionList : IEnumerable<SelectListItem> {
       return this;
    }
 
-   public OptionList
-   ConcatDynamicList<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>>? list) {
-
-      if (list != null) {
-
-         _dynamicList = new List<SelectListItem>();
-
-         foreach (var pair in list) {
-
-            AddDynamicOption(new SelectListItem {
-               Text = ValueString(pair.Value),
-               Value = ValueString(pair.Key)
-            });
-         }
-      }
-
-      return this;
-   }
-
-   public OptionList
-   ConcatDynamicList<TGroupKey, TKey, TValue>(IEnumerable<IGrouping<TGroupKey, KeyValuePair<TKey, TValue>>>? list) {
-
-      if (list != null) {
-
-         _dynamicList = new List<SelectListItem>();
-
-         foreach (var group in list) {
-
-            var g = new SelectListGroup {
-               Name = ValueString(group.Key)
-            };
-
-            foreach (var pair in group) {
-
-               AddDynamicOption(new SelectListItem {
-                  Group = g,
-                  Text = ValueString(pair.Value),
-                  Value = ValueString(pair.Key)
-               });
-            }
-         }
-      }
-
-      return this;
-   }
-
-   public OptionList
-   ConcatDynamicList<TKey, TElement>(IEnumerable<IGrouping<TKey, TElement>>? list) {
-
-      if (list != null) {
-
-         _dynamicList = new List<SelectListItem>();
-
-         foreach (var group in list) {
-
-            var g = new SelectListGroup {
-               Name = ValueString(group.Key)
-            };
-
-            foreach (var item in group) {
-
-               AddDynamicOption(new SelectListItem {
-                  Group = g,
-                  Text = ValueString(item)
-               });
-            }
-         }
-      }
-
-      return this;
-   }
-
-   public OptionList
-   ConcatDynamicList(IEnumerable? list) {
-
-      if (list != null) {
-
-         if (list is IEnumerable<SelectListItem> sList) {
-            return ConcatDynamicList(sList);
-         }
-
-         _dynamicList = new List<SelectListItem>();
-
-         foreach (var item in list) {
-
-            AddDynamicOption(new SelectListItem {
-               Text = ValueString(item),
-            });
-         }
-      }
-
-      return this;
-   }
-
    void
    AddDynamicOption(SelectListItem item) {
-
-      item.Selected = IsSelected(item);
-
       _dynamicList!.Add(item);
    }
 
