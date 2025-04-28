@@ -31,20 +31,14 @@ partial class HtmlHelper {
             Model = model!,
             // setting new TemplateInfo clears VisitedObjects cache
             TemplateInfo = new TemplateInfo {
-               HtmlFieldPrefix = this.ViewData.TemplateInfo.HtmlFieldPrefix
+               HtmlFieldPrefix = this.TemplateInfo.GetFullHtmlFieldName(htmlFieldPrefix),
             }
          }
       );
 
-      if (!String.IsNullOrEmpty(htmlFieldPrefix)) {
-
-         var templateInfo = container.ViewData.TemplateInfo;
-         templateInfo.HtmlFieldPrefix = templateInfo.GetFullHtmlFieldName(htmlFieldPrefix);
-      }
-
       // new ViewContext resets FormContext
       var newViewContext = new ViewContext(this.ViewContext);
 
-      return new HtmlHelper<TModel>(newViewContext, container, currentPackage);
+      return new HtmlHelper<TModel>(this, newViewContext, container, currentPackage);
    }
 }

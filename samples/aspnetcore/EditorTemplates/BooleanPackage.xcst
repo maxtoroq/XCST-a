@@ -15,7 +15,7 @@
       <c:variable name='modelValue' value='(ViewData.Model != null) ?
          Convert.ToBoolean(ViewData.Model, CultureInfo.InvariantCulture)
          : default(bool?)' as='bool?'/>
-      <c:variable name='@class' value='ViewData.TemplateInfo.HtmlAttributes.TryGetValue("class", out var cls) ? $" {cls}" : null'/>
+      <c:variable name='@class' value='TemplateInfo.HtmlAttributes.TryGetValue("class", out var cls) ? $" {cls}" : null'/>
       <c:choose>
          <c:when test='ViewData.ModelMetadata.IsNullableValueType'>
             <a:select class='form-control{@class}'>
@@ -38,7 +38,7 @@
    </c:template>
 
    <c:template name='write-attributes-except-class'>
-      <c:for-each name='pair' in='ViewData.TemplateInfo.HtmlAttributes.Where(p => p.Key != "class")'>
+      <c:for-each name='pair' in='TemplateInfo.HtmlAttributes.Where(p => p.Key != "class")'>
          <c:attribute name='{pair.Key}' value='pair.Value'/>
       </c:for-each>
    </c:template>

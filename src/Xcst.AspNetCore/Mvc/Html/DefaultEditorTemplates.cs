@@ -59,15 +59,14 @@ static class DefaultEditorTemplates {
    public static void
    BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
       var value = default(bool?);
 
-      if (viewData.Model != null) {
+      if (html.ViewData.Model != null) {
          // FIX: conversion logic duplicated with GenerateCheckbox()
-         value = Convert.ToBoolean(viewData.Model, CultureInfo.InvariantCulture);
+         value = Convert.ToBoolean(html.ViewData.Model, CultureInfo.InvariantCulture);
       }
 
-      if (viewData.ModelMetadata.IsNullableValueType) {
+      if (html.ModelMetadata.IsNullableValueType) {
 
          var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
          var className = GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
@@ -75,7 +74,7 @@ static class DefaultEditorTemplates {
 
          using var disp = html.GenerateSelect(
             output,
-            viewData.ModelExplorer,
+            html.ModelExplorer,
             String.Empty,
             value: null,
             TriStateValues(value),
@@ -92,7 +91,7 @@ static class DefaultEditorTemplates {
 
          using var disp = html.GenerateCheckbox(
             seqOutput,
-            modelExplorer: viewData.ModelExplorer,
+            modelExplorer: html.ModelExplorer,
             String.Empty,
             value.GetValueOrDefault(),
             @class: htmlAttributes.RemoveClass(html.CurrentPackage.Context.SimpleContent));
@@ -123,13 +122,13 @@ static class DefaultEditorTemplates {
       }
 
       var typeInCollectionIsNullableValueType = TypeHelpers.IsNullableValueType(typeInCollection);
-      var oldPrefix = viewData.TemplateInfo.HtmlFieldPrefix;
+      var oldPrefix = html.TemplateInfo.HtmlFieldPrefix;
 
       var elementMetadata = viewData.ModelMetadata.ElementMetadata;
 
       try {
 
-         viewData.TemplateInfo.HtmlFieldPrefix = String.Empty;
+         html.TemplateInfo.HtmlFieldPrefix = String.Empty;
 
          var fieldNameBase = oldPrefix;
          var index = 0;
@@ -152,7 +151,7 @@ static class DefaultEditorTemplates {
          }
 
       } finally {
-         viewData.TemplateInfo.HtmlFieldPrefix = oldPrefix;
+         html.TemplateInfo.HtmlFieldPrefix = oldPrefix;
       }
    }
 
@@ -177,17 +176,16 @@ static class DefaultEditorTemplates {
    public static void
    DecimalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-      var value = viewData.ModelExplorer.Model;
+      var value = html.ModelExplorer.Model;
 
       var templateName = "Decimal";
       var inputType = "text";
 
-      if (viewData.TemplateInfo.FormattedModelValue == value) {
+      if (html.TemplateInfo.FormattedModelValue == value) {
 
-         var format = html.GetDataTypeFormat(viewData.ModelMetadata, inputType, templateName)!;
+         var format = html.GetDataTypeFormat(html.ModelMetadata, inputType, templateName)!;
 
-         viewData.TemplateInfo.FormattedModelValue = html.FormatValue(value, format);
+         html.TemplateInfo.FormattedModelValue = html.FormatValue(value, format);
       }
 
       HtmlInputTemplateHelper(html, seqOutput, templateName, inputType);
@@ -200,19 +198,18 @@ static class DefaultEditorTemplates {
 
       var className = GetEditorCssClass(_dropDownListInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
-      var viewData = html.ViewData;
 
       string? optionLabel = null;
 
-      var options = viewData.TemplateInfo.OptionsForModel();
+      var options = html.TemplateInfo.OptionsForModel();
 
       if (options is OptionList and { AddBlankOption: true }) {
-         optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
+         optionLabel = html.ModelMetadata.Placeholder ?? String.Empty;
       }
 
       using var disp = html.GenerateSelect(
          output,
-         viewData.ModelExplorer,
+         html.ModelExplorer,
          String.Empty,
          value: null,
          options,
@@ -238,26 +235,26 @@ static class DefaultEditorTemplates {
 
       var className = GetEditorCssClass(_enumInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
-      var viewData = html.ViewData;
+      var metadata = html.ModelMetadata;
 
-      var modelType = viewData.ModelMetadata.ModelType;
+      var modelType = metadata.ModelType;
       var enumType = Nullable.GetUnderlyingType(modelType) ?? modelType;
 
       if (!enumType.IsEnum) {
          throw new InvalidOperationException("Enum template can only be used on Enum members.");
       }
 
-      var formatString = viewData.ModelMetadata.EditFormatString
-         ?? viewData.ModelMetadata.DisplayFormatString;
+      var formatString = metadata.EditFormatString
+         ?? metadata.DisplayFormatString;
 
-      var applyFormatInEdit = viewData.ModelMetadata.EditFormatString != null;
+      var applyFormatInEdit = metadata.EditFormatString != null;
 
       var options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
-      var optionLabel = viewData.ModelMetadata.Placeholder ?? String.Empty;
+      var optionLabel = metadata.Placeholder ?? String.Empty;
 
       using var disp = html.GenerateSelect(
          output,
-         viewData.ModelExplorer,
+         html.ModelExplorer,
          String.Empty,
          value: null,
          options,
@@ -277,14 +274,12 @@ static class DefaultEditorTemplates {
    public static void
    HiddenInputTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-
-      if (!viewData.ModelMetadata.HideSurroundingHtml) {
+      if (!html.ModelMetadata.HideSurroundingHtml) {
          DefaultDisplayTemplates.StringTemplate(html, seqOutput);
       }
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-      var value = viewData.TemplateInfo.FormattedModelValue;
+      var value = html.TemplateInfo.FormattedModelValue;
 
       var className = GetEditorCssClass(_hiddenInputInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -292,7 +287,7 @@ static class DefaultEditorTemplates {
       using var disp = html.GenerateInput(
          output,
          "hidden",
-         viewData.ModelExplorer,
+         html.ModelExplorer,
          String.Empty,
          value,
          format: null,
@@ -312,13 +307,12 @@ static class DefaultEditorTemplates {
 
       var className = GetEditorCssClass(_listBoxInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
-      var viewData = html.ViewData;
 
-      var options = viewData.TemplateInfo.OptionsForModel();
+      var options = html.TemplateInfo.OptionsForModel();
 
       using var disp = html.GenerateSelect(
          output,
-         viewData.ModelExplorer,
+         html.ModelExplorer,
          String.Empty,
          value: null,
          options,
@@ -343,14 +337,13 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var viewData = html.ViewData;
-      var value = viewData.TemplateInfo.FormattedModelValue;
+      var value = html.TemplateInfo.FormattedModelValue;
       var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateTextarea(
          output,
-         viewData.ModelExplorer,
+         html.ModelExplorer,
          String.Empty,
          value,
          @class: htmlAttributes.RemoveClass(output.SimpleContent));
@@ -366,10 +359,8 @@ static class DefaultEditorTemplates {
    public static void
    ObjectTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-
-      if (viewData.TemplateInfo.TemplateDepth > 1) {
-         html.DisplayTextHelper(seqOutput, viewData.ModelExplorer);
+      if (html.TemplateInfo.TemplateDepth > 1) {
+         html.DisplayTextHelper(seqOutput, html.ModelExplorer);
          return;
       }
 
@@ -493,10 +484,8 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var viewData = html.ViewData;
-
       var value = (HtmlHelper.OmitInputValue(inputType)) ? null
-         : viewData.TemplateInfo.FormattedModelValue;
+         : html.TemplateInfo.FormattedModelValue;
 
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -504,7 +493,7 @@ static class DefaultEditorTemplates {
       using var _ = html.GenerateInput(
          output,
          inputType,
-         viewData.ModelExplorer,
+         html.ModelExplorer,
          String.Empty,
          value,
          format: null,
@@ -516,23 +505,22 @@ static class DefaultEditorTemplates {
    static void
    ApplyRfc3339DateFormattingIfNeeded(HtmlHelper html, string inputType) {
 
-      var viewData = html.ViewData;
-      var value = viewData.ModelExplorer.Model;
+      var value = html.ModelExplorer.Model;
 
-      if (viewData.TemplateInfo.FormattedModelValue != value
-         && viewData.ModelMetadata.HasNonDefaultEditFormat) {
+      if (html.TemplateInfo.FormattedModelValue != value
+         && html.ModelMetadata.HasNonDefaultEditFormat) {
 
          // non-default current culture formatting applied
 
          return;
       }
 
-      var format = html.GetDataTypeFormat(viewData.ModelMetadata, inputType, null)!;
+      var format = html.GetDataTypeFormat(html.ModelMetadata, inputType, null)!;
 
       if (value is DateTime
          || value is DateTimeOffset) {
 
-         viewData.TemplateInfo.FormattedModelValue = String.Format(CultureInfo.InvariantCulture, format, value);
+         html.TemplateInfo.FormattedModelValue = String.Format(CultureInfo.InvariantCulture, format, value);
       }
    }
 
@@ -542,7 +530,7 @@ static class DefaultEditorTemplates {
       var htmlAttributes = new HtmlAttributeDictionary();
 
       htmlAttributes.AddClass(className);
-      htmlAttributes.SetAttributes(html.ViewData.TemplateInfo.HtmlAttributes);
+      htmlAttributes.SetAttributes(html.TemplateInfo.HtmlAttributes);
 
       return htmlAttributes;
    }

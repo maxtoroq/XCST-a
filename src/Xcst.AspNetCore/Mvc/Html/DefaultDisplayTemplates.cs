@@ -39,15 +39,14 @@ static class DefaultDisplayTemplates {
    BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-      var viewData = html.ViewData;
 
       var value = default(bool?);
 
-      if (viewData.Model != null) {
-         value = Convert.ToBoolean(viewData.Model, CultureInfo.InvariantCulture);
+      if (html.ViewData.Model != null) {
+         value = Convert.ToBoolean(html.ViewData.Model, CultureInfo.InvariantCulture);
       }
 
-      if (viewData.ModelMetadata.IsNullableValueType) {
+      if (html.ModelMetadata.IsNullableValueType) {
 
          output.WriteStartElement("select");
 
@@ -98,13 +97,13 @@ static class DefaultDisplayTemplates {
       }
 
       var typeInCollectionIsNullableValueType = TypeHelpers.IsNullableValueType(typeInCollection);
-      var oldPrefix = viewData.TemplateInfo.HtmlFieldPrefix;
+      var oldPrefix = html.TemplateInfo.HtmlFieldPrefix;
 
       var elementMetadata = viewData.ModelMetadata.ElementMetadata;
 
       try {
 
-         viewData.TemplateInfo.HtmlFieldPrefix = String.Empty;
+         html.TemplateInfo.HtmlFieldPrefix = String.Empty;
 
          var fieldNameBase = oldPrefix;
          var index = 0;
@@ -127,21 +126,20 @@ static class DefaultDisplayTemplates {
          }
 
       } finally {
-         viewData.TemplateInfo.HtmlFieldPrefix = oldPrefix;
+         html.TemplateInfo.HtmlFieldPrefix = oldPrefix;
       }
    }
 
    public static void
    DecimalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-      var value = viewData.ModelExplorer.Model;
+      var value = html.ModelExplorer.Model;
 
-      if (viewData.TemplateInfo.FormattedModelValue == value) {
+      if (html.TemplateInfo.FormattedModelValue == value) {
 
-         var format = html.GetDataTypeFormat(viewData.ModelMetadata, "text", "Decimal")!;
+         var format = html.GetDataTypeFormat(html.ModelMetadata, "text", "Decimal")!;
 
-         viewData.TemplateInfo.FormattedModelValue =
+         html.TemplateInfo.FormattedModelValue =
             html.CurrentPackage.Context.SimpleContent.Format(format, value);
       }
 
@@ -152,29 +150,27 @@ static class DefaultDisplayTemplates {
    EmailAddressTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-      var viewData = html.ViewData;
 
       output.WriteStartElement("a");
-      output.WriteAttributeString("href", "mailto:" + Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
-      output.WriteString(output.SimpleContent.Convert(viewData.TemplateInfo.FormattedModelValue));
+      output.WriteAttributeString("href", "mailto:" + Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
+      output.WriteString(output.SimpleContent.Convert(html.TemplateInfo.FormattedModelValue));
       output.WriteEndElement();
    }
 
    public static void
    EnumTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-      var modelExplorer = viewData.ModelExplorer;
+      var modelExplorer = html.ModelExplorer;
 
       if (modelExplorer.Model != null) {
 
          if (modelExplorer.Metadata.EditFormatString != null) {
             // undo formatting if applicable to edit mode, for consistency with editor template
-            viewData.TemplateInfo.FormattedModelValue = modelExplorer.Model;
+            html.TemplateInfo.FormattedModelValue = modelExplorer.Model;
          }
 
-         if (viewData.TemplateInfo.FormattedModelValue == modelExplorer.Model) {
-            viewData.TemplateInfo.FormattedModelValue = modelExplorer.GetSimpleDisplayText();
+         if (html.TemplateInfo.FormattedModelValue == modelExplorer.Model) {
+            html.TemplateInfo.FormattedModelValue = modelExplorer.GetSimpleDisplayText();
          }
       }
 
@@ -191,19 +187,17 @@ static class DefaultDisplayTemplates {
 
    public static void
    HtmlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      seqOutput.WriteRaw(html.CurrentPackage.Context.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
+      seqOutput.WriteRaw(html.CurrentPackage.Context.SimpleContent.Convert(html.TemplateInfo.FormattedModelValue));
 
    public static void
    ImageUrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-
-      if (viewData.Model != null) {
+      if (html.ViewData.Model != null) {
 
          var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
          output.WriteStartElement("img");
-         output.WriteAttributeString("src", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
+         output.WriteAttributeString("src", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
          output.WriteEndElement();
       }
    }
@@ -211,12 +205,11 @@ static class DefaultDisplayTemplates {
    public static void
    MonthTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-      var value = viewData.ModelExplorer.Model;
+      var value = html.ModelExplorer.Model;
 
-      if (viewData.TemplateInfo.FormattedModelValue == value) {
+      if (html.TemplateInfo.FormattedModelValue == value) {
 
-         viewData.TemplateInfo.FormattedModelValue =
+         html.TemplateInfo.FormattedModelValue =
             html.CurrentPackage.Context.SimpleContent.Format("{0:y}", value);
       }
 
@@ -226,11 +219,10 @@ static class DefaultDisplayTemplates {
    public static void
    ObjectTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-      var modelExplorer = viewData.ModelExplorer;
+      var modelExplorer = html.ModelExplorer;
 
       if (modelExplorer.Model is null
-         || viewData.TemplateInfo.TemplateDepth > 1) {
+         || html.TemplateInfo.TemplateDepth > 1) {
 
          html.DisplayTextHelper(seqOutput, modelExplorer);
          return;
@@ -303,17 +295,16 @@ static class DefaultDisplayTemplates {
 
    public static void
    StringTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      seqOutput.WriteString(html.CurrentPackage.Context.SimpleContent.Convert(html.ViewData.TemplateInfo.FormattedModelValue));
+      seqOutput.WriteString(html.CurrentPackage.Context.SimpleContent.Convert(html.TemplateInfo.FormattedModelValue));
 
    public static void
    UrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-      var viewData = html.ViewData;
 
       output.WriteStartElement("a");
-      output.WriteAttributeString("href", Convert.ToString(viewData.Model, CultureInfo.InvariantCulture));
-      output.WriteString(output.SimpleContent.Convert(viewData.TemplateInfo.FormattedModelValue));
+      output.WriteAttributeString("href", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
+      output.WriteString(output.SimpleContent.Convert(html.TemplateInfo.FormattedModelValue));
       output.WriteEndElement();
    }
 }

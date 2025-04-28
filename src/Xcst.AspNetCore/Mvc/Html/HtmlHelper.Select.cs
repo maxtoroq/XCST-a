@@ -49,7 +49,6 @@ partial class HtmlHelper {
    GenerateSelect(XcstWriter output, ModelExplorer modelExplorer, string name, object? value, IEnumerable<SelectListItem>? options,
          bool multiple, string? @class) {
 
-      var viewData = this.ViewData;
       var fullName = FullNameNonEmpty(name);
 
       var defaultValue = GetModelStateValue(fullName,
@@ -66,7 +65,7 @@ partial class HtmlHelper {
       output.WriteAttributeString("name", fullName);
       WriteBoolean("multiple", multiple, output);
 
-      var cssClass = (viewData.ModelState.TryGetValue(fullName, out var modelState)
+      var cssClass = (this.ModelState.TryGetValue(fullName, out var modelState)
          && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);

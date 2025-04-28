@@ -14,7 +14,7 @@
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <a:model type='ColorModel' helper-name='htm'>
-         <c:set ref='htm.ViewData.TemplateInfo.MembersOptions' value='
+         <c:set ref='htm.TemplateInfo.MembersOptions' value='
             new Dictionary&lt;string, IEnumerable&lt;SelectListItem>> {
                { "color", new SelectListItem[] {
                   new() { Text = "red" },

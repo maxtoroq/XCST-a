@@ -68,9 +68,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
          HttpContext = value?.HttpContext;
 #pragma warning restore CS8601
 
-#pragma warning disable CS8625
          _html = null;
-#pragma warning restore CS8625
       }
    }
 
@@ -78,11 +76,11 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    ViewData {
       get {
          if (_viewData is null) {
-            SetViewData(new ViewDataDictionary(MetadataProvider, ModelState));
+            SetViewData(new ViewDataDictionary(MetadataProvider));
          }
          return _viewData!;
       }
-      set => SetViewData(value);
+      set => SetViewData(value ?? throw new ArgumentNullException(nameof(value)));
    }
 
    public object?
@@ -97,22 +95,24 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    public HtmlHelper
    Html {
       get {
-         if (_html is null
-            && ViewContext != null) {
+         if (_html is null) {
 
-            _html = new HtmlHelper(ViewContext, this, (IXcstPackage)this);
+            var vc = ViewContext ?? throw new InvalidOperationException();
+
+            _html = new HtmlHelper(vc, this, (IXcstPackage)this);
          }
-#pragma warning disable CS8603
          return _html;
-#pragma warning restore CS8603
       }
-      set => _html = value;
+      set => _html = value ?? throw new ArgumentNullException(nameof(value));
    }
 
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
 
-   internal virtual void
+   public TemplateInfo
+   TemplateInfo => ViewData.TemplateInfo;
+
+   private protected virtual void
    SetViewData(ViewDataDictionary viewData) {
       _viewData = viewData;
    }
@@ -224,11 +224,11 @@ public abstract class XcstViewPage<TModel> : XcstViewPage {
    ViewData {
       get {
          if (_viewData is null) {
-            SetViewData(new ViewDataDictionary<TModel>(MetadataProvider, ModelState));
+            SetViewData(new ViewDataDictionary<TModel>(MetadataProvider));
          }
          return _viewData!;
       }
-      set => SetViewData(value);
+      set => SetViewData(value ?? throw new ArgumentNullException(nameof(value)));
    }
 
    [MaybeNull]
@@ -238,19 +238,18 @@ public abstract class XcstViewPage<TModel> : XcstViewPage {
    public new HtmlHelper<TModel>
    Html {
       get {
-         if (_html is null
-            && ViewContext != null) {
+         if (_html is null) {
 
-            _html = new HtmlHelper<TModel>(ViewContext, this, (IXcstPackage)this);
+            var vc = ViewContext ?? throw new InvalidOperationException();
+
+            _html = new HtmlHelper<TModel>(vc, this, (IXcstPackage)this);
          }
-#pragma warning disable CS8603
          return _html;
-#pragma warning restore CS8603
       }
-      set => _html = value;
+      set => _html = value ?? throw new ArgumentNullException(nameof(value));
    }
 
-   internal override void
+   private protected override void
    SetViewData(ViewDataDictionary viewData) {
 
       _viewData = viewData as ViewDataDictionary<TModel>

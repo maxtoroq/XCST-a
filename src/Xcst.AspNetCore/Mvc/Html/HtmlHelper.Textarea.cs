@@ -47,7 +47,7 @@ partial class HtmlHelper {
 
       var fullName = FullNameNonEmpty(name);
 
-      this.ViewData.ModelState.TryGetValue(fullName, out var modelState);
+      this.ModelState.TryGetValue(fullName, out var modelState);
 
       string? valueString;
 

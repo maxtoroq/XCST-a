@@ -45,7 +45,7 @@ partial class HtmlHelper {
    GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string name, bool hasDefaultText) {
 
       var htmlFieldName = name;
-      var fullFieldName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName);
+      var fullFieldName = this.TemplateInfo.GetFullHtmlFieldName(htmlFieldName);
       var id = TagBuilder.CreateSanitizedId(fullFieldName);
 
       output.WriteStartElement("label");

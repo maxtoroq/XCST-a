@@ -90,7 +90,7 @@ partial class HtmlHelper {
 
       WriteBoolean("checked", checkedAttr.GetValueOrDefault(), output);
 
-      var cssClass = (ViewData.ModelState.TryGetValue(fullName, out var modelState)
+      var cssClass = (this.ModelState.TryGetValue(fullName, out var modelState)
          && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);

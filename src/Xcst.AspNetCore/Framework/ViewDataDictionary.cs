@@ -64,9 +64,7 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    public ModelMetadata
    ModelMetadata => ModelExplorer.Metadata;
 
-   public ModelStateDictionary
-   ModelState { get; }
-
+   [AllowNull]
    public TemplateInfo
    TemplateInfo {
       get => _templateMetadata ??= new TemplateInfo();
@@ -91,18 +89,16 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    InnerDictionary => _innerDictionary;
 
    public
-   ViewDataDictionary(IModelMetadataProvider metadataProvider, ModelStateDictionary modelState)
-      : this(metadataProvider, modelState, typeof(object)) { }
+   ViewDataDictionary(IModelMetadataProvider metadataProvider)
+      : this(metadataProvider, typeof(object)) { }
 
    private protected
-   ViewDataDictionary(IModelMetadataProvider metadataProvider, ModelStateDictionary modelState, Type declaredModelType) {
+   ViewDataDictionary(IModelMetadataProvider metadataProvider, Type declaredModelType) {
 
       ArgumentNullException.ThrowIfNull(metadataProvider);
-      ArgumentNullException.ThrowIfNull(modelState);
       ArgumentNullException.ThrowIfNull(declaredModelType);
 
       this.MetadataProvider = metadataProvider;
-      this.ModelState = modelState;
 
       _innerDictionary = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
       _declaredModelType = declaredModelType;
@@ -110,7 +106,7 @@ public class ViewDataDictionary : IDictionary<string, object?> {
 
    public
    ViewDataDictionary(ViewDataDictionary dictionary)
-      : this(dictionary, dictionary._declaredModelType) { }
+      : this(dictionary, dictionary?._declaredModelType!) { }
 
    private protected
    ViewDataDictionary(ViewDataDictionary dictionary, Type declaredModelType) {
@@ -120,7 +116,6 @@ public class ViewDataDictionary : IDictionary<string, object?> {
 
       _innerDictionary = new CopyOnWriteDictionary<string, object?>(dictionary, StringComparer.OrdinalIgnoreCase);
 
-      this.ModelState = new ModelStateDictionary(dictionary.ModelState);
       this.MetadataProvider = dictionary.MetadataProvider;
       this.TemplateInfo = dictionary.TemplateInfo;
 
@@ -228,8 +223,8 @@ public class ViewDataDictionary<TModel> : ViewDataDictionary {
    }
 
    public
-   ViewDataDictionary(IModelMetadataProvider metadataProvider, ModelStateDictionary modelState)
-      : base(metadataProvider, modelState, typeof(TModel)) { }
+   ViewDataDictionary(IModelMetadataProvider metadataProvider)
+      : base(metadataProvider, typeof(TModel)) { }
 
    public
    ViewDataDictionary(ViewDataDictionary viewDataDictionary)

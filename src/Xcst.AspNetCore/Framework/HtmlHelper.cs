@@ -76,13 +76,19 @@ public partial class HtmlHelper {
    ViewData => ViewDataContainer.ViewData;
 
    public IViewDataContainer
-   ViewDataContainer { get; internal set; }
+   ViewDataContainer { get; }
 
    public ModelExplorer
    ModelExplorer => ViewData.ModelExplorer;
 
    public ModelMetadata
    ModelMetadata => ViewData.ModelMetadata;
+
+   public ModelStateDictionary
+   ModelState => ViewContext.ActionContext.ModelState;
+
+   public TemplateInfo
+   TemplateInfo => ViewData.TemplateInfo;
 
    private DefaultValidationHtmlAttributeProvider
    ValidationAttributeProvider =>
@@ -102,6 +108,28 @@ public partial class HtmlHelper {
       this.ViewContext = viewContext;
       this.ViewDataContainer = viewDataContainer;
       this.CurrentPackage = currentPackage;
+   }
+
+   public
+   HtmlHelper(HtmlHelper htmlHelper)
+      : this(htmlHelper, null, null, null) { }
+
+   public
+   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext)
+      : this(htmlHelper, viewContext, null, null) { }
+
+   public
+   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext, IViewDataContainer? viewDataContainer)
+      : this(htmlHelper, viewContext, viewDataContainer, null) { }
+
+   public
+   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext, IViewDataContainer? viewDataContainer, IXcstPackage? currentPackage) {
+
+      ArgumentNullException.ThrowIfNull(htmlHelper);
+
+      this.ViewContext = viewContext ?? htmlHelper.ViewContext;
+      this.ViewDataContainer = viewDataContainer ?? htmlHelper.ViewDataContainer;
+      this.CurrentPackage = currentPackage ?? htmlHelper.CurrentPackage;
    }
 
    /// <summary>
@@ -189,7 +217,7 @@ public partial class HtmlHelper {
    object?
    GetModelStateValue(string key, Type destinationType) {
 
-      if (this.ViewData.ModelState.TryGetValue(key, out var modelState)
+      if (this.ModelState.TryGetValue(key, out var modelState)
          && modelState.RawValue != null) {
 
          return ConvertTo(modelState.RawValue, destinationType, culture: null);
@@ -263,7 +291,7 @@ public partial class HtmlHelper {
          return;
       }
 
-      var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+      var fullName = this.TemplateInfo.GetFullHtmlFieldName(name);
 
       if (formContext.RenderedField(fullName)) {
          return;
@@ -341,14 +369,14 @@ public partial class HtmlHelper {
 
    public string
    Id(string name) =>
-      this.ViewData.TemplateInfo.GetFullHtmlFieldId(name);
+      this.TemplateInfo.GetFullHtmlFieldId(name);
 
    public string
    IdForModel() => Id(String.Empty);
 
    public string
    Name(string name) =>
-      this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+      this.TemplateInfo.GetFullHtmlFieldName(name);
 
    public string
    NameForModel() => Name(String.Empty);
@@ -376,7 +404,7 @@ public partial class HtmlHelper {
 
       format ??= modelExplorer.Metadata.EditFormatString;
 
-      var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+      var fullName = this.TemplateInfo.GetFullHtmlFieldName(name);
 
       var resolvedValue = (string?)GetModelStateValue(fullName, typeof(string))
          ?? FormatValue(modelExplorer.Model, format);
@@ -389,7 +417,7 @@ public partial class HtmlHelper {
    string
    FullNameNonEmpty(string name) {
 
-      var fullName = this.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
+      var fullName = this.TemplateInfo.GetFullHtmlFieldName(name);
 
       if (String.IsNullOrEmpty(fullName)) {
          throw new ArgumentException("The name of an HTML field cannot be null or empty.", nameof(name));
@@ -455,6 +483,30 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
    HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IXcstPackage currentPackage)
       : base(viewContext, viewDataContainer, currentPackage) {
 
+      ArgumentNullException.ThrowIfNull(viewDataContainer);
+
+      if (!(viewDataContainer.ViewData is ViewDataDictionary<TModel>)) {
+         throw new ArgumentException(
+            $"{nameof(viewDataContainer)}.ViewData should be an instance of 'ViewDataDictionary<TModel>'.",
+            nameof(viewDataContainer)
+         );
+      }
+   }
+
+   public
+   HtmlHelper(HtmlHelper htmlHelper, IViewDataContainer viewDataContainer)
+      : this(htmlHelper, null, viewDataContainer, null) { }
+
+   public
+   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext, IViewDataContainer viewDataContainer)
+      : this(htmlHelper, viewContext, viewDataContainer, null) { }
+
+   public
+   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext, IViewDataContainer viewDataContainer, IXcstPackage? currentPackage)
+      : base(htmlHelper, viewContext, viewDataContainer, currentPackage) {
+
+      ArgumentNullException.ThrowIfNull(viewDataContainer);
+
       if (!(viewDataContainer.ViewData is ViewDataDictionary<TModel>)) {
          throw new ArgumentException(
             $"{nameof(viewDataContainer)}.ViewData should be an instance of 'ViewDataDictionary<TModel>'.",
@@ -468,7 +520,7 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
    DisplayNameFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
       var modelExplorer = (typeof(IEnumerable<TModel>).IsAssignableFrom(typeof(TModel))) ?
-          ExpressionMetadataProvider.FromLambdaExpression(expression, new ViewDataDictionary<TModel>(this.ViewData.MetadataProvider, this.ViewData.ModelState))
+          ExpressionMetadataProvider.FromLambdaExpression(expression, new ViewDataDictionary<TModel>(this.ViewData.MetadataProvider))
           : ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
 
       var expressionString = ExpressionHelper.GetExpressionText(expression);

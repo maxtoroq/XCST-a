@@ -13,7 +13,7 @@
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <a:model type='ColorModel' helper-name='htm'>
-         <c:set ref='htm.ViewData.TemplateInfo.HtmlAttributes' value='
+         <c:set ref='htm.TemplateInfo.HtmlAttributes' value='
             new Dictionary&lt;string, object?> {
                { "title", "Color" },
                { "class", "foo" }

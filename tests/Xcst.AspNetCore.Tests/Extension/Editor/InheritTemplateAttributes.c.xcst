@@ -9,7 +9,7 @@
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
-      <c:set ref='Html.ViewData.TemplateInfo.HtmlAttributes' value='
+      <c:set ref='TemplateInfo.HtmlAttributes' value='
          new Dictionary&lt;string, object?> {
             { "title", "Color" },
             { "class", "foo" }

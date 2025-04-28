@@ -126,7 +126,7 @@ partial class HtmlHelper {
          output.WriteAttributeString("value", valueAttr);
       }
 
-      var cssClass = (this.ViewData.ModelState.TryGetValue(fullName, out var modelState)
+      var cssClass = (this.ModelState.TryGetValue(fullName, out var modelState)
          && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
@@ -191,7 +191,7 @@ partial class HtmlHelper {
 
          // Calling from an editor/display template, getting format for
          // the top model (not a property). Formatting is already done and should be
-         // using ViewData.TemplateInfo.FormattedModelValue as value.
+         // using TemplateInfo.FormattedModelValue as value.
 
          return null;
       }
@@ -224,7 +224,7 @@ partial class HtmlHelper {
 
    bool
    UsingFormattedModelValue(string name) =>
-      this.ViewData.TemplateInfo.TemplateName != null
+      this.TemplateInfo.TemplateName != null
          && String.IsNullOrEmpty(name);
 }
 

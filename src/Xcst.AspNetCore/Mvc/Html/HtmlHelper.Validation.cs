@@ -49,18 +49,16 @@ partial class HtmlHelper {
    GenerateValidationMessage(
          XcstWriter output, ModelExplorer modelExplorer, string name, bool hasDefaultText, string? @class) {
 
-      var viewData = this.ViewData;
-
-      var modelName = viewData.TemplateInfo.GetFullHtmlFieldName(name);
+      var modelName = this.TemplateInfo.GetFullHtmlFieldName(name);
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
-      if (!viewData.ModelState.ContainsKey(modelName)
+      if (!this.ModelState.ContainsKey(modelName)
          && formContext is null) {
 
          return new DefaultContentDisposable(output, elementStarted: false, null);
       }
 
-      var modelState = viewData.ModelState[modelName];
+      var modelState = this.ModelState[modelName];
       var modelErrors = modelState?.Errors;
 
       var modelError = (modelErrors is null || modelErrors.Count == 0) ? null
@@ -121,7 +119,7 @@ partial class HtmlHelper {
 
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
-      if (this.ViewData.ModelState.IsValid) {
+      if (this.ModelState.IsValid) {
 
          if (!this.ViewContext.ClientValidationEnabled
             || !includePropertyErrors) {
@@ -130,7 +128,7 @@ partial class HtmlHelper {
          }
       }
 
-      var validationClass = (this.ViewData.ModelState.IsValid) ?
+      var validationClass = (this.ModelState.IsValid) ?
          ValidationSummaryValidCssClassName
          : ValidationSummaryCssClassName;
 
@@ -181,11 +179,9 @@ partial class HtmlHelper {
       // Returns non-null list of model states, which caller will render in order provided.
       IEnumerable<ModelStateEntry> getModelStateList(bool includePropertyErrors) {
 
-         var viewData = this.ViewData;
-
          if (!includePropertyErrors) {
 
-            if (viewData.ModelState.TryGetValue(viewData.TemplateInfo.HtmlFieldPrefix, out var ms)
+            if (this.ModelState.TryGetValue(this.TemplateInfo.HtmlFieldPrefix, out var ms)
                && ms != null) {
 
                return new ModelStateEntry[] { ms };
@@ -198,7 +194,7 @@ partial class HtmlHelper {
          // ModelState doesn't refer to ModelMetadata, but we can correlate via the property name.
 
          var ordering = new Dictionary<string, int>();
-         var metadata = viewData.ModelMetadata;
+         var metadata = this.ModelMetadata;
 
          if (metadata != null) {
             foreach (var m in metadata.Properties) {
@@ -207,7 +203,7 @@ partial class HtmlHelper {
          }
 
          return
-            from kv in viewData.ModelState
+            from kv in this.ModelState
             let name = kv.Key
             orderby ordering.GetOrDefault(name, ModelMetadata.DefaultOrder)
             select kv.Value;

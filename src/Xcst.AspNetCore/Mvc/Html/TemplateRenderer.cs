@@ -95,11 +95,8 @@ sealed class TemplateRenderer {
       { "Collection", DefaultEditorTemplates.CollectionTemplate },
    };
 
-   readonly IXcstPackage
-   _package;
-
-   readonly ViewContext
-   _viewContext;
+   readonly HtmlHelper
+   _htmlHelper;
 
    readonly ViewDataDictionary
    _viewData;
@@ -111,9 +108,8 @@ sealed class TemplateRenderer {
    _readOnly;
 
    public
-   TemplateRenderer(IXcstPackage package, ViewContext viewContext, ViewDataDictionary viewData, string? templateName, bool readOnly) {
-      _package = package;
-      _viewContext = viewContext;
+   TemplateRenderer(HtmlHelper htmlHelper, ViewDataDictionary viewData, string? templateName, bool readOnly) {
+      _htmlHelper = htmlHelper;
       _viewData = viewData;
       _templateName = templateName;
       _readOnly = readOnly;
@@ -135,7 +131,7 @@ sealed class TemplateRenderer {
 
          var viewPage = ((_readOnly) ?
             config.DisplayTemplateFactory
-            : config.EditorTemplateFactory)?.Invoke(viewName, _viewContext);
+            : config.EditorTemplateFactory)?.Invoke(viewName, _htmlHelper.ViewContext);
 
          if (viewPage != null) {
             _viewData.TemplateInfo.TemplateName = viewName;
@@ -247,16 +243,16 @@ sealed class TemplateRenderer {
 
    HtmlHelper
    MakeHtmlHelper() =>
-      new HtmlHelper(new ViewContext(_viewContext), new ViewDataContainer(_viewData), _package);
+      new HtmlHelper(_htmlHelper, new ViewContext(_htmlHelper.ViewContext), new ViewDataContainer(_viewData));
 
    void
    RenderViewPage(XcstViewPage viewPage, ISequenceWriter<object> output) {
 
-      viewPage.ViewContext = new ViewContext(_viewContext);
+      viewPage.ViewContext = new ViewContext(_htmlHelper.ViewContext);
       viewPage.ViewData = _viewData;
 
       XcstEvaluator.Using((object)viewPage)
-         .WithParams(_viewData.TemplateInfo.TemplateParameters)
+         .WithParams(viewPage.ViewData.TemplateInfo.TemplateParameters)
          .CallInitialTemplate()
          .OutputToRaw(output)
          .Run();
