@@ -125,7 +125,7 @@ partial class HtmlHelper {
 
       WriteId(fullName, output);
 
-      output.WriteAttributeString("type", GetInputTypeString(InputType.CheckBox));
+      output.WriteAttributeString("type", "checkbox");
       output.WriteAttributeString("name", fullName);
       output.WriteAttributeString("value", value);
 

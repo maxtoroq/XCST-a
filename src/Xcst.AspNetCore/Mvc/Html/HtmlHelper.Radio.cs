@@ -84,7 +84,7 @@ partial class HtmlHelper {
 
       WriteId(fullName, output);
 
-      output.WriteAttributeString("type", GetInputTypeString(InputType.Radio));
+      output.WriteAttributeString("type", "radio");
       output.WriteAttributeString("name", fullName);
       output.WriteAttributeString("value", valueString);
 
