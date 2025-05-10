@@ -36,8 +36,9 @@ partial class HtmlHelper {
          }
       );
 
-      // new ViewContext resets FormContext
-      var newViewContext = new ViewContext(this.ViewContext);
+      var newViewContext = new ViewContext(this.ViewContext) {
+         FormContext = new FormContext()
+      };
 
       return new HtmlHelper<TModel>(this, newViewContext, container, currentPackage);
    }

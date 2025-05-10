@@ -203,7 +203,9 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
       if (page is XcstViewPage viewPage) {
 
-         viewPage.ViewContext = new ViewContext(this.ViewContext);
+         viewPage.ViewContext = new ViewContext(this.ViewContext) {
+            FormContext = new FormContext()
+         };
 
          if (_viewData != null) {
             viewPage.ViewData = new ViewDataDictionary(_viewData);

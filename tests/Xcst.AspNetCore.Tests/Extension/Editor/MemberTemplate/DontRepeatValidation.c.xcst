@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='ColorModel'>
+      <c:member name='color' as='string' required='yes'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <a:form method='post' model-type='ColorModel'>
+         <a:editor for='color'/>
+         <a:editor members='color'>
+            <a:member-template>
+               <a:input/>
+            </a:member-template>
+         </a:editor>
+      </a:form>
+   </c:template>
+
+   <c:template name='expected'>
+      <form method='post'>
+         <input id='color' type='text' name='color' value='' data-val='true' data-val-required='The color field is required.' class="text-box single-line"/>
+         <input id='color' type='text' name='color' value=''/>
+      </form>
+   </c:template>
+
+</c:module>

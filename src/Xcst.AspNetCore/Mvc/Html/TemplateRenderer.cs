@@ -252,7 +252,7 @@ sealed class TemplateRenderer {
       viewPage.ViewData = _viewData;
 
       XcstEvaluator.Using((object)viewPage)
-         .WithParams(viewPage.ViewData.TemplateInfo.TemplateParameters)
+         .WithParams(viewPage.TemplateInfo.TemplateParameters)
          .CallInitialTemplate()
          .OutputToRaw(output)
          .Run();

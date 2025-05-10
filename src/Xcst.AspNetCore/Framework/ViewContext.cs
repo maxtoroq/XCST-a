@@ -10,22 +10,14 @@ namespace Xcst.Web.Mvc;
 
 public class ViewContext {
 
-   // Some values have to be stored in HttpContext.Items in order to be propagated between calls
-   // to RenderPartial(), RenderAction(), etc.
-
-   static readonly object
-   _formContextKey = new();
-
-   // We need a default FormContext if the user uses html <form> instead of an MvcForm
-
-   FormContext
-   _defaultFormContext = new();
-
    HttpContext?
    _httpContext;
 
    ActionContext?
    _actionContext;
+
+   FormContext
+   _formContext = new();
 
    public HttpContext
    HttpContext {
@@ -43,14 +35,8 @@ public class ViewContext {
 
    public virtual FormContext
    FormContext {
-      get {
-         if (HttpContext.Items.TryGetValue(_formContextKey, out var formCtxObj)
-            && formCtxObj is FormContext formCtx) {
-            return formCtx;
-         }
-         return _defaultFormContext;
-      }
-      set => HttpContext.Items[_formContextKey] = value;
+      get => _formContext;
+      set => _formContext = value ?? throw new ArgumentNullException(nameof(value));
    }
 
    public virtual bool
@@ -87,6 +73,7 @@ public class ViewContext {
       _httpContext = viewContext._httpContext;
       _actionContext = viewContext._actionContext;
 
+      this.FormContext = viewContext.FormContext;
       this.ClientValidationEnabled = viewContext.ClientValidationEnabled;
       this.ValidationMessageElement = viewContext.ValidationMessageElement;
       this.Html5DateRenderingMode = viewContext.Html5DateRenderingMode;
