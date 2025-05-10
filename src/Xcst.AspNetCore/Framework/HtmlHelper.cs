@@ -261,40 +261,44 @@ public partial class HtmlHelper {
    IDictionary<string, string>
    GetUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength) {
 
-      var results = new Dictionary<string, string>();
-
-      WriteUnobtrusiveValidationAttributes(
-         name, modelExplorer!, excludeMinMaxLength, (key, value) => results[key] = value);
-
-      return results;
+      return GetUnobtrusiveValidationAttributesImpl(name, modelExplorer, excludeMinMaxLength)
+         ?? new Dictionary<string, string>();
    }
 
    void
-   WriteUnobtrusiveValidationAttributes(string name, ModelExplorer modelExplorer, bool excludeMinMaxLength, XcstWriter output) {
+   WriteUnobtrusiveValidationAttributes(
+         string name, ModelExplorer modelExplorer, bool excludeMinMaxLength, XcstWriter output) {
 
-      WriteUnobtrusiveValidationAttributes(
-         name, modelExplorer, excludeMinMaxLength, (key, value) => output.WriteAttributeString(key, value));
+      var attributes = GetUnobtrusiveValidationAttributesImpl(name, modelExplorer, excludeMinMaxLength);
+
+      if (attributes != null) {
+
+         foreach (var kvp in attributes) {
+            output.WriteAttributeString(kvp.Key, kvp.Value);
+         }
+      }
    }
 
-   void
-   WriteUnobtrusiveValidationAttributes(string name, ModelExplorer modelExplorer, bool excludeMinMaxLength, Action<string, string> writeFn) {
+   IDictionary<string, string>?
+   GetUnobtrusiveValidationAttributesImpl(
+         string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength) {
 
       // The ordering of these 3 checks (and the early exits) is for performance reasons.
 
       if (!this.ViewContext.ClientValidationEnabled) {
-         return;
+         return default;
       }
 
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
       if (formContext is null) {
-         return;
+         return default;
       }
 
       var fullName = this.TemplateInfo.GetFullHtmlFieldName(name);
 
       if (formContext.RenderedField(fullName)) {
-         return;
+         return default;
       }
 
       formContext.RenderedField(fullName, true);
@@ -306,9 +310,7 @@ public partial class HtmlHelper {
       this.ValidationAttributeProvider
          .AddValidationAttributes(this.ViewContext.ActionContext, modelExplorer, attributes, excludeMinMaxLength);
 
-      foreach (var pair in attributes) {
-         writeFn.Invoke(pair.Key, pair.Value);
-      }
+      return attributes;
    }
 
    [GeneratedCodeReference]
