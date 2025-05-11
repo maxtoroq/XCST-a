@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http;
 using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
@@ -49,10 +48,6 @@ public class ViewContext {
    public virtual string
    ValidationMessageElement { get; set; } = "span";
 
-   [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "The usage of the property is as an instance property of the helper.")]
-   public Html5DateRenderingMode
-   Html5DateRenderingMode { get; set; }
-
    // parameterless constructor used for mocking
    public
    ViewContext() { }
@@ -76,28 +71,11 @@ public class ViewContext {
       this.FormContext = viewContext.FormContext;
       this.ClientValidationEnabled = viewContext.ClientValidationEnabled;
       this.ValidationMessageElement = viewContext.ValidationMessageElement;
-      this.Html5DateRenderingMode = viewContext.Html5DateRenderingMode;
    }
 
    internal FormContext?
    GetFormContextForClientValidation() =>
       (this.ClientValidationEnabled) ? this.FormContext : null;
-}
-
-/// <summary>
-/// Controls the value-rendering method For HTML5 input elements of types such as date, time, datetime and datetime-local.
-/// </summary>
-public enum Html5DateRenderingMode {
-
-   /// <summary>
-   /// Render date and time values as Rfc3339 compliant strings to support HTML5 date and time types of input elements.
-   /// </summary>
-   Rfc3339 = 0,
-
-   /// <summary>
-   /// Render date and time values according to the current culture's ToString behavior.
-   /// </summary>
-   CurrentCulture
 }
 
 public class FormContext {
