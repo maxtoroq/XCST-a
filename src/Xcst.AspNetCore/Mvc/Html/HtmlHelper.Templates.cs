@@ -194,9 +194,8 @@ partial class HtmlHelper {
 
       var viewContext = new ViewContext(this.ViewContext) {
          HtmlFieldPrefix = GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
+         VisitedObjects = null,
       };
-
-      viewContext.VisitedObjects.Clear();
 
       return new HtmlHelper(viewContext, container);
    }

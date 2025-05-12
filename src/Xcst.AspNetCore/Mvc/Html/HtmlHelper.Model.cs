@@ -35,11 +35,10 @@ partial class HtmlHelper {
       var newViewContext = new ViewContext(this.ViewContext, null, currentPackage) {
          HtmlFieldPrefix = GetFullHtmlFieldName(htmlFieldPrefix),
          FormContext = new FormContext(),
+         MembersOptions = null,
+         ViewParameters = null,
+         VisitedObjects = null,
       };
-
-      newViewContext.MembersOptions.Clear();
-      newViewContext.ViewParameters.Clear();
-      newViewContext.VisitedObjects.Clear();
 
       return new HtmlHelper<TModel>(newViewContext, container);
    }
