@@ -210,10 +210,19 @@ public partial class HtmlHelper {
       return String.Concat(htmlFieldPrefix, ".", partialFieldName);
    }
 
-   [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
    public string
-   FormatValue(object? value, string? format) =>
-      ViewDataDictionary.FormatValueInternal(value, format);
+   FormatValue(object? value, string? format) {
+
+      if (value is null) {
+         return String.Empty;
+      }
+
+      if (String.IsNullOrEmpty(format)) {
+         return Convert.ToString(value, CultureInfo.CurrentCulture) ?? String.Empty;
+      }
+
+      return String.Format(CultureInfo.CurrentCulture, format, value);
+   }
 
    object?
    GetModelStateValue(string key, Type destinationType) {

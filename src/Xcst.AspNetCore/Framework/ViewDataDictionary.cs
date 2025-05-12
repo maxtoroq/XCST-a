@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -140,32 +139,6 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    Eval(string? expression) {
       var info = GetViewDataInfo(expression);
       return info?.Value;
-   }
-
-   public string?
-   Eval(string? expression, string? format) {
-
-      var value = Eval(expression);
-
-      if (value is null) {
-         return null;
-      }
-
-      return FormatValueInternal(value, format);
-   }
-
-   internal static string
-   FormatValueInternal(object? value, string? format) {
-
-      if (value is null) {
-         return String.Empty;
-      }
-
-      if (String.IsNullOrEmpty(format)) {
-         return Convert.ToString(value, CultureInfo.CurrentCulture) ?? String.Empty;
-      }
-
-      return String.Format(CultureInfo.CurrentCulture, format, value);
    }
 
    public IEnumerator<KeyValuePair<string, object?>>
