@@ -185,11 +185,6 @@ public abstract class XcstPage {
          .Run();
    }
 
-   protected virtual void
-   CopyState(XcstPage page) {
-      page.HttpContext = this.HttpContext;
-   }
-
    class AuthorizeData : IAuthorizeData {
 
       public string?

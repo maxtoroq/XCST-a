@@ -60,8 +60,8 @@ partial class HtmlHelper {
       var filteredProperties = this.ViewData.ModelExplorer.Properties
          .Where(ShowForDisplay);
 
-      var orderedProperties = (this.TemplateInfo.MembersNames.Count > 0) ?
-         filteredProperties.OrderBy(p => this.TemplateInfo.MembersNames.IndexOf(p.Metadata.PropertyName!))
+      var orderedProperties = (this.ViewContext.MembersNames.Count > 0) ?
+         filteredProperties.OrderBy(p => this.ViewContext.MembersNames.IndexOf(p.Metadata.PropertyName!))
          : filteredProperties;
 
       return orderedProperties;
@@ -74,12 +74,12 @@ partial class HtmlHelper {
 
       var propertyMetadata = propertyExplorer.Metadata;
 
-      if (this.TemplateInfo.Visited(propertyExplorer)) {
+      if (this.ViewContext.Visited(propertyExplorer)) {
          return false;
       }
 
-      if (this.TemplateInfo.MembersNames.Count > 0) {
-         return this.TemplateInfo.MembersNames.Contains(propertyMetadata.PropertyName!);
+      if (this.ViewContext.MembersNames.Count > 0) {
+         return this.ViewContext.MembersNames.Contains(propertyMetadata.PropertyName!);
       }
 
       if (!propertyMetadata.ShowForDisplay) {
@@ -124,8 +124,8 @@ partial class HtmlHelper {
       var filteredProperties = this.ViewData.ModelExplorer.Properties
          .Where(ShowForEdit);
 
-      var orderedProperties = (this.TemplateInfo.MembersNames.Count > 0) ?
-         filteredProperties.OrderBy(p => this.TemplateInfo.MembersNames.IndexOf(p.Metadata.PropertyName!))
+      var orderedProperties = (this.ViewContext.MembersNames.Count > 0) ?
+         filteredProperties.OrderBy(p => this.ViewContext.MembersNames.IndexOf(p.Metadata.PropertyName!))
          : filteredProperties;
 
       return orderedProperties;
@@ -138,12 +138,12 @@ partial class HtmlHelper {
 
       var propertyMetadata = propertyExplorer.Metadata;
 
-      if (this.TemplateInfo.Visited(propertyExplorer)) {
+      if (this.ViewContext.Visited(propertyExplorer)) {
          return false;
       }
 
-      if (this.TemplateInfo.MembersNames.Count > 0) {
-         return this.TemplateInfo.MembersNames.Contains(propertyMetadata.PropertyName!);
+      if (this.ViewContext.MembersNames.Count > 0) {
+         return this.ViewContext.MembersNames.Contains(propertyMetadata.PropertyName!);
       }
 
       if (!propertyMetadata.ShowForEdit) {
@@ -171,7 +171,7 @@ partial class HtmlHelper {
 
       ArgumentNullException.ThrowIfNull(propertyExplorer);
 
-      if (this.TemplateInfo.MemberTemplate is { } memberTemplate) {
+      if (this.ViewContext.MemberTemplate is { } memberTemplate) {
 
          var helper = MakeHtmlHelperForMemberTemplate(propertyExplorer);
 
@@ -189,13 +189,16 @@ partial class HtmlHelper {
       var container = new ViewDataContainer(
          new ViewDataDictionary(this.ViewData) {
             ModelExplorer = memberExplorer,
-            TemplateInfo = new TemplateInfo(this.TemplateInfo) {
-               HtmlFieldPrefix = this.TemplateInfo.GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName)
-            }
          }
       );
 
-      return new HtmlHelper(this, null, container);
+      var viewContext = new ViewContext(this.ViewContext) {
+         HtmlFieldPrefix = GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
+      };
+
+      viewContext.VisitedObjects.Clear();
+
+      return new HtmlHelper(viewContext, container);
    }
 
    [GeneratedCodeReference]
@@ -277,7 +280,7 @@ public class TemplateHelper {
 
       var visitedObjectsKey = model ?? metadata.UnderlyingOrModelType;
 
-      if (_html.TemplateInfo.VisitedObjects.Contains(visitedObjectsKey)) {
+      if (_html.ViewContext.VisitedObjects.Contains(visitedObjectsKey)) {
          // DDB #224750
          return;
       }
@@ -298,44 +301,42 @@ public class TemplateHelper {
          && !String.IsNullOrEmpty(formatString)) {
 
          formattedModelValue = (_displayMode) ?
-            _html.CurrentPackage.Context.SimpleContent.Format(formatString, model)
+            _html.SimpleContent.Format(formatString, model)
             : _html.FormatValue(model, formatString);
       }
 
-      var templateInfo = new TemplateInfo(_html.TemplateInfo, inheritVisitedObjects: true) {
+      var viewContext = new ViewContext(_html.ViewContext) {
+         HtmlFieldPrefix = _html.GetFullHtmlFieldName(htmlFieldName),
          FormattedModelValue = formattedModelValue,
-         HtmlFieldPrefix = _html.TemplateInfo.GetFullHtmlFieldName(htmlFieldName),
          MembersNames = membersNames,
+         VisitedObjects = { visitedObjectsKey },
       };
 
       if (htmlAttributes != null) {
-         templateInfo.MergeHtmlAttributes(htmlAttributes);
+         viewContext.MergeHtmlAttributes(htmlAttributes);
       }
 
       if (membersOptions != null) {
          foreach (var kvp in membersOptions) {
-            templateInfo.MembersOptions[kvp.Key] = kvp.Value;
+            viewContext.MembersOptions[kvp.Key] = kvp.Value;
          }
       }
 
       if (memberTemplate != null) {
-         templateInfo.MemberTemplate = memberTemplate;
+         viewContext.MemberTemplate = memberTemplate;
       }
 
       if (withParams != null) {
          foreach (var kvp in HtmlHelper.ObjectToDictionary(withParams)) {
-            templateInfo.TemplateParameters[kvp.Key] = kvp.Value;
+            viewContext.ViewParameters[kvp.Key] = kvp.Value;
          }
       }
 
-      templateInfo.VisitedObjects.Add(visitedObjectsKey);
-
       var viewData = new ViewDataDictionary(_html.ViewData) {
          ModelExplorer = _modelExplorer.GetExplorerForModel(model),
-         TemplateInfo = templateInfo,
       };
 
-      new TemplateRenderer(_html, viewData, templateName, _displayMode)
+      new TemplateRenderer(viewContext, viewData, templateName, _displayMode)
          .Render(output);
    }
 }

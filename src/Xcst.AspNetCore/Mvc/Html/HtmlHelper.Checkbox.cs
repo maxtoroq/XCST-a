@@ -62,7 +62,7 @@ partial class HtmlHelper {
    GenerateCheckbox(ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string name,
          bool? isChecked, string? @class) {
 
-      var inputWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
+      var inputWriter = DocumentWriter.CastElement(this.ViewContext.CurrentPackage, output);
 
       GenerateCheckboxInput(
          inputWriter,
@@ -81,7 +81,7 @@ partial class HtmlHelper {
 
       void writeHiddenInput() {
 
-         var hiddenWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
+         var hiddenWriter = DocumentWriter.CastElement(this.ViewContext.CurrentPackage, output);
 
          hiddenWriter.WriteStartElement("input");
          hiddenWriter.WriteAttributeString("type", "hidden");

@@ -2,15 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http;
+using Xcst.Runtime;
 using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
 namespace Xcst.Web.Mvc;
 
 public class ViewContext {
-
-   HttpContext?
-   _httpContext;
 
    ActionContext?
    _actionContext;
@@ -18,13 +17,32 @@ public class ViewContext {
    FormContext
    _formContext = new();
 
+   string?
+   _htmlFieldPrefix;
+
+   object?
+   _formattedModelValue;
+
+   IDictionary<string, object?>?
+   _htmlAttributes;
+
+   IList<string>?
+   _membersNames;
+
+   IDictionary<string, IEnumerable<SelectListItem>>?
+   _membersOptions;
+
+   IDictionary<string, object?>?
+   _viewParameters;
+
+   HashSet<object>?
+   _visitedObjects;
+
    public HttpContext
-   HttpContext {
-#pragma warning disable CS8603
-      get => _httpContext;
-#pragma warning restore CS8603
-      set => _httpContext = value;
-   }
+   HttpContext { get; }
+
+   public IXcstPackage
+   CurrentPackage { get; }
 
    public ActionContext
    ActionContext => _actionContext ??= new() {
@@ -48,34 +66,152 @@ public class ViewContext {
    public virtual string
    ValidationMessageElement { get; set; } = "span";
 
-   // parameterless constructor used for mocking
-   public
-   ViewContext() { }
+   [AllowNull]
+   public string
+   HtmlFieldPrefix {
+      get => _htmlFieldPrefix ?? String.Empty;
+      set => _htmlFieldPrefix = value;
+   }
+
+   [AllowNull]
+   public object
+   FormattedModelValue {
+      get => _formattedModelValue ?? String.Empty;
+      set => _formattedModelValue = value;
+   }
+
+   [AllowNull]
+   public IDictionary<string, object?>
+   HtmlAttributes {
+      get => _htmlAttributes ??= new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+      set => _htmlAttributes = value;
+   }
+
+   [AllowNull]
+   internal IList<string>
+   MembersNames {
+      get => _membersNames ?? Array.Empty<string>();
+      set => _membersNames = value;
+   }
+
+   [AllowNull]
+   public IDictionary<string, IEnumerable<SelectListItem>>
+   MembersOptions {
+      get => _membersOptions ??= new Dictionary<string, IEnumerable<SelectListItem>>();
+      set => _membersOptions = value;
+   }
+
+   internal Action<HtmlHelper, ISequenceWriter<object?>>?
+   MemberTemplate { get; set; }
+
+   internal string?
+   ViewName { get; set; }
+
+   internal IDictionary<string, object?>
+   ViewParameters =>
+      _viewParameters ??= new Dictionary<string, object?>();
+
+   // DDB #224750 - Keep a collection of visited objects to prevent infinite recursion
+
+   internal HashSet<object>
+   VisitedObjects {
+      get => _visitedObjects ??= new HashSet<object>();
+      set => _visitedObjects = value;
+   }
+
+   public int
+   TemplateDepth => VisitedObjects.Count;
 
    public
-   ViewContext(HttpContext httpContext) {
+   ViewContext(HttpContext httpContext, IXcstPackage currentPackage) {
 
       ArgumentNullException.ThrowIfNull(httpContext);
 
-      _httpContext = httpContext;
+      this.HttpContext = httpContext;
+      this.CurrentPackage = currentPackage;
    }
 
    public
-   ViewContext(ViewContext viewContext) {
+   ViewContext(ViewContext viewContext)
+      : this(viewContext, null, null) { }
+
+   public
+   ViewContext(ViewContext viewContext, HttpContext? httpContext)
+      : this(viewContext, httpContext, null) { }
+
+   public
+   ViewContext(ViewContext viewContext, HttpContext? httpContext, IXcstPackage? currentPackage) {
 
       ArgumentNullException.ThrowIfNull(viewContext);
 
-      _httpContext = viewContext._httpContext;
+      this.HttpContext = httpContext ?? viewContext.HttpContext;
+      this.CurrentPackage = currentPackage ?? viewContext.CurrentPackage;
+
       _actionContext = viewContext._actionContext;
 
       this.FormContext = viewContext.FormContext;
       this.ClientValidationEnabled = viewContext.ClientValidationEnabled;
       this.ValidationMessageElement = viewContext.ValidationMessageElement;
+
+      _htmlFieldPrefix = viewContext._htmlFieldPrefix;
+
+      if (viewContext._htmlAttributes is { } htmlAttribs and { Count: > 0 }) {
+         _htmlAttributes = new CopyOnWriteDictionary<string, object?>(htmlAttribs, StringComparer.OrdinalIgnoreCase);
+      }
+
+      if (viewContext._membersOptions is { } memberOpts and { Count: > 0 }) {
+         _membersOptions = new CopyOnWriteDictionary<string, IEnumerable<SelectListItem>>(memberOpts, EqualityComparer<string>.Default);
+      }
+
+      this.MemberTemplate = viewContext.MemberTemplate;
+
+      if (viewContext._viewParameters is { } viewParams and { Count: > 0 }) {
+         _viewParameters = new CopyOnWriteDictionary<string, object?>(viewParams, EqualityComparer<string>.Default);
+      }
+
+      if (viewContext._visitedObjects is { } visitedObjs and { Count: > 0 }) {
+         _visitedObjects = new HashSet<object>(visitedObjs);
+      }
    }
 
    internal FormContext?
    GetFormContextForClientValidation() =>
       (this.ClientValidationEnabled) ? this.FormContext : null;
+
+   public void
+   MergeHtmlAttributes(object? htmlAttributes) {
+
+      if (htmlAttributes is null) {
+         return;
+      }
+
+      var dict = htmlAttributes as IDictionary<string, object?>
+         ?? HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
+
+      foreach (var kvp in dict) {
+
+         if (StringComparer.OrdinalIgnoreCase.Equals(kvp.Key, "class")) {
+            HtmlAttributeDictionary.AddClass(this.HtmlAttributes, kvp.Value);
+            continue;
+         }
+
+         this.HtmlAttributes[kvp.Key] = kvp.Value;
+      }
+   }
+
+   internal IEnumerable<SelectListItem>?
+   OptionsForModel() {
+
+      if (_membersOptions?.TryGetValue(this.HtmlFieldPrefix, out var value) == true) {
+         return value;
+      }
+
+      return null;
+   }
+
+   internal bool
+   Visited(ModelExplorer modelExplorer) =>
+      this.VisitedObjects.Contains(modelExplorer.Model ?? modelExplorer.Metadata.ModelType);
 }
 
 public class FormContext {

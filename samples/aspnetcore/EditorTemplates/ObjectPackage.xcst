@@ -15,7 +15,7 @@
 
    <c:template name='c:initial-template' visibility='public'>
 
-      <c:if test='TemplateInfo.TemplateDepth > 1'>
+      <c:if test='ViewContext.TemplateDepth > 1'>
          <a:display-text/>
          <c:return/>
       </c:if>

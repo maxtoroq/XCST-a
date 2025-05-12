@@ -95,8 +95,8 @@ sealed class TemplateRenderer {
       { "Collection", DefaultEditorTemplates.CollectionTemplate },
    };
 
-   readonly HtmlHelper
-   _htmlHelper;
+   readonly ViewContext
+   _viewContext;
 
    readonly ViewDataDictionary
    _viewData;
@@ -108,8 +108,8 @@ sealed class TemplateRenderer {
    _readOnly;
 
    public
-   TemplateRenderer(HtmlHelper htmlHelper, ViewDataDictionary viewData, string? templateName, bool readOnly) {
-      _htmlHelper = htmlHelper;
+   TemplateRenderer(ViewContext viewContext, ViewDataDictionary viewData, string? templateName, bool readOnly) {
+      _viewContext = viewContext;
       _viewData = viewData;
       _templateName = templateName;
       _readOnly = readOnly;
@@ -118,12 +118,12 @@ sealed class TemplateRenderer {
    public void
    Render(ISequenceWriter<object> output) {
 
-      _viewData.TemplateInfo.TemplateName = null;
+      _viewContext.ViewName = null;
 
       var defaultActions = GetDefaultActions();
 
       var metadata = _viewData.ModelMetadata;
-      var options = _viewData.TemplateInfo.OptionsForModel();
+      var options = _viewContext.OptionsForModel();
 
       var config = XcstWebOptions.Instance;
 
@@ -131,16 +131,16 @@ sealed class TemplateRenderer {
 
          var viewPage = ((_readOnly) ?
             config.DisplayTemplateFactory
-            : config.EditorTemplateFactory)?.Invoke(viewName, _htmlHelper.ViewContext);
+            : config.EditorTemplateFactory)?.Invoke(viewName, _viewContext);
 
          if (viewPage != null) {
-            _viewData.TemplateInfo.TemplateName = viewName;
+            _viewContext.ViewName = viewName;
             RenderViewPage(viewPage, output);
             return;
          }
 
          if (defaultActions.TryGetValue(viewName, out var defaultAction)) {
-            _viewData.TemplateInfo.TemplateName = viewName;
+            _viewContext.ViewName = viewName;
             defaultAction.Invoke(MakeHtmlHelper(), output);
             return;
          }
@@ -158,7 +158,7 @@ sealed class TemplateRenderer {
    GetViewNames() {
 
       var metadata = _viewData.ModelMetadata;
-      var options = _viewData.TemplateInfo.OptionsForModel();
+      var options = _viewContext.OptionsForModel();
 
       var templateHints = new[] {
          _templateName,
@@ -243,16 +243,16 @@ sealed class TemplateRenderer {
 
    HtmlHelper
    MakeHtmlHelper() =>
-      new HtmlHelper(_htmlHelper, new ViewContext(_htmlHelper.ViewContext), new ViewDataContainer(_viewData));
+      new HtmlHelper(_viewContext, new ViewDataContainer(_viewData));
 
    void
    RenderViewPage(XcstViewPage viewPage, ISequenceWriter<object> output) {
 
-      viewPage.ViewContext = new ViewContext(_htmlHelper.ViewContext);
+      viewPage.ViewContext = _viewContext;
       viewPage.ViewData = _viewData;
 
       XcstEvaluator.Using((object)viewPage)
-         .WithParams(viewPage.TemplateInfo.TemplateParameters)
+         .WithParams(_viewContext.ViewParameters)
          .CallInitialTemplate()
          .OutputToRaw(output)
          .Run();

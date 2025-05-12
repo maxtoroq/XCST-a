@@ -49,7 +49,7 @@ partial class HtmlHelper {
    GenerateValidationMessage(
          XcstWriter output, ModelExplorer modelExplorer, string name, bool hasDefaultText, string? @class) {
 
-      var modelName = this.TemplateInfo.GetFullHtmlFieldName(name);
+      var modelName = GetFullHtmlFieldName(name);
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
       if (!this.ModelState.ContainsKey(modelName)
@@ -181,7 +181,7 @@ partial class HtmlHelper {
 
          if (!includePropertyErrors) {
 
-            if (this.ModelState.TryGetValue(this.TemplateInfo.HtmlFieldPrefix, out var ms)
+            if (this.ModelState.TryGetValue(this.ViewContext.HtmlFieldPrefix, out var ms)
                && ms != null) {
 
                return new ModelStateEntry[] { ms };

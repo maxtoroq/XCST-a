@@ -63,7 +63,7 @@ static partial class TestsHelper {
       httpContextMock.Setup(c => c.RequestServices)
          .Returns(serviceProvider);
 
-      package.ViewContext = new ViewContext(httpContextMock.Object);
+      package.ViewContext = new ViewContext(httpContextMock.Object, (IXcstPackage)package);
 
       return package;
    }

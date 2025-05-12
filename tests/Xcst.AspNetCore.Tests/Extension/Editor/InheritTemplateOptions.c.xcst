@@ -10,7 +10,7 @@
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
-      <c:set ref='TemplateInfo.MembersOptions' value='
+      <c:set ref='ViewContext.MembersOptions' value='
          new Dictionary&lt;string, IEnumerable&lt;SelectListItem>> {
             { "color", new SelectListItem[] {
                new() { Text = "red" },

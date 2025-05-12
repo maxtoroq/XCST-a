@@ -29,17 +29,18 @@ partial class HtmlHelper {
       var container = new ViewDataContainer(
          new ViewDataDictionary<TModel>(this.ViewData) {
             Model = model!,
-            // setting new TemplateInfo clears VisitedObjects cache
-            TemplateInfo = new TemplateInfo {
-               HtmlFieldPrefix = this.TemplateInfo.GetFullHtmlFieldName(htmlFieldPrefix),
-            }
          }
       );
 
-      var newViewContext = new ViewContext(this.ViewContext) {
-         FormContext = new FormContext()
+      var newViewContext = new ViewContext(this.ViewContext, null, currentPackage) {
+         HtmlFieldPrefix = GetFullHtmlFieldName(htmlFieldPrefix),
+         FormContext = new FormContext(),
       };
 
-      return new HtmlHelper<TModel>(this, newViewContext, container, currentPackage);
+      newViewContext.MembersOptions.Clear();
+      newViewContext.ViewParameters.Clear();
+      newViewContext.VisitedObjects.Clear();
+
+      return new HtmlHelper<TModel>(newViewContext, container);
    }
 }

@@ -24,9 +24,6 @@ public class ViewDataDictionary : IDictionary<string, object?> {
    ModelExplorer?
    _modelExplorer;
 
-   TemplateInfo?
-   _templateMetadata;
-
    public int
    Count => _innerDictionary.Count;
 
@@ -63,13 +60,6 @@ public class ViewDataDictionary : IDictionary<string, object?> {
 
    public ModelMetadata
    ModelMetadata => ModelExplorer.Metadata;
-
-   [AllowNull]
-   public TemplateInfo
-   TemplateInfo {
-      get => _templateMetadata ??= new TemplateInfo();
-      set => _templateMetadata = value;
-   }
 
    public ICollection<object?>
    Values => _innerDictionary.Values;
@@ -117,7 +107,6 @@ public class ViewDataDictionary : IDictionary<string, object?> {
       _innerDictionary = new CopyOnWriteDictionary<string, object?>(dictionary, StringComparer.OrdinalIgnoreCase);
 
       this.MetadataProvider = dictionary.MetadataProvider;
-      this.TemplateInfo = dictionary.TemplateInfo;
 
       _declaredModelType = declaredModelType;
       _model = dictionary._model;

@@ -68,7 +68,7 @@ static class DefaultEditorTemplates {
 
       if (html.ModelMetadata.IsNullableValueType) {
 
-         var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+         var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
          var className = GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
@@ -94,7 +94,7 @@ static class DefaultEditorTemplates {
             modelExplorer: html.ModelExplorer,
             String.Empty,
             value.GetValueOrDefault(),
-            @class: htmlAttributes.RemoveClass(html.CurrentPackage.Context.SimpleContent));
+            @class: htmlAttributes.RemoveClass(html.SimpleContent));
 
          htmlAttributes.WriteTo(disp.CheckboxOutput);
          disp.EndOfConstructor();
@@ -122,13 +122,13 @@ static class DefaultEditorTemplates {
       }
 
       var typeInCollectionIsNullableValueType = TypeHelpers.IsNullableValueType(typeInCollection);
-      var oldPrefix = html.TemplateInfo.HtmlFieldPrefix;
+      var oldPrefix = html.ViewContext.HtmlFieldPrefix;
 
       var elementMetadata = viewData.ModelMetadata.ElementMetadata;
 
       try {
 
-         html.TemplateInfo.HtmlFieldPrefix = String.Empty;
+         html.ViewContext.HtmlFieldPrefix = String.Empty;
 
          var fieldNameBase = oldPrefix;
          var index = 0;
@@ -151,7 +151,7 @@ static class DefaultEditorTemplates {
          }
 
       } finally {
-         html.TemplateInfo.HtmlFieldPrefix = oldPrefix;
+         html.ViewContext.HtmlFieldPrefix = oldPrefix;
       }
    }
 
@@ -181,11 +181,11 @@ static class DefaultEditorTemplates {
       var templateName = "Decimal";
       var inputType = "text";
 
-      if (html.TemplateInfo.FormattedModelValue == value) {
+      if (html.ViewContext.FormattedModelValue == value) {
 
          var format = html.GetDataTypeFormat(html.ModelMetadata, inputType, templateName)!;
 
-         html.TemplateInfo.FormattedModelValue = html.FormatValue(value, format);
+         html.ViewContext.FormattedModelValue = html.FormatValue(value, format);
       }
 
       HtmlInputTemplateHelper(html, seqOutput, templateName, inputType);
@@ -194,14 +194,14 @@ static class DefaultEditorTemplates {
    public static void
    DropDownListTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_dropDownListInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       string? optionLabel = null;
 
-      var options = html.TemplateInfo.OptionsForModel();
+      var options = html.ViewContext.OptionsForModel();
 
       if (options is OptionList and { AddBlankOption: true }) {
          optionLabel = html.ModelMetadata.Placeholder ?? String.Empty;
@@ -231,7 +231,7 @@ static class DefaultEditorTemplates {
    public static void
    EnumTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_enumInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -278,8 +278,8 @@ static class DefaultEditorTemplates {
          DefaultDisplayTemplates.StringTemplate(html, seqOutput);
       }
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-      var value = html.TemplateInfo.FormattedModelValue;
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+      var value = html.ViewContext.FormattedModelValue;
 
       var className = GetEditorCssClass(_hiddenInputInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -303,12 +303,12 @@ static class DefaultEditorTemplates {
    public static void
    ListBoxTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_listBoxInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      var options = html.TemplateInfo.OptionsForModel();
+      var options = html.ViewContext.OptionsForModel();
 
       using var disp = html.GenerateSelect(
          output,
@@ -335,9 +335,9 @@ static class DefaultEditorTemplates {
    public static void
    MultilineTextTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
-      var value = html.TemplateInfo.FormattedModelValue;
+      var value = html.ViewContext.FormattedModelValue;
       var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
@@ -359,7 +359,7 @@ static class DefaultEditorTemplates {
    public static void
    ObjectTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      if (html.TemplateInfo.TemplateDepth > 1) {
+      if (html.ViewContext.TemplateDepth > 1) {
          html.DisplayTextHelper(seqOutput, html.ModelExplorer);
          return;
       }
@@ -375,7 +375,7 @@ static class DefaultEditorTemplates {
 
          if (createFieldset) {
 
-            fieldsetWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+            fieldsetWriter = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
             fieldsetWriter.WriteStartElement("fieldset");
             fieldsetWriter.WriteStartElement("legend");
@@ -398,7 +398,7 @@ static class DefaultEditorTemplates {
                }
 
                var labelWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+                  ?? DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "editor-label");
@@ -410,7 +410,7 @@ static class DefaultEditorTemplates {
                labelWriter.WriteEndElement();
 
                fieldWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+                  ?? DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
                fieldWriter.WriteStartElement("div");
                fieldWriter.WriteAttributeString("class", "editor-field");
@@ -443,7 +443,7 @@ static class DefaultEditorTemplates {
    public static void
    PasswordTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_passwordInfo, "text-box single-line password");
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -482,10 +482,10 @@ static class DefaultEditorTemplates {
    static void
    HtmlInputTemplateHelper(HtmlHelper html, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
       var value = (HtmlHelper.OmitInputValue(inputType)) ? null
-         : html.TemplateInfo.FormattedModelValue;
+         : html.ViewContext.FormattedModelValue;
 
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -507,7 +507,7 @@ static class DefaultEditorTemplates {
 
       var value = html.ModelExplorer.Model;
 
-      if (html.TemplateInfo.FormattedModelValue != value
+      if (html.ViewContext.FormattedModelValue != value
          && html.ModelMetadata.HasNonDefaultEditFormat) {
 
          // non-default current culture formatting applied
@@ -520,7 +520,7 @@ static class DefaultEditorTemplates {
       if (value is DateTime
          || value is DateTimeOffset) {
 
-         html.TemplateInfo.FormattedModelValue = String.Format(CultureInfo.InvariantCulture, format, value);
+         html.ViewContext.FormattedModelValue = String.Format(CultureInfo.InvariantCulture, format, value);
       }
    }
 
@@ -530,7 +530,7 @@ static class DefaultEditorTemplates {
       var htmlAttributes = new HtmlAttributeDictionary();
 
       htmlAttributes.AddClass(className);
-      htmlAttributes.SetAttributes(html.TemplateInfo.HtmlAttributes);
+      htmlAttributes.SetAttributes(html.ViewContext.HtmlAttributes);
 
       return htmlAttributes;
    }

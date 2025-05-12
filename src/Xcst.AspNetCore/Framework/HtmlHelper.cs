@@ -87,49 +87,22 @@ public partial class HtmlHelper {
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
 
-   public TemplateInfo
-   TemplateInfo => ViewData.TemplateInfo;
-
    private DefaultValidationHtmlAttributeProvider
    ValidationAttributeProvider =>
       _validationAttributeProvider ??=
          ActivatorUtilities.CreateInstance<DefaultValidationHtmlAttributeProvider>(ViewContext.HttpContext.RequestServices);
 
-   internal IXcstPackage
-   CurrentPackage { get; }
+   internal SimpleContent
+   SimpleContent => ViewContext.CurrentPackage.Context.SimpleContent;
 
    public
-   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IXcstPackage currentPackage) {
+   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer) {
 
       ArgumentNullException.ThrowIfNull(viewContext);
       ArgumentNullException.ThrowIfNull(viewDataContainer);
-      ArgumentNullException.ThrowIfNull(currentPackage);
 
       this.ViewContext = viewContext;
       this.ViewDataContainer = viewDataContainer;
-      this.CurrentPackage = currentPackage;
-   }
-
-   public
-   HtmlHelper(HtmlHelper htmlHelper)
-      : this(htmlHelper, null, null, null) { }
-
-   public
-   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext)
-      : this(htmlHelper, viewContext, null, null) { }
-
-   public
-   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext, IViewDataContainer? viewDataContainer)
-      : this(htmlHelper, viewContext, viewDataContainer, null) { }
-
-   public
-   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext, IViewDataContainer? viewDataContainer, IXcstPackage? currentPackage) {
-
-      ArgumentNullException.ThrowIfNull(htmlHelper);
-
-      this.ViewContext = viewContext ?? htmlHelper.ViewContext;
-      this.ViewDataContainer = viewDataContainer ?? htmlHelper.ViewDataContainer;
-      this.CurrentPackage = currentPackage ?? htmlHelper.CurrentPackage;
    }
 
    /// <summary>
@@ -208,6 +181,34 @@ public partial class HtmlHelper {
    public static IDictionary<string, object?>
    ObjectToDictionary(object value) =>
       TypeHelpers.ObjectToDictionary(value);
+
+   public string
+   GetFullHtmlFieldId(string? partialFieldName) =>
+      GenerateIdFromName(GetFullHtmlFieldName(partialFieldName));
+
+   public string
+   GetFullHtmlFieldName(string? partialFieldName) {
+
+      var htmlFieldPrefix = this.ViewContext.HtmlFieldPrefix;
+
+      if (String.IsNullOrEmpty(partialFieldName)) {
+         return htmlFieldPrefix;
+      }
+
+      if (String.IsNullOrEmpty(htmlFieldPrefix)) {
+         return partialFieldName;
+      }
+
+      if (partialFieldName.StartsWith('[')) {
+
+         // See Codeplex #544 - the partialFieldName might represent an indexer access, in which case combining
+         // with a 'dot' would be invalid.
+
+         return htmlFieldPrefix + partialFieldName;
+      }
+
+      return String.Concat(htmlFieldPrefix, ".", partialFieldName);
+   }
 
    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "For consistency, all helpers are instance methods.")]
    public string
@@ -295,7 +296,7 @@ public partial class HtmlHelper {
          return default;
       }
 
-      var fullName = this.TemplateInfo.GetFullHtmlFieldName(name);
+      var fullName = GetFullHtmlFieldName(name);
 
       if (formContext.RenderedField(fullName)) {
          return default;
@@ -371,14 +372,14 @@ public partial class HtmlHelper {
 
    public string
    Id(string name) =>
-      this.TemplateInfo.GetFullHtmlFieldId(name);
+      GetFullHtmlFieldId(name);
 
    public string
    IdForModel() => Id(String.Empty);
 
    public string
    Name(string name) =>
-      this.TemplateInfo.GetFullHtmlFieldName(name);
+      GetFullHtmlFieldName(name);
 
    public string
    NameForModel() => Name(String.Empty);
@@ -406,7 +407,7 @@ public partial class HtmlHelper {
 
       format ??= modelExplorer.Metadata.EditFormatString;
 
-      var fullName = this.TemplateInfo.GetFullHtmlFieldName(name);
+      var fullName = GetFullHtmlFieldName(name);
 
       var resolvedValue = (string?)GetModelStateValue(fullName, typeof(string))
          ?? FormatValue(modelExplorer.Model, format);
@@ -419,7 +420,7 @@ public partial class HtmlHelper {
    string
    FullNameNonEmpty(string name) {
 
-      var fullName = this.TemplateInfo.GetFullHtmlFieldName(name);
+      var fullName = GetFullHtmlFieldName(name);
 
       if (String.IsNullOrEmpty(fullName)) {
          throw new ArgumentException("The name of an HTML field cannot be null or empty.", nameof(name));
@@ -482,30 +483,8 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
    ViewData => (ViewDataDictionary<TModel>)ViewDataContainer.ViewData;
 
    public
-   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IXcstPackage currentPackage)
-      : base(viewContext, viewDataContainer, currentPackage) {
-
-      ArgumentNullException.ThrowIfNull(viewDataContainer);
-
-      if (!(viewDataContainer.ViewData is ViewDataDictionary<TModel>)) {
-         throw new ArgumentException(
-            $"{nameof(viewDataContainer)}.ViewData should be an instance of 'ViewDataDictionary<TModel>'.",
-            nameof(viewDataContainer)
-         );
-      }
-   }
-
-   public
-   HtmlHelper(HtmlHelper htmlHelper, IViewDataContainer viewDataContainer)
-      : this(htmlHelper, null, viewDataContainer, null) { }
-
-   public
-   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext, IViewDataContainer viewDataContainer)
-      : this(htmlHelper, viewContext, viewDataContainer, null) { }
-
-   public
-   HtmlHelper(HtmlHelper htmlHelper, ViewContext? viewContext, IViewDataContainer viewDataContainer, IXcstPackage? currentPackage)
-      : base(htmlHelper, viewContext, viewDataContainer, currentPackage) {
+   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
+      : base(viewContext, viewDataContainer) {
 
       ArgumentNullException.ThrowIfNull(viewDataContainer);
 

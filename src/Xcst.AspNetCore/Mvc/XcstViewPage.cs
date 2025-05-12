@@ -51,7 +51,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
          if (value != null
             && ViewContext is null) {
 
-            ViewContext = new ViewContext(value);
+            ViewContext = new ViewContext(value, (IXcstPackage)this);
          }
       }
    }
@@ -99,7 +99,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
             var vc = ViewContext ?? throw new InvalidOperationException();
 
-            _html = new HtmlHelper(vc, this, (IXcstPackage)this);
+            _html = new HtmlHelper(vc, this);
          }
          return _html;
       }
@@ -108,9 +108,6 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
-
-   public TemplateInfo
-   TemplateInfo => ViewData.TemplateInfo;
 
    private protected virtual void
    SetViewData(ViewDataDictionary viewData) {
@@ -195,23 +192,6 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    protected virtual Task
    RenderViewPageAsync() => base.RenderPageAsync();
-
-   protected override void
-   CopyState(XcstPage page) {
-
-      base.CopyState(page);
-
-      if (page is XcstViewPage viewPage) {
-
-         viewPage.ViewContext = new ViewContext(this.ViewContext) {
-            FormContext = new FormContext()
-         };
-
-         if (_viewData != null) {
-            viewPage.ViewData = new ViewDataDictionary(_viewData);
-         }
-      }
-   }
 }
 
 public abstract class XcstViewPage<TModel> : XcstViewPage {
@@ -244,7 +224,7 @@ public abstract class XcstViewPage<TModel> : XcstViewPage {
 
             var vc = ViewContext ?? throw new InvalidOperationException();
 
-            _html = new HtmlHelper<TModel>(vc, this, (IXcstPackage)this);
+            _html = new HtmlHelper<TModel>(vc, this);
          }
          return _html;
       }

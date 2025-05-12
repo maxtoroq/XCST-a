@@ -38,7 +38,7 @@ static class DefaultDisplayTemplates {
    public static void
    BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
       var value = default(bool?);
 
@@ -97,13 +97,13 @@ static class DefaultDisplayTemplates {
       }
 
       var typeInCollectionIsNullableValueType = TypeHelpers.IsNullableValueType(typeInCollection);
-      var oldPrefix = html.TemplateInfo.HtmlFieldPrefix;
+      var oldPrefix = html.ViewContext.HtmlFieldPrefix;
 
       var elementMetadata = viewData.ModelMetadata.ElementMetadata;
 
       try {
 
-         html.TemplateInfo.HtmlFieldPrefix = String.Empty;
+         html.ViewContext.HtmlFieldPrefix = String.Empty;
 
          var fieldNameBase = oldPrefix;
          var index = 0;
@@ -126,7 +126,7 @@ static class DefaultDisplayTemplates {
          }
 
       } finally {
-         html.TemplateInfo.HtmlFieldPrefix = oldPrefix;
+         html.ViewContext.HtmlFieldPrefix = oldPrefix;
       }
    }
 
@@ -135,12 +135,11 @@ static class DefaultDisplayTemplates {
 
       var value = html.ModelExplorer.Model;
 
-      if (html.TemplateInfo.FormattedModelValue == value) {
+      if (html.ViewContext.FormattedModelValue == value) {
 
          var format = html.GetDataTypeFormat(html.ModelMetadata, "text", "Decimal")!;
 
-         html.TemplateInfo.FormattedModelValue =
-            html.CurrentPackage.Context.SimpleContent.Format(format, value);
+         html.ViewContext.FormattedModelValue = html.SimpleContent.Format(format, value);
       }
 
       StringTemplate(html, seqOutput);
@@ -149,11 +148,11 @@ static class DefaultDisplayTemplates {
    public static void
    EmailAddressTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
       output.WriteStartElement("a");
       output.WriteAttributeString("href", "mailto:" + Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
-      output.WriteString(output.SimpleContent.Convert(html.TemplateInfo.FormattedModelValue));
+      output.WriteString(output.SimpleContent.Convert(html.ViewContext.FormattedModelValue));
       output.WriteEndElement();
    }
 
@@ -166,11 +165,11 @@ static class DefaultDisplayTemplates {
 
          if (modelExplorer.Metadata.EditFormatString != null) {
             // undo formatting if applicable to edit mode, for consistency with editor template
-            html.TemplateInfo.FormattedModelValue = modelExplorer.Model;
+            html.ViewContext.FormattedModelValue = modelExplorer.Model;
          }
 
-         if (html.TemplateInfo.FormattedModelValue == modelExplorer.Model) {
-            html.TemplateInfo.FormattedModelValue = modelExplorer.GetSimpleDisplayText();
+         if (html.ViewContext.FormattedModelValue == modelExplorer.Model) {
+            html.ViewContext.FormattedModelValue = modelExplorer.GetSimpleDisplayText();
          }
       }
 
@@ -187,14 +186,14 @@ static class DefaultDisplayTemplates {
 
    public static void
    HtmlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      seqOutput.WriteRaw(html.CurrentPackage.Context.SimpleContent.Convert(html.TemplateInfo.FormattedModelValue));
+      seqOutput.WriteRaw(html.SimpleContent.Convert(html.ViewContext.FormattedModelValue));
 
    public static void
    ImageUrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       if (html.ViewData.Model != null) {
 
-         var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+         var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
          output.WriteStartElement("img");
          output.WriteAttributeString("src", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
@@ -207,10 +206,8 @@ static class DefaultDisplayTemplates {
 
       var value = html.ModelExplorer.Model;
 
-      if (html.TemplateInfo.FormattedModelValue == value) {
-
-         html.TemplateInfo.FormattedModelValue =
-            html.CurrentPackage.Context.SimpleContent.Format("{0:y}", value);
+      if (html.ViewContext.FormattedModelValue == value) {
+         html.ViewContext.FormattedModelValue = html.SimpleContent.Format("{0:y}", value);
       }
 
       StringTemplate(html, seqOutput);
@@ -222,7 +219,7 @@ static class DefaultDisplayTemplates {
       var modelExplorer = html.ModelExplorer;
 
       if (modelExplorer.Model is null
-         || html.TemplateInfo.TemplateDepth > 1) {
+         || html.ViewContext.TemplateDepth > 1) {
 
          html.DisplayTextHelper(seqOutput, modelExplorer);
          return;
@@ -239,7 +236,7 @@ static class DefaultDisplayTemplates {
 
          if (createFieldset) {
 
-            fieldsetWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+            fieldsetWriter = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
             fieldsetWriter.WriteStartElement("fieldset");
             fieldsetWriter.WriteStartElement("legend");
@@ -262,7 +259,7 @@ static class DefaultDisplayTemplates {
                }
 
                var labelWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+                  ?? DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "display-label");
@@ -270,7 +267,7 @@ static class DefaultDisplayTemplates {
                labelWriter.WriteEndElement();
 
                fieldWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+                  ?? DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
                fieldWriter.WriteStartElement("div");
                fieldWriter.WriteAttributeString("class", "display-field");
@@ -295,16 +292,16 @@ static class DefaultDisplayTemplates {
 
    public static void
    StringTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      seqOutput.WriteString(html.CurrentPackage.Context.SimpleContent.Convert(html.TemplateInfo.FormattedModelValue));
+      seqOutput.WriteString(html.SimpleContent.Convert(html.ViewContext.FormattedModelValue));
 
    public static void
    UrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
       output.WriteStartElement("a");
       output.WriteAttributeString("href", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
-      output.WriteString(output.SimpleContent.Convert(html.TemplateInfo.FormattedModelValue));
+      output.WriteString(output.SimpleContent.Convert(html.ViewContext.FormattedModelValue));
       output.WriteEndElement();
    }
 }

@@ -191,7 +191,7 @@ partial class HtmlHelper {
 
          // Calling from an editor/display template, getting format for
          // the top model (not a property). Formatting is already done and should be
-         // using TemplateInfo.FormattedModelValue as value.
+         // using ViewContext.FormattedModelValue as value.
 
          return null;
       }
@@ -224,7 +224,7 @@ partial class HtmlHelper {
 
    bool
    UsingFormattedModelValue(string name) =>
-      this.TemplateInfo.TemplateName != null
+      this.ViewContext.ViewName != null
          && String.IsNullOrEmpty(name);
 }
 
