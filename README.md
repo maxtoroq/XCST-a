@@ -1,6 +1,6 @@
 [XCST] web pages for ASP.NET Core
 =================================
-This repository provides integration of XCST with ASP.NET Core for web application development. It includes a set of extension instructions known as the "application extension" based on the HTML helpers from ASP.NET MVC 5.
+This repository provides integration of XCST with ASP.NET Core for web application development. It includes a set of extension instructions known as the "application extension" based on the HTML helpers from ASP.NET MVC.
 
 See the [project home][XCST] for more information.
 
