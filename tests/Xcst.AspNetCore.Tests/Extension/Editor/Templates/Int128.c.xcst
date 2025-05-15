@@ -10,6 +10,7 @@
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <c:set ref='ViewContext.FormMethod' value='Xcst.Web.Mvc.FormMethod.Get'/>
       <a:model value='new Foo()'>
          <a:editor for='p1'/>
       </a:model>

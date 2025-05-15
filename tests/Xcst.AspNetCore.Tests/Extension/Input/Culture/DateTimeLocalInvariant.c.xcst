@@ -4,26 +4,18 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:type name='Foo'>
-      <c:member name='p1' as='System.Int16'/>
-      <c:member name='p2' as='System.Int16?'/>
-   </c:type>
-
    <c:template name='c:initial-template'>
-      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <c:set ref='ViewContext.FormMethod' value='Xcst.Web.Mvc.FormMethod.Get'/>
       <div>
-         <a:model type='Foo'>
-            <a:input for='p1'/>
-            <a:input for='p2'/>
-         </a:model>
+         <a:input type='datetime-local' name='n1' value='new System.DateTime(1999, 12, 31)'/>
+         <a:input type='{"datetime-local"}' name='n2' value='new System.DateTime(1999, 12, 31)'/>
       </div>
    </c:template>
 
    <c:template name='expected'>
       <div>
-         <input type='number' id='p1' name='p1' value=''/>
-         <input type='number' id='p2' name='p2' value=''/>
+         <input id='n1' type='datetime-local' name='n1' value='1999-12-31T00:00:00.000'/>
+         <input id='n2' type='datetime-local' name='n2' value='1999-12-31T00:00:00.000'/>
       </div>
    </c:template>
 

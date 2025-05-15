@@ -5,10 +5,16 @@
    extension-element-prefixes='a'>
 
    <c:template name='c:initial-template'>
-      <c:variable name='el'>
-         <a:hidden name='foo'/>
+      <c:variable name='a'>
+         <a:input name='a'>
+            <c:attribute name='data-foo'>foo</c:attribute>
+         </a:input>
       </c:variable>
-      <c:void value='Assert.AreEqual(typeof(System.Xml.Linq.XElement[]), CompileType(el))'/>
+      <c:copy-of value='a'/>
+   </c:template>
+
+   <c:template name='expected'>
+      <input id='a' type='text' name='a' value='' data-foo='foo'/>
    </c:template>
 
 </c:module>

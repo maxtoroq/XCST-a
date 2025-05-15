@@ -11,6 +11,7 @@
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <c:set ref='ViewContext.FormMethod' value='Xcst.Web.Mvc.FormMethod.Get'/>
       <div>
          <a:model type='Foo'>
             <a:input for='p1'/>

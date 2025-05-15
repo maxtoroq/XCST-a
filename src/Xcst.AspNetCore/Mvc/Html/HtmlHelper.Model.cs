@@ -21,8 +21,22 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
+   public struct NewModelHelperArgs {
+
+      public string?
+      htmlFieldPrefix { get; set; }
+
+      public string?
+      formMethod { get; set; }
+   }
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public HtmlHelper<TModel>
-   NewModelHelper<TModel>(IXcstPackage currentPackage, TModel? model, string? htmlFieldPrefix = null) {
+   NewModelHelper<TModel>(IXcstPackage currentPackage, TModel? model, NewModelHelperArgs args = default) {
+
+      var htmlFieldPrefix = args.htmlFieldPrefix;
+      var formMethod = args.formMethod;
 
       ArgumentNullException.ThrowIfNull(currentPackage);
 
@@ -34,11 +48,15 @@ partial class HtmlHelper {
 
       var newViewContext = new ViewContext(this.ViewContext, null, currentPackage) {
          HtmlFieldPrefix = GetFullHtmlFieldName(htmlFieldPrefix),
-         FormContext = new FormContext(),
+         FormContext = null,
          MembersOptions = null,
          ViewParameters = null,
          VisitedObjects = null,
       };
+
+      if (formMethod != null) {
+         newViewContext.SetFormMethodString(formMethod);
+      }
 
       return new HtmlHelper<TModel>(newViewContext, container);
    }

@@ -8,7 +8,7 @@
       <c:variable name='el'>
          <a:input name='foo'/>
       </c:variable>
-      <c:void value='Assert.AreEqual(typeof(System.Xml.Linq.XElement), CompileType(el))'/>
+      <c:void value='Assert.AreEqual(typeof(System.Xml.Linq.XElement[]), CompileType(el))'/>
    </c:template>
 
 </c:module>

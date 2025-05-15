@@ -4,20 +4,19 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:type name='Foo'>
-      <c:member name='d' as='System.DateTimeOffset' value='new()'/>
-   </c:type>
-
    <c:template name='c:initial-template'>
-      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <c:set ref='ViewContext.FormMethod' value='Xcst.Web.Mvc.FormMethod.Get'/>
-      <a:model value='new Foo()'>
-         <a:editor for='d'/>
-      </a:model>
+      <div>
+         <a:input type='month' name='n1' value='new System.DateTime(1999, 12, 31)'/>
+         <a:input type='{"month"}' name='n2' value='new System.DateTime(1999, 12, 31)'/>
+      </div>
    </c:template>
 
    <c:template name='expected'>
-      <input type='datetime-local' id='d' name='d' value='0001-01-01T00:00:00.000' class='text-box single-line'/>
+      <div>
+         <input id='n1' type='month' name='n1' value='1999-12'/>
+         <input id='n2' type='month' name='n2' value='1999-12'/>
+      </div>
    </c:template>
 
 </c:module>

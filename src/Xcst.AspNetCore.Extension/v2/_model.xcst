@@ -43,7 +43,7 @@
                .ToArray()'/>
       </call-template>
 
-      <variable name='methodAttr' value='el.Attribute("method")'/>
+      <variable name='methodAttr' value='el.Attribute("method")!'/>
       <variable name='valueAttr' value='el.Attribute("model-value")'/>
       <variable name='typeAttr' value='el.Attribute("model-type")'/>
 
@@ -78,6 +78,13 @@
 
       <code:try line-hidden='true'>
          <code:block>
+
+            <variable name='methodStringEl'>
+               <code:string verbatim='true'>
+                  <value-of value='xcst_non_string(methodAttr)'/>
+               </code:string>
+            </variable>
+
             <for-each name='attr' in='clientAttribs'>
                <code:method-call name='WriteAttributeString'>
                   <copy-of value='outputRef'/>
@@ -87,9 +94,7 @@
                      </code:string>
                      <choose>
                         <when test='attr == methodAttr'>
-                           <code:string verbatim='true'>
-                              <value-of value='xcst_non_string(attr)'/>
-                           </code:string>
+                           <copy-of value='methodStringEl'/>
                         </when>
                         <otherwise>
                            <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
@@ -103,6 +108,7 @@
                <with-param name='el' value='el'/>
                <with-param name='valueAttr' value='valueAttr'/>
                <with-param name='typeAttr' value='typeAttr'/>
+               <with-param name='methodStringEl' value='methodStringEl'/>
                <with-param name='output' value='docOutput' tunnel='yes'/>
             </call-template>
 
@@ -181,6 +187,7 @@
       <param name='el' as='XElement' required='yes'/>
       <param name='valueAttr' as='XAttribute?' required='yes'/>
       <param name='typeAttr' as='XAttribute?' required='yes'/>
+      <param name='methodStringEl' as='XElement?'/>
 
       <variable name='newHelper'>
          <code:variable-reference name='{(el.Attribute("helper-name") is { } helperNameAttr ?
@@ -217,11 +224,23 @@
                      </code:default>
                   </otherwise>
                </choose>
-               <if test='el.Attribute("field-prefix") is { } fieldPrefixAttr'>
-                  <code:argument name='htmlFieldPrefix'>
-                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = fieldPrefixAttr }'/>
-                  </code:argument>
-               </if>
+               <code:new-object>
+                  <code:type-reference name='NewModelHelperArgs'>
+                     <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+                  </code:type-reference>
+                  <code:initializer>
+                     <if test='el.Attribute("field-prefix") is { } fieldPrefixAttr'>
+                        <code:member-initializer name='htmlFieldPrefix'>
+                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = fieldPrefixAttr }'/>
+                        </code:member-initializer>
+                     </if>
+                     <if test='methodStringEl != null'>
+                        <code:member-initializer name='formMethod'>
+                           <copy-of value='methodStringEl'/>
+                        </code:member-initializer>
+                     </if>
+                  </code:initializer>
+               </code:new-object>
             </code:arguments>
          </code:method-call>
       </code:variable>

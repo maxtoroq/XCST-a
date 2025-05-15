@@ -15,6 +15,7 @@
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <c:set ref='ViewContext.FormMethod' value='Xcst.Web.Mvc.FormMethod.Get'/>
       <c:set ref='CultureInfo.CurrentCulture' value='CultureInfo.GetCultureInfo("en-US")'/>
       <div>
          <a:model type='Foo'>
@@ -42,7 +43,7 @@
          <input type='date' id='p1' name='p1' value='1999-12-31'/>
          <input type='date' id='p3' name='p3' value='1999-12-31'/>
          <input type='text' id='p4' name='p4' value='12/31/1999'/>
-         <input type='text' id='n1' name='n1' value='12/31/1999 12:00:00 AM'/>
+         <input type='text' id='n1' name='n1' value='12/31/1999 00:00:00'/>
          <input type='date' id='n2' name='n2' value='1999-12-31'/>
       </div>
    </c:template>

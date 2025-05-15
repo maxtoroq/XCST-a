@@ -278,22 +278,23 @@ static class DefaultEditorTemplates {
          DefaultDisplayTemplates.StringTemplate(html, seqOutput);
       }
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
       var value = html.ViewContext.FormattedModelValue;
 
       var className = GetEditorCssClass(_hiddenInputInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(
-         output,
-         "hidden",
+         seqOutput,
          html.ModelExplorer,
          String.Empty,
-         value,
-         format: null,
-         @class: htmlAttributes.RemoveClass(output.SimpleContent));
+         new HtmlHelper.InputArgs {
+            type = "hidden",
+            value = value,
+            @class = htmlAttributes.RemoveClass(html.SimpleContent),
+         });
 
-      htmlAttributes.WriteTo(output);
+      htmlAttributes.WriteTo(disp.ElementOutput);
+      disp.EndOfConstructor();
    }
 
    public static void
@@ -443,21 +444,20 @@ static class DefaultEditorTemplates {
    public static void
    PasswordTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
-
       var className = GetEditorCssClass(_passwordInfo, "text-box single-line password");
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using var _ = html.GenerateInput(
-         output,
-         type: "password",
+      using var disp = html.GenerateInput(
+         seqOutput,
          html.ViewData.ModelExplorer,
          String.Empty,
-         value: null,
-         format: null,
-         @class: htmlAttributes.RemoveClass(output.SimpleContent));
+         new HtmlHelper.InputArgs {
+            type = "password",
+            @class = htmlAttributes.RemoveClass(html.SimpleContent)
+         });
 
-      htmlAttributes.WriteTo(output);
+      htmlAttributes.WriteTo(disp.ElementOutput);
+      disp.EndOfConstructor();
    }
 
    public static void
@@ -482,24 +482,24 @@ static class DefaultEditorTemplates {
    static void
    HtmlInputTemplateHelper(HtmlHelper html, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
-
       var value = (HtmlHelper.OmitInputValue(inputType)) ? null
          : html.ViewContext.FormattedModelValue;
 
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using var _ = html.GenerateInput(
-         output,
-         inputType,
+      using var disp = html.GenerateInput(
+         seqOutput,
          html.ModelExplorer,
          String.Empty,
-         value,
-         format: null,
-         @class: htmlAttributes.RemoveClass(output.SimpleContent));
+         new HtmlHelper.InputArgs {
+            type = inputType,
+            value = value,
+            @class = htmlAttributes.RemoveClass(html.SimpleContent)
+         });
 
-      htmlAttributes.WriteTo(output);
+      htmlAttributes.WriteTo(disp.ElementOutput);
+      disp.EndOfConstructor();
    }
 
    static void

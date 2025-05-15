@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='System.Globalization'/>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='CultureInfo.CurrentCulture' value='CultureInfo.GetCultureInfo("fr-FR")'/>
+      <div>
+         <a:input type='number' name='n1' value='1'/>
+         <a:input type='{"number"}' name='n2' value='2'/>
+         <a:input type='number' name='n3' value='3.09m'/>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <input id='n1' type='number' name='n1' value='1'/>
+         <input type='hidden' name='__Invariant' value='n1'/>
+         <input id='n2' type='number' name='n2' value='2'/>
+         <input type='hidden' name='__Invariant' value='n2'/>
+         <input id='n3' type='number' name='n3' value='3.09'/>
+         <input type='hidden' name='__Invariant' value='n3'/>
+      </div>
+   </c:template>
+
+</c:module>

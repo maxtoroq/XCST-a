@@ -211,17 +211,23 @@ public partial class HtmlHelper {
    }
 
    public string
-   FormatValue(object? value, string? format) {
+   FormatValue(object? value, string? format) =>
+      FormatValue(value, format, null);
+
+   public string
+   FormatValue(object? value, string? format, CultureInfo? culture) {
 
       if (value is null) {
          return String.Empty;
       }
 
+      culture ??= this.ViewContext.FormCulture;
+
       if (String.IsNullOrEmpty(format)) {
-         return Convert.ToString(value, CultureInfo.CurrentCulture) ?? String.Empty;
+         return Convert.ToString(value, culture) ?? String.Empty;
       }
 
-      return String.Format(CultureInfo.CurrentCulture, format, value);
+      return String.Format(culture, format, value);
    }
 
    object?

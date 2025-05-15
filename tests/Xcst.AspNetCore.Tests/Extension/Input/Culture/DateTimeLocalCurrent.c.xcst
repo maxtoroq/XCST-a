@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:input type='datetime-local' name='n1' value='new System.DateTime(1999, 12, 31)'/>
+         <a:input type='{"datetime-local"}' name='n2' value='new System.DateTime(1999, 12, 31)'/>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <input id='n1' type='datetime-local' name='n1' value='1999-12-31T00:00:00.000'/>
+         <input type='hidden' name='__Invariant' value='n1'/>
+         <input id='n2' type='datetime-local' name='n2' value='1999-12-31T00:00:00.000'/>
+         <input type='hidden' name='__Invariant' value='n2'/>
+      </div>
+   </c:template>
+
+</c:module>

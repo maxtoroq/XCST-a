@@ -19,14 +19,35 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Xcst.Runtime;
+using DataType = System.ComponentModel.DataAnnotations.DataType;
 
 namespace Xcst.Web.Mvc;
 
 partial class HtmlHelper {
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public struct InputArgs {
+
+      public object?
+      value { get; set; }
+
+      public string?
+      type { get; set; }
+
+      public string?
+      format { get; set; }
+
+      public string?
+      @class { get; set; }
+   }
 
    static readonly Dictionary<string, string>
    _defaultInputTypes = new(StringComparer.OrdinalIgnoreCase) {
@@ -77,43 +98,85 @@ partial class HtmlHelper {
       { "time", @"{0:HH\:mm\:ss.fff}" },
    };
 
+   static readonly HashSet<string>
+   _invariantInputTypes = new(_rfc3339Formats.Keys.Append("number"), StringComparer.Ordinal);
+
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public IDisposable
-   Input(XcstWriter output, string name, object? value = null, string? type = null,
-         string? format = null, string? @class = null) {
+   public SiblingContentDisposable
+   Input(ISequenceWriter<XElement> output, string name, InputArgs args = default) {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
 
-      return GenerateInput(output, type, modelExplorer, name, value, format, @class);
+      return GenerateInput(output, modelExplorer, name, args);
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public IDisposable
-   InputForModel(XcstWriter output, object? value = null, string? type = null,
-         string? format = null, string? @class = null) =>
-      GenerateInput(output, type, this.ViewData.ModelExplorer, name: String.Empty, value, format, @class);
+   public SiblingContentDisposable
+   InputForModel(ISequenceWriter<XElement> output, InputArgs args = default) =>
+      GenerateInput(output, this.ViewData.ModelExplorer, String.Empty, args);
 
-   protected internal IDisposable
-   GenerateInput(XcstWriter output, string? type, ModelExplorer modelExplorer, string name, object? value,
-         string? format, string? @class) {
+   protected internal SiblingContentDisposable
+   GenerateInput(ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string name, InputArgs args) {
+
+      var inputWriter = DocumentWriter.CastElement(this.ViewContext.CurrentPackage, output);
+
+      GenerateInputElement(
+         inputWriter,
+         modelExplorer,
+         name,
+         args,
+         out var fullName,
+         out var inputType);
+
+      return new SiblingContentDisposable(inputWriter, writeHiddenInput);
+
+      void writeHiddenInput() {
+
+         if (!IncludeHiddenInvariantField(inputType)) {
+            return;
+         }
+
+         var hiddenWriter = DocumentWriter.CastElement(this.ViewContext.CurrentPackage, output);
+
+         hiddenWriter.WriteStartElement("input");
+         hiddenWriter.WriteAttributeString("type", "hidden");
+         hiddenWriter.WriteAttributeString("name", "__Invariant");
+         hiddenWriter.WriteAttributeString("value", fullName);
+         hiddenWriter.WriteEndElement();
+      }
+   }
+
+   void
+   GenerateInputElement(
+         XcstWriter output, ModelExplorer modelExplorer, string name, InputArgs args,
+         out string fullName,
+         out string inputType) {
 
       ArgumentNullException.ThrowIfNull(name);
 
-      var fullName = FullNameNonEmpty(name);
+      var value = args.value;
+      var type = args.type;
+      var format = args.format;
+      var @class = args.@class;
+
+      fullName = FullNameNonEmpty(name);
 
       var inputTypeHint = default(string);
-      var inputType = type ?? GetInputType(modelExplorer, out inputTypeHint);
+      inputType = type ?? GetInputType(modelExplorer, out inputTypeHint);
 
       format ??= GetFormat(modelExplorer.Metadata, name, inputType, inputTypeHint);
 
       var valueOrModel = value ?? modelExplorer.Model;
       var valueAttr = (string?)GetModelStateValue(fullName, typeof(string));
 
+      var culture = InputTypeIsInvariant(inputType) ?
+         CultureInfo.InvariantCulture : null;
+
       valueAttr ??= (InputTypeEquals(inputType, "hidden")
          && valueOrModel is byte[] byteArrayValue) ? Convert.ToBase64String(byteArrayValue)
-         : FormatValue(valueOrModel, format);
+         : FormatValue(valueOrModel, format, culture);
 
       output.WriteStartElement("input");
 
@@ -137,8 +200,6 @@ partial class HtmlHelper {
       }
 
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
-
-      return new ElementEndingDisposable(output);
    }
 
    internal static bool
@@ -226,19 +287,32 @@ partial class HtmlHelper {
    UsingFormattedModelValue(string name) =>
       this.ViewContext.ViewName != null
          && String.IsNullOrEmpty(name);
+
+   static bool
+   InputTypeIsInvariant(string inputType) =>
+      _invariantInputTypes.Contains(inputType);
+
+   bool
+   IncludeHiddenInvariantField(string inputType) {
+
+      if (this.ViewContext.FormMethod == FormMethod.Get) {
+         return false;
+      }
+
+      return InputTypeIsInvariant(inputType);
+   }
 }
 
 partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public IDisposable
-   InputFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, string? type = null,
-         string? format = null, string? @class = null) {
+   public SiblingContentDisposable
+   InputFor<TResult>(ISequenceWriter<XElement> output, Expression<Func<TModel, TResult>> expression, InputArgs args = default) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var exprString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateInput(output, type, modelExplorer, exprString, value: null, format, @class);
+      return GenerateInput(output, modelExplorer, exprString, args);
    }
 }

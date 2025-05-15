@@ -62,7 +62,6 @@
    </variable>
 
    <template match='XElement el &amp;&amp; (el.Name == a + "input" || el.Name == a + "hidden")' mode='src:statement'>
-      <param name='output' as='XElement' tunnel='yes'/>
 
       <variable name='hidden' value='el.Name.LocalName == "hidden"'/>
 
@@ -86,14 +85,6 @@
 
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
-      <variable name='docOutput' value='src_doc_output(el, output)'/>
-      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
-
-      <call-template name='declare-doc-output'>
-         <with-param name='el' value='el'/>
-         <with-param name='docOutput' value='docOutput'/>
-      </call-template>
-
       <variable name='clientAttribs' value='attributes(el)
          .Where(p => p.Name.Namespace == XNamespace.None
             &amp;&amp; clientAttributes.Contains(p.Name.LocalName))
@@ -102,12 +93,19 @@
       <choose>
          <when test='!(element_is_empty(el)
                &amp;&amp; fn_empty(clientAttribs))'>
+            <variable name='dispVar' value='aux_variable("input_" + fn_generate_id(el))'/>
             <code:using>
-               <call-template name='input-or-hidden'>
-                  <with-param name='el' value='el'/>
-                  <with-param name='output' value='docOutput' tunnel='yes'/>
-               </call-template>
+               <code:variable name='{dispVar}'>
+                  <call-template name='input-or-hidden'>
+                     <with-param name='el' value='el'/>
+                  </call-template>
+               </code:variable>
                <code:block>
+                  <variable name='outputRef'>
+                     <code:property-reference name='ElementOutput'>
+                        <code:variable-reference name='{dispVar}'/>
+                     </code:property-reference>
+                  </variable>
                   <for-each name='attr' in='clientAttribs'>
                      <choose>
                         <when test='textbox_client_bool_attributes.Contains(attr.Name.LocalName)'>
@@ -140,8 +138,17 @@
                   </for-each>
                   <invoke-delegate delegate='src_sequence_constructor'>
                      <with-param name='el' value='el'/>
-                     <with-param name='output' value='docOutput' tunnel='yes'/>
+                     <with-param name='output' tunnel='yes'>
+                        <src:output kind='doc'>
+                           <src:reference>
+                              <copy-of value='outputRef'/>
+                           </src:reference>
+                        </src:output>
+                     </with-param>
                   </invoke-delegate>
+                  <code:method-call name='EndOfConstructor'>
+                     <code:variable-reference name='{dispVar}'/>
+                  </code:method-call>
                </code:block>
             </code:using>
          </when>
@@ -149,8 +156,10 @@
             <code:chain>
                <call-template name='input-or-hidden'>
                   <with-param name='el' value='el'/>
-                  <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
+               <code:method-call name='NoConstructor'>
+                  <code:chain-reference/>
+               </code:method-call>
                <code:method-call name='Dispose'>
                   <code:chain-reference/>
                </code:method-call>
@@ -195,43 +204,60 @@
                   <if test='nameAttr != null'>
                      <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                   </if>
-                  <if test='el.Attribute("value") is { } valueAttr'>
-                     <code:expression value='{xcst_expression(valueAttr)}'/>
-                  </if>
                </otherwise>
             </choose>
-            <choose>
-               <when test='hidden'>
-                  <code:argument name='type'>
-                     <code:string literal='true'>hidden</code:string>
-                  </code:argument>
-               </when>
-               <when test='el.Attribute("type") is { } typeAttr'>
-                  <code:argument name='type'>
-                     <call-template name='app-input-type'>
-                        <with-param name='val' value='xcsta_input_type(typeAttr, true)'/>
-                        <with-param name='avt' value='typeAttr'/>
-                     </call-template>
-                  </code:argument>
-               </when>
-            </choose>
-            <if test='!hidden
-                  &amp;&amp; el.Attribute("format") is { } formatAttr'>
-               <code:argument name='format'>
-                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = formatAttr }'/>
-               </code:argument>
-            </if>
-            <if test='el.Attribute("class") is { } classAttr'>
-               <code:argument name='class' verbatim='true'>
-                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
-               </code:argument>
-            </if>
+            <code:new-object>
+               <code:type-reference name='InputArgs'>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+               </code:type-reference>
+               <code:initializer>
+                  <if test='forAttr is null
+                        &amp;&amp; el.Attribute("value") is { } valueAttr'>
+                     <code:member-initializer name='value'>
+                        <code:expression value='{xcst_expression(valueAttr)}'/>
+                     </code:member-initializer>
+                  </if>
+                  <choose>
+                     <when test='hidden'>
+                        <code:member-initializer name='type'>
+                           <code:string literal='true'>hidden</code:string>
+                        </code:member-initializer>
+                     </when>
+                     <when test='el.Attribute("type") is { } typeAttr'>
+                        <code:member-initializer name='type'>
+                           <call-template name='app-input-type'>
+                              <with-param name='val' value='xcsta_input_type(typeAttr, true)'/>
+                              <with-param name='avt' value='typeAttr'/>
+                           </call-template>
+                        </code:member-initializer>
+                     </when>
+                  </choose>
+                  <if test='!hidden
+                        &amp;&amp; el.Attribute("format") is { } formatAttr'>
+                     <code:member-initializer name='format'>
+                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = formatAttr }'/>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("class") is { } classAttr'>
+                     <code:member-initializer name='class' verbatim='true'>
+                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
+                     </code:member-initializer>
+                  </if>
+               </code:initializer>
+            </code:new-object>
          </code:arguments>
       </code:method-call>
    </template>
 
    <template match='XElement el &amp;&amp; (el.Name == a + "input" || el.Name == a + "hidden")' mode='xcst:extension-instruction'>
-      <call-template name='element-instruction'/>
+      <variable name='instruction'>
+         <call-template name="element-instruction"/>
+      </variable>
+      <xcst:instruction>
+         <code:type-reference array-dimensions='1'>
+            <copy-of value='select(instruction, code + "type-reference")'/>
+         </code:type-reference>
+      </xcst:instruction>
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "textarea"' mode='src:statement'>
@@ -411,7 +437,6 @@
    </template>
 
    <template match='XElement el &amp;&amp; el.Name == a + "checkbox"' mode='src:statement'>
-      <param name='output' as='XElement' tunnel='yes'/>
 
       <variable name='clientAttributes' value='input_client_attributes'/>
 
@@ -485,6 +510,13 @@
                   </for-each>
                   <invoke-delegate delegate='src_sequence_constructor'>
                      <with-param name='el' value='el'/>
+                     <with-param name='output' tunnel='yes'>
+                        <src:output kind='doc'>
+                           <src:reference>
+                              <copy-of value='outputRef'/>
+                           </src:reference>
+                        </src:output>
+                     </with-param>
                   </invoke-delegate>
                   <code:method-call name='EndOfConstructor'>
                      <code:variable-reference name='{dispVar}'/>
