@@ -45,7 +45,8 @@ Breaking Changes
 - [Adding 'readonly' and 'placeholder' on a:input and a:textarea based on metadata](https://github.com/maxtoroq/XCST-a/commit/12789aff82b056158b4e7f1c7b7d0469dc0a13c1)
 - [Using more specific type on a:input based on metadata](https://github.com/maxtoroq/XCST-a/commit/b46332d98ec618dbfef6147c7747c09ff44ab478)
 - [Default format on a:input](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190)
-- [Ignoring Html5DateRenderingMode](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190)
+- [Keeping track of form method to use appropriate culture (invariant for GET requests) and including `__Invariant` hidden field for invariant input types](https://github.com/maxtoroq/XCST-a/commit/8d3b75c0ec877bb0ab6ec6cf2fde0b68e78b1a63)
+- [Ignoring Html5DateRenderingMode](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190) ([and removed](https://github.com/maxtoroq/XCST-a/commit/9ba3d8de281f1b263b2654964476d89c88126459))
 - [Text-only sequence constructor for a:with-options/a:option](https://github.com/maxtoroq/XCST-a/commit/a168d65dcaec34680f0ad15e2bf3b7821e0bf00a)
 - [Renamed a:model's 'as' attribute to 'type'](https://github.com/maxtoroq/XCST-a/commit/3ac2492e377e7be181f0aa49e981e20c67010608)
 - [Using single Number template for integral types](https://github.com/maxtoroq/XCST-a/commit/6787fb48ee29127f536dcb52c267082be7791cee)
@@ -53,6 +54,7 @@ Breaking Changes
 ### Runtime
 The runtime has lots of changes, including renamed namespaces and moved types. These are the most notable changes:
 
+- [Merged TemplateInfo into ViewContext](https://github.com/maxtoroq/XCST-a/commit/996c47dd75e79f76c856616bb4c4dfab4ead69f4)
 - [Removed RouteValueDictionary dependency from ObjectToDictionary and AnonymousObjectToHtmlAttributes](https://github.com/maxtoroq/XCST-a/commit/25e0171c73cf199280dbaa77445c3532074f23d0)
 - [Removed TempData](https://github.com/maxtoroq/XCST-a/commit/1d2fdacbe13cde8383af34245d2170379a529289)
 - [Removed ViewBag](https://github.com/maxtoroq/XCST-a/commit/83f147cd0cad4b1c9ff0638f895be3ea730bde8c)
