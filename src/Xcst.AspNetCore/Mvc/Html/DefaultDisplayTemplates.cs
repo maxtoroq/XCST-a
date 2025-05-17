@@ -122,7 +122,9 @@ static class DefaultDisplayTemplates {
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
             new TemplateHelper(html, true, String.Empty, itemExplorer)
-               .Render(seqOutput, htmlFieldName: fieldName);
+               .Render(seqOutput, new TemplateHelper.RenderArgs {
+                  htmlFieldName = fieldName,
+               });
          }
 
       } finally {
@@ -276,7 +278,9 @@ static class DefaultDisplayTemplates {
             new TemplateHelper(html, true, String.Empty, propertyExplorer)
                .Render(
                   fieldWriter ?? fieldsetWriter ?? seqOutput,
-                  htmlFieldName: propertyMeta.PropertyName
+                  new TemplateHelper.RenderArgs {
+                     htmlFieldName = propertyMeta.PropertyName,
+                  }
                );
 
             if (!propertyMeta.HideSurroundingHtml) {

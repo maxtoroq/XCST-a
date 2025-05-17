@@ -36,15 +36,19 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public struct InputArgs {
 
+      [GeneratedCodeReference]
       public object?
       value { get; set; }
 
+      [GeneratedCodeReference]
       public string?
       type { get; set; }
 
+      [GeneratedCodeReference]
       public string?
       format { get; set; }
 
+      [GeneratedCodeReference]
       public string?
       @class { get; set; }
    }

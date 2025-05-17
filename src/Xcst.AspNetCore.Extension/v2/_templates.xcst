@@ -100,81 +100,88 @@
             <code:chain-reference/>
             <code:arguments>
                <copy-of value='select(output, src + "reference", code)'/>
-               <if test='el.Attribute("template") is { } templateAttr'>
-                  <code:argument name='templateName'>
-                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = templateAttr }'/>
-                  </code:argument>
-               </if>
-               <if test='el.Attribute("field-name") is { } fieldNameAttr'>
-                  <code:argument name='htmlFieldName'>
-                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = fieldNameAttr }'/>
-                  </code:argument>
-               </if>
-               <if test='membersAttr != null'>
-                  <variable name='members' value='fn_tokenize(membersAttr.Value)'/>
-                  <if test='members.Length > 0'>
-                     <code:argument name='membersNames'>
-                        <code:new-array>
-                           <code:type-reference name='String' namespace='System'/>
-                           <code:collection-initializer>
-                              <for-each name='mem' in='members'>
-                                 <code:nameof>
-                                    <code:chain>
-                                       <copy-of value='htmlHelper'/>
-                                       <code:property-reference name='ViewData'>
-                                          <code:chain-reference/>
-                                       </code:property-reference>
-                                       <code:property-reference name='Model'>
-                                          <code:chain-reference/>
-                                       </code:property-reference>
-                                       <if test='forAttr != null'>
-                                          <code:property-reference name='{forExpr}'>
-                                             <code:chain-reference/>
-                                          </code:property-reference>
-                                       </if>
-                                       <code:property-reference name='{mem}'>
-                                          <code:chain-reference/>
-                                       </code:property-reference>
-                                    </code:chain>
-                                 </code:nameof>
-                              </for-each>
-                           </code:collection-initializer>
-                        </code:new-array>
-                     </code:argument>
-                  </if>
-               </if>
-               <if test='membersNamesAttr != null'>
-                  <variable name='dataTypeHelper' value='src_helper_type("DataType")'/>
-                  <code:argument name='membersNames'>
-                     <code:method-call name='List'>
-                        <copy-of value='dataTypeHelper'/>
-                        <code:arguments>
-                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = membersNamesAttr   }'/>
-                           <code:method-reference name='String'>
+               <code:new-object>
+                  <code:type-reference name='RenderArgs'>
+                     <code:type-reference name='TemplateHelper' namespace='Xcst.Web.Mvc'/>
+                  </code:type-reference>
+                  <code:initializer>
+                     <if test='el.Attribute("template") is { } templateAttr'>
+                        <code:member-initializer name='templateName'>
+                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = templateAttr }'/>
+                        </code:member-initializer>
+                     </if>
+                     <if test='el.Attribute("field-name") is { } fieldNameAttr'>
+                        <code:member-initializer name='htmlFieldName'>
+                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = fieldNameAttr }'/>
+                        </code:member-initializer>
+                     </if>
+                     <if test='membersAttr != null'>
+                        <variable name='members' value='fn_tokenize(membersAttr.Value)'/>
+                        <if test='members.Length > 0'>
+                           <code:member-initializer name='membersNames'>
+                              <code:new-array>
+                                 <code:type-reference name='String' namespace='System'/>
+                                 <code:collection-initializer>
+                                    <for-each name='mem' in='members'>
+                                       <code:nameof>
+                                          <code:chain>
+                                             <copy-of value='htmlHelper'/>
+                                             <code:property-reference name='ViewData'>
+                                                <code:chain-reference/>
+                                             </code:property-reference>
+                                             <code:property-reference name='Model'>
+                                                <code:chain-reference/>
+                                             </code:property-reference>
+                                             <if test='forAttr != null'>
+                                                <code:property-reference name='{forExpr}'>
+                                                   <code:chain-reference/>
+                                                </code:property-reference>
+                                             </if>
+                                             <code:property-reference name='{mem}'>
+                                                <code:chain-reference/>
+                                             </code:property-reference>
+                                          </code:chain>
+                                       </code:nameof>
+                                    </for-each>
+                                 </code:collection-initializer>
+                              </code:new-array>
+                           </code:member-initializer>
+                        </if>
+                     </if>
+                     <if test='membersNamesAttr != null'>
+                        <variable name='dataTypeHelper' value='src_helper_type("DataType")'/>
+                        <code:member-initializer name='membersNames'>
+                           <code:method-call name='List'>
                               <copy-of value='dataTypeHelper'/>
-                           </code:method-reference>
-                        </code:arguments>
-                     </code:method-call>
-                  </code:argument>
-               </if>
-               <call-template name='editor-members-options'>
-                  <with-param name='el' value='el'/>
-               </call-template>
-               <apply-templates value='select(el, a + "member-template")' mode='editor-member-template'/>
-               <call-template name='editor-html-attributes'>
-                  <with-param name='el' value='el'/>
-                  <with-param name='attributesAttr' value='el.Attribute("attributes")'/>
-                  <with-param name='boolAttribs' value='(editor) ?
-                     attributes(el).Where(p => p.Name.Namespace == XNamespace.None
-                           &amp;&amp; p.Name.LocalName is "autofocus" or "disabled" or "readonly")
-                        .ToArray()
-                     : System.Array.Empty&lt;XAttribute>()'/>
-               </call-template>
-               <if test='el.Attribute("with-params") is { } withParamsAttr'>
-                  <code:argument name='withParams'>
-                     <code:expression value='{xcst_expression(withParamsAttr)}'/>
-                  </code:argument>
-               </if>
+                              <code:arguments>
+                                 <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = membersNamesAttr   }'/>
+                                 <code:method-reference name='String'>
+                                    <copy-of value='dataTypeHelper'/>
+                                 </code:method-reference>
+                              </code:arguments>
+                           </code:method-call>
+                        </code:member-initializer>
+                     </if>
+                     <call-template name='editor-members-options'>
+                        <with-param name='el' value='el'/>
+                     </call-template>
+                     <apply-templates value='select(el, a + "member-template")' mode='editor-member-template'/>
+                     <call-template name='editor-html-attributes'>
+                        <with-param name='el' value='el'/>
+                        <with-param name='attributesAttr' value='el.Attribute("attributes")'/>
+                        <with-param name='boolAttribs' value='(editor) ?
+                           attributes(el).Where(p => p.Name.Namespace == XNamespace.None
+                                 &amp;&amp; p.Name.LocalName is "autofocus" or "disabled" or "readonly")
+                              .ToArray()
+                           : System.Array.Empty&lt;XAttribute>()'/>
+                     </call-template>
+                     <if test='el.Attribute("with-params") is { } withParamsAttr'>
+                        <code:member-initializer name='withParams'>
+                           <code:expression value='{xcst_expression(withParamsAttr)}'/>
+                        </code:member-initializer>
+                     </if>
+                  </code:initializer>
+               </code:new-object>
             </code:arguments>
          </code:method-call>
       </code:chain>
@@ -188,7 +195,7 @@
 
       <if test='withOptionsEls.Length > 0
             || optionsAttr != null'>
-         <code:argument name='membersOptions'>
+         <code:member-initializer name='membersOptions'>
             <code:new-object>
                <code:type-reference name='Dictionary' namespace='System.Collections.Generic'>
                   <code:type-arguments>
@@ -207,7 +214,7 @@
                   </if>
                </code:collection-initializer>
             </code:new-object>
-         </code:argument>
+         </code:member-initializer>
       </if>
    </template>
 
@@ -434,7 +441,7 @@
             : aux_variable("html") + "_" + fn_generate_id(el))}'/>
       </variable>
 
-      <code:argument name='memberTemplate'>
+      <code:member-initializer name='memberTemplate'>
          <code:new-object>
             <code:type-reference name='Action' namespace='System'>
                <code:type-arguments>
@@ -458,7 +465,7 @@
                </code:lambda>
             </code:arguments>
          </code:new-object>
-      </code:argument>
+      </code:member-initializer>
    </template>
 
    <template name='editor-html-attributes'>
@@ -477,7 +484,7 @@
 
       <if test='!(avts.Length == 0
             &amp;&amp; attributesExpr is null)'>
-         <code:argument name='htmlAttributes'>
+         <code:member-initializer name='htmlAttributes'>
             <choose>
                <when test='avts.Length == 0'>
                   <code:expression value='{attributesExpr}'/>
@@ -535,7 +542,7 @@
                   </code:chain>
                </otherwise>
             </choose>
-         </code:argument>
+         </code:member-initializer>
       </if>
    </template>
 

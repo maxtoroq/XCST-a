@@ -200,11 +200,9 @@
                      </code:property-reference>
                   </code:lambda>
                </when>
-               <otherwise>
-                  <if test='nameAttr != null'>
-                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
-                  </if>
-               </otherwise>
+               <when test='nameAttr != null'>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
+               </when>
             </choose>
             <code:new-object>
                <code:type-reference name='InputArgs'>
@@ -414,20 +412,28 @@
                      </code:property-reference>
                   </code:lambda>
                </when>
-               <otherwise>
-                  <if test='nameAttr != null'>
-                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
-                  </if>
-                  <if test='el.Attribute("value") is { } valueAttr'>
-                     <code:expression value='{xcst_expression(valueAttr)}'/>
-                  </if>
-               </otherwise>
+               <when test='nameAttr != null'>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
+               </when>
             </choose>
-            <if test='el.Attribute("class") is { } classAttr'>
-               <code:argument name='class' verbatim='true'>
-                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
-               </code:argument>
-            </if>
+            <code:new-object>
+               <code:type-reference name='TextareaArgs'>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+               </code:type-reference>
+               <code:initializer>
+                  <if test='forAttr is null
+                        &amp;&amp; el.Attribute("value") is { } valueAttr'>
+                     <code:member-initializer name='value'>
+                        <code:expression value='{xcst_expression(valueAttr)}'/>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("class") is { } classAttr'>
+                     <code:member-initializer name='class' verbatim='true'>
+                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
+                     </code:member-initializer>
+                  </if>
+               </code:initializer>
+            </code:new-object>
          </code:arguments>
       </code:method-call>
    </template>
@@ -474,7 +480,7 @@
                </code:variable>
                <code:block>
                   <variable name='outputRef'>
-                     <code:property-reference name='CheckboxOutput'>
+                     <code:property-reference name='ElementOutput'>
                         <code:variable-reference name='{dispVar}'/>
                      </code:property-reference>
                   </variable>
@@ -570,23 +576,31 @@
                      </code:property-reference>
                   </code:lambda>
                </when>
-               <otherwise>
-                  <if test='nameAttr != null'>
-                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
-                  </if>
-                  <if test='el.Attribute("checked") is { } checkedAttr'>
-                     <call-template name='src:boolean'>
-                        <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
-                        <with-param name='avt' value='checkedAttr'/>
-                     </call-template>
-                  </if>
-               </otherwise>
+               <when test='nameAttr != null'>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
+               </when>
             </choose>
-            <if test='el.Attribute("class") is { } classAttr'>
-               <code:argument name='class' verbatim='true'>
-                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
-               </code:argument>
-            </if>
+            <code:new-object>
+               <code:type-reference name='CheckboxArgs'>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+               </code:type-reference>
+               <code:initializer>
+                  <if test='forAttr is null
+                        &amp;&amp; el.Attribute("checked") is { } checkedAttr'>
+                     <code:member-initializer name='checked' verbatim='true'>
+                        <call-template name='src:boolean'>
+                           <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
+                           <with-param name='avt' value='checkedAttr'/>
+                        </call-template>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("class") is { } classAttr'>
+                     <code:member-initializer name='class' verbatim='true'>
+                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
+                     </code:member-initializer>
+                  </if>
+               </code:initializer>
+            </code:new-object>
          </code:arguments>
       </code:method-call>
    </template>
@@ -733,18 +747,27 @@
                </when>
             </choose>
             <code:expression value='{xcst_expression(el.Attribute("value")!)}'/>
-            <if test='forAttr is null
-                  &amp;&amp; el.Attribute("checked") is { } checkedAttr'>
-               <call-template name='src:boolean'>
-                  <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
-                  <with-param name='avt' value='checkedAttr'/>
-               </call-template>
-            </if>
-            <if test='el.Attribute("class") is { } classAttr'>
-               <code:argument name='class' verbatim='true'>
-                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
-               </code:argument>
-            </if>
+            <code:new-object>
+               <code:type-reference name='RadioArgs'>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+               </code:type-reference>
+               <code:initializer>
+                  <if test='forAttr is null
+                        &amp;&amp; el.Attribute("checked") is { } checkedAttr'>
+                     <code:member-initializer name='checked' verbatim='true'>
+                        <call-template name='src:boolean'>
+                           <with-param name='val' value='xcst_boolean(checkedAttr, true)'/>
+                           <with-param name='avt' value='checkedAttr'/>
+                        </call-template>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("class") is { } classAttr'>
+                     <code:member-initializer name='class' verbatim='true'>
+                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
+                     </code:member-initializer>
+                  </if>
+               </code:initializer>
+            </code:new-object>
          </code:arguments>
       </code:method-call>
    </template>
@@ -952,33 +975,39 @@
                      </code:property-reference>
                   </code:lambda>
                </when>
-               <otherwise>
-                  <if test='nameAttr != null'>
-                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
-                  </if>
-                  <if test='el.Attribute("value") is { } valueAttr'>
-                     <code:argument name='value'>
-                        <code:expression value='{xcst_expression(valueAttr)}'/>
-                     </code:argument>
-                  </if>
-               </otherwise>
+               <when test='nameAttr != null'>
+                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
+               </when>
             </choose>
-            <if test='el.Attribute("options") is { } optionsAttr'>
-               <code:argument name='options'>
-                  <code:expression value='{xcst_expression(optionsAttr)}'/>
-               </code:argument>
-            </if>
-            <if test='el.Attribute("multiple") is { } multipleAttr
-                  &amp;&amp; xcst_boolean(multipleAttr)!.Value'>
-               <code:argument name='multiple'>
-                  <code:bool value='true'/>
-               </code:argument>
-            </if>
-            <if test='el.Attribute("class") is { } classAttr'>
-               <code:argument name='class' verbatim='true'>
-                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
-               </code:argument>
-            </if>
+            <code:new-object>
+               <code:type-reference name='SelectArgs'>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+               </code:type-reference>
+               <code:initializer>
+                  <if test='forAttr is null
+                        &amp;&amp; el.Attribute("value") is { } valueAttr'>
+                     <code:member-initializer name='value'>
+                        <code:expression value='{xcst_expression(valueAttr)}'/>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("options") is { } optionsAttr'>
+                     <code:member-initializer name='options'>
+                        <code:expression value='{xcst_expression(optionsAttr)}'/>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("multiple") is { } multipleAttr
+                        &amp;&amp; xcst_boolean(multipleAttr)!.Value'>
+                     <code:member-initializer name='multiple'>
+                        <code:bool value='true'/>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("class") is { } classAttr'>
+                     <code:member-initializer name='class' verbatim='true'>
+                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
+                     </code:member-initializer>
+                  </if>
+               </code:initializer>
+            </code:new-object>
          </code:arguments>
       </code:method-call>
    </template>
@@ -1046,7 +1075,7 @@
 
       <variable name='text' value='xcst_text(el, null)'/>
 
-      <code:method-call name='SelectOption'>
+      <code:method-call name='Option'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
          <code:arguments>
@@ -1059,32 +1088,39 @@
                   <code:null/>
                </otherwise>
             </choose>
-            <if test='el.Attribute("value") is { } valueAttr'>
-               <code:argument name='value'>
-                  <code:expression value='{xcst_expression(valueAttr)}'/>
-               </code:argument>
-            </if>
-            <if test='el.Attribute("selected") is { } selectedAttr'>
-               <code:argument name='selected'>
-                  <call-template name='src:boolean'>
-                     <with-param name='val' value='xcst_boolean(selectedAttr, true)'/>
-                     <with-param name='avt' value='selectedAttr'/>
-                  </call-template>
-               </code:argument>
-            </if>
-            <if test='el.Attribute("disabled") is { } disabledAttr'>
-               <code:argument name='disabled'>
-                  <call-template name='src:boolean'>
-                     <with-param name='val' value='xcst_boolean(disabledAttr, true)'/>
-                     <with-param name='avt' value='disabledAttr'/>
-                  </call-template>
-               </code:argument>
-            </if>
-            <if test='text != null'>
-               <code:argument name='text'>
-                  <invoke-delegate delegate='src_expand_text' with-params='new { el, text }'/>
-               </code:argument>
-            </if>
+            <code:new-object>
+               <code:type-reference name='OptionArgs'>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+               </code:type-reference>
+               <code:initializer>
+                  <if test='el.Attribute("value") is { } valueAttr'>
+                     <code:member-initializer name='value'>
+                        <code:expression value='{xcst_expression(valueAttr)}'/>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("selected") is { } selectedAttr'>
+                     <code:member-initializer name='selected'>
+                        <call-template name='src:boolean'>
+                           <with-param name='val' value='xcst_boolean(selectedAttr, true)'/>
+                           <with-param name='avt' value='selectedAttr'/>
+                        </call-template>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("disabled") is { } disabledAttr'>
+                     <code:member-initializer name='disabled'>
+                        <call-template name='src:boolean'>
+                           <with-param name='val' value='xcst_boolean(disabledAttr, true)'/>
+                           <with-param name='avt' value='disabledAttr'/>
+                        </call-template>
+                     </code:member-initializer>
+                  </if>
+                  <if test='text != null'>
+                     <code:member-initializer name='text'>
+                        <invoke-delegate delegate='src_expand_text' with-params='new { el, text }'/>
+                     </code:member-initializer>
+                  </if>
+               </code:initializer>
+            </code:new-object>
          </code:arguments>
       </code:method-call>
    </template>
@@ -1222,11 +1258,18 @@
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                </when>
             </choose>
-            <if test='!isEmpty'>
-               <code:argument name='hasDefaultText'>
-                  <code:bool value='true'/>
-               </code:argument>
-            </if>
+            <code:new-object>
+               <code:type-reference name='LabelArgs'>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+               </code:type-reference>
+               <code:initializer>
+                  <if test='!isEmpty'>
+                     <code:member-initializer name='hasDefaultText'>
+                        <code:bool value='true'/>
+                     </code:member-initializer>
+                  </if>
+               </code:initializer>
+            </code:new-object>
          </code:arguments>
       </code:method-call>
    </template>
@@ -1328,19 +1371,26 @@
          <call-template name='html-helper-ref'/>
          <code:arguments>
             <copy-of value='select(output, src + "reference", code)'/>
-            <if test='el.Attribute("include-member-errors") is { } imeAttr'>
-               <code:argument name='includePropertyErrors'>
-                  <call-template name='src:boolean'>
-                     <with-param name='val' value='xcst_boolean(imeAttr, true)'/>
-                     <with-param name='avt' value='imeAttr'/>
-                  </call-template>
-               </code:argument>
-            </if>
-            <if test='el.Attribute("class") is { } classAttr'>
-               <code:argument name='class' verbatim='true'>
-                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
-               </code:argument>
-            </if>
+            <code:new-object>
+               <code:type-reference name='ValidationSummaryArgs'>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+               </code:type-reference>
+               <code:initializer>
+                  <if test='el.Attribute("include-member-errors") is { } imeAttr'>
+                     <code:member-initializer name='includePropertyErrors'>
+                        <call-template name='src:boolean'>
+                           <with-param name='val' value='xcst_boolean(imeAttr, true)'/>
+                           <with-param name='avt' value='imeAttr'/>
+                        </call-template>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("class") is { } classAttr'>
+                     <code:member-initializer name='class' verbatim='true'>
+                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
+                     </code:member-initializer>
+                  </if>
+               </code:initializer>
+            </code:new-object>
          </code:arguments>
       </code:method-call>
    </template>
@@ -1472,16 +1522,23 @@
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                </when>
             </choose>
-            <if test='!isEmpty'>
-               <code:argument name='hasDefaultText'>
-                  <code:bool value='true'/>
-               </code:argument>
-            </if>
-            <if test='el.Attribute("class") is { } classAttr'>
-               <code:argument name='class' verbatim='true'>
-                  <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
-               </code:argument>
-            </if>
+            <code:new-object>
+               <code:type-reference name='ValidationMessageArgs'>
+                  <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+               </code:type-reference>
+               <code:initializer>
+                  <if test='!isEmpty'>
+                     <code:member-initializer name='hasDefaultText'>
+                        <code:bool value='true'/>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("class") is { } classAttr'>
+                     <code:member-initializer name='class' verbatim='true'>
+                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
+                     </code:member-initializer>
+                  </if>
+               </code:initializer>
+            </code:new-object>
          </code:arguments>
       </code:method-call>
    </template>

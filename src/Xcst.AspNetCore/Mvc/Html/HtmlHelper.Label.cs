@@ -27,22 +27,33 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public DefaultContentDisposable
-   Label(XcstWriter output, string name, bool hasDefaultText = false) {
+   public struct LabelArgs {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
-
-      return GenerateLabel(output, modelExplorer, name, hasDefaultText);
+      [GeneratedCodeReference]
+      public bool
+      hasDefaultText { get; set; }
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
-   LabelForModel(XcstWriter output, bool hasDefaultText = false) =>
-      GenerateLabel(output, this.ViewData.ModelExplorer, String.Empty, hasDefaultText);
+   Label(XcstWriter output, string name, LabelArgs args = default) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateLabel(output, modelExplorer, name, args);
+   }
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public DefaultContentDisposable
+   LabelForModel(XcstWriter output, LabelArgs args = default) =>
+      GenerateLabel(output, this.ViewData.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
-   GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string name, bool hasDefaultText) {
+   GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string name, LabelArgs args) {
+
+      var hasDefaultText = args.hasDefaultText;
 
       var htmlFieldName = name;
       var fullFieldName = GetFullHtmlFieldName(htmlFieldName);
@@ -73,11 +84,11 @@ partial class HtmlHelper<TModel> {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
-   LabelFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, bool hasDefaultText = false) {
+   LabelFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, LabelArgs args = default) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateLabel(output, modelExplorer, expressionString, hasDefaultText);
+      return GenerateLabel(output, modelExplorer, expressionString, args);
    }
 }

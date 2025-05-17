@@ -29,25 +29,69 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public SelectDisposable
-   Select(XcstWriter output, string name, object? value = null, IEnumerable<SelectListItem>? options = null,
-         bool multiple = false, string? @class = null) {
+   public struct SelectArgs {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      [GeneratedCodeReference]
+      public object?
+      value { get; set; }
 
-      return GenerateSelect(output, modelExplorer, name, value, options, multiple, @class);
+      [GeneratedCodeReference]
+      public IEnumerable<SelectListItem>?
+      options { get; set; }
+
+      [GeneratedCodeReference]
+      public bool
+      multiple { get; set; }
+
+      [GeneratedCodeReference]
+      public string?
+      @class { get; set; }
+   }
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public struct OptionArgs {
+
+      [GeneratedCodeReference]
+      public object?
+      value { get; set; }
+
+      [GeneratedCodeReference]
+      public bool
+      selected { get; set; }
+
+      [GeneratedCodeReference]
+      public bool
+      disabled { get; set; }
+
+      [GeneratedCodeReference]
+      public string?
+      text { get; set; }
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
-   SelectForModel(XcstWriter output, object? value = null, IEnumerable<SelectListItem>? options = null,
-         bool multiple = false, string? @class = null) =>
-      GenerateSelect(output, this.ViewData.ModelExplorer, String.Empty, value, options, multiple, @class);
+   Select(XcstWriter output, string name, SelectArgs args = default) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateSelect(output, modelExplorer, name, args);
+   }
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public SelectDisposable
+   SelectForModel(XcstWriter output, SelectArgs args = default) =>
+      GenerateSelect(output, this.ViewData.ModelExplorer, String.Empty, args);
 
    protected internal SelectDisposable
-   GenerateSelect(XcstWriter output, ModelExplorer modelExplorer, string name, object? value, IEnumerable<SelectListItem>? options,
-         bool multiple, string? @class) {
+   GenerateSelect(XcstWriter output, ModelExplorer modelExplorer, string name, SelectArgs args) {
+
+      var value = args.value;
+      var options = args.options;
+      var multiple = args.multiple;
+      var @class = args.@class;
 
       var fullName = FullNameNonEmpty(name);
 
@@ -175,8 +219,12 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
-   SelectOption(XcstWriter output, SelectDisposable? disp,
-         object? value = null, bool selected = false, bool disabled = false, string? text = null) {
+   Option(XcstWriter output, SelectDisposable? disp, OptionArgs args = default) {
+
+      var value = args.value;
+      var selected = args.selected;
+      var disabled = args.disabled;
+      var text = args.text;
 
       var valueStr = SelectValueString(value);
       var valueOrText = (value != null) ? valueStr : text ?? String.Empty;
@@ -225,14 +273,13 @@ partial class HtmlHelper<TModel> {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
-   SelectFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, IEnumerable<SelectListItem>? options = null,
-         bool multiple = false, string? @class = null) {
+   SelectFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, SelectArgs args = default) {
 
       ArgumentNullException.ThrowIfNull(expression);
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateSelect(output, modelExplorer, expressionString, value: null, options, multiple, @class);
+      return GenerateSelect(output, modelExplorer, expressionString, args);
    }
 }

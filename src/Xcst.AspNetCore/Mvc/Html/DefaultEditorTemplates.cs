@@ -76,10 +76,10 @@ static class DefaultEditorTemplates {
             output,
             html.ModelExplorer,
             String.Empty,
-            value: null,
-            TriStateValues(value),
-            multiple: false,
-            @class: htmlAttributes.RemoveClass(output.SimpleContent));
+            new HtmlHelper.SelectArgs {
+               options = TriStateValues(value),
+               @class = htmlAttributes.RemoveClass(output.SimpleContent),
+            });
 
          htmlAttributes.WriteTo(output);
          disp.EndOfConstructor();
@@ -93,10 +93,12 @@ static class DefaultEditorTemplates {
             seqOutput,
             modelExplorer: html.ModelExplorer,
             String.Empty,
-            value.GetValueOrDefault(),
-            @class: htmlAttributes.RemoveClass(html.SimpleContent));
+            new HtmlHelper.CheckboxArgs {
+               @checked = value.GetValueOrDefault(),
+               @class = htmlAttributes.RemoveClass(html.SimpleContent),
+            });
 
-         htmlAttributes.WriteTo(disp.CheckboxOutput);
+         htmlAttributes.WriteTo(disp.ElementOutput);
          disp.EndOfConstructor();
       }
    }
@@ -147,7 +149,9 @@ static class DefaultEditorTemplates {
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
             new TemplateHelper(html, false, String.Empty, itemExplorer)
-               .Render(seqOutput, htmlFieldName: fieldName);
+               .Render(seqOutput, new TemplateHelper.RenderArgs {
+                  htmlFieldName = fieldName,
+               });
          }
 
       } finally {
@@ -211,10 +215,10 @@ static class DefaultEditorTemplates {
          output,
          html.ModelExplorer,
          String.Empty,
-         value: null,
-         options,
-         multiple: false,
-         @class: htmlAttributes.RemoveClass(output.SimpleContent));
+         new HtmlHelper.SelectArgs {
+            options = options,
+            @class = htmlAttributes.RemoveClass(output.SimpleContent),
+         });
 
       htmlAttributes.WriteTo(output);
 
@@ -256,10 +260,10 @@ static class DefaultEditorTemplates {
          output,
          html.ModelExplorer,
          String.Empty,
-         value: null,
-         options,
-         multiple: false,
-         @class: htmlAttributes.RemoveClass(output.SimpleContent));
+         new HtmlHelper.SelectArgs {
+            options = options,
+            @class = htmlAttributes.RemoveClass(output.SimpleContent),
+         });
 
       htmlAttributes.WriteTo(output);
 
@@ -278,8 +282,6 @@ static class DefaultEditorTemplates {
          DefaultDisplayTemplates.StringTemplate(html, seqOutput);
       }
 
-      var value = html.ViewContext.FormattedModelValue;
-
       var className = GetEditorCssClass(_hiddenInputInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
@@ -289,7 +291,7 @@ static class DefaultEditorTemplates {
          String.Empty,
          new HtmlHelper.InputArgs {
             type = "hidden",
-            value = value,
+            value = html.ViewContext.FormattedModelValue,
             @class = htmlAttributes.RemoveClass(html.SimpleContent),
          });
 
@@ -315,10 +317,11 @@ static class DefaultEditorTemplates {
          output,
          html.ModelExplorer,
          String.Empty,
-         value: null,
-         options,
-         multiple: true,
-         @class: htmlAttributes.RemoveClass(output.SimpleContent));
+         new HtmlHelper.SelectArgs {
+            options = options,
+            multiple = true,
+            @class = htmlAttributes.RemoveClass(output.SimpleContent),
+         });
 
       htmlAttributes.WriteTo(output);
       disp.EndOfConstructor();
@@ -338,7 +341,6 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
 
-      var value = html.ViewContext.FormattedModelValue;
       var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
@@ -346,8 +348,10 @@ static class DefaultEditorTemplates {
          output,
          html.ModelExplorer,
          String.Empty,
-         value,
-         @class: htmlAttributes.RemoveClass(output.SimpleContent));
+         new HtmlHelper.TextareaArgs {
+            value = html.ViewContext.FormattedModelValue,
+            @class = htmlAttributes.RemoveClass(output.SimpleContent),
+         });
 
       htmlAttributes.WriteTo(output);
       disp.EndOfConstructor();
@@ -420,14 +424,16 @@ static class DefaultEditorTemplates {
             new TemplateHelper(html, false, String.Empty, propertyExplorer)
                .Render(
                   fieldWriter ?? fieldsetWriter ?? seqOutput,
-                  htmlFieldName: propertyMeta.PropertyName
+                  new TemplateHelper.RenderArgs {
+                     htmlFieldName = propertyMeta.PropertyName,
+                  }
                );
 
             if (!propertyMeta.HideSurroundingHtml) {
 
                fieldWriter!.WriteString(" ");
 
-               html.GenerateValidationMessage(fieldWriter, propertyExplorer, propertyMeta.PropertyName!, default, default)
+               html.GenerateValidationMessage(fieldWriter, propertyExplorer, propertyMeta.PropertyName!, default)
                   .NoConstructor()
                   .Dispose();
 

@@ -28,26 +28,53 @@ namespace Xcst.Web.Mvc;
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public DefaultContentDisposable
-   ValidationMessage(XcstWriter output, string name, bool hasDefaultText = false, string? @class = null) {
+   public struct ValidationMessageArgs {
 
-      ArgumentNullException.ThrowIfNull(name);
+      [GeneratedCodeReference]
+      public bool
+      hasDefaultText { get; set; }
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      [GeneratedCodeReference]
+      public string?
+      @class { get; set; }
+   }
 
-      return GenerateValidationMessage(output, modelExplorer, name, hasDefaultText, @class);
+   [GeneratedCodeReference]
+   public struct ValidationSummaryArgs {
+
+      [GeneratedCodeReference]
+      public bool
+      includePropertyErrors { get; set; }
+
+      [GeneratedCodeReference]
+      public string?
+      @class { get; set; }
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
-   ValidationMessageForModel(XcstWriter output, bool hasDefaultText = false, string? @class = null) =>
-      GenerateValidationMessage(output, this.ViewData.ModelExplorer, String.Empty, hasDefaultText, @class);
+   ValidationMessage(XcstWriter output, string name, ValidationMessageArgs args = default) {
+
+      ArgumentNullException.ThrowIfNull(name);
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateValidationMessage(output, modelExplorer, name, args);
+   }
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public DefaultContentDisposable
+   ValidationMessageForModel(XcstWriter output, ValidationMessageArgs args = default) =>
+      GenerateValidationMessage(output, this.ViewData.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
    GenerateValidationMessage(
-         XcstWriter output, ModelExplorer modelExplorer, string name, bool hasDefaultText, string? @class) {
+         XcstWriter output, ModelExplorer modelExplorer, string name, ValidationMessageArgs args) {
+
+      var hasDefaultText = args.hasDefaultText;
+      var @class = args.@class;
 
       var modelName = GetFullHtmlFieldName(name);
       var formContext = this.ViewContext.GetFormContextForClientValidation();
@@ -115,7 +142,10 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
-   ValidationSummary(XcstWriter output, bool includePropertyErrors = false, string? @class = null) {
+   ValidationSummary(XcstWriter output, ValidationSummaryArgs args = default) {
+
+      var includePropertyErrors = args.includePropertyErrors;
+      var @class = args.@class;
 
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
@@ -226,12 +256,12 @@ partial class HtmlHelper<TModel> {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
    ValidationMessageFor<TResult>(
-         XcstWriter output, Expression<Func<TModel, TResult>> expression, bool hasDefaultText = false,
-         string? @class = null) {
+         XcstWriter output, Expression<Func<TModel, TResult>> expression,
+         ValidationMessageArgs args = default) {
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateValidationMessage(output, modelExplorer, expressionString, hasDefaultText, @class);
+      return GenerateValidationMessage(output, modelExplorer, expressionString, args);
    }
 }

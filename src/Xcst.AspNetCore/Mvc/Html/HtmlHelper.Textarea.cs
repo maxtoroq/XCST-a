@@ -25,25 +25,40 @@ namespace Xcst.Web.Mvc;
 partial class HtmlHelper {
 
    [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public DefaultContentDisposable
-   Textarea(XcstWriter output, string name, object? value = null, string? @class = null) {
+   public struct TextareaArgs {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      [GeneratedCodeReference]
+      public object?
+      value { get; set; }
 
-      return GenerateTextarea(output, modelExplorer, name, value, @class);
+      [GeneratedCodeReference]
+      public string?
+      @class { get; set; }
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
-   TextareaForModel(XcstWriter output, object? value = null, string? @class = null) =>
-      GenerateTextarea(output, this.ViewData.ModelExplorer, String.Empty, value, @class);
+   Textarea(XcstWriter output, string name, TextareaArgs args = default) {
+
+      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+
+      return GenerateTextarea(output, modelExplorer, name, args);
+   }
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public DefaultContentDisposable
+   TextareaForModel(XcstWriter output, TextareaArgs args = default) =>
+      GenerateTextarea(output, this.ViewData.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
-   GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string name, object? value, string? @class) {
+   GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string name, TextareaArgs args) {
 
       ArgumentNullException.ThrowIfNull(name);
+
+      var value = args.value;
+      var @class = args.@class;
 
       var fullName = FullNameNonEmpty(name);
 
@@ -99,13 +114,13 @@ partial class HtmlHelper<TModel> {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
-   TextareaFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, string? @class = null) {
+   TextareaFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, TextareaArgs args = default) {
 
       ArgumentNullException.ThrowIfNull(expression);
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateTextarea(output, modelExplorer, expressionString, value: null, @class);
+      return GenerateTextarea(output, modelExplorer, expressionString, args);
    }
 }

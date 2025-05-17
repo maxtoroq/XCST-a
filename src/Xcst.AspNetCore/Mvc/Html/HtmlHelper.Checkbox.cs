@@ -28,39 +28,37 @@ partial class HtmlHelper {
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public CheckboxDisposable
-   Checkbox(ISequenceWriter<XElement> output, string name, string? @class = null) {
+   public struct CheckboxArgs {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      [GeneratedCodeReference]
+      public bool?
+      @checked { get; set; }
 
-      return GenerateCheckbox(output, modelExplorer, name, isChecked: null, @class);
+      [GeneratedCodeReference]
+      public string?
+      @class { get; set; }
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public CheckboxDisposable
-   Checkbox(ISequenceWriter<XElement> output, string name, bool isChecked, string? @class = null) {
+   public SiblingContentDisposable
+   Checkbox(ISequenceWriter<XElement> output, string name, CheckboxArgs args = default) {
 
       var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
 
-      return GenerateCheckbox(output, modelExplorer, name, isChecked, @class);
+      return GenerateCheckbox(output, modelExplorer, name, args);
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public CheckboxDisposable
-   CheckboxForModel(ISequenceWriter<XElement> output, string? @class = null) =>
-      GenerateCheckbox(output, this.ViewData.ModelExplorer, name: String.Empty, isChecked: null, @class);
+   public SiblingContentDisposable
+   CheckboxForModel(ISequenceWriter<XElement> output, CheckboxArgs args = default) =>
+      GenerateCheckbox(output, this.ViewData.ModelExplorer, name: String.Empty, args);
 
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public CheckboxDisposable
-   CheckboxForModel(ISequenceWriter<XElement> output, bool isChecked, string? @class = null) =>
-      GenerateCheckbox(output, this.ViewData.ModelExplorer, name: String.Empty, isChecked, @class);
-
-   protected internal CheckboxDisposable
-   GenerateCheckbox(ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string name,
-         bool? isChecked, string? @class) {
+   protected internal SiblingContentDisposable
+   GenerateCheckbox(
+         ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string name,
+         CheckboxArgs args) {
 
       var inputWriter = DocumentWriter.CastElement(this.ViewContext.CurrentPackage, output);
 
@@ -68,11 +66,10 @@ partial class HtmlHelper {
          inputWriter,
          modelExplorer,
          name,
-         isChecked,
-         @class,
+         args,
          out var fullName);
 
-      return new CheckboxDisposable(inputWriter, writeHiddenInput);
+      return new SiblingContentDisposable(inputWriter, writeHiddenInput);
 
       // Render an additional <input type="hidden".../> for checkboxes. This
       // addresses scenarios where unchecked checkboxes are not sent in the request.
@@ -93,9 +90,12 @@ partial class HtmlHelper {
 
    void
    GenerateCheckboxInput(XcstWriter output, ModelExplorer modelExplorer, string name,
-         bool? isChecked, string? @class, out string fullName) {
+         CheckboxArgs args, out string fullName) {
 
       ArgumentNullException.ThrowIfNull(name);
+
+      var isChecked = args.@checked;
+      var @class = args.@class;
 
       fullName = FullNameNonEmpty(name);
 
@@ -137,69 +137,21 @@ partial class HtmlHelper {
       WriteCssClass(@class, cssClass, output);
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
    }
-
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public class CheckboxDisposable : ElementEndingDisposable {
-
-      readonly Action
-      _hiddenFn;
-
-      bool
-      _eoc;
-
-      [GeneratedCodeReference]
-      public XcstWriter
-      CheckboxOutput { get; }
-
-      public
-      CheckboxDisposable(XcstWriter output, Action hiddenFn)
-         : base(output, elementStarted: true) {
-
-         _hiddenFn = hiddenFn;
-         this.CheckboxOutput = output;
-      }
-
-      [GeneratedCodeReference]
-      public void
-      EndOfConstructor() {
-         _eoc = true;
-      }
-
-      [GeneratedCodeReference]
-      public CheckboxDisposable
-      NoConstructor() {
-         _eoc = true;
-         return this;
-      }
-
-      protected override void
-      Dispose(bool disposing) {
-
-         base.Dispose(disposing);
-
-         // don't write hidden input when end of constructor is not reached
-         // e.g. an exception occurred, c:return, etc.
-
-         if (disposing
-            && _eoc) {
-
-            _hiddenFn.Invoke();
-         }
-      }
-   }
 }
 
 partial class HtmlHelper<TModel> {
 
    [GeneratedCodeReference]
-   public CheckboxDisposable
-   CheckboxFor(ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression, string? @class = null) {
+   public SiblingContentDisposable
+   CheckboxFor(
+         ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression,
+         CheckboxArgs args = default) {
 
       ArgumentNullException.ThrowIfNull(expression);
 
       var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateCheckbox(output, modelExplorer, expressionString, isChecked: null, @class);
+      return GenerateCheckbox(output, modelExplorer, expressionString, args);
    }
 }

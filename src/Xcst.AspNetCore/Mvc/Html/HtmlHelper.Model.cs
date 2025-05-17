@@ -23,9 +23,11 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public struct NewModelHelperArgs {
 
+      [GeneratedCodeReference]
       public string?
       htmlFieldPrefix { get; set; }
 
+      [GeneratedCodeReference]
       public string?
       formMethod { get; set; }
    }

@@ -232,6 +232,38 @@ partial class HtmlHelper<TModel> {
 
 public class TemplateHelper {
 
+   [GeneratedCodeReference]
+   public struct RenderArgs {
+
+      [GeneratedCodeReference]
+      public string?
+      htmlFieldName { get; set; }
+
+      [GeneratedCodeReference]
+      public string?
+      templateName { get; set; }
+
+      [GeneratedCodeReference]
+      public IList<string>?
+      membersNames { get; set; }
+
+      [GeneratedCodeReference]
+      public IDictionary<string, IEnumerable<SelectListItem>>?
+      membersOptions { get; set; }
+
+      [GeneratedCodeReference]
+      public Action<HtmlHelper, ISequenceWriter<object?>>?
+      memberTemplate { get; set; }
+
+      [GeneratedCodeReference]
+      public object?
+      htmlAttributes { get; set; }
+
+      [GeneratedCodeReference]
+      public object?
+      withParams { get; set; }
+   }
+
    readonly HtmlHelper
    _html;
 
@@ -254,14 +286,15 @@ public class TemplateHelper {
 
    [GeneratedCodeReference]
    public void
-   Render(ISequenceWriter<object> output,
-         string? htmlFieldName = null,
-         string? templateName = null,
-         IList<string>? membersNames = null,
-         IDictionary<string, IEnumerable<SelectListItem>>? membersOptions = null,
-         Action<HtmlHelper, ISequenceWriter<object?>>? memberTemplate = null,
-         object? htmlAttributes = null,
-         object? withParams = null) {
+   Render(ISequenceWriter<object> output, RenderArgs args = default) {
+
+      var htmlFieldName = args.htmlFieldName;
+      var templateName = args.templateName;
+      var membersNames = args.membersNames;
+      var membersOptions = args.membersOptions;
+      var memberTemplate = args.memberTemplate;
+      var htmlAttributes = args.htmlAttributes;
+      var withParams = args.withParams;
 
       htmlFieldName ??= _expression;
 
