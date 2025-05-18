@@ -135,25 +135,37 @@ public partial class HtmlHelper {
       return result;
    }
 
-   public static string
-   GenerateIdFromName(string name) =>
-      GenerateIdFromName(name, IdAttributeDotReplacement);
-
-   public static string
-   GenerateIdFromName(string name, string idAttributeDotReplacement) {
+   public string
+   GenerateIdFromName(string name) {
 
       ArgumentNullException.ThrowIfNull(name);
-      ArgumentNullException.ThrowIfNull(idAttributeDotReplacement);
-
-      // TagBuilder.CreateSanitizedId returns null for empty strings, return String.Empty instead to avoid breaking change
 
       if (name.Length == 0) {
          return String.Empty;
       }
 
-#pragma warning disable CS8603 // there's a small chance CreateSanitizedId returns null
-      return TagBuilder.CreateSanitizedId(name, idAttributeDotReplacement);
-#pragma warning restore CS8603
+      var invalidCharReplacement = IdAttributeDotReplacement;
+
+      var firstChar = name[0];
+
+      if (!Html401IdUtil.IsLetter(firstChar)) {
+         // the first character must be a letter
+         return String.Empty;
+      }
+
+      var sb = new StringBuilder(name.Length);
+      sb.Append(firstChar);
+
+      for (int i = 1; i < name.Length; i++) {
+         var thisChar = name[i];
+         if (Html401IdUtil.IsValidIdCharacter(thisChar)) {
+            sb.Append(thisChar);
+         } else {
+            sb.Append(invalidCharReplacement);
+         }
+      }
+
+      return sb.ToString();
    }
 
    public static string
@@ -447,7 +459,7 @@ public partial class HtmlHelper {
    void
    WriteId(string name, XcstWriter output) {
 
-      var sanitizedId = TagBuilder.CreateSanitizedId(name);
+      var sanitizedId = GenerateIdFromName(name);
 
       if (!String.IsNullOrEmpty(sanitizedId)) {
          output.WriteAttributeString("id", sanitizedId);
@@ -571,42 +583,7 @@ public enum InputType {
    Text
 }
 
-static class TagBuilder {
-
-   public static string?
-   CreateSanitizedId(string originalId) =>
-      CreateSanitizedId(originalId, HtmlHelper.IdAttributeDotReplacement);
-
-   public static string?
-   CreateSanitizedId(string originalId, string invalidCharReplacement) {
-
-      if (String.IsNullOrEmpty(originalId)) {
-         return null;
-      }
-
-      ArgumentNullException.ThrowIfNull(invalidCharReplacement);
-
-      var firstChar = originalId[0];
-
-      if (!Html401IdUtil.IsLetter(firstChar)) {
-         // the first character must be a letter
-         return null;
-      }
-
-      var sb = new StringBuilder(originalId.Length);
-      sb.Append(firstChar);
-
-      for (int i = 1; i < originalId.Length; i++) {
-         var thisChar = originalId[i];
-         if (Html401IdUtil.IsValidIdCharacter(thisChar)) {
-            sb.Append(thisChar);
-         } else {
-            sb.Append(invalidCharReplacement);
-         }
-      }
-
-      return sb.ToString();
-   }
+partial class HtmlHelper {
 
    // Valid IDs are defined in http://www.w3.org/TR/html401/types.html#type-id
 

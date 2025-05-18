@@ -57,7 +57,7 @@ partial class HtmlHelper {
 
       var htmlFieldName = name;
       var fullFieldName = GetFullHtmlFieldName(htmlFieldName);
-      var id = TagBuilder.CreateSanitizedId(fullFieldName);
+      var id = GenerateIdFromName(fullFieldName);
 
       output.WriteStartElement("label");
       output.WriteAttributeString("for", id);
