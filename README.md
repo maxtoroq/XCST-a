@@ -55,11 +55,12 @@ Breaking Changes
 The runtime has lots of changes, including renamed namespaces and moved types. These are the most notable changes:
 
 - [Merged TemplateInfo into ViewContext](https://github.com/maxtoroq/XCST-a/commit/996c47dd75e79f76c856616bb4c4dfab4ead69f4)
-- [Removed RouteValueDictionary dependency from ObjectToDictionary and AnonymousObjectToHtmlAttributes](https://github.com/maxtoroq/XCST-a/commit/25e0171c73cf199280dbaa77445c3532074f23d0)
+- [Removed RouteValueDictionary dependency from ObjectToDictionary() and AnonymousObjectToHtmlAttributes()](https://github.com/maxtoroq/XCST-a/commit/25e0171c73cf199280dbaa77445c3532074f23d0)
 - [Removed TempData](https://github.com/maxtoroq/XCST-a/commit/1d2fdacbe13cde8383af34245d2170379a529289)
 - [Removed ViewBag](https://github.com/maxtoroq/XCST-a/commit/83f147cd0cad4b1c9ff0638f895be3ea730bde8c)
+- [Removed InputType enum](https://github.com/maxtoroq/XCST-a/commit/2cd8abcc6d21a55014ac8a43151e89a6fe149ed5)
 - [Renamed XcstPage.Context to HttpContext](https://github.com/maxtoroq/XCST-a/commit/a576f482c5ce36c2463c1af9328a6058e4eabcec)
-- [Removed XcstPageHandler, moved RenderPage to XcstPage](https://github.com/maxtoroq/XCST-a/commit/8d32a32fb74180a85d28675ab0d24845fe0a974c)
+- [Removed XcstPageHandler, moved RenderPage() to XcstPage](https://github.com/maxtoroq/XCST-a/commit/8d32a32fb74180a85d28675ab0d24845fe0a974c)
 
 System Requirements
 -------------------
