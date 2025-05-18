@@ -488,7 +488,7 @@ static class DefaultEditorTemplates {
    static void
    HtmlInputTemplateHelper(HtmlHelper html, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
 
-      var value = (HtmlHelper.OmitInputValue(inputType)) ? null
+      var value = (HtmlHelper.InputOmitValue(inputType)) ? null
          : html.ViewContext.FormattedModelValue;
 
       var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");

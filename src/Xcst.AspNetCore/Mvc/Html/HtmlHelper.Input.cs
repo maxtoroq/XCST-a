@@ -189,7 +189,7 @@ partial class HtmlHelper {
       output.WriteAttributeString("type", inputType);
       output.WriteAttributeString("name", fullName);
 
-      if (!(OmitInputValue(inputType) && value is null)) {
+      if (!(InputOmitValue(inputType) && value is null)) {
          output.WriteAttributeString("value", valueAttr);
       }
 
@@ -207,7 +207,7 @@ partial class HtmlHelper {
    }
 
    internal static bool
-   OmitInputValue(string? inputType) =>
+   InputOmitValue(string? inputType) =>
       InputTypeEquals(inputType, "password")
          || InputTypeEquals(inputType, "file")
          || InputTypeEquals(inputType, "image");
