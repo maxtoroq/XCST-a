@@ -36,7 +36,7 @@ static class DefaultEditorTemplates {
    _booleanSelectInfo = new("Boolean", "select");
 
    static readonly EditorInfo
-   _booleanCheckBoxInfo = new("Boolean", "input", InputType.CheckBox);
+   _booleanCheckBoxInfo = new("Boolean", "input", "checkbox");
 
    static readonly EditorInfo
    _dropDownListInfo = new("DropDownList", "select");
@@ -45,7 +45,7 @@ static class DefaultEditorTemplates {
    _enumInfo = new("Enum", "select");
 
    static readonly EditorInfo
-   _hiddenInputInfo = new("HiddenInput", "input", InputType.Hidden);
+   _hiddenInputInfo = new("HiddenInput", "input", "hidden");
 
    static readonly EditorInfo
    _listBoxInfo = new("ListBox", "select");
@@ -54,7 +54,7 @@ static class DefaultEditorTemplates {
    _multilineTextInfo = new("MultilineText", "textarea");
 
    static readonly EditorInfo
-   _passwordInfo = new("Password", "input", InputType.Password);
+   _passwordInfo = new("Password", "input", "password");
 
    public static void
    BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
@@ -491,7 +491,7 @@ static class DefaultEditorTemplates {
       var value = (HtmlHelper.InputOmitValue(inputType)) ? null
          : html.ViewContext.FormattedModelValue;
 
-      var className = GetEditorCssClass(new EditorInfo(templateName, "input", InputType.Text), "text-box single-line");
+      var className = GetEditorCssClass(new EditorInfo(templateName, "input", inputType ?? "text"), "text-box single-line");
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(

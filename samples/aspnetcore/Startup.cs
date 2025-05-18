@@ -44,9 +44,14 @@ public class Startup {
       opts.EditorTemplateFactory = LoadEditorTemplate;
 
       opts.EditorCssClass = (info, defaultClass) =>
-         (info.InputType is InputType.Text or InputType.Password
-            || info.TagName != "input") ? "form-control"
-            : null;
+         (info.TagName != "input") ? "form-control"
+         : info.InputType switch {
+            "checkbox" or "radio" => "form-check-input",
+            "file" => "form-control-file",
+            "range" => "form-control-range",
+            "hidden" => null,
+            _ => "form-control"
+         };
    }
 
    static XcstViewPage?

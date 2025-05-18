@@ -33,7 +33,7 @@ static class DefaultDisplayTemplates {
    _booleanSelectInfo = new("Boolean", "select");
 
    static readonly EditorInfo
-   _booleanCheckboxInfo = new("Boolean", "input", InputType.CheckBox);
+   _booleanCheckboxInfo = new("Boolean", "input", "checkbox");
 
    public static void
    BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {

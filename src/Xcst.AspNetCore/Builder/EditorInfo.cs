@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Xcst.Web.Mvc;
-
 namespace Xcst.Web.Builder;
 
 public class EditorInfo {
@@ -24,15 +22,15 @@ public class EditorInfo {
    public string
    TagName { get; }
 
-   public InputType
+   public string?
    InputType { get; }
 
    internal
    EditorInfo(string templateName, string tagName)
-      : this(templateName, tagName, (Xcst.Web.Mvc.InputType)(-1)) { }
+      : this(templateName, tagName, null) { }
 
    internal
-   EditorInfo(string templateName, string tagName, InputType inputType) {
+   EditorInfo(string templateName, string tagName, string? inputType) {
 
       this.TemplateName = templateName;
       this.TagName = tagName;

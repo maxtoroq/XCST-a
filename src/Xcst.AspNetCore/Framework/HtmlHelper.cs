@@ -168,17 +168,6 @@ public partial class HtmlHelper {
       return sb.ToString();
    }
 
-   public static string
-   GetInputTypeString(InputType inputType) =>
-      inputType switch {
-         InputType.CheckBox => "checkbox",
-         InputType.Hidden => "hidden",
-         InputType.Password => "password",
-         InputType.Radio => "radio",
-         InputType.Text => "text",
-         _ => "text",
-      };
-
    /// <summary>
    /// Creates a dictionary from an object, by adding each public instance property as a key with its associated
    /// value to the dictionary. It will expose public properties from derived types as well. This is typically used
@@ -573,14 +562,6 @@ public interface IViewDataContainer {
 
    ViewDataDictionary
    ViewData { get; set; }
-}
-
-public enum InputType {
-   CheckBox,
-   Hidden,
-   Password,
-   Radio,
-   Text
 }
 
 partial class HtmlHelper {
