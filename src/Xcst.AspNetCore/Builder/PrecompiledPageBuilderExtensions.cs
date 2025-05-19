@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 
@@ -21,7 +22,7 @@ namespace Xcst.Web.Builder;
 public static class PrecompiledPageBuilderExtensions {
 
    public static IApplicationBuilder
-   UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules) {
+   UseXcstPrecompiledPages(this IApplicationBuilder app, IEnumerable<Assembly> appModules) {
 
       ArgumentNullException.ThrowIfNull(app);
       ArgumentNullException.ThrowIfNull(appModules);
@@ -32,7 +33,7 @@ public static class PrecompiledPageBuilderExtensions {
    }
 
    public static IApplicationBuilder
-   UseXcstPrecompiledPages(this IApplicationBuilder app, Assembly[] appModules, Action<XcstWebOptions> config) {
+   UseXcstPrecompiledPages(this IApplicationBuilder app, IEnumerable<Assembly> appModules, Action<XcstWebOptions> config) {
 
       ArgumentNullException.ThrowIfNull(config);
 

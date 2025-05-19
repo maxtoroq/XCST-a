@@ -33,42 +33,38 @@ class PrecompiledPageMiddleware {
    readonly RequestDelegate
    _next;
 
-   readonly Assembly[]
-   _appModules;
-
    readonly Lazy<Dictionary<string, Type>>
    _pageMap;
 
    public
-   PrecompiledPageMiddleware(RequestDelegate next, Assembly[] appModules) {
+   PrecompiledPageMiddleware(RequestDelegate next, IEnumerable<Assembly> appModules) {
+
       _next = next;
-      _appModules = appModules;
-      _pageMap = new(InitializePageMap);
-   }
+      _pageMap = new(() => {
 
-   Dictionary<string, Type>
-   InitializePageMap() {
+         var map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
 
-      var map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+         var pairs =
+            from a in appModules
+            from t in a.GetTypes()
+            where t.IsDefined(typeof(PageVirtualPathAttribute))
+            select new KeyValuePair<string, Type>(
+               t.GetCustomAttribute<PageVirtualPathAttribute>()!.VirtualPath,
+               t);
 
-      var pairs =
-         from a in _appModules
-         from t in a.GetTypes()
-         where t.IsDefined(typeof(PageVirtualPathAttribute))
-         select new KeyValuePair<string, Type>(
-            t.GetCustomAttribute<PageVirtualPathAttribute>()!.VirtualPath,
-            t);
+         foreach (var item in pairs) {
 
-      foreach (var item in pairs) {
+            if (map.TryGetValue(item.Key, out var prevType)) {
+               throw new InvalidOperationException(
+                  $"Ambiguous path '{item.Key}', is used by '{prevType.AssemblyQualifiedName}'" +
+                  $" and '{item.Value.AssemblyQualifiedName}'.");
+            }
 
-         if (map.TryGetValue(item.Key, out var prevType)) {
-            throw new InvalidOperationException($"Ambiguous path '{item.Key}', is used by '{prevType.AssemblyQualifiedName}' and '{item.Value.AssemblyQualifiedName}'.");
+            map.Add(item.Key, item.Value);
          }
 
-         map.Add(item.Key, item.Value);
-      }
-
-      return map;
+         return map;
+      });
    }
 
    bool
