@@ -12,6 +12,9 @@ namespace Xcst.Web.Mvc;
 
 public class ViewContext {
 
+   IXcstPackage?
+   _currentPackage;
+
    ActionContext?
    _actionContext;
 
@@ -43,7 +46,8 @@ public class ViewContext {
    HttpContext { get; }
 
    public IXcstPackage
-   CurrentPackage { get; }
+   CurrentPackage => _currentPackage
+      ?? throw new InvalidOperationException("CurrentPackage is not initialized.");
 
    public ActionContext
    ActionContext {
@@ -142,12 +146,14 @@ public class ViewContext {
    TemplateDepth => VisitedObjects.Count;
 
    public
-   ViewContext(HttpContext httpContext, IXcstPackage currentPackage) {
+   ViewContext(HttpContext httpContext, IXcstPackage? currentPackage) {
 
       ArgumentNullException.ThrowIfNull(httpContext);
 
       this.HttpContext = httpContext;
-      this.CurrentPackage = currentPackage;
+
+      _currentPackage = currentPackage;
+
       this.FormContext = new FormContext();
       this.FormMethod = FormMethod.Post;
       this.ClientValidationEnabled = true;
@@ -168,7 +174,9 @@ public class ViewContext {
       ArgumentNullException.ThrowIfNull(viewContext);
 
       this.HttpContext = httpContext ?? viewContext.HttpContext;
-      this.CurrentPackage = currentPackage ?? viewContext.CurrentPackage;
+
+      _currentPackage = currentPackage ?? viewContext._currentPackage;
+
       this.ActionContext = viewContext.ActionContext;
 
       // FormContext must be shared, not copied

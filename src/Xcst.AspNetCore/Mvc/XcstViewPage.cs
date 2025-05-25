@@ -51,7 +51,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
          if (value != null
             && ViewContext is null) {
 
-            ViewContext = new ViewContext(value, (IXcstPackage)this);
+            ViewContext = new ViewContext(value, this as IXcstPackage);
          }
       }
    }
