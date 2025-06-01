@@ -398,7 +398,7 @@ static class DefaultEditorTemplates {
                var memberTemplate = html.MemberTemplate(propertyExplorer);
 
                if (memberTemplate != null) {
-                  memberTemplate.Invoke(null!/* argument is not used */, fieldsetWriter ?? seqOutput);
+                  memberTemplate.Invoke(null!/* argument is not used */, (fieldsetWriter ?? seqOutput)!);
                   continue;
                }
 
