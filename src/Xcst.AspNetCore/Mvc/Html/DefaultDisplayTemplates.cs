@@ -38,7 +38,7 @@ static class DefaultDisplayTemplates {
    public static void
    BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var value = default(bool?);
 
@@ -150,7 +150,7 @@ static class DefaultDisplayTemplates {
    public static void
    EmailAddressTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       output.WriteStartElement("a");
       output.WriteAttributeString("href", "mailto:" + Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
@@ -195,7 +195,7 @@ static class DefaultDisplayTemplates {
 
       if (html.ViewData.Model != null) {
 
-         var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+         var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
          output.WriteStartElement("img");
          output.WriteAttributeString("src", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
@@ -238,7 +238,7 @@ static class DefaultDisplayTemplates {
 
          if (createFieldset) {
 
-            fieldsetWriter = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+            fieldsetWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
             fieldsetWriter.WriteStartElement("fieldset");
             fieldsetWriter.WriteStartElement("legend");
@@ -261,7 +261,7 @@ static class DefaultDisplayTemplates {
                }
 
                var labelWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "display-label");
@@ -269,7 +269,7 @@ static class DefaultDisplayTemplates {
                labelWriter.WriteEndElement();
 
                fieldWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
                fieldWriter.WriteStartElement("div");
                fieldWriter.WriteAttributeString("class", "display-field");
@@ -301,7 +301,7 @@ static class DefaultDisplayTemplates {
    public static void
    UrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       output.WriteStartElement("a");
       output.WriteAttributeString("href", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));

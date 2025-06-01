@@ -92,8 +92,12 @@ public partial class HtmlHelper {
       _validationAttributeProvider ??=
          ActivatorUtilities.CreateInstance<DefaultValidationHtmlAttributeProvider>(ViewContext.HttpContext.RequestServices);
 
+   internal IXcstPackage
+   CurrentPackage => ViewContext.CurrentPackage
+      ?? throw new InvalidOperationException("CurrentPackage is not initialized.");
+
    internal SimpleContent
-   SimpleContent => ViewContext.CurrentPackage.Context.SimpleContent;
+   SimpleContent => CurrentPackage.Context.SimpleContent;
 
    public
    HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer) {

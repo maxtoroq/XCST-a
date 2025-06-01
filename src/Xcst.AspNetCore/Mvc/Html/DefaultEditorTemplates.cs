@@ -68,7 +68,7 @@ static class DefaultEditorTemplates {
 
       if (html.ModelMetadata.IsNullableValueType) {
 
-         var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+         var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
          var className = GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
@@ -198,7 +198,7 @@ static class DefaultEditorTemplates {
    public static void
    DropDownListTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_dropDownListInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -235,7 +235,7 @@ static class DefaultEditorTemplates {
    public static void
    EnumTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_enumInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -306,7 +306,7 @@ static class DefaultEditorTemplates {
    public static void
    ListBoxTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_listBoxInfo, null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -339,7 +339,7 @@ static class DefaultEditorTemplates {
    public static void
    MultilineTextTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var output = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+      var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
       var htmlAttributes = CreateHtmlAttributes(html, className);
@@ -380,7 +380,7 @@ static class DefaultEditorTemplates {
 
          if (createFieldset) {
 
-            fieldsetWriter = DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+            fieldsetWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
             fieldsetWriter.WriteStartElement("fieldset");
             fieldsetWriter.WriteStartElement("legend");
@@ -403,7 +403,7 @@ static class DefaultEditorTemplates {
                }
 
                var labelWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
                labelWriter.WriteStartElement("div");
                labelWriter.WriteAttributeString("class", "editor-label");
@@ -415,7 +415,7 @@ static class DefaultEditorTemplates {
                labelWriter.WriteEndElement();
 
                fieldWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.ViewContext.CurrentPackage, seqOutput);
+                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
                fieldWriter.WriteStartElement("div");
                fieldWriter.WriteAttributeString("class", "editor-field");
