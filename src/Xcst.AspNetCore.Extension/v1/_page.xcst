@@ -31,12 +31,12 @@
          &amp;&amp; this.ApplicationUri != null'/>
 
       <if test='genAttr
-            &amp;&amp; AppRelativeUri(el) is { } relativeUri'>
+            &amp;&amp; PagePath(el) is { } pagePath'>
          <code:attribute>
             <code:type-reference name='PageVirtualPath' namespace='Xcst.Web.Precompilation'/>
             <code:arguments>
                <code:string>
-                  <value-of value='page_path(relativeUri)'/>
+                  <value-of value='pagePath'/>
                </code:string>
             </code:arguments>
          </code:attribute>
@@ -127,21 +127,19 @@
          &amp;&amp; principalModule'/>
 
       <if test='genLinkTo
-            &amp;&amp; AppRelativeUri(el) is { } relativeUri'>
+            &amp;&amp; PagePath(el) is { } pagePath'>
          <if test='genLinkTo'>
             <call-template name='link-to'>
-               <with-param name='relativeUri' value='relativeUri'/>
+               <with-param name='pagePath' value='pagePath'/>
             </call-template>
          </if>
       </if>
    </template>
 
    <template name='link-to'>
-      <param name='relativeUri' as='string' required='yes'/>
+      <param name='pagePath' as='string' required='yes'/>
 
-      <variable name='pagePath' value='page_path(relativeUri)'/>
-      <variable name='pageName' value='pagePath.Split(&apos;/&apos;).Last()'/>
-      <variable name='isDefaultPage' value='pageName == "index"'/>
+      <variable name='defaultPagePath' value='DefaultPagePath(pagePath)'/>
 
       <variable name='pathPartsRef'>
          <code:variable-reference name='pathParts'/>
@@ -161,7 +159,7 @@
                <code:method-call>
                   <attribute name='name'>
                      <text>LinkTo</text>
-                     <if test='isDefaultPage'>Default</if>
+                     <if test='defaultPagePath != null'>Default</if>
                   </attribute>
                   <call-template name='helper-type'>
                      <with-param name='name'>LinkToHelper</with-param>
@@ -170,9 +168,9 @@
                      <code:string>
                         <value-of value='"/" + pagePath'/>
                      </code:string>
-                     <if test='isDefaultPage'>
+                     <if test='defaultPagePath != null'>
                         <code:string>
-                           <value-of value='"/" + IndexPageRegex().Replace(pagePath, "")'/>
+                           <value-of value='"/" + defaultPagePath'/>
                         </code:string>
                      </if>
                      <copy-of value='pathPartsRef'/>
@@ -182,11 +180,5 @@
          </code:block>
       </code:method>
    </template>
-
-   <function name='page_path' as='string'>
-      <param name='relativeUri' as='string'/>
-
-      <return value='System.IO.Path.ChangeExtension(relativeUri, null)'/>
-   </function>
 
 </module>

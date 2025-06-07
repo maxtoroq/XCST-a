@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.RegularExpressions;
+using System;
+using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -52,6 +53,32 @@ public partial class ExtensionPackageV1 {
       node.Document?.BaseUri ?? node.BaseUri;
 
    string?
+   PagePath(XElement module) {
+
+      if (AppRelativeUri(module) is { } relativeUri) {
+         return Path.ChangeExtension(relativeUri, null);
+      }
+
+      return null;
+   }
+
+   static string?
+   DefaultPagePath(string pagePath) {
+
+      const string indexPage = "index";
+      var multiPart = false;
+
+      if (pagePath.EndsWith(indexPage, StringComparison.Ordinal)
+         && (pagePath.Length == indexPage.Length
+            || (multiPart = pagePath[^(indexPage.Length + 1)] == '/'))) {
+
+         return pagePath.Substring(0, pagePath.Length - indexPage.Length - (multiPart ? 1 : 0));
+      }
+
+      return null;
+   }
+
+   string?
    AppRelativeUri(XElement module) {
 
       var moduleUri = new System.Uri(ModuleUri(module));
@@ -63,8 +90,4 @@ public partial class ExtensionPackageV1 {
 
       return null;
    }
-
-   [GeneratedRegex("/?index$")]
-   private static partial Regex
-   IndexPageRegex();
 }
