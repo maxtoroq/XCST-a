@@ -11,7 +11,7 @@ See the [project home][XCST] for more information.
 Package | Description | Targets
 ------- | ----------- | -------
 [Xcst.AspNetCore] | XCST web pages for ASP.NET Core. | .NET 7
-[Xcst.AspNetCore.Extension] | Extension instructions for XCST web pages. | .NET 5
+[Xcst.AspNetCore.Extension] | Extension instructions for XCST web pages. | .NET 7
 
 ### Related Repositories
 

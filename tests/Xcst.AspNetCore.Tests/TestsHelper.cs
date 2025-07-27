@@ -193,7 +193,7 @@ static partial class TestsHelper {
          string packageName, Uri packageUri, IEnumerable<string> compilationUnits, string language,
          bool error = false, string? disableWarning = null, bool printCode = false) {
 
-      var csOptions = new CSharpParseOptions(CSharpVersion.CSharp9, preprocessorSymbols: new[] { "DEBUG", "TRACE" });
+      var csOptions = new CSharpParseOptions(CSharpVersion.CSharp10, preprocessorSymbols: new[] { "DEBUG", "TRACE" });
 
       var syntaxTrees = compilationUnits
          .Select(c => CSharpSyntaxTree.ParseText(c, csOptions, path: packageUri.LocalPath, encoding: Encoding.UTF8))
@@ -238,7 +238,8 @@ static partial class TestsHelper {
          syntaxTrees: syntaxTrees,
          references: references,
          options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
-            specificDiagnosticOptions: specificDiagnosticOptions));
+            specificDiagnosticOptions: specificDiagnosticOptions
+               .Append(new KeyValuePair<string, ReportDiagnostic>("CS1701", ReportDiagnostic.Suppress))));
 
       using var assemblyStream = new MemoryStream();
       using var pdbStream = new MemoryStream();
