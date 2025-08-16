@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageReference Include="Xcst.Compiler" Version="2.0.23" />
+    <PackageReference Include="Xcst.Compiler" Version="2.0.24" />
     <ProjectReference Include="..\..\src\Xcst.AspNetCore.Extension\Xcst.AspNetCore.Extension.csproj" />
   </ItemGroup>
 
