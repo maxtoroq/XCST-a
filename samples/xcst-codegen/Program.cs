@@ -292,11 +292,11 @@ partial class Program {
       const string optPrefix = "-";
 
       var projectPathOpt = new Option<string>(optPrefix + "ProjectPath") {
-         IsRequired = true
+         Required = true
       };
 
       var rootNamespaceOpt = new Option<string>(optPrefix + nameof(RootNamespace)) {
-         IsRequired = true
+         Required = true
       };
 
       var nullableOpt = new Option<string?>(optPrefix + nameof(Nullable));
@@ -319,9 +319,7 @@ partial class Program {
          sourceFilesArg
       };
 
-      rootCmd.SetHandler(ctx => {
-
-         var result = ctx.ParseResult;
+      rootCmd.SetAction(result => {
 
          var currentDir = Environment.CurrentDirectory;
 
@@ -330,18 +328,18 @@ partial class Program {
          }
 
          var callerBaseUri = new Uri(currentDir, UriKind.Absolute);
-         var projectUri = new Uri(callerBaseUri, result.GetValueForOption(projectPathOpt));
+         var projectUri = new Uri(callerBaseUri, result.GetValue(projectPathOpt));
 
          var program = new Program {
             ProjectUri = projectUri,
-            RootNamespace = result.GetValueForOption(rootNamespaceOpt)!,
-            Nullable = result.GetValueForOption(nullableOpt),
-            TargetRuntime = result.GetValueForOption(targetRuntimeOpt),
-            PageEnable = result.GetValueForOption(pageEnableOpt),
-            PageBaseType = result.GetValueForOption(pageBaseTypeOpt),
-            Libraries = result.GetValueForOption(libraryOpt)!,
-            Extensions = result.GetValueForOption(extensionOpt)!,
-            SourceFiles = result.GetValueForArgument(sourceFilesArg)
+            RootNamespace = result.GetValue(rootNamespaceOpt)!,
+            Nullable = result.GetValue(nullableOpt),
+            TargetRuntime = result.GetValue(targetRuntimeOpt),
+            PageEnable = result.GetValue(pageEnableOpt),
+            PageBaseType = result.GetValue(pageBaseTypeOpt),
+            Libraries = result.GetValue(libraryOpt)!,
+            Extensions = result.GetValue(extensionOpt)!,
+            SourceFiles = result.GetValue(sourceFilesArg)!
                .Select(p => new Uri(projectUri, p).LocalPath)
                .ToArray()
          };
@@ -349,6 +347,7 @@ partial class Program {
          program.Run();
       });
 
-      return rootCmd.Invoke(args);
+      return rootCmd.Parse(args)
+         .Invoke();
    }
 }
