@@ -189,8 +189,7 @@ partial class HtmlHelper {
       var container = new ViewDataContainer(
          new ViewDataDictionary(this.ViewData) {
             ModelExplorer = memberExplorer,
-         }
-      );
+         });
 
       var viewContext = new ViewContext(this.ViewContext) {
          HtmlFieldPrefix = GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),

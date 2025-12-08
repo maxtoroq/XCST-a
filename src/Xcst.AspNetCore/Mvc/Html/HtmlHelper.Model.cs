@@ -45,8 +45,7 @@ partial class HtmlHelper {
       var container = new ViewDataContainer(
          new ViewDataDictionary<TModel>(this.ViewData) {
             Model = model!,
-         }
-      );
+         });
 
       var newViewContext = new ViewContext(this.ViewContext, null, currentPackage) {
          HtmlFieldPrefix = GetFullHtmlFieldName(htmlFieldPrefix),
