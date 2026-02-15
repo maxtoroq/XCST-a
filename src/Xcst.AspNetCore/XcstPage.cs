@@ -24,8 +24,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Xcst.Web;
 
-// Many of the properties of XcstPage can be null if Context is not initialized.
-// These are however not marked as nullable since, at runtime, Context is always initialized.
+// Many of the properties of XcstPage can be null if HttpContext is not initialized.
+// These are however not marked as nullable since, at runtime, HttpContext is always initialized.
 
 public abstract class XcstPage {
 
