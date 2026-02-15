@@ -181,21 +181,21 @@ public class ViewContext {
 
       _htmlFieldPrefix = viewContext._htmlFieldPrefix;
 
-      if (viewContext._htmlAttributes is { } htmlAttribs and { Count: > 0 }) {
+      if (viewContext._htmlAttributes is { Count: > 0 } htmlAttribs) {
          _htmlAttributes = new CopyOnWriteDictionary<string, object?>(htmlAttribs, StringComparer.OrdinalIgnoreCase);
       }
 
-      if (viewContext._membersOptions is { } memberOpts and { Count: > 0 }) {
+      if (viewContext._membersOptions is { Count: > 0 } memberOpts) {
          _membersOptions = new CopyOnWriteDictionary<string, IEnumerable<SelectListItem>>(memberOpts, EqualityComparer<string>.Default);
       }
 
       this.MemberTemplate = viewContext.MemberTemplate;
 
-      if (viewContext._viewParameters is { } viewParams and { Count: > 0 }) {
+      if (viewContext._viewParameters is { Count: > 0 } viewParams) {
          _viewParameters = new CopyOnWriteDictionary<string, object?>(viewParams, EqualityComparer<string>.Default);
       }
 
-      if (viewContext._visitedObjects is { } visitedObjs and { Count: > 0 }) {
+      if (viewContext._visitedObjects is { Count: > 0 } visitedObjs) {
          _visitedObjects = new HashSet<object>(visitedObjs);
       }
    }
