@@ -123,8 +123,6 @@ sealed class TemplateRenderer {
       var defaultActions = GetDefaultActions();
 
       var metadata = _viewData.ModelMetadata;
-      var options = _viewContext.OptionsForModel();
-
       var config = XcstWebOptions.Instance;
 
       foreach (var viewName in GetViewNames()) {
