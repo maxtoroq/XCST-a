@@ -12,14 +12,18 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { p = "property" }' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData["p"]'>viewdata</c:set>
+            -->
             <a:input class='a' for='p'/>
             <a:input class='b' name='p'/>
             <a:input class='c' name='p' value='"explicit"'/>
          </a:model>
          <a:model value='"model"' field-prefix='p' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData[""]'>viewdata</c:set>
             <c:set ref='htm.ViewData["p"]'>viewdata</c:set>
+            -->
             <a:input class='d'/>
             <a:input class='e' value='"explicit"'/>
          </a:model>
@@ -27,7 +31,9 @@
             <a:input class='f' for='p'/>
             <a:input class='g' name='p'/>
          </a:model>
+         <!--
          <c:set ref='ViewData["p"]'>viewdata</c:set>
+         -->
          <a:input class='h' name='p'/>
       </div>
    </c:template>

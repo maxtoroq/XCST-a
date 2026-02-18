@@ -98,8 +98,11 @@ sealed class TemplateRenderer {
    readonly ViewContext
    _viewContext;
 
-   readonly ViewDataDictionary
-   _viewData;
+   readonly IViewDataContainer
+   _viewDataContainer;
+
+   readonly IModelMetadataProvider
+   _metadataProvider;
 
    readonly string?
    _templateName;
@@ -108,9 +111,10 @@ sealed class TemplateRenderer {
    _readOnly;
 
    public
-   TemplateRenderer(ViewContext viewContext, ViewDataDictionary viewData, string? templateName, bool readOnly) {
+   TemplateRenderer(ViewContext viewContext, IViewDataContainer viewDataContainer, IModelMetadataProvider metadataProvider, string? templateName, bool readOnly) {
       _viewContext = viewContext;
-      _viewData = viewData;
+      _viewDataContainer = viewDataContainer;
+      _metadataProvider = metadataProvider;
       _templateName = templateName;
       _readOnly = readOnly;
    }
@@ -122,7 +126,7 @@ sealed class TemplateRenderer {
 
       var defaultActions = GetDefaultActions();
 
-      var metadata = _viewData.ModelMetadata;
+      var metadata = _viewDataContainer.ModelExplorer.Metadata;
       var config = XcstWebOptions.Instance;
 
       foreach (var viewName in GetViewNames()) {
@@ -144,7 +148,8 @@ sealed class TemplateRenderer {
          }
       }
 
-      throw new InvalidOperationException($"Unable to locate an appropriate template for type {metadata.UnderlyingOrModelType}.");
+      throw new InvalidOperationException(
+         $"Unable to locate an appropriate template for type '{metadata.UnderlyingOrModelType}'.");
    }
 
    Dictionary<string, TemplateAction>
@@ -155,7 +160,7 @@ sealed class TemplateRenderer {
    IEnumerable<string>
    GetViewNames() {
 
-      var metadata = _viewData.ModelMetadata;
+      var metadata = _viewDataContainer.ModelExplorer.Metadata;
       var options = _viewContext.OptionsForModel();
 
       var templateHints = new[] {
@@ -241,13 +246,21 @@ sealed class TemplateRenderer {
 
    HtmlHelper
    MakeHtmlHelper() =>
-      new HtmlHelper(_viewContext, new ViewDataContainer(_viewData));
+      new HtmlHelper(_viewContext, _viewDataContainer, _metadataProvider);
 
    void
    RenderViewPage(XcstViewPage viewPage, ISequenceWriter<object> output) {
 
+      var modelExplorer = _viewDataContainer.ModelExplorer;
+
+      if (!viewPage.DeclaredModelType.IsAssignableFrom(modelExplorer.Metadata.ModelType)) {
+         throw new InvalidOperationException(
+            $"{(_readOnly ? "Display" : "Editor")} template '{_viewContext.ViewName}' is not type-compatible"
+            + $" with model of type '{modelExplorer.Metadata.ModelType}'.");
+      }
+
       viewPage.ViewContext = _viewContext;
-      viewPage.ViewData = _viewData;
+      viewPage._modelExplorer = modelExplorer;
 
       XcstEvaluator.Using((object)viewPage)
          .WithParams(_viewContext.ViewParameters)

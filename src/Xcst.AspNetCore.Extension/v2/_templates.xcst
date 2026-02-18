@@ -126,9 +126,11 @@
                                        <code:nameof>
                                           <code:chain>
                                              <copy-of value='htmlHelper'/>
+                                             <!--
                                              <code:property-reference name='ViewData'>
                                                 <code:chain-reference/>
                                              </code:property-reference>
+                                             -->
                                              <code:property-reference name='Model'>
                                                 <code:chain-reference/>
                                              </code:property-reference>

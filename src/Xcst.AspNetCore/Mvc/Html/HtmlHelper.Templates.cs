@@ -34,7 +34,7 @@ partial class HtmlHelper {
    public TemplateHelper
    Display(string expression) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
       return new TemplateHelper(this, true, expression, modelExplorer);
    }
@@ -57,7 +57,7 @@ partial class HtmlHelper {
    public IEnumerable<ModelExplorer>
    DisplayProperties() {
 
-      var filteredProperties = this.ViewData.ModelExplorer.Properties
+      var filteredProperties = this.ModelExplorer.Properties
          .Where(ShowForDisplay);
 
       var orderedProperties = (this.ViewContext.MembersNames.Count > 0) ?
@@ -98,7 +98,7 @@ partial class HtmlHelper {
    public TemplateHelper
    Editor(string expression) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
       return new TemplateHelper(this, false, expression, modelExplorer);
    }
@@ -121,7 +121,7 @@ partial class HtmlHelper {
    public IEnumerable<ModelExplorer>
    EditorProperties() {
 
-      var filteredProperties = this.ViewData.ModelExplorer.Properties
+      var filteredProperties = this.ModelExplorer.Properties
          .Where(ShowForEdit);
 
       var orderedProperties = (this.ViewContext.MembersNames.Count > 0) ?
@@ -186,17 +186,14 @@ partial class HtmlHelper {
 
       ArgumentNullException.ThrowIfNull(memberExplorer);
 
-      var container = new ViewDataContainer(
-         new ViewDataDictionary(this.ViewData) {
-            ModelExplorer = memberExplorer,
-         });
+      var container = new ViewDataContainer(memberExplorer);
 
       var viewContext = new ViewContext(this.ViewContext) {
          HtmlFieldPrefix = GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
          VisitedObjects = null,
       };
 
-      return new HtmlHelper(viewContext, container);
+      return new HtmlHelper(viewContext, container, this.MetadataProvider);
    }
 
    [GeneratedCodeReference]
@@ -213,9 +210,10 @@ partial class HtmlHelper<TModel> {
    public TemplateHelper
    DisplayFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return new TemplateHelper(this, true, ExpressionHelper.GetExpressionText(expression), modelExplorer);
+      return new TemplateHelper(this, true, expressionString, modelExplorer);
    }
 
    [GeneratedCodeReference]
@@ -223,9 +221,10 @@ partial class HtmlHelper<TModel> {
    public TemplateHelper
    EditorFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return new TemplateHelper(this, false, ExpressionHelper.GetExpressionText(expression), modelExplorer);
+      return new TemplateHelper(this, false, expressionString, modelExplorer);
    }
 }
 
@@ -363,11 +362,9 @@ public class TemplateHelper {
          }
       }
 
-      var viewData = new ViewDataDictionary(_html.ViewData) {
-         ModelExplorer = _modelExplorer.GetExplorerForModel(model),
-      };
+      var container = new ViewDataContainer(_modelExplorer.GetExplorerForModel(model));
 
-      new TemplateRenderer(viewContext, viewData, templateName, _displayMode)
+      new TemplateRenderer(viewContext, container, _html.MetadataProvider, templateName, _displayMode)
          .Render(output);
    }
 }

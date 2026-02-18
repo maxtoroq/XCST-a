@@ -12,14 +12,18 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { p = true }' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData["p"]' value='true'/>
+            -->
             <a:checkbox class='a' for='p'/>
             <a:checkbox class='b' name='p'/>
             <a:checkbox class='c' name='p' checked='false'/>
          </a:model>
          <a:model value='true' field-prefix='p' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData[""]' value='true'/>
             <c:set ref='htm.ViewData["p"]' value='true'/>
+            -->
             <a:checkbox class='e'/>
             <a:checkbox class='f' checked='false'/>
          </a:model>
@@ -27,7 +31,9 @@
             <a:checkbox class='h' for='p'/>
             <a:checkbox class='i' name='p'/>
          </a:model>
+         <!--
          <c:set ref='ViewData["p"]' value='true'/>
+         -->
          <a:checkbox class='j' name='p'/>
       </div>
    </c:template>

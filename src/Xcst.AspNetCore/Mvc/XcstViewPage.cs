@@ -33,8 +33,8 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    ViewContext?
    _viewContext;
 
-   ViewDataDictionary?
-   _viewData;
+   internal ModelExplorer?
+   _modelExplorer;
 
    IModelMetadataProvider?
    _modelMetadataProvider;
@@ -72,46 +72,45 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       }
    }
 
-   public ViewDataDictionary
-   ViewData {
-      get {
-         if (_viewData is null) {
-            SetViewData(new ViewDataDictionary(MetadataProvider));
-         }
-         return _viewData!;
-      }
-      set => SetViewData(value ?? throw new ArgumentNullException(nameof(value)));
-   }
+   protected internal virtual Type
+   DeclaredModelType { get; } = typeof(Object);
+
+   public ModelExplorer
+   ModelExplorer => _modelExplorer
+      ??= MetadataProvider.GetModelExplorerForType(DeclaredModelType, default);
 
    public object?
-   Model => ViewData.Model;
+   Model {
+      get => ModelExplorer.Model;
+      set => SetModel(value);
+   }
 
    private protected IModelMetadataProvider
-   MetadataProvider {
-      get => _modelMetadataProvider
-         ??= HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
-   }
+   MetadataProvider => _modelMetadataProvider
+      ??= HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
 
    public HtmlHelper
-   Html {
-      get {
-         if (_html is null) {
-
-            var vc = ViewContext ?? throw new InvalidOperationException();
-
-            _html = new HtmlHelper(vc, this);
-         }
-         return _html;
-      }
-      set => _html = value ?? throw new ArgumentNullException(nameof(value));
-   }
+   Html => _html
+      ??= new HtmlHelper(ViewContext ?? throw new InvalidOperationException(), this, MetadataProvider);
 
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
 
-   private protected virtual void
-   SetViewData(ViewDataDictionary viewData) {
-      _viewData = viewData;
+   void
+   SetModel(object? value) {
+
+      var declaredType = this.DeclaredModelType;
+      var isCompatibleType = (value is null) ?
+         TypeHelpers.TypeAllowsNullValue(declaredType)
+         : declaredType.IsInstanceOfType(value);
+
+      if (!isCompatibleType) {
+         throw new ArgumentException(
+            $"The provided value is not compatible with the declared model type '{declaredType}'.", nameof(value));
+      }
+
+      _modelExplorer = this.MetadataProvider
+         .GetModelExplorerForType(value?.GetType() ?? declaredType, value);
    }
 
    public async Task<bool>
@@ -196,47 +195,23 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
 public abstract class XcstViewPage<TModel> : XcstViewPage {
 
-   ViewDataDictionary<TModel>?
-   _viewData;
+   static readonly Type
+   _declaredModelType = typeof(TModel);
 
    HtmlHelper<TModel>?
    _html;
 
-   public new ViewDataDictionary<TModel>
-   ViewData {
-      get {
-         if (_viewData is null) {
-            SetViewData(new ViewDataDictionary<TModel>(MetadataProvider));
-         }
-         return _viewData!;
-      }
-      set => SetViewData(value ?? throw new ArgumentNullException(nameof(value)));
-   }
+   protected internal override Type
+   DeclaredModelType => _declaredModelType;
 
    [MaybeNull]
    public new TModel
-   Model => ViewData.Model;
+   Model {
+      get => (TModel)base.Model!;
+      set => base.Model = value;
+   }
 
    public new HtmlHelper<TModel>
-   Html {
-      get {
-         if (_html is null) {
-
-            var vc = ViewContext ?? throw new InvalidOperationException();
-
-            _html = new HtmlHelper<TModel>(vc, this);
-         }
-         return _html;
-      }
-      set => _html = value ?? throw new ArgumentNullException(nameof(value));
-   }
-
-   private protected override void
-   SetViewData(ViewDataDictionary viewData) {
-
-      _viewData = viewData as ViewDataDictionary<TModel>
-         ?? new ViewDataDictionary<TModel>(viewData);
-
-      base.SetViewData(_viewData);
-   }
+   Html => _html
+      ??= new HtmlHelper<TModel>(ViewContext ?? throw new InvalidOperationException(), this, MetadataProvider);
 }

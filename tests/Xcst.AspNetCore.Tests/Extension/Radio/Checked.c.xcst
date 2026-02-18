@@ -12,7 +12,9 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo { p = "property" }' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData["p"]'>foo</c:set>
+            -->
 
             <!-- different value -->
             <a:radio class='a' for='p' value='"foo"'/>
@@ -29,8 +31,10 @@
             <a:radio class='f' name='p' value='"property"' checked='no'/>
          </a:model>
          <a:model value='"model"' field-prefix='p' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData[""]'>foo</c:set>
             <c:set ref='htm.ViewData["p"]'>foo</c:set>
+            -->
 
             <!-- different value -->
             <a:radio class='j' value='"foo"'/>
@@ -48,7 +52,9 @@
             <a:radio class='p' for='p' value='"property"'/>
             <a:radio class='q' name='p' value='"property"'/>
          </a:model>
+         <!--
          <c:set ref='ViewData["p"]'>foo</c:set>
+         -->
          <a:radio class='r' name='p' value='"foo"'/>
       </div>
    </c:template>

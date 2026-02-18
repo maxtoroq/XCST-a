@@ -10,16 +10,16 @@ namespace Xcst.Web.Mvc;
 static class ViewDataEvaluator {
 
    public static ViewDataInfo?
-   Eval(ViewDataDictionary viewData, string? expression) {
+   Eval(IViewDataContainer viewData, string? expression) {
 
       ArgumentNullException.ThrowIfNull(viewData);
 
       if (String.IsNullOrEmpty(expression)) {
          // Null or empty expression name means current model even if that model is null.
-         return new ViewDataInfo(viewData, viewData.Model);
+         return new ViewDataInfo(viewData, viewData.ModelExplorer.Model);
       }
 
-      return EvalComplexExpression(viewData.Model, expression);
+      return EvalComplexExpression(viewData.ModelExplorer.Model, expression);
    }
 
    static ViewDataInfo?
@@ -130,7 +130,7 @@ static class ViewDataEvaluator {
       }
 
       // Do not attempt to find a property with an empty name and or of a ViewDataDictionary.
-      if (String.IsNullOrEmpty(propertyName) || container is ViewDataDictionary) {
+      if (String.IsNullOrEmpty(propertyName)/* || container is ViewDataDictionary*/) {
          return null;
       }
 
@@ -146,7 +146,7 @@ static class ViewDataEvaluator {
    }
 }
 
-public class ViewDataInfo {
+class ViewDataInfo {
 
    object?
    _value;

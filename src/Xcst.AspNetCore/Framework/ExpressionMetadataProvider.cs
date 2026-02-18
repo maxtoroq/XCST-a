@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Xcst.Web.Mvc.ExpressionUtil;
 
 namespace Xcst.Web.Mvc;
@@ -15,13 +14,12 @@ static class ExpressionMetadataProvider {
    public static ModelExplorer
    FromLambdaExpression<TParameter, TValue>(
          Expression<Func<TParameter, TValue>> expression,
-         ViewDataDictionary<TParameter> viewData,
-         IModelMetadataProvider? metadataProvider = null) {
+         IViewDataContainer viewData,
+         IModelMetadataProvider metadataProvider) {
 
       ArgumentNullException.ThrowIfNull(expression);
       ArgumentNullException.ThrowIfNull(viewData);
-
-      metadataProvider ??= viewData.MetadataProvider;
+      ArgumentNullException.ThrowIfNull(metadataProvider);
 
       var propertyName = default(string);
       var containerType = default(Type);
@@ -54,7 +52,7 @@ static class ExpressionMetadataProvider {
 
          case ExpressionType.Parameter:
             // Parameter expression means "model => model", so we delegate to FromModel
-            return FromModel(viewData, metadataProvider);
+            return FromModel(viewData.ModelExplorer, metadataProvider);
       }
 
       if (!legalExpression) {
@@ -100,11 +98,10 @@ static class ExpressionMetadataProvider {
    }
 
    public static ModelExplorer
-   FromStringExpression(string expression, ViewDataDictionary viewData, IModelMetadataProvider? metadataProvider = null) {
+   FromStringExpression(string expression, IViewDataContainer viewData, IModelMetadataProvider metadataProvider) {
 
       ArgumentNullException.ThrowIfNull(viewData);
-
-      metadataProvider ??= viewData.MetadataProvider;
+      ArgumentNullException.ThrowIfNull(metadataProvider);
 
       var viewDataInfo = ViewDataEvaluator.Eval(viewData, expression);
 
@@ -122,12 +119,12 @@ static class ExpressionMetadataProvider {
       if (viewDataInfo != null) {
 
          if (viewDataInfo.Container == viewData
-            && viewDataInfo.Value == viewData.Model
+            && viewDataInfo.Value == viewData.ModelExplorer.Model
             && String.IsNullOrEmpty(expression)) {
 
             // Nothing for empty expression in ViewData and ViewDataEvaluator just returned the model. Handle
             // using FromModel() for its object special case.
-            return FromModel(viewData, metadataProvider);
+            return FromModel(viewData.ModelExplorer, metadataProvider);
          }
 
          var containerExplorer = viewData.ModelExplorer;
@@ -165,17 +162,19 @@ static class ExpressionMetadataProvider {
    }
 
    static ModelExplorer
-   FromModel(ViewDataDictionary viewData, IModelMetadataProvider metadataProvider) {
+   FromModel(ModelExplorer modelExplorer, IModelMetadataProvider metadataProvider) {
 
-      ArgumentNullException.ThrowIfNull(viewData);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
 
-      if (viewData.ModelMetadata.ModelType == typeof(object)) {
+      if (modelExplorer.Metadata.ModelType == typeof(object)) {
 
          // Use common simple type rather than object so e.g. Editor() at least generates a TextBox.
-         var model = (viewData.Model is null) ? null : Convert.ToString(viewData.Model, CultureInfo.CurrentCulture);
+         var model = (modelExplorer.Model is null) ? null
+            : Convert.ToString(modelExplorer.Model, CultureInfo.CurrentCulture);
+
          return metadataProvider.GetModelExplorerForType(typeof(string), model);
       }
 
-      return viewData.ModelExplorer;
+      return modelExplorer;
    }
 }

@@ -42,7 +42,7 @@ partial class HtmlHelper {
    public IDisposable
    Radio(XcstWriter output, string name, object value, RadioArgs args = default) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(name);
 
       return GenerateRadio(output, modelExplorer, name, value, args);
    }
@@ -51,7 +51,7 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
    RadioForModel(XcstWriter output, object value, RadioArgs args = default) =>
-      GenerateRadio(output, this.ViewData.ModelExplorer, String.Empty, value, args);
+      GenerateRadio(output, this.ModelExplorer, String.Empty, value, args);
 
    protected IDisposable
    GenerateRadio(XcstWriter output, ModelExplorer modelExplorer, string name, object value,
@@ -119,7 +119,7 @@ partial class HtmlHelper<TModel> {
 
       ArgumentNullException.ThrowIfNull(value);
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
       return GenerateRadio(output, modelExplorer, expressionString, value, args);

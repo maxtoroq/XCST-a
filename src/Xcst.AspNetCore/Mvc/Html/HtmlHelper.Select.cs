@@ -74,7 +74,7 @@ partial class HtmlHelper {
    public SelectDisposable
    Select(XcstWriter output, string name, SelectArgs args = default) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(name);
 
       return GenerateSelect(output, modelExplorer, name, args);
    }
@@ -83,7 +83,7 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
    SelectForModel(XcstWriter output, SelectArgs args = default) =>
-      GenerateSelect(output, this.ViewData.ModelExplorer, String.Empty, args);
+      GenerateSelect(output, this.ModelExplorer, String.Empty, args);
 
    protected internal SelectDisposable
    GenerateSelect(XcstWriter output, ModelExplorer modelExplorer, string name, SelectArgs args) {
@@ -277,7 +277,7 @@ partial class HtmlHelper<TModel> {
 
       ArgumentNullException.ThrowIfNull(expression);
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
       return GenerateSelect(output, modelExplorer, expressionString, args);

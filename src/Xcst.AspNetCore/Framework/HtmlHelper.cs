@@ -72,17 +72,20 @@ public partial class HtmlHelper {
    public ViewContext
    ViewContext { get; }
 
-   public ViewDataDictionary
-   ViewData => ViewDataContainer.ViewData;
-
    public IViewDataContainer
    ViewDataContainer { get; }
 
+   public IModelMetadataProvider
+   MetadataProvider { get; }
+
+   public object?
+   Model => ViewDataContainer.ModelExplorer.Model;
+
    public ModelExplorer
-   ModelExplorer => ViewData.ModelExplorer;
+   ModelExplorer => ViewDataContainer.ModelExplorer;
 
    public ModelMetadata
-   ModelMetadata => ViewData.ModelMetadata;
+   ModelMetadata => ViewDataContainer.ModelExplorer.Metadata;
 
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
@@ -100,13 +103,15 @@ public partial class HtmlHelper {
    SimpleContent => CurrentPackage.Context.SimpleContent;
 
    public
-   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer) {
+   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IModelMetadataProvider metadataProvider) {
 
       ArgumentNullException.ThrowIfNull(viewContext);
       ArgumentNullException.ThrowIfNull(viewDataContainer);
+      ArgumentNullException.ThrowIfNull(metadataProvider);
 
       this.ViewContext = viewContext;
       this.ViewDataContainer = viewDataContainer;
+      this.MetadataProvider = metadataProvider;
    }
 
    /// <summary>
@@ -215,6 +220,12 @@ public partial class HtmlHelper {
       return String.Concat(htmlFieldPrefix, ".", partialFieldName);
    }
 
+   public object?
+   Eval(string? expression) {
+      var info = ViewDataEvaluator.Eval(this.ViewDataContainer, expression);
+      return info?.Value;
+   }
+
    public string
    FormatValue(object? value, string? format) =>
       FormatValue(value, format, null);
@@ -266,6 +277,10 @@ public partial class HtmlHelper {
          return ModelBinding.ValueProviderResult.UnwrapPossibleArrayType(culture, value, type);
       }
    }
+
+   ModelExplorer
+   GetModelExplorerFromString(string expression) =>
+      ExpressionMetadataProvider.FromStringExpression(expression, this.ViewDataContainer, this.MetadataProvider);
 
    public IDictionary<string, string>
    GetUnobtrusiveValidationAttributes(string name) =>
@@ -324,7 +339,7 @@ public partial class HtmlHelper {
 
       formContext.RenderedField(fullName, true);
 
-      modelExplorer ??= ExpressionMetadataProvider.FromStringExpression(name, this.ViewData, this.ViewData.MetadataProvider);
+      modelExplorer ??= GetModelExplorerFromString(name);
 
       var attributes = new Dictionary<string, string>();
 
@@ -338,7 +353,7 @@ public partial class HtmlHelper {
    public string
    DisplayName(string name) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(name);
 
       return DisplayNameHelper(modelExplorer, name);
    }
@@ -346,7 +361,7 @@ public partial class HtmlHelper {
    [GeneratedCodeReference]
    public string
    DisplayNameForModel() =>
-      DisplayNameHelper(this.ViewData.ModelExplorer, String.Empty);
+      DisplayNameHelper(this.ModelExplorer, String.Empty);
 
    private protected string
    DisplayNameHelper(ModelExplorer modelExplorer, string htmlFieldName) {
@@ -367,12 +382,12 @@ public partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    DisplayText(ISequenceWriter<string> output, string name) =>
-      DisplayTextHelper(output, ExpressionMetadataProvider.FromStringExpression(name, this.ViewData));
+      DisplayTextHelper(output, GetModelExplorerFromString(name));
 
    [GeneratedCodeReference]
    public string
    DisplayString(string name) =>
-      DisplayStringHelper(ExpressionMetadataProvider.FromStringExpression(name, this.ViewData));
+      DisplayStringHelper(GetModelExplorerFromString(name));
 
    private protected string
    DisplayStringHelper(ModelExplorer modelExplorer) =>
@@ -413,7 +428,7 @@ public partial class HtmlHelper {
 
       ArgumentNullException.ThrowIfNull(name);
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(name);
 
       return ValueHelper(name, modelExplorer, format);
    }
@@ -499,30 +514,28 @@ public partial class HtmlHelper {
 
 public partial class HtmlHelper<TModel> : HtmlHelper {
 
-   public new ViewDataDictionary<TModel>
-   ViewData => (ViewDataDictionary<TModel>)ViewDataContainer.ViewData;
+   [MaybeNull]
+   public new TModel
+   Model => (TModel)ViewDataContainer.ModelExplorer.Model;
 
    public
-   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer)
-      : base(viewContext, viewDataContainer) {
+   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IModelMetadataProvider metadataProvider)
+      : base(viewContext, viewDataContainer, metadataProvider) { }
 
-      ArgumentNullException.ThrowIfNull(viewDataContainer);
-
-      if (!(viewDataContainer.ViewData is ViewDataDictionary<TModel>)) {
-         throw new ArgumentException(
-            $"{nameof(viewDataContainer)}.ViewData should be an instance of 'ViewDataDictionary<TModel>'.",
-            nameof(viewDataContainer)
-         );
-      }
-   }
+   ModelExplorer
+   GetModelExplorerFromLambda<TResult>(Expression<Func<TModel, TResult>> expression) =>
+      ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewDataContainer, this.MetadataProvider);
 
    [GeneratedCodeReference]
    public string
    DisplayNameFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
       var modelExplorer = (typeof(IEnumerable<TModel>).IsAssignableFrom(typeof(TModel))) ?
-          ExpressionMetadataProvider.FromLambdaExpression(expression, new ViewDataDictionary<TModel>(this.ViewData.MetadataProvider))
-          : ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+          ExpressionMetadataProvider.FromLambdaExpression(
+             expression,
+             new ViewDataContainer(this.MetadataProvider.GetModelExplorerForType(typeof(TModel), default)),
+             this.MetadataProvider)
+          : GetModelExplorerFromLambda(expression);
 
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
@@ -533,12 +546,12 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    DisplayTextFor<TResult>(ISequenceWriter<string> output, Expression<Func<TModel, TResult>> expression) =>
-      DisplayTextHelper(output, ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData));
+      DisplayTextHelper(output, GetModelExplorerFromLambda(expression));
 
    [GeneratedCodeReference]
    public string
    DisplayStringFor<TResult>(Expression<Func<TModel, TResult>> expression) =>
-      DisplayStringHelper(ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData));
+      DisplayStringHelper(GetModelExplorerFromLambda(expression));
 
    public string
    IdFor<TResult>(Expression<Func<TModel, TResult>> expression) =>
@@ -555,7 +568,7 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
    public string
    ValueFor<TResult>(Expression<Func<TModel, TResult>> expression, string? format) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
       return ValueHelper(expressionString, modelExplorer, format);
@@ -564,8 +577,8 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
 
 public interface IViewDataContainer {
 
-   ViewDataDictionary
-   ViewData { get; set; }
+   ModelExplorer
+   ModelExplorer { get; }
 }
 
 partial class HtmlHelper {

@@ -42,8 +42,8 @@ static class DefaultDisplayTemplates {
 
       var value = default(bool?);
 
-      if (html.ViewData.Model != null) {
-         value = Convert.ToBoolean(html.ViewData.Model, CultureInfo.InvariantCulture);
+      if (html.Model != null) {
+         value = Convert.ToBoolean(html.Model, CultureInfo.InvariantCulture);
       }
 
       if (html.ModelMetadata.IsNullableValueType) {
@@ -79,8 +79,7 @@ static class DefaultDisplayTemplates {
    public static void
    CollectionTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-      var model = viewData.ModelExplorer.Model;
+      var model = html.Model;
 
       if (model is null) {
          return;
@@ -99,7 +98,7 @@ static class DefaultDisplayTemplates {
       var typeInCollectionIsNullableValueType = TypeHelpers.IsNullableValueType(typeInCollection);
       var oldPrefix = html.ViewContext.HtmlFieldPrefix;
 
-      var elementMetadata = viewData.ModelMetadata.ElementMetadata;
+      var elementMetadata = html.ModelMetadata.ElementMetadata;
 
       try {
 
@@ -115,10 +114,10 @@ static class DefaultDisplayTemplates {
             if (item != null
                && !typeInCollectionIsNullableValueType) {
 
-               itemMetadata = viewData.MetadataProvider.GetMetadataForType(item.GetType());
+               itemMetadata = html.MetadataProvider.GetMetadataForType(item.GetType());
             }
 
-            var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
+            var itemExplorer = new ModelExplorer(html.MetadataProvider, html.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
             new TemplateHelper(html, true, String.Empty, itemExplorer)
@@ -153,7 +152,7 @@ static class DefaultDisplayTemplates {
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       output.WriteStartElement("a");
-      output.WriteAttributeString("href", "mailto:" + Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
+      output.WriteAttributeString("href", "mailto:" + Convert.ToString(html.Model, CultureInfo.InvariantCulture));
       output.WriteString(output.SimpleContent.Convert(html.ViewContext.FormattedModelValue));
       output.WriteEndElement();
    }
@@ -181,7 +180,7 @@ static class DefaultDisplayTemplates {
    public static void
    HiddenInputTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      if (!html.ViewData.ModelMetadata.HideSurroundingHtml) {
+      if (!html.ModelMetadata.HideSurroundingHtml) {
          StringTemplate(html, seqOutput);
       }
    }
@@ -193,12 +192,12 @@ static class DefaultDisplayTemplates {
    public static void
    ImageUrlTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      if (html.ViewData.Model != null) {
+      if (html.Model != null) {
 
          var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
          output.WriteStartElement("img");
-         output.WriteAttributeString("src", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
+         output.WriteAttributeString("src", Convert.ToString(html.Model, CultureInfo.InvariantCulture));
          output.WriteEndElement();
       }
    }
@@ -280,8 +279,7 @@ static class DefaultDisplayTemplates {
                   fieldWriter ?? fieldsetWriter ?? seqOutput,
                   new TemplateHelper.RenderArgs {
                      htmlFieldName = propertyMeta.PropertyName,
-                  }
-               );
+                  });
 
             if (!propertyMeta.HideSurroundingHtml) {
                fieldWriter!.WriteEndElement(); // </div>
@@ -304,7 +302,7 @@ static class DefaultDisplayTemplates {
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       output.WriteStartElement("a");
-      output.WriteAttributeString("href", Convert.ToString(html.ViewData.Model, CultureInfo.InvariantCulture));
+      output.WriteAttributeString("href", Convert.ToString(html.Model, CultureInfo.InvariantCulture));
       output.WriteString(output.SimpleContent.Convert(html.ViewContext.FormattedModelValue));
       output.WriteEndElement();
    }

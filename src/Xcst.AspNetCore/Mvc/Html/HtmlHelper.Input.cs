@@ -110,7 +110,7 @@ partial class HtmlHelper {
    public SiblingContentDisposable
    Input(ISequenceWriter<XElement> output, string name, InputArgs args = default) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(name);
 
       return GenerateInput(output, modelExplorer, name, args);
    }
@@ -119,7 +119,7 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SiblingContentDisposable
    InputForModel(ISequenceWriter<XElement> output, InputArgs args = default) =>
-      GenerateInput(output, this.ViewData.ModelExplorer, String.Empty, args);
+      GenerateInput(output, this.ModelExplorer, String.Empty, args);
 
    protected internal SiblingContentDisposable
    GenerateInput(ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string name, InputArgs args) {
@@ -314,9 +314,9 @@ partial class HtmlHelper<TModel> {
    public SiblingContentDisposable
    InputFor<TResult>(ISequenceWriter<XElement> output, Expression<Func<TModel, TResult>> expression, InputArgs args = default) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
-      var exprString = ExpressionHelper.GetExpressionText(expression);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
 
-      return GenerateInput(output, modelExplorer, exprString, args);
+      return GenerateInput(output, modelExplorer, expressionString, args);
    }
 }

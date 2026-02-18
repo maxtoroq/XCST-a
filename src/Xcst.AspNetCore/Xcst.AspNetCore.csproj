@@ -25,6 +25,7 @@
     <Using Include="Microsoft.AspNetCore.Mvc.ActionContext" Alias="ActionContext" />
     <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorer" Alias="ModelExplorer" />
     <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorerExtensions" Static="true" />
+    <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelMetadataProviderExtensions" Static="true" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\schemas\xcst-app.rng" Visible="false" PackagePath="schemas" />

@@ -41,7 +41,7 @@ partial class HtmlHelper {
    public DefaultContentDisposable
    Textarea(XcstWriter output, string name, TextareaArgs args = default) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(name);
 
       return GenerateTextarea(output, modelExplorer, name, args);
    }
@@ -50,7 +50,7 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
    TextareaForModel(XcstWriter output, TextareaArgs args = default) =>
-      GenerateTextarea(output, this.ViewData.ModelExplorer, String.Empty, args);
+      GenerateTextarea(output, this.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
    GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string name, TextareaArgs args) {
@@ -118,7 +118,7 @@ partial class HtmlHelper<TModel> {
 
       ArgumentNullException.ThrowIfNull(expression);
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
       return GenerateTextarea(output, modelExplorer, expressionString, args);

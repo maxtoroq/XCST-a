@@ -39,7 +39,7 @@ partial class HtmlHelper {
    public DefaultContentDisposable
    Label(XcstWriter output, string name, LabelArgs args = default) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(name);
 
       return GenerateLabel(output, modelExplorer, name, args);
    }
@@ -48,7 +48,7 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
    LabelForModel(XcstWriter output, LabelArgs args = default) =>
-      GenerateLabel(output, this.ViewData.ModelExplorer, String.Empty, args);
+      GenerateLabel(output, this.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
    GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string name, LabelArgs args) {
@@ -86,7 +86,7 @@ partial class HtmlHelper<TModel> {
    public DefaultContentDisposable
    LabelFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, LabelArgs args = default) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
       return GenerateLabel(output, modelExplorer, expressionString, args);

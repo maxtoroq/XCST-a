@@ -14,11 +14,15 @@
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <div>
          <a:model value='new Foo()' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData["p"]'>viewdata</c:set>
+            -->
             <a:textarea class='a' name='p'>text</a:textarea>
          </a:model>
          <a:model value='new Foo { p = "property" }' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData["p"]'>viewdata</c:set>
+            -->
             <a:textarea class='b' for='p'/>
             <a:textarea class='c' name='p'/>
             <a:textarea class='d' name='p'>text</a:textarea>
@@ -26,8 +30,10 @@
             <a:textarea class='f' name='p' value='"explicit"'>text</a:textarea>
          </a:model>
          <a:model value='"model"' field-prefix='p' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData[""]'>viewdata</c:set>
             <c:set ref='htm.ViewData["p"]'>viewdata</c:set>
+            -->
             <a:textarea class='g'/>
             <a:textarea class='h' value='"explicit"'/>
             <a:textarea class='i'>text</a:textarea>
@@ -37,7 +43,9 @@
             <a:textarea class='k' for='p'/>
             <a:textarea class='l' name='p'/>
          </a:model>
+         <!--
          <c:set ref='ViewData["p"]'>viewdata</c:set>
+         -->
          <a:textarea class='m' name='p'/>
       </div>
    </c:template>

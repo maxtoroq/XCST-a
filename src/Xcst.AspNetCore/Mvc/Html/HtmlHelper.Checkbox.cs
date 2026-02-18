@@ -44,7 +44,7 @@ partial class HtmlHelper {
    public SiblingContentDisposable
    Checkbox(ISequenceWriter<XElement> output, string name, CheckboxArgs args = default) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(name);
 
       return GenerateCheckbox(output, modelExplorer, name, args);
    }
@@ -53,7 +53,7 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SiblingContentDisposable
    CheckboxForModel(ISequenceWriter<XElement> output, CheckboxArgs args = default) =>
-      GenerateCheckbox(output, this.ViewData.ModelExplorer, name: String.Empty, args);
+      GenerateCheckbox(output, this.ModelExplorer, name: String.Empty, args);
 
    protected internal SiblingContentDisposable
    GenerateCheckbox(
@@ -149,7 +149,7 @@ partial class HtmlHelper<TModel> {
 
       ArgumentNullException.ThrowIfNull(expression);
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
       return GenerateCheckbox(output, modelExplorer, expressionString, args);

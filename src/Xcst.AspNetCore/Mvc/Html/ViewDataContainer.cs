@@ -16,11 +16,11 @@ namespace Xcst.Web.Mvc;
 
 class ViewDataContainer : IViewDataContainer {
 
-   public ViewDataDictionary
-   ViewData { get; set; }
+   public ModelExplorer
+   ModelExplorer { get; }
 
    public
-   ViewDataContainer(ViewDataDictionary viewData) {
-      this.ViewData = viewData;
+   ViewDataContainer(ModelExplorer modelExplorer) {
+      this.ModelExplorer = modelExplorer;
    }
 }

@@ -58,7 +58,7 @@ partial class HtmlHelper {
 
       ArgumentNullException.ThrowIfNull(name);
 
-      var modelExplorer = ExpressionMetadataProvider.FromStringExpression(name, this.ViewData);
+      var modelExplorer = GetModelExplorerFromString(name);
 
       return GenerateValidationMessage(output, modelExplorer, name, args);
    }
@@ -67,7 +67,7 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
    ValidationMessageForModel(XcstWriter output, ValidationMessageArgs args = default) =>
-      GenerateValidationMessage(output, this.ViewData.ModelExplorer, String.Empty, args);
+      GenerateValidationMessage(output, this.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
    GenerateValidationMessage(
@@ -259,7 +259,7 @@ partial class HtmlHelper<TModel> {
          XcstWriter output, Expression<Func<TModel, TResult>> expression,
          ValidationMessageArgs args = default) {
 
-      var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewData);
+      var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
 
       return GenerateValidationMessage(output, modelExplorer, expressionString, args);

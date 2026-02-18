@@ -61,9 +61,9 @@ static class DefaultEditorTemplates {
 
       var value = default(bool?);
 
-      if (html.ViewData.Model != null) {
+      if (html.Model != null) {
          // FIX: conversion logic duplicated with GenerateCheckbox()
-         value = Convert.ToBoolean(html.ViewData.Model, CultureInfo.InvariantCulture);
+         value = Convert.ToBoolean(html.Model, CultureInfo.InvariantCulture);
       }
 
       if (html.ModelMetadata.IsNullableValueType) {
@@ -106,8 +106,7 @@ static class DefaultEditorTemplates {
    public static void
    CollectionTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var viewData = html.ViewData;
-      var model = viewData.ModelExplorer.Model;
+      var model = html.Model;
 
       if (model is null) {
          return;
@@ -126,7 +125,7 @@ static class DefaultEditorTemplates {
       var typeInCollectionIsNullableValueType = TypeHelpers.IsNullableValueType(typeInCollection);
       var oldPrefix = html.ViewContext.HtmlFieldPrefix;
 
-      var elementMetadata = viewData.ModelMetadata.ElementMetadata;
+      var elementMetadata = html.ModelMetadata.ElementMetadata;
 
       try {
 
@@ -142,10 +141,10 @@ static class DefaultEditorTemplates {
             if (item != null
                && !typeInCollectionIsNullableValueType) {
 
-               itemMetadata = viewData.MetadataProvider.GetMetadataForType(item.GetType());
+               itemMetadata = html.MetadataProvider.GetMetadataForType(item.GetType());
             }
 
-            var itemExplorer = new ModelExplorer(viewData.MetadataProvider, viewData.ModelExplorer, itemMetadata, item);
+            var itemExplorer = new ModelExplorer(html.MetadataProvider, html.ModelExplorer, itemMetadata, item);
             var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
 
             new TemplateHelper(html, false, String.Empty, itemExplorer)
@@ -207,7 +206,7 @@ static class DefaultEditorTemplates {
 
       var options = html.ViewContext.OptionsForModel();
 
-      if (options is OptionList and { AddBlankOption: true }) {
+      if (options is OptionList { AddBlankOption: true }) {
          optionLabel = html.ModelMetadata.Placeholder ?? String.Empty;
       }
 
@@ -426,8 +425,7 @@ static class DefaultEditorTemplates {
                   fieldWriter ?? fieldsetWriter ?? seqOutput,
                   new TemplateHelper.RenderArgs {
                      htmlFieldName = propertyMeta.PropertyName,
-                  }
-               );
+                  });
 
             if (!propertyMeta.HideSurroundingHtml) {
 
@@ -455,7 +453,7 @@ static class DefaultEditorTemplates {
 
       using var disp = html.GenerateInput(
          seqOutput,
-         html.ViewData.ModelExplorer,
+         html.ModelExplorer,
          String.Empty,
          new HtmlHelper.InputArgs {
             type = "password",

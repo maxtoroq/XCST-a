@@ -43,9 +43,7 @@ partial class HtmlHelper {
       ArgumentNullException.ThrowIfNull(currentPackage);
 
       var container = new ViewDataContainer(
-         new ViewDataDictionary<TModel>(this.ViewData) {
-            Model = model!,
-         });
+         this.MetadataProvider.GetModelExplorerForType(typeof(TModel), model));
 
       var newViewContext = new ViewContext(this.ViewContext, null, currentPackage) {
          HtmlFieldPrefix = GetFullHtmlFieldName(htmlFieldPrefix),
@@ -59,6 +57,6 @@ partial class HtmlHelper {
          newViewContext.SetFormMethodString(formMethod);
       }
 
-      return new HtmlHelper<TModel>(newViewContext, container);
+      return new HtmlHelper<TModel>(newViewContext, container, this.MetadataProvider);
    }
 }

@@ -23,16 +23,20 @@
             options='new SelectListItem[] { new() { Text = "red" }, new() { Text = "blue", Selected = true } }'/>
          <!-- model selected -->
          <a:model value='"blue"' field-prefix='color' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData[""]'>red</c:set>
             <c:set ref='htm.ViewData["color"]'>red</c:set>
+            -->
             <a:select class='c'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
             </a:select>
          </a:model>
          <a:model value='"blue"' field-prefix='color' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData[""]'>green</c:set>
             <c:set ref='htm.ViewData["color"]'>green</c:set>
+            -->
             <a:select class='d' value='"red"'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
@@ -40,7 +44,9 @@
             </a:select>
          </a:model>
          <a:model value='new Foo { color = "blue" }' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData["color"]'>red</c:set>
+            -->
             <a:select class='e' for='color'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
@@ -51,7 +57,9 @@
             </a:select>
          </a:model>
          <a:model value='new Foo { color = "blue" }' helper-name='htm'>
+            <!--
             <c:set ref='htm.ViewData["color"]'>green</c:set>
+            -->
             <a:select class='g' name='color' value='"red"'>
                <a:option>red</a:option>
                <a:option>blue</a:option>
@@ -68,7 +76,9 @@
                <a:option>blue</a:option>
             </a:select>
          </a:model>
+         <!--
          <c:set ref='ViewData["color"]'>blue</c:set>
+         -->
          <a:select class='j' name='color'>
             <a:option>red</a:option>
             <a:option>blue</a:option>
