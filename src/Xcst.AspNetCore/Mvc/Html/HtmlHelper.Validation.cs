@@ -235,7 +235,7 @@ partial class HtmlHelper {
          return
             from kv in this.ModelState
             let name = kv.Key
-            orderby ordering.GetOrDefault(name, ModelMetadata.DefaultOrder)
+            orderby (ordering.TryGetValue(name, out var o) ? o : ModelMetadata.DefaultOrder)
             select kv.Value;
       }
 

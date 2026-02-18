@@ -52,14 +52,15 @@ class PropertyHelper {
       Debug.Assert(setMethod != null);
       Debug.Assert(!setMethod.IsStatic);
       Debug.Assert(setMethod.GetParameters().Length == 1);
-      Debug.Assert(!propertyInfo.ReflectedType.IsValueType);
 
       // Instance methods in the CLR can be turned into static methods where the first parameter
       // is open over "this". This parameter is always passed by reference, so we have a code
       // path for value types and a code path for reference types.
 
-      var typeInput = propertyInfo.ReflectedType;
+      var typeInput = propertyInfo.ReflectedType!;
       var typeValue = setMethod.GetParameters()[0].ParameterType;
+
+      Debug.Assert(!typeInput.IsValueType);
 
       // Create a delegate TValue -> "TDeclaringType.Property"
 
@@ -108,7 +109,7 @@ class PropertyHelper {
       // is open over "this". This parameter is always passed by reference, so we have a code
       // path for value types and a code path for reference types.
 
-      var typeInput = getMethod.ReflectedType;
+      var typeInput = getMethod.ReflectedType!;
       var typeOutput = getMethod.ReturnType;
 
       Delegate callPropertyGetterDelegate;

@@ -104,7 +104,7 @@ public static class ExpressionHelper {
          && methodExpression.Arguments.Count == 1) {
 
          return methodExpression.Method
-            .DeclaringType
+            .DeclaringType!
             .GetDefaultMembers()
             .OfType<PropertyInfo>()
             .Any(p => p.GetGetMethod() == methodExpression.Method);

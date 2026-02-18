@@ -3,9 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Xcst.Web;
@@ -108,43 +106,9 @@ static class TypeHelpers {
       return MatchGenericTypeFirstOrDefault(queryTypeInterfaces, interfaceType);
    }
 
-   public static object?
-   GetDefaultValue(Type type) =>
-      TypeAllowsNullValue(type) ? null
-         : Activator.CreateInstance(type);
-
-   public static bool
-   IsCompatibleObject<T>(object? value) =>
-      (value is T || (value is null && TypeAllowsNullValue(typeof(T))));
-
    public static bool
    IsNullableValueType(Type type) =>
       Nullable.GetUnderlyingType(type) != null;
-
-   /// <summary>
-   /// Provide a new <see cref="MissingMethodException"/> if original Message does not contain given full Type name.
-   /// </summary>
-   /// <param name="originalException"><see cref="MissingMethodException"/> to check.</param>
-   /// <param name="fullTypeName">Full Type name which Message should contain.</param>
-   /// <returns>New <see cref="MissingMethodException"/> if an update is required; null otherwise.</returns>
-   public static MissingMethodException?
-   EnsureDebuggableException(MissingMethodException originalException, string fullTypeName) {
-
-      MissingMethodException? replacementException = null;
-
-      if (!originalException.Message.Contains(fullTypeName)) {
-
-         var message = String.Format(
-            CultureInfo.CurrentCulture,
-            "{0} Object type '{1}'.",
-            originalException.Message,
-            fullTypeName);
-
-         replacementException = new MissingMethodException(message, originalException);
-      }
-
-      return replacementException;
-   }
 
    static bool
    MatchesGenericType(Type type, Type matchType) =>
@@ -193,19 +157,5 @@ static class TypeHelpers {
       }
 
       return result;
-   }
-
-   /// <remarks>This code is copied from http://www.liensberger.it/web/blog/?p=191 </remarks>
-   public static bool
-   IsAnonymousType(Type type) {
-
-      ArgumentNullException.ThrowIfNull(type);
-
-      // TODO: The only way to detect anonymous types right now.
-
-      return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
-         && type.IsGenericType && type.Name.Contains("AnonymousType")
-         && (type.Name.StartsWith("<>", StringComparison.OrdinalIgnoreCase) || type.Name.StartsWith("VB$", StringComparison.OrdinalIgnoreCase))
-         && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
    }
 }
