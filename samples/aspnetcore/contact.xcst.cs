@@ -31,7 +31,7 @@ partial class _Page_contact : IPageInit {
       }
    }
 
-   public async Task
+   public async Task<int>
    Init() {
 
       var contact = new Contact();
@@ -51,6 +51,6 @@ partial class _Page_contact : IPageInit {
 
       Antiforgery.SetCookieTokenAndHeader();
 
-      layout(new { contact, sent });
+      return layout(new { contact, sent });
    }
 }
