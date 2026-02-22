@@ -172,13 +172,9 @@ public abstract class XcstPage {
 
       if (this is IPageInit pInit) {
 
-         var statusCode = await XcstEvaluator.Using(pInit)
+         await XcstEvaluator.Using(pInit)
             .CallFunction(async p => await p.Init())
             .Evaluate();
-
-         if (statusCode != default) {
-            this.Response.StatusCode = statusCode;
-         }
 
          return;
       }
@@ -204,6 +200,6 @@ public abstract class XcstPage {
 
 public interface IPageInit : IXcstPackage {
 
-   Task<int>
+   Task
    Init();
 }
