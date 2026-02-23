@@ -729,19 +729,6 @@
             <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
                <docs:type-param name="System.Web.Mvc.SelectListItem"/>
             </docs:expression-type>
-            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
-               <docs:type-param name="System.Collections.Generic.KeyValuePair&lt;TKey, TValue>" topic="5tbh8a42"/>
-            </docs:expression-type>
-            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
-               <docs:type-param name="System.Linq.IGrouping" topic="bb344977">
-                  <docs:type-param name="TGroupKey"/>
-                  <docs:type-param name="System.Collections.Generic.KeyValuePair&lt;TKey, TValue>" topic="5tbh8a42"/>
-               </docs:type-param>
-            </docs:expression-type>
-            <docs:expression-type name="System.Collections.Generic.IEnumerable" topic="9eekhta0">
-               <docs:type-param name="System.Linq.IGrouping&lt;TKey, TElement>" topic="bb344977"/>
-            </docs:expression-type>
-            <docs:expression-type name="System.Collections.IEnumerable"/>
          </ref>
       </define>
 
