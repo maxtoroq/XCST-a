@@ -73,7 +73,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    }
 
    protected internal virtual Type
-   DeclaredModelType { get; } = typeof(Object);
+   DeclaredModelType => typeof(Object);
 
    public ModelExplorer
    ModelExplorer => _modelExplorer
@@ -91,7 +91,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
    public HtmlHelper
    Html => _html
-      ??= new HtmlHelper(ViewContext ?? throw new InvalidOperationException(), this, MetadataProvider);
+      ??= CreateHtmlHelper(ViewContext ?? throw new InvalidOperationException(), this, MetadataProvider);
 
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
@@ -112,6 +112,10 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       _modelExplorer = this.MetadataProvider
          .GetModelExplorerForType(value?.GetType() ?? declaredType, value);
    }
+
+   protected virtual HtmlHelper
+   CreateHtmlHelper(ViewContext viewContext, IViewDataContainer container, IModelMetadataProvider metadataProvider) =>
+      new HtmlHelper(viewContext, container, metadataProvider);
 
    public async Task<bool>
    TryUpdateModelAsync(
@@ -195,14 +199,8 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
 public abstract class XcstViewPage<TModel> : XcstViewPage {
 
-   static readonly Type
-   _declaredModelType = typeof(TModel);
-
-   HtmlHelper<TModel>?
-   _html;
-
    protected internal override Type
-   DeclaredModelType => _declaredModelType;
+   DeclaredModelType => typeof(TModel);
 
    [MaybeNull]
    public new TModel
@@ -212,6 +210,9 @@ public abstract class XcstViewPage<TModel> : XcstViewPage {
    }
 
    public new HtmlHelper<TModel>
-   Html => _html
-      ??= new HtmlHelper<TModel>(ViewContext ?? throw new InvalidOperationException(), this, MetadataProvider);
+   Html => (HtmlHelper<TModel>)base.Html;
+
+   protected override HtmlHelper
+   CreateHtmlHelper(ViewContext viewContext, IViewDataContainer container, IModelMetadataProvider metadataProvider) =>
+      new HtmlHelper<TModel>(viewContext, container, metadataProvider);
 }
