@@ -24,8 +24,7 @@
                { "color", "red" },
                { "animal", "dog" }
             }),
-            null
-         );
+            null);
          
          var foo = new Foo();
          

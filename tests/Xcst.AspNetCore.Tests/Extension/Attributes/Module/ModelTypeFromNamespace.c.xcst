@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#' a:model-type='List&lt;string>'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'>
+
+   <c:import-namespace ns='System.Collections.Generic'/>
+
+   <c:template name='c:initial-template'>
+      <c:void value='Assert.AreEqual(typeof(List&lt;string>), CompileType(() => this.Model))'/>
+      <c:void value='Assert.AreEqual(typeof(Xcst.Web.Mvc.HtmlHelper&lt;List&lt;string>>), CompileType(() => this.Html))'/>
+   </c:template>
+
+</c:module>

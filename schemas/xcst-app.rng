@@ -651,6 +651,17 @@
          </zeroOrMore>
          <ref name="sequence-constructor"/>
       </define>
+
+      <define name="module-extensions" docs:extends="c:module c:package">
+         <zeroOrMore>
+            <choice>
+               <attribute name="a:model-type">
+                  <ann:documentation>A type that represents the model for the current page.</ann:documentation>
+                  <ref name="type_name"/>
+               </attribute>
+            </choice>
+         </zeroOrMore>
+      </define>
    </div>
 
    <div>

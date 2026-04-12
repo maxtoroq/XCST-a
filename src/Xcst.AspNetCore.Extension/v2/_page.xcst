@@ -43,83 +43,23 @@
       </if>
    </template>
 
-   <template name='src:base-types' visibility='public'>
-      <param name='el' as='XElement' required='yes'/>
-
-      <variable name='inheritsPi' value='inherits_directive(el)'/>
-      <variable name='modelPi' value='model_directive(el)'/>
-
-      <if test='!(inheritsPi is null || modelPi is null)'>
-         <message terminate='yes' error-data='src_error_object(el)' transform-text='trim'>
-            'inherits' and 'model' directives are mutually exclusive.
-         </message>
-      </if>
-
-      <choose>
-         <when test='inheritsPi != null'>
-            <code:type-reference name='{xcst_non_string(inheritsPi)}'/>
-         </when>
-         <when test='modelPi != null &amp;&amp; src_base_types?.Length > 0'>
-            <code:type-reference>
-               <copy-of value='attributes(src_base_types[0])'/>
-               <code:type-arguments>
-                  <code:type-reference name='{xcst_non_string(modelPi)}'/>
-               </code:type-arguments>
-            </code:type-reference>
-         </when>
-         <otherwise>
-            <copy-of value='src_base_types?.FirstOrDefault()'/>
-         </otherwise>
-      </choose>
-      <copy-of value='src_base_types?.Skip(1)'/>
-   </template>
-
-   <function name='inherits_directive' as='XProcessingInstruction?'>
-      <param name='el' as='XElement'/>
-
-      <variable name='pInsts' value='el
-         .NodesBeforeSelf()
-         .OfType&lt;XProcessingInstruction>()
-         .Where(p => p.Target == "inherits")
-         .ToArray()'/>
-
-      <if test='pInsts.Length > 0'>
-         <if test='!(pInsts.Length == 1)'>
-            <message terminate='yes' error-data='src_error_object(pInsts[1])' expand-text='yes' transform-text='trim'>
-               Only one '{pInsts[0].Target}' directive is allowed.
-            </message>
-         </if>
-         <return value='pInsts[0]'/>
-      </if>
-
-      <return value='null'/>
-   </function>
-
-   <function name='model_directive' as='XProcessingInstruction?'>
-      <param name='el' as='XElement'/>
-
-      <variable name='pInsts' value='el
-         .NodesBeforeSelf()
-         .OfType&lt;XProcessingInstruction>()
-         .Where(p => p.Target == "model")
-         .ToArray()'/>
-
-      <if test='pInsts.Length > 0'>
-         <if test='!(pInsts.Length == 1)'>
-            <message terminate='yes' error-data='src_error_object(pInsts[1])' expand-text='yes' transform-text='trim'>
-               Only one '{pInsts[0].Target}' directive is allowed.
-            </message>
-         </if>
-         <return value='pInsts[0]'/>
-      </if>
-
-      <return value='null'/>
-   </function>
-
    <template name='src:infrastructure-extra' visibility='public'>
       <param name='el' as='XElement' required='yes'/>
       <param name='principalModule' as='bool' required='yes'/>
+      <param name='modules' as='XElement[]' tunnel='yes'/>
       <param name='xcsta_is_page' as='bool' tunnel='yes'/>
+
+      <variable name='modulePos' value='System.Array.IndexOf(modules, el)'/>
+      <variable name='followingModules' value='modules.Skip(modulePos + 1).ToArray()'/>
+      <variable name='modelTypeName' value='a + "model-type"' as='XName'/>
+
+      <if test='el.Attribute(modelTypeName) is { } modelTypeAttr
+            &amp;&amp; followingModules.All(p => p.Attribute(modelTypeName) is null)'>
+         <call-template name='typed-model-props'>
+            <with-param name='el' value='el'/>
+            <with-param name='modelTypeAttr' value='modelTypeAttr'/>
+         </call-template>
+      </if>
 
       <variable name='genLinkTo' value='this.GenerateLinkTo
          &amp;&amp; xcsta_is_page
@@ -128,12 +68,116 @@
 
       <if test='genLinkTo
             &amp;&amp; PagePath(el) is { } pagePath'>
-         <if test='genLinkTo'>
-            <call-template name='link-to'>
-               <with-param name='pagePath' value='pagePath'/>
-            </call-template>
-         </if>
+         <call-template name='link-to'>
+            <with-param name='pagePath' value='pagePath'/>
+         </call-template>
       </if>
+   </template>
+
+   <template name='typed-model-props'>
+      <param name='el' as='XElement' required='yes'/>
+      <param name='modelTypeAttr' as='XAttribute' required='yes'/>
+
+      <variable name='modelTypeRef'>
+         <code:type-reference name='{xcst_type(modelTypeAttr)}'/>
+      </variable>
+
+      <variable name='typedHtmlHelperRef'>
+         <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'>
+            <code:type-arguments>
+               <copy-of value='modelTypeRef'/>
+            </code:type-arguments>
+         </code:type-reference>
+      </variable>
+
+      <code:property name='DeclaredModelType' visibility='protected' extensibility='override'>
+         <code:type-reference name='Type' namespace='System'/>
+         <code:getter>
+            <code:block>
+               <code:return>
+                  <code:typeof>
+                     <copy-of value='modelTypeRef'/>
+                  </code:typeof>
+               </code:return>
+            </code:block>
+         </code:getter>
+      </code:property>
+
+      <code:property name='Model' visibility='public' new='true'>
+         <copy-of value='modelTypeRef'/>
+         <code:attributes>
+            <code:attribute>
+               <code:type-reference name='MaybeNull' namespace='System.Diagnostics.CodeAnalysis'/>
+            </code:attribute>
+         </code:attributes>
+         <code:getter>
+            <code:block>
+               <code:disable-warning codes='CS8605'/>
+               <code:return>
+                  <code:cast>
+                     <copy-of value='modelTypeRef'/>
+                     <code:property-reference name='Model'>
+                        <code:base-reference/>
+                     </code:property-reference>
+                  </code:cast>
+               </code:return>
+               <code:restore-warning codes='CS8605'/>
+            </code:block>
+         </code:getter>
+         <code:setter>
+            <code:block>
+               <code:assign>
+                  <code:property-reference name='Model'>
+                     <code:base-reference/>
+                  </code:property-reference>
+                  <code:setter-value/>
+               </code:assign>
+            </code:block>
+         </code:setter>
+      </code:property>
+
+      <code:property name='Html' visibility='public' new='true'>
+         <copy-of value='typedHtmlHelperRef'/>
+         <code:getter>
+            <code:block>
+               <code:return>
+                  <code:cast>
+                     <copy-of value='typedHtmlHelperRef'/>
+                     <code:property-reference name='Html'>
+                        <code:base-reference/>
+                     </code:property-reference>
+                  </code:cast>
+               </code:return>
+            </code:block>
+         </code:getter>
+      </code:property>
+
+      <code:method name='CreateHtmlHelper' visibility='protected' extensibility='override'>
+         <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
+         <code:parameters>
+            <code:parameter name='viewContext'>
+               <code:type-reference name='ViewContext' namespace='Xcst.Web.Mvc'/>
+            </code:parameter>
+            <code:parameter name='container'>
+               <code:type-reference name='IViewDataContainer' namespace='Xcst.Web.Mvc'/>
+            </code:parameter>
+            <code:parameter name='metadataProvider'>
+               <code:type-reference name='IModelMetadataProvider' namespace='Microsoft.AspNetCore.Mvc.ModelBinding'/>
+            </code:parameter>
+         </code:parameters>
+         <code:block>
+            <code:return>
+               <code:new-object>
+                  <copy-of value='typedHtmlHelperRef'/>
+                  <code:arguments>
+                     <code:variable-reference name='viewContext'/>
+                     <code:variable-reference name='container'/>
+                     <code:variable-reference name='metadataProvider'/>
+                  </code:arguments>
+               </code:new-object>
+            </code:return>
+         </code:block>
+      </code:method>
    </template>
 
    <template name='link-to'>

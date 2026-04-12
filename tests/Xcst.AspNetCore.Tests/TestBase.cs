@@ -74,6 +74,9 @@ public abstract class TestBase : XcstViewPage {
    protected static Type
    CompileType<T>(T _) => typeof(T);
 
+   protected static Type
+   CompileType<T>(Func<T> _) => typeof(T);
+
    protected static class Assert {
 
       public static void
@@ -97,5 +100,3 @@ public abstract class TestBase : XcstViewPage {
          TestAssert.IsNotNull(value);
    }
 }
-
-public abstract class TestBase<TModel> : XcstViewPage<TModel> { }
