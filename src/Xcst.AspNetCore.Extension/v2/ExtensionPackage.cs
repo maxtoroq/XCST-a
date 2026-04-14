@@ -21,6 +21,8 @@ namespace Xcst.Web.Extension;
 
 public partial class ExtensionPackageV2 {
 
+   public record CompileErrorData(int LineNumber, string ModuleUri);
+
    const string
    _tunnelParamPrefix = "xcsta_";
 
@@ -28,19 +30,12 @@ public partial class ExtensionPackageV2 {
    ExtensionNamespace => a.NamespaceName;
 
    public static void
-   IsPage(System.Action<string, object?> setFn, bool isPage) {
+   IsPage(System.Action<string, object?> setFn, bool isPage) =>
       setFn.Invoke(_tunnelParamPrefix + "is_page", isPage);
-   }
 
    static object
-   ErrorData(XObject node) {
-
-      dynamic data = new System.Dynamic.ExpandoObject();
-      data.LineNumber = LineNumber(node);
-      data.ModuleUri = ModuleUri(node);
-
-      return data;
-   }
+   ErrorData(XObject node) =>
+      new CompileErrorData(LineNumber(node), ModuleUri(node));
 
    static int
    LineNumber(XObject node) =>
