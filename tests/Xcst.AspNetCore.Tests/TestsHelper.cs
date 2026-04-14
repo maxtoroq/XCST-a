@@ -35,19 +35,15 @@ static partial class TestsHelper {
       var packageUri = new Uri(packageFile, UriKind.Absolute);
 
       CompileResult xcstResult;
-      string packageName;
 
       try {
-         var codegenResult = GenerateCode(packageUri, testName, testNamespace);
+         xcstResult = GenerateCode(packageUri, testName, testNamespace);
 
          if (!correct) {
             // did not fail, caller Assert.Throws will
-            PrintCode(codegenResult.result);
+            PrintCode(xcstResult);
             return;
          }
-
-         xcstResult = codegenResult.result;
-         packageName = codegenResult.packageName;
 
       } catch (RuntimeException ex) {
 
@@ -86,14 +82,13 @@ static partial class TestsHelper {
          try {
 
             packageType = CompileCode(
-               packageName,
+               xcstResult.PackageName,
                packageUri,
                xcstResult.CompilationUnits,
                xcstResult.Language,
                error,
                disableWarning,
-               printCode
-            );
+               printCode);
 
             // did not fail
 
@@ -171,7 +166,7 @@ static partial class TestsHelper {
       return compiler;
    }
 
-   static (CompileResult result, string packageName)
+   static CompileResult
    GenerateCode(Uri packageUri, string testName, string testNamespace) {
 
       var compiler = CreateCompiler();
@@ -185,7 +180,7 @@ static partial class TestsHelper {
 
       var result = compiler.Compile(packageUri);
 
-      return (result, compiler.TargetNamespace + "." + compiler.TargetClass);
+      return result;
    }
 
    public static Type
