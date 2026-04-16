@@ -14,6 +14,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -51,7 +52,19 @@ public partial class ExtensionPackageV2 {
    PagePath(XElement module) {
 
       if (AppRelativeUri(module) is { } relativeUri) {
-         return Path.ChangeExtension(relativeUri, null);
+
+         var pagePath = Path.ChangeExtension(relativeUri, null);
+
+         if (module.Attribute(a + "slug") is { } slugAttr
+            && xcst_non_string(slugAttr) is { } slug) {
+
+            var parts = pagePath.Split('/').ToList();
+            parts[^1] = slug;
+
+            return String.Join('/', parts);
+         }
+
+         return pagePath;
       }
 
       return null;

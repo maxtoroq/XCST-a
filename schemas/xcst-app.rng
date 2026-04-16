@@ -434,11 +434,11 @@
          <optional>
             <choice>
                <attribute name="members">
-                  <ref name="members"/>
+                  <ref name="identifiers"/>
                </attribute>
                <attribute name="members-names">
                   <choice>
-                     <ref name="members"/>
+                     <ref name="identifiers"/>
                      <ref name="avt-expr"/>
                   </choice>
                </attribute>
@@ -543,39 +543,7 @@
          </element>
       </define>
 
-      <define name="member-extensions" docs:extends="c:member" docs:attrib-group="Validation">
-         <zeroOrMore>
-            <choice>
-               <attribute name="a:file-extensions">
-                  <ann:documentation>A comma-separated list of valid file extensions for this member.</ann:documentation>
-                  <ref name="file-extensions"/>
-               </attribute>
-               <attribute name="a:file-max-length">
-                  <ann:documentation>A maximum valid file length for this member.</ann:documentation>
-                  <ref name="integer"/>
-               </attribute>
-               <attribute name="a:bind" docs:attrib-group="Model Binding">
-                  <ann:documentation>Specifies if this member should be included or excluded from model binding.</ann:documentation>
-                  <ref name="boolean"/>
-               </attribute>
-            </choice>
-         </zeroOrMore>
-      </define>
 
-      <define name="member-or-validation-extensions" docs:extends="c:member c:validation" docs:attrib-group="Validation">
-         <zeroOrMore>
-            <choice>
-               <attribute name="a:file-extensions-message">
-                  <ann:documentation>An error message for the a:file-extensions attribute.</ann:documentation>
-                  <ref name="string"/>
-               </attribute>
-               <attribute name="a:file-max-length-message">
-                  <ann:documentation>An error message for the a:file-max-length attribute.</ann:documentation>
-                  <ref name="string"/>
-               </attribute>
-            </choice>
-         </zeroOrMore>
-      </define>
    </div>
 
    <div>
@@ -651,6 +619,44 @@
          </zeroOrMore>
          <ref name="sequence-constructor"/>
       </define>
+   </div>
+
+   <div>
+      <ann:documentation>Extension Attributes</ann:documentation>
+
+      <define name="member-extensions" docs:extends="c:member" docs:attrib-group="Validation">
+         <zeroOrMore>
+            <choice>
+               <attribute name="a:file-extensions">
+                  <ann:documentation>A comma-separated list of valid file extensions for this member.</ann:documentation>
+                  <ref name="file-extensions"/>
+               </attribute>
+               <attribute name="a:file-max-length">
+                  <ann:documentation>A maximum valid file length for this member.</ann:documentation>
+                  <ref name="integer"/>
+               </attribute>
+               <attribute name="a:bind" docs:attrib-group="Model Binding">
+                  <ann:documentation>Specifies if this member should be included or excluded from model binding.</ann:documentation>
+                  <ref name="boolean"/>
+               </attribute>
+            </choice>
+         </zeroOrMore>
+      </define>
+
+      <define name="member-or-validation-extensions" docs:extends="c:member c:validation" docs:attrib-group="Validation">
+         <zeroOrMore>
+            <choice>
+               <attribute name="a:file-extensions-message">
+                  <ann:documentation>An error message for the a:file-extensions attribute.</ann:documentation>
+                  <ref name="string"/>
+               </attribute>
+               <attribute name="a:file-max-length-message">
+                  <ann:documentation>An error message for the a:file-max-length attribute.</ann:documentation>
+                  <ref name="string"/>
+               </attribute>
+            </choice>
+         </zeroOrMore>
+      </define>
 
       <define name="module-extensions" docs:extends="c:module c:package">
          <zeroOrMore>
@@ -659,8 +665,24 @@
                   <ann:documentation>A type that represents the model for the current page.</ann:documentation>
                   <ref name="type_name"/>
                </attribute>
+               <attribute name="a:slug">
+                  <ann:documentation>A string to be used in the URL for the current page, instead of the file name.</ann:documentation>
+                  <ref name="slug"/>
+               </attribute>
             </choice>
          </zeroOrMore>
+      </define>
+
+      <define name="file-extensions">
+         <data type="token">
+            <param name="minLength">1</param>
+         </data>
+      </define>
+
+      <define name="slug">
+         <data type="string">
+            <param name="minLength">1</param>
+         </data>
       </define>
    </div>
 
@@ -700,12 +722,6 @@
          </choice>
       </define>
 
-      <define name="file-extensions">
-         <data type="token">
-            <param name="minLength">1</param>
-         </data>
-      </define>
-
       <define name="avt">
          <ann:documentation>Attribute value template.</ann:documentation>
          <ref name="string"/>
@@ -726,6 +742,7 @@
       </define>
 
       <define name="expr-obj-dict">
+         <ann:documentation>Expression.</ann:documentation>
          <ref name="expression">
             <docs:expression-type name="System.Object"/>
             <docs:expression-type name="System.Collections.Generic.IDictionary" topic="s4ys34ea">
@@ -743,7 +760,8 @@
          </ref>
       </define>
 
-      <define name="members">
+      <define name="identifiers">
+         <ann:documentation>A list of identifiers.</ann:documentation>
          <list>
             <zeroOrMore>
                <ref name="identifier"/>
@@ -752,12 +770,14 @@
       </define>
 
       <define name="identifier">
+         <ann:documentation>Identifier.</ann:documentation>
          <data type="token">
             <param name="minLength">1</param>
          </data>
       </define>
 
       <define name="type_name">
+         <ann:documentation>Type name.</ann:documentation>
          <data type="token">
             <param name="minLength">1</param>
          </data>
