@@ -37,6 +37,7 @@ Breaking Changes
 ### Entension
 
 - [Removed 'attributes' attribute from all html instructions (can now use sequence constructor to add attributes)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
+- [Replaced 'inherits' and 'model' directives with 'inherits' and 'a:model-type' attributes](https://github.com/maxtoroq/XCST-a/commit/b9a4d18c834c706d236b2ea60bb8fde361bacf1b)
 - [Not using ViewDataDictionary value on form instructions](https://github.com/maxtoroq/XCST-a/commit/c23401630f2dbcef8bf6ff041bc281296b1665a1)
 - [Not adding blank option on a:select (a:editor still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
 - [Not looking for options in ViewData on a:select](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
