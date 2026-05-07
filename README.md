@@ -8,10 +8,10 @@ See the [project home][XCST] for more information.
 
 ### Packages Built From This Repository
 
-Package | Description | Targets
-------- | ----------- | -------
-[Xcst.AspNetCore] | XCST web pages for ASP.NET Core. | .NET 7
-[Xcst.AspNetCore.Extension] | Extension instructions for XCST web pages. | .NET 7
+Package | Targets
+------- | -------
+**[Xcst.AspNetCore]**<br/>XCST web pages for ASP.NET Core. | .NET 7
+**[Xcst.AspNetCore.Extension]**<br/>Extension instructions for XCST web pages. | .NET 7
 
 ### Related Repositories
 
@@ -39,17 +39,17 @@ Breaking Changes
 - [Removed 'attributes' attribute from all html instructions (can now use sequence constructor to add attributes)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
 - [Replaced 'inherits' and 'model' directives with 'inherits' and 'a:model-type' attributes](https://github.com/maxtoroq/XCST-a/commit/b9a4d18c834c706d236b2ea60bb8fde361bacf1b)
 - [Not using ViewDataDictionary value on form instructions](https://github.com/maxtoroq/XCST-a/commit/c23401630f2dbcef8bf6ff041bc281296b1665a1)
-- [Not adding blank option on a:select (a:editor still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
-- [Not looking for options in ViewData on a:select](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
+- [Not adding blank option on `a:select` (`a:editor` still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
+- [Not looking for options in ViewData on `a:select`](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
 - [Not auto-creating IEnumerable&lt;SelectListItem> from various types](https://github.com/maxtoroq/XCST-a/commit/e995a3ffa4589c1c4d30c6622c7be9ddb3744622)
-- [Not prepending new line on a:textarea when value is empty](https://github.com/maxtoroq/XCST-a/commit/7df19560060f7ac8a1ed09aab1ff833b961a09b5)
-- [Adding 'readonly' and 'placeholder' on a:input and a:textarea based on metadata](https://github.com/maxtoroq/XCST-a/commit/12789aff82b056158b4e7f1c7b7d0469dc0a13c1)
-- [Using more specific type on a:input based on metadata](https://github.com/maxtoroq/XCST-a/commit/b46332d98ec618dbfef6147c7747c09ff44ab478)
-- [Default format on a:input](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190)
+- [Not prepending new line on `a:textarea` when value is empty](https://github.com/maxtoroq/XCST-a/commit/7df19560060f7ac8a1ed09aab1ff833b961a09b5)
+- [Adding 'readonly' and 'placeholder' on `a:input` and `a:textarea` based on metadata](https://github.com/maxtoroq/XCST-a/commit/12789aff82b056158b4e7f1c7b7d0469dc0a13c1)
+- [Using more specific type on `a:input` based on metadata](https://github.com/maxtoroq/XCST-a/commit/b46332d98ec618dbfef6147c7747c09ff44ab478)
+- [Default format on `a:input`](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190)
 - [Keeping track of form method to use appropriate culture (invariant for GET requests) and including `__Invariant` hidden field for invariant input types](https://github.com/maxtoroq/XCST-a/commit/8d3b75c0ec877bb0ab6ec6cf2fde0b68e78b1a63)
 - [Ignoring Html5DateRenderingMode](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190) ([and removed](https://github.com/maxtoroq/XCST-a/commit/9ba3d8de281f1b263b2654964476d89c88126459))
-- [Text-only sequence constructor for a:with-options/a:option](https://github.com/maxtoroq/XCST-a/commit/a168d65dcaec34680f0ad15e2bf3b7821e0bf00a)
-- [Renamed a:model's 'as' attribute to 'type'](https://github.com/maxtoroq/XCST-a/commit/3ac2492e377e7be181f0aa49e981e20c67010608)
+- [Text-only sequence constructor for `a:with-options/a:option`](https://github.com/maxtoroq/XCST-a/commit/a168d65dcaec34680f0ad15e2bf3b7821e0bf00a)
+- [Renamed `a:model` 'as' attribute to 'type'](https://github.com/maxtoroq/XCST-a/commit/3ac2492e377e7be181f0aa49e981e20c67010608)
 - [Using single Number template for integral types](https://github.com/maxtoroq/XCST-a/commit/6787fb48ee29127f536dcb52c267082be7791cee)
 
 ### Runtime
