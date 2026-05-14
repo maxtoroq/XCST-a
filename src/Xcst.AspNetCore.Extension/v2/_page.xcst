@@ -208,11 +208,11 @@
                   <code:type-reference name='UrlHelper' namespace='Xcst.Web'/>
                   <code:arguments>
                      <code:string>
-                        <value-of value='"/" + pagePath'/>
+                        <value-of value='pagePath'/>
                      </code:string>
                      <if test='defaultPagePath != null'>
                         <code:string>
-                           <value-of value='"/" + defaultPagePath'/>
+                           <value-of value='defaultPagePath'/>
                         </code:string>
                      </if>
                      <copy-of value='pathPartsRef'/>

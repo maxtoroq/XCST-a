@@ -30,7 +30,7 @@ public partial class ExtensionPackageV1 {
    ExtensionNamespace => a.NamespaceName;
 
    public static void
-   IsPage(System.Action<string, object?> setFn, bool isPage) =>
+   IsPage(Action<string, object?> setFn, bool isPage) =>
       setFn.Invoke(_tunnelParamPrefix + "is_page", isPage);
 
    static object
@@ -76,7 +76,7 @@ public partial class ExtensionPackageV1 {
    string?
    AppRelativeUri(XElement module) {
 
-      var moduleUri = new System.Uri(ModuleUri(module));
+      var moduleUri = new Uri(ModuleUri(module));
       var relativeUri = this.ApplicationUri!.MakeRelativeUri(moduleUri);
 
       if (!relativeUri.OriginalString.StartsWith("..")) {

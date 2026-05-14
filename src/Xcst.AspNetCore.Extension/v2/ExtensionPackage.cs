@@ -31,7 +31,7 @@ public partial class ExtensionPackageV2 {
    ExtensionNamespace => a.NamespaceName;
 
    public static void
-   IsPage(System.Action<string, object?> setFn, bool isPage) =>
+   IsPage(Action<string, object?> setFn, bool isPage) =>
       setFn.Invoke(_tunnelParamPrefix + "is_page", isPage);
 
    static object
@@ -51,9 +51,13 @@ public partial class ExtensionPackageV2 {
    string?
    PagePath(XElement module) {
 
-      if (AppRelativeUri(module) is { } relativeUri) {
+      var moduleUri = new Uri(ModuleUri(module));
+      var relativeUri = this.ApplicationUri!.MakeRelativeUri(moduleUri).OriginalString;
+      var modulePath = (!relativeUri.StartsWith("..")) ? "/" + relativeUri : null;
 
-         var pagePath = Path.ChangeExtension(relativeUri, null);
+      if (modulePath != null) {
+
+         var pagePath = Path.ChangeExtension(modulePath, null);
 
          if (module.Attribute(a + "slug") is { } slugAttr
             && xcst_non_string(slugAttr) is { } slug) {
@@ -73,27 +77,11 @@ public partial class ExtensionPackageV2 {
    static string?
    DefaultPagePath(string pagePath) {
 
-      const string indexPage = "index";
-      var multiPart = false;
+      const string defaultSegment = "/index";
 
-      if (pagePath.EndsWith(indexPage, StringComparison.Ordinal)
-         && (pagePath.Length == indexPage.Length
-            || (multiPart = pagePath[^(indexPage.Length + 1)] == '/'))) {
-
-         return pagePath.Substring(0, pagePath.Length - indexPage.Length - (multiPart ? 1 : 0));
-      }
-
-      return null;
-   }
-
-   string?
-   AppRelativeUri(XElement module) {
-
-      var moduleUri = new System.Uri(ModuleUri(module));
-      var relativeUri = this.ApplicationUri!.MakeRelativeUri(moduleUri);
-
-      if (!relativeUri.OriginalString.StartsWith("..")) {
-         return relativeUri.OriginalString;
+      if (pagePath.EndsWith(defaultSegment, StringComparison.Ordinal)) {
+         var multiPart = pagePath.Length > defaultSegment.Length;
+         return pagePath.Substring(0, pagePath.Length - defaultSegment.Length + (multiPart ? 0 : 1));
       }
 
       return null;

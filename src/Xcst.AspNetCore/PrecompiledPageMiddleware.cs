@@ -28,7 +28,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Xcst.Web;
 
-class PrecompiledPageMiddleware {
+sealed class PrecompiledPageMiddleware {
 
    readonly RequestDelegate
    _next;
@@ -68,12 +68,8 @@ class PrecompiledPageMiddleware {
    }
 
    bool
-   PageExists(string pagePath) =>
-      _pageMap.Value.ContainsKey(pagePath);
-
-   Type
-   PageType(string pagePath) =>
-      _pageMap.Value[pagePath];
+   TryGetPageType(string pagePath, [NotNullWhen(returnValue: true)] out Type? pageType) =>
+      _pageMap.Value.TryGetValue(pagePath, out pageType);
 
    static XcstPage
    CreatePage(Type pageType, IServiceProvider serviceProvider) =>
@@ -82,13 +78,11 @@ class PrecompiledPageMiddleware {
    public async Task
    Invoke(HttpContext context) {
 
-      var request = context.Request;
-      var requestPath = request.Path.Value!.Substring(1);
+      if (context.Request.Path.Value is { Length: > 0 } requestPath
+         && MatchRequest(requestPath, out var pagePath, out var pathInfo, out var pageType)) {
 
-      if (MatchRequest(requestPath, out var pagePath, out var pathInfo)) {
-
-         var page = CreatePage(PageType(pagePath), context.RequestServices);
-         page.VirtualPath = "~/" + pagePath;
+         var page = CreatePage(pageType, context.RequestServices);
+         page.VirtualPath = pagePath;
          page.PathInfo = pathInfo;
          page.HttpContext = context;
 
@@ -102,95 +96,55 @@ class PrecompiledPageMiddleware {
    bool
    MatchRequest(string requestPath,
          [NotNullWhen(returnValue: true)] out string? pagePath,
-         [NotNullWhen(returnValue: true)] out string? pathInfo) {
+         [NotNullWhen(returnValue: true)] out string? pathInfo,
+         [NotNullWhen(returnValue: true)] out Type? pageType) {
 
-      Debug.Assert(requestPath != null);
-      Debug.Assert(!requestPath.StartsWith("~/"));
+      Debug.Assert(requestPath.StartsWith('/'));
 
-      // We can skip the file exists check and normal lookup for empty paths,
-      // but we still need to look for default pages
-
-      if (!String.IsNullOrEmpty(requestPath)) {
-
-         // For each trimmed part of the path try to add a known extension and
-         // check if it matches a file in the application.
+      if (requestPath.Length > 1) {
 
          var currentLevel = requestPath;
          var currentPathInfo = String.Empty;
 
          while (true) {
 
-            // Does the current route level patch any supported extension?
-
-            if (PageExists(currentLevel)) {
-
+            if (TryGetPageType(currentLevel, out pageType)) {
                pagePath = currentLevel;
                pathInfo = currentPathInfo;
                return true;
             }
 
             // Try to remove the last path segment (e.g. go from /foo/bar to /foo)
-
             var indexOfLastSlash = currentLevel.LastIndexOf('/');
 
-            if (indexOfLastSlash == -1) {
-
-               // If there are no more slashes, we're done
-
+            if (indexOfLastSlash <= 0) {
                break;
             }
 
             // Chop off the last path segment to get to the next one
-
             currentLevel = currentLevel.Substring(0, indexOfLastSlash);
 
             // And save the path info in case there is a match
-
             currentPathInfo = requestPath.Substring(indexOfLastSlash + 1);
          }
       }
 
       // If we haven't found anything yet, now try looking for index.* at the current url
 
-      if (MatchDefaultFile(requestPath, out pagePath)) {
+      const string defaultDoc = "index";
 
+      var defaultPath = (requestPath.Length == 1) ? $"/{defaultDoc}" // avoid concat
+         : (requestPath[^1] == '/') ? requestPath + defaultDoc
+         : $"{requestPath}/{defaultDoc}";
+
+      if (TryGetPageType(defaultPath, out pageType)) {
+         pagePath = defaultPath;
          pathInfo = String.Empty;
          return true;
       }
 
       pagePath = null;
       pathInfo = null;
-      return false;
-   }
-
-   bool
-   MatchDefaultFile(string requestPath, [NotNullWhen(returnValue: true)] out string? pagePath) {
-
-      const string defaultDocument = "index";
-
-      var currentLevel = requestPath;
-      string currentLevelIndex;
-
-      if (String.IsNullOrEmpty(currentLevel)) {
-
-         currentLevelIndex = defaultDocument;
-
-      } else {
-
-         if (currentLevel[^1] != '/') {
-            currentLevel += "/";
-         }
-
-         currentLevelIndex = currentLevel + defaultDocument;
-      }
-
-      if (PageExists(currentLevelIndex)) {
-
-         pagePath = currentLevelIndex;
-         return true;
-      }
-
-      pagePath = null;
       return false;
    }
 }
