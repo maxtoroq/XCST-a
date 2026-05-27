@@ -119,33 +119,6 @@
                   </code:arguments>
                </code:method-call>
             </when>
-            <when test='
-                  "rows"
-                  or "cols"'>
-               <code:method-call name='WriteAttributeString'>
-                  <copy-of value='outputRef'/>
-                  <code:arguments>
-                     <code:string literal='true'>
-                        <value-of value='localName'/>
-                     </code:string>
-                     <code:chain>
-                        <copy-of value='outputRef'/>
-                        <code:property-reference name='SimpleContent'>
-                           <code:chain-reference/>
-                        </code:property-reference>
-                        <code:method-call name='Convert'>
-                           <code:chain-reference/>
-                           <code:arguments>
-                              <call-template name='src:integer'>
-                                 <with-param name='val' value='xcst_integer(attr, true)'/>
-                                 <with-param name='avt' value='attr'/>
-                              </call-template>
-                           </code:arguments>
-                        </code:method-call>
-                     </code:chain>
-                  </code:arguments>
-               </code:method-call>
-            </when>
             <otherwise>
                <code:method-call name='WriteAttributeString'>
                   <copy-of value='outputRef'/>

@@ -122,16 +122,10 @@
             <zeroOrMore>
                <choice>
                   <attribute name="rows">
-                     <choice>
-                        <ref name="integer"/>
-                        <ref name="avt-expr"/>
-                     </choice>
+                     <ref name="avt"/>
                   </attribute>
                   <attribute name="cols">
-                     <choice>
-                        <ref name="integer"/>
-                        <ref name="avt-expr"/>
-                     </choice>
+                     <ref name="avt"/>
                   </attribute>
                </choice>
             </zeroOrMore>
