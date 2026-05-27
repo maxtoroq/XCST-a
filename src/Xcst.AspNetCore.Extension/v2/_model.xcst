@@ -27,20 +27,24 @@
       <param name='output' as='XElement' tunnel='yes'/>
 
       <variable name='clientAttributes' as='string[]'>
-         <object value='html_attributes'/>
          <object>action</object>
          <object>autocomplete</object>
          <object>enctype</object>
          <object>method</object>
+         <object value='global_attributes'/>
       </variable>
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='required' value='new[] { "method" }'/>
-         <with-param name='optional' value='
-            new[] { "model-value", "model-type", "field-prefix", "helper-name", "antiforgery" }
-               .Concat(clientAttributes.Where(p => p != "method"))
-               .ToArray()'/>
+         <with-param name='optional' as='string[]'>
+            <object>antiforgery</object>
+            <object>field-prefix</object>
+            <object>helper-name</object>
+            <object>model-type</object>
+            <object>model-value</object>
+            <object value='clientAttributes.Where(p => p != "method")'/>
+         </with-param>
       </call-template>
 
       <variable name='methodAttr' value='el.Attribute("method")!'/>

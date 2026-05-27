@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:template name='c:initial-template'>
+      <div>
+         <a:checkbox name='foo' class='my-class'/>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <input id='foo' type='checkbox' name='foo' value='true' class='my-class'/>
+         <input type='hidden' name='foo' value='false'/>
+      </div>
+   </c:template>
+
+</c:module>

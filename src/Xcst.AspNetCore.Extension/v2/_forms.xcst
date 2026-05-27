@@ -23,12 +23,12 @@
    <import-namespace ns='System.Linq'/>
    <import-namespace ns='System.Xml.Linq'/>
 
-   <variable name='html_attributes' as='string[]'>
-      <object value='html_attributes_except_class'/>
+   <variable name='global_attributes' as='string[]'>
+      <object value='global_attributes_except_class'/>
       <object>class</object>
    </variable>
 
-   <variable name='html_attributes_except_class' as='string[]'>
+   <variable name='global_attributes_except_class' as='string[]'>
       <object>id</object>
    </variable>
 
@@ -36,15 +36,13 @@
       <object>for</object>
       <object>name</object>
       <object>value</object>
-      <object value='input_client_attributes'/>
-      <object value='html_attributes'/>
+      <object value='input_client_attributes.Union(global_attributes)'/>
    </variable>
 
-   <variable name='input_client_attributes' value='input_client_bool_attributes' as='string[]'/>
-
-   <variable name='input_client_bool_attributes' as='string[]'>
-      <object>disabled</object>
+   <variable name='input_client_attributes' as='string[]'>
       <object>autofocus</object>
+      <object>disabled</object>
+      <object value='global_attributes_except_class'/>
    </variable>
 
    <variable name='textbox_attributes' as='string[]'>
@@ -52,12 +50,8 @@
    </variable>
 
    <variable name='textbox_client_attributes' as='string[]'>
-      <object value='textbox_client_bool_attributes.Union(input_client_attributes)'/>
+      <object value='input_client_attributes'/>
       <object>placeholder</object>
-   </variable>
-
-   <variable name='textbox_client_bool_attributes' as='string[]'>
-      <object value='input_client_bool_attributes'/>
       <object>readonly</object>
    </variable>
 
@@ -71,9 +65,16 @@
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
-         <with-param name='optional' value='
-            (hidden) ? input_attributes.Where(p => p != "autofocus").ToArray()
-               : textbox_attributes.Concat(new[] { "format", "type" }).ToArray()'/>
+         <with-param name='optional' as='string[]'>
+            <choose>
+               <when test='hidden' value='input_attributes.Where(p => p != "autofocus")'/>
+               <otherwise>
+                  <object value='textbox_attributes'/>
+                  <object>format</object>
+                  <object>type</object>
+               </otherwise>
+            </choose>
+         </with-param>
       </call-template>
 
       <call-template name='validate-for'>
@@ -106,36 +107,10 @@
                         <code:variable-reference name='{dispVar}'/>
                      </code:property-reference>
                   </variable>
-                  <for-each name='attr' in='clientAttribs'>
-                     <choose>
-                        <when test='textbox_client_bool_attributes.Contains(attr.Name.LocalName)'>
-                           <code:method-call name='WriteBoolean'>
-                              <call-template name='html-helper-ref'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <call-template name='src:boolean'>
-                                    <with-param name='val' value='xcst_boolean(attr, true)'/>
-                                    <with-param name='avt' value='attr'/>
-                                 </call-template>
-                                 <copy-of value='outputRef'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </when>
-                        <otherwise>
-                           <code:method-call name='WriteAttributeString'>
-                              <copy-of value='outputRef'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </otherwise>
-                     </choose>
-                  </for-each>
+                  <call-template name='write-client-attribs'>
+                     <with-param name='clientAttribs' value='clientAttribs'/>
+                     <with-param name='outputRef' value='outputRef'/>
+                  </call-template>
                   <invoke-delegate delegate='src_sequence_constructor'>
                      <with-param name='el' value='el'/>
                      <with-param name='output' tunnel='yes'>
@@ -261,9 +236,11 @@
    <template match='XElement el &amp;&amp; el.Name == a + "textarea"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <variable name='clientAttributes' value='textbox_client_attributes
-         .Concat(new[] { "rows", "cols" })
-         .ToArray()'/>
+      <variable name='clientAttributes' as='string[]'>
+         <object value='textbox_client_attributes'/>
+         <object>cols</object>
+         <object>rows</object>
+      </variable>
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
@@ -282,7 +259,7 @@
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
-      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code).Single()'/>
 
       <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
@@ -306,55 +283,10 @@
                   </call-template>
                </code:variable>
                <code:block>
-                  <for-each name='attr' in='clientAttribs'>
-                     <choose>
-                        <when test='textbox_client_bool_attributes.Contains(attr.Name.LocalName)'>
-                           <code:method-call name='WriteBoolean'>
-                              <call-template name='html-helper-ref'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <call-template name='src:boolean'>
-                                    <with-param name='val' value='xcst_boolean(attr, true)'/>
-                                    <with-param name='avt' value='attr'/>
-                                 </call-template>
-                                 <copy-of value='outputRef'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </when>
-                        <otherwise>
-                           <code:method-call name='WriteAttributeString'>
-                              <copy-of value='outputRef'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <choose>
-                                    <when test='attr.Name.LocalName is "rows" or "cols"'>
-                                       <code:chain>
-                                          <copy-of value='outputRef'/>
-                                          <code:property-reference name='SimpleContent'>
-                                             <code:chain-reference/>
-                                          </code:property-reference>
-                                          <code:method-call name='Convert'>
-                                             <code:chain-reference/>
-                                             <call-template name='src:integer'>
-                                                <with-param name='val' value='xcst_integer(attr, true)'/>
-                                                <with-param name='avt' value='attr'/>
-                                             </call-template>
-                                          </code:method-call>
-                                       </code:chain>
-                                    </when>
-                                    <otherwise>
-                                       <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
-                                    </otherwise>
-                                 </choose>
-                              </code:arguments>
-                           </code:method-call>
-                        </otherwise>
-                     </choose>
-                  </for-each>
+                  <call-template name='write-client-attribs'>
+                     <with-param name='clientAttribs' value='clientAttribs'/>
+                     <with-param name='outputRef' value='outputRef'/>
+                  </call-template>
                   <invoke-delegate delegate='src_sequence_constructor'>
                      <with-param name='el' value='el'/>
                      <with-param name='output' value='docOutput' tunnel='yes'/>
@@ -448,10 +380,10 @@
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
-         <with-param name='optional' value='input_attributes
-            .Where(p => p != "value")
-            .Append("checked")
-            .ToArray()'/>
+         <with-param name='optional' as='string[]'>
+            <object value='input_attributes.Where(p => p != "value")'/>
+            <object>checked</object>
+         </with-param>
       </call-template>
 
       <call-template name='validate-for'>
@@ -484,36 +416,10 @@
                         <code:variable-reference name='{dispVar}'/>
                      </code:property-reference>
                   </variable>
-                  <for-each name='attr' in='clientAttribs'>
-                     <choose>
-                        <when test='input_client_bool_attributes.Contains(attr.Name.LocalName)'>
-                           <code:method-call name='WriteBoolean'>
-                              <call-template name='html-helper-ref'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <call-template name='src:boolean'>
-                                    <with-param name='val' value='xcst_boolean(attr, true)'/>
-                                    <with-param name='avt' value='attr'/>
-                                 </call-template>
-                                 <copy-of value='outputRef'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </when>
-                        <otherwise>
-                           <code:method-call name='WriteAttributeString'>
-                              <copy-of value='outputRef'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </otherwise>
-                     </choose>
-                  </for-each>
+                  <call-template name='write-client-attribs'>
+                     <with-param name='clientAttribs' value='clientAttribs'/>
+                     <with-param name='outputRef' value='outputRef'/>
+                  </call-template>
                   <invoke-delegate delegate='src_sequence_constructor'>
                      <with-param name='el' value='el'/>
                      <with-param name='output' tunnel='yes'>
@@ -624,10 +530,10 @@
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='required' value='new[] { "value" }'/>
-         <with-param name='optional' value='input_attributes
-            .Where(p => p != "value")
-            .Append("checked")
-            .ToArray()'/>
+         <with-param name='optional' as='string[]'>
+            <object value='input_attributes.Where(p => p != "value")'/>
+            <object>checked</object>
+         </with-param>
       </call-template>
 
       <call-template name='validate-for'>
@@ -640,7 +546,7 @@
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
-      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code).Single()'/>
 
       <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
@@ -661,36 +567,10 @@
                   <with-param name='output' value='docOutput' tunnel='yes'/>
                </call-template>
                <code:block>
-                  <for-each name='attr' in='clientAttribs'>
-                     <choose>
-                        <when test='input_client_bool_attributes.Contains(attr.Name.LocalName)'>
-                           <code:method-call name='WriteBoolean'>
-                              <call-template name='html-helper-ref'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <call-template name='src:boolean'>
-                                    <with-param name='val' value='xcst_boolean(attr, true)'/>
-                                    <with-param name='avt' value='attr'/>
-                                 </call-template>
-                                 <copy-of value='outputRef'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </when>
-                        <otherwise>
-                           <code:method-call name='WriteAttributeString'>
-                              <copy-of value='outputRef'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </otherwise>
-                     </choose>
-                  </for-each>
+                  <call-template name='write-client-attribs'>
+                     <with-param name='clientAttribs' value='clientAttribs'/>
+                     <with-param name='outputRef' value='outputRef'/>
+                  </call-template>
                   <invoke-delegate delegate='src_sequence_constructor'>
                      <with-param name='el' value='el'/>
                      <with-param name='output' value='docOutput' tunnel='yes'/>
@@ -845,9 +725,11 @@
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
-         <with-param name='optional' value='input_attributes
-            .Concat(new[] { "options", "multiple" })
-            .ToArray()'/>
+         <with-param name='optional' as='string[]'>
+            <object value='input_attributes'/>
+            <object>options</object>
+            <object>multiple</object>
+         </with-param>
       </call-template>
 
       <call-template name='validate-for'>
@@ -860,7 +742,7 @@
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
-      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code).Single()'/>
 
       <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
@@ -887,36 +769,10 @@
                   </call-template>
                </code:variable>
                <code:block>
-                  <for-each name='attr' in='clientAttribs'>
-                     <choose>
-                        <when test='input_client_bool_attributes.Contains(attr.Name.LocalName)'>
-                           <code:method-call name='WriteBoolean'>
-                              <call-template name='html-helper-ref'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <call-template name='src:boolean'>
-                                    <with-param name='val' value='xcst_boolean(attr, true)'/>
-                                    <with-param name='avt' value='attr'/>
-                                 </call-template>
-                                 <copy-of value='outputRef'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </when>
-                        <otherwise>
-                           <code:method-call name='WriteAttributeString'>
-                              <copy-of value='outputRef'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </otherwise>
-                     </choose>
-                  </for-each>
+                  <call-template name='write-client-attribs'>
+                     <with-param name='clientAttribs' value='clientAttribs'/>
+                     <with-param name='outputRef' value='outputRef'/>
+                  </call-template>
                   <invoke-delegate delegate='src_sequence_constructor'>
                      <with-param name='el' value='el'/>
                      <with-param name='output' value='docOutput' tunnel='yes'/>
@@ -1141,13 +997,15 @@
    <template match='XElement el &amp;&amp; el.Name == a + "label"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <variable name='clientAttributes' value='html_attributes'/>
+      <variable name='clientAttributes' value='global_attributes'/>
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
-         <with-param name='optional' value='html_attributes
-            .Concat(new[] { "for", "name" })
-            .ToArray()'/>
+         <with-param name='optional' as='string[]'>
+            <object>for</object>
+            <object>name</object>
+            <object value='global_attributes'/>
+         </with-param>
       </call-template>
 
       <call-template name='validate-for'>
@@ -1157,7 +1015,7 @@
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
-      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code).Single()'/>
 
       <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
@@ -1184,17 +1042,10 @@
                   </call-template>
                </code:variable>
                <code:block>
-                  <for-each name='attr' in='clientAttribs'>
-                     <code:method-call name='WriteAttributeString'>
-                        <copy-of value='outputRef'/>
-                        <code:arguments>
-                           <code:string literal='true'>
-                              <value-of value='attr.Name.LocalName'/>
-                           </code:string>
-                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
-                        </code:arguments>
-                     </code:method-call>
-                  </for-each>
+                  <call-template name='write-client-attribs'>
+                     <with-param name='clientAttribs' value='clientAttribs'/>
+                     <with-param name='outputRef' value='outputRef'/>
+                  </call-template>
                   <invoke-delegate delegate='src_sequence_constructor'>
                      <with-param name='el' value='el'/>
                      <with-param name='output' value='docOutput' tunnel='yes'/>
@@ -1281,19 +1132,20 @@
    <template match='XElement el &amp;&amp; el.Name == a + "validation-summary"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <variable name='clientAttributes' value='html_attributes_except_class'/>
+      <variable name='clientAttributes' value='global_attributes_except_class'/>
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
-         <with-param name='optional' value='html_attributes
-            .Append("include-member-errors")
-            .ToArray()'/>
+         <with-param name='optional' as='string[]'>
+            <object>include-member-errors</object>
+            <object value='global_attributes'/>
+         </with-param>
       </call-template>
 
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
-      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code).Single()'/>
 
       <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
@@ -1322,17 +1174,10 @@
                         <code:variable-reference name='{dispVar}'/>
                      </code:property-reference>
                      <code:block>
-                        <for-each name='attr' in='clientAttribs'>
-                           <code:method-call name='WriteAttributeString'>
-                              <copy-of value='outputRef'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </for-each>
+                        <call-template name='write-client-attribs'>
+                           <with-param name='clientAttribs' value='clientAttribs'/>
+                           <with-param name='outputRef' value='outputRef'/>
+                        </call-template>
                         <invoke-delegate delegate='src_sequence_constructor'>
                            <with-param name='el' value='el'/>
                            <with-param name='output' value='docOutput' tunnel='yes'/>
@@ -1398,13 +1243,15 @@
    <template match='XElement el &amp;&amp; el.Name == a + "validation-message"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <variable name='clientAttributes' value='html_attributes_except_class'/>
+      <variable name='clientAttributes' value='global_attributes_except_class'/>
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
-         <with-param name='optional' value='html_attributes
-            .Concat(new[] { "for", "name" })
-            .ToArray()'/>
+         <with-param name='optional' as='string[]'>
+            <object>for</object>
+            <object>name</object>
+            <object value='global_attributes'/>
+         </with-param>
       </call-template>
 
       <call-template name='validate-for'>
@@ -1414,7 +1261,7 @@
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
-      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code).Single()'/>
 
       <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
@@ -1446,17 +1293,10 @@
                         <code:variable-reference name='{dispVar}'/>
                      </code:property-reference>
                      <code:block>
-                        <for-each name='attr' in='clientAttribs'>
-                           <code:method-call name='WriteAttributeString'>
-                              <copy-of value='outputRef'/>
-                              <code:arguments>
-                                 <code:string literal='true'>
-                                    <value-of value='attr.Name.LocalName'/>
-                                 </code:string>
-                                 <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
-                              </code:arguments>
-                           </code:method-call>
-                        </for-each>
+                        <call-template name='write-client-attribs'>
+                           <with-param name='clientAttribs' value='clientAttribs'/>
+                           <with-param name='outputRef' value='outputRef'/>
+                        </call-template>
                         <invoke-delegate delegate='src_sequence_constructor'>
                            <with-param name='el' value='el'/>
                            <with-param name='output' value='docOutput' tunnel='yes'/>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:template name='c:initial-template'>
+      <a:validation-message id='my-val' name='a'/>
+   </c:template>
+
+   <c:template name='expected'>
+      <span id='my-val' class='field-validation-valid' data-valmsg-for='a' data-valmsg-replace='true'/>
+   </c:template>
+
+</c:module>

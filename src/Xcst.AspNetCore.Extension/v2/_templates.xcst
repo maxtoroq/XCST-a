@@ -30,10 +30,22 @@
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
-         <with-param name='optional' value='
-            new[] { "for", "name", "template", "field-name", "members", "members-names", "attributes", "with-params", "options" }
-               .Concat(editor ? new[] { "autofocus", "disabled", "readonly" } : System.Array.Empty&lt;string>())
-               .ToArray()'/>
+         <with-param name='optional' as='string[]'>
+            <object>attributes</object>
+            <object>field-name</object>
+            <object>for</object>
+            <object>members</object>
+            <object>members-names</object>
+            <object>name</object>
+            <object>options</object>
+            <object>template</object>
+            <object>with-params</object>
+            <if test='editor'>
+               <object>autofocus</object>
+               <object>disabled</object>
+               <object>readonly</object>
+            </if>
+         </with-param>
       </call-template>
 
       <call-template name='validate-for'>
