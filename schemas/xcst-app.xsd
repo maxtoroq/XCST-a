@@ -30,7 +30,7 @@
                <xs:attribute name="format" type="a:avt" />
                <xs:attributeGroup ref="a:_text-box-attribs" />
                <xs:attributeGroup ref="a:_input-attribs" />
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -44,7 +44,7 @@
             <xs:extension base="a:sequence-constructor">
                <xs:attributeGroup ref="a:_input-for-name-value-attribs" />
                <xs:attributeGroup ref="a:_input-attribs-except-autofocus" />
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs-except-hidden" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -61,7 +61,7 @@
                <xs:attribute name="cols" type="a:avt" />
                <xs:attributeGroup ref="a:_text-box-attribs" />
                <xs:attributeGroup ref="a:_input-attribs" />
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -81,7 +81,7 @@
                   </xs:simpleType>
                </xs:attribute>
                <xs:attributeGroup ref="a:_input-attribs" />
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -102,7 +102,7 @@
                   </xs:simpleType>
                </xs:attribute>
                <xs:attributeGroup ref="a:_input-attribs" />
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -123,7 +123,7 @@
                <xs:attribute name="options" type="a:options-expr" />
                <xs:attribute name="multiple" type="a:boolean" />
                <xs:attributeGroup ref="a:_input-attribs" />
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -187,7 +187,7 @@
             <xs:extension base="a:sequence-constructor">
                <xs:attribute name="for" type="a:expression" />
                <xs:attribute name="name" type="a:avt" />
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -204,7 +204,7 @@
                      <xs:union memberTypes="a:boolean a:avt-expr" />
                   </xs:simpleType>
                </xs:attribute>
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -218,7 +218,7 @@
             <xs:extension base="a:sequence-constructor">
                <xs:attribute name="for" type="a:expression" />
                <xs:attribute name="name" type="a:avt" />
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
@@ -238,12 +238,20 @@
                   </xs:simpleType>
                </xs:attribute>
                <xs:attribute name="helper-name" type="a:identifier" />
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
    </xs:element>
-   <xs:attributeGroup name="_html-attribs">
+   <xs:attributeGroup name="_global-attribs">
+      <xs:attributeGroup ref="a:_global-attribs-except-hidden" />
+      <xs:attribute name="hidden">
+         <xs:simpleType>
+            <xs:union memberTypes="a:boolean a:avt-expr" />
+         </xs:simpleType>
+      </xs:attribute>
+   </xs:attributeGroup>
+   <xs:attributeGroup name="_global-attribs-except-hidden">
       <xs:attribute name="id" type="a:avt" />
       <xs:attribute name="class" type="a:avt" />
    </xs:attributeGroup>
@@ -358,7 +366,7 @@
                      <xs:union memberTypes="a:boolean a:avt-expr" />
                   </xs:simpleType>
                </xs:attribute>
-               <xs:attributeGroup ref="a:_html-attribs" />
+               <xs:attributeGroup ref="a:_global-attribs" />
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>

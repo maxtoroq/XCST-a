@@ -104,6 +104,7 @@
             <when test='
                   "autofocus"
                   or "disabled"
+                  or "hidden"
                   or "readonly"'>
                <code:method-call name='WriteBoolean'>
                   <call-template name='html-helper-ref'/>
@@ -126,7 +127,16 @@
                      <code:string literal='true'>
                         <value-of value='localName'/>
                      </code:string>
-                     <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
+                     <choose>
+                        <when test='localName == "method"'>
+                           <code:string verbatim='true'>
+                              <value-of value='xcst_non_string(attr)'/>
+                           </code:string>
+                        </when>
+                        <otherwise>
+                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
+                        </otherwise>
+                     </choose>
                   </code:arguments>
                </code:method-call>
             </otherwise>

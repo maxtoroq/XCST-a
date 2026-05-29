@@ -60,7 +60,7 @@
       <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
 
       <variable name='docOutput' value='src_doc_output(el, output)'/>
-      <variable name='outputRef' value='select(docOutput, src + "reference", code)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code).Single()'/>
 
       <call-template name='declare-doc-output'>
          <with-param name='el' value='el'/>
@@ -83,36 +83,20 @@
       <code:try line-hidden='true'>
          <code:block>
 
-            <variable name='methodStringEl'>
-               <code:string verbatim='true'>
-                  <value-of value='xcst_non_string(methodAttr)'/>
-               </code:string>
-            </variable>
-
-            <for-each name='attr' in='clientAttribs'>
-               <code:method-call name='WriteAttributeString'>
-                  <copy-of value='outputRef'/>
-                  <code:arguments>
-                     <code:string literal='true'>
-                        <value-of value='attr.Name.LocalName'/>
-                     </code:string>
-                     <choose>
-                        <when test='attr == methodAttr'>
-                           <copy-of value='methodStringEl'/>
-                        </when>
-                        <otherwise>
-                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr }'/>
-                        </otherwise>
-                     </choose>
-                  </code:arguments>
-               </code:method-call>
-            </for-each>
+            <call-template name='write-client-attribs'>
+               <with-param name='clientAttribs' value='clientAttribs'/>
+               <with-param name='outputRef' value='outputRef'/>
+            </call-template>
 
             <call-template name='model-seqctor'>
                <with-param name='el' value='el'/>
                <with-param name='valueAttr' value='valueAttr'/>
                <with-param name='typeAttr' value='typeAttr'/>
-               <with-param name='methodStringEl' value='methodStringEl'/>
+               <with-param name='methodStringEl'>
+                  <code:string verbatim='true'>
+                     <value-of value='xcst_non_string(methodAttr)'/>
+                  </code:string>
+               </with-param>
                <with-param name='output' value='docOutput' tunnel='yes'/>
             </call-template>
 

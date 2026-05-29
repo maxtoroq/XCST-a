@@ -101,7 +101,7 @@
             </zeroOrMore>
             <ref name="_text-box-attribs"/>
             <ref name="_input-attribs"/>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
@@ -111,7 +111,7 @@
             <ann:documentation>Creates an &lt;input> element of type 'hidden'.</ann:documentation>
             <ref name="_input-for-name-value-attribs"/>
             <ref name="_input-attribs-except-autofocus"/>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs-except-hidden"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
@@ -132,7 +132,7 @@
             </zeroOrMore>
             <ref name="_text-box-attribs"/>
             <ref name="_input-attribs"/>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
@@ -159,7 +159,7 @@
                </zeroOrMore>
             </choice>
             <ref name="_input-attribs"/>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
@@ -189,7 +189,7 @@
                </zeroOrMore>
             </choice>
             <ref name="_input-attribs"/>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
@@ -216,7 +216,7 @@
                </choice>
             </zeroOrMore>
             <ref name="_input-attribs"/>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
@@ -321,7 +321,7 @@
                   </attribute>
                </optional>
             </choice>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
@@ -339,7 +339,7 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
@@ -357,7 +357,7 @@
                   </attribute>
                </optional>
             </choice>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
@@ -388,12 +388,26 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
       </define>
 
-      <define name="_html-attribs">
+      <define name="_global-attribs">
+         <ref name="_global-attribs-except-hidden"/>
+         <zeroOrMore>
+            <choice>
+               <attribute name="hidden">
+                  <choice>
+                     <ref name="boolean"/>
+                     <ref name="avt-expr"/>
+                  </choice>
+               </attribute>
+            </choice>
+         </zeroOrMore>
+      </define>
+
+      <define name="_global-attribs-except-hidden">
          <zeroOrMore>
             <choice>
                <attribute name="id">
@@ -610,7 +624,7 @@
                   </attribute>
                </choice>
             </zeroOrMore>
-            <ref name="_html-attribs"/>
+            <ref name="_global-attribs"/>
             <ref name="_form-model-common"/>
          </element>
       </define>

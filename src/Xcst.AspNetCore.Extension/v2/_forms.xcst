@@ -30,6 +30,7 @@
 
    <variable name='global_attributes_except_class' as='string[]'>
       <object>id</object>
+      <object>hidden</object>
    </variable>
 
    <variable name='input_attributes' as='string[]'>
@@ -58,16 +59,17 @@
    <template match='XElement el &amp;&amp; (el.Name == a + "input" || el.Name == a + "hidden")' mode='src:statement'>
 
       <variable name='hidden' value='el.Name.LocalName == "hidden"'/>
+      <variable name='hiddenExcluded' value='new[] { "autofocus", "hidden" }'/>
 
       <variable name='clientAttributes' value='(hidden) ?
-         input_client_attributes
+         input_client_attributes.Except(hiddenExcluded)
          : textbox_client_attributes'/>
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' as='string[]'>
             <choose>
-               <when test='hidden' value='input_attributes.Where(p => p != "autofocus")'/>
+               <when test='hidden' value='input_attributes.Except(hiddenExcluded)'/>
                <otherwise>
                   <object value='textbox_attributes'/>
                   <object>format</object>
