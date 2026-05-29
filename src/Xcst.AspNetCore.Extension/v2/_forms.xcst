@@ -1383,4 +1383,111 @@
       </code:method-call>
    </template>
 
+   <template match='XElement el &amp;&amp; el.Name == a + "fieldset"' mode='src:statement'>
+      <param name='output' as='XElement' tunnel='yes'/>
+
+      <variable name='clientAttributes' as='string[]'>
+         <object>disabled</object>
+         <object value='global_attributes'/>
+      </variable>
+
+      <call-template name='validate-attribs'>
+         <with-param name='el' value='el'/>
+         <with-param name='optional' as='string[]'>
+            <object>for</object>
+            <object>name</object>
+            <object>helper-name</object>
+            <object value='clientAttributes'/>
+         </with-param>
+      </call-template>
+
+      <call-template name='validate-for'>
+         <with-param name='el' value='el'/>
+      </call-template>
+
+      <invoke-delegate delegate='xcst_require_output' with-params='new { el }'/>
+
+      <variable name='docOutput' value='src_doc_output(el, output)'/>
+      <variable name='outputRef' value='select(docOutput, src + "reference", code).Single()'/>
+
+      <call-template name='declare-doc-output'>
+         <with-param name='el' value='el'/>
+         <with-param name='docOutput' value='docOutput'/>
+      </call-template>
+
+      <variable name='clientAttribs' value='attributes(el)
+         .Where(p => p.Name.Namespace == XNamespace.None
+            &amp;&amp; clientAttributes.Contains(p.Name.LocalName))
+         .ToArray()'/>
+
+      <variable name='forAttr' value='el.Attribute("for")'/>
+      <variable name='nameAttr' value='el.Attribute("name")'/>
+      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
+
+      <code:method-call name='WriteStartElement'>
+         <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
+         <copy-of value='outputRef'/>
+         <code:arguments>
+            <code:string literal='true'>fieldset</code:string>
+         </code:arguments>
+      </code:method-call>
+
+      <code:try line-hidden='true'>
+         <code:block>
+            <call-template name='write-client-attribs'>
+               <with-param name='clientAttribs' value='clientAttribs'/>
+               <with-param name='outputRef' value='outputRef'/>
+            </call-template>
+            <variable name='newHelper'>
+               <code:variable-reference name='{(el.Attribute("helper-name") is { } helperNameAttr ?
+                  xcst_name(helperNameAttr)
+                  : aux_variable("html") + "_" + fn_generate_id(el))}'/>
+            </variable>
+            <code:variable name='{newHelper.Attribute("name")!.Value}'>
+               <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
+               <code:method-call>
+                  <attribute name='name'>
+                     <text>NewFieldsetHelper</text>
+                     <if test='forAttr != null || forModel'>For</if>
+                     <if test='forModel'>Model</if>
+                  </attribute>
+                  <call-template name='html-helper-ref'/>
+                  <code:arguments>
+                     <choose>
+                        <when test='forAttr != null'>
+                           <variable name='param' value='aux_variable(fn_generate_id(el))'/>
+                           <code:lambda>
+                              <code:parameters>
+                                 <code:parameter name='{param}'/>
+                              </code:parameters>
+                              <code:property-reference name='{xcst_expression(forAttr)}'>
+                                 <code:variable-reference name='{param}'/>
+                              </code:property-reference>
+                           </code:lambda>
+                        </when>
+                        <when test='nameAttr != null'>
+                           <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
+                        </when>
+                     </choose>
+                  </code:arguments>
+               </code:method-call>
+            </code:variable>
+            <invoke-delegate delegate='src_sequence_constructor'>
+               <with-param name='el' value='el'/>
+               <with-param name='output' value='docOutput' tunnel='yes'/>
+               <with-param name='app_html_helper' value='newHelper' tunnel='yes'/>
+            </invoke-delegate>
+         </code:block>
+         <code:finally line-hidden='true'>
+            <code:method-call name='WriteEndElement'>
+               <copy-of value='outputRef'/>
+            </code:method-call>
+         </code:finally>
+      </code:try>
+   </template>
+
+   <template match='XElement el &amp;&amp; el.Name == a + "fieldset"' mode='xcst:extension-instruction'>
+      <call-template name='element-instruction'/>
+   </template>
+
 </module>

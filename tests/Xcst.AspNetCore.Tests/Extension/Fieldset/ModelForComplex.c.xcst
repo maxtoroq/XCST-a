@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='ContactModel'>
+      <c:member name='first_name' as='string'/>
+      <c:member name='last_name' as='string'/>
+      <c:member name='address' display-name='Your Address'>
+         <c:member name='line_1' as='string'/>
+         <c:member name='line_2' as='string'/>
+         <c:member name='city' as='string'/>
+      </c:member>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <a:model type='ContactModel'>
+         <a:fieldset for='address'>
+            <legend>
+               <a:display-name/>
+            </legend>
+            <a:input for='line_1'/>
+         </a:fieldset>
+      </a:model>
+   </c:template>
+
+   <c:template name='expected'>
+      <fieldset>
+         <legend>Your Address</legend>
+         <input id='address_line_1' type='text' name='address.line_1' value=''/>
+      </fieldset>
+   </c:template>
+
+</c:module>

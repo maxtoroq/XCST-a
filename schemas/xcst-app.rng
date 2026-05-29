@@ -33,6 +33,7 @@
             <ref name="display-name"/>
             <ref name="display-text"/>
             <ref name="editor"/>
+            <ref name="fieldset"/>
             <ref name="form"/>
             <ref name="hidden"/>
             <ref name="input"/>
@@ -356,6 +357,37 @@
                   </attribute>
                </optional>
             </choice>
+            <ref name="_html-attribs"/>
+            <ref name="sequence-constructor"/>
+         </element>
+      </define>
+
+      <define name="fieldset">
+         <element name="fieldset">
+            <ann:documentation>Creates a &lt;fieldset> element and defines a model for descendant instructions.</ann:documentation>
+            <optional>
+               <choice>
+                  <attribute name="for">
+                     <ref name="expression"/>
+                  </attribute>
+                  <attribute name="name">
+                     <ref name="avt"/>
+                  </attribute>
+               </choice>
+            </optional>
+            <zeroOrMore>
+               <choice>
+                  <attribute name="disabled">
+                     <choice>
+                        <ref name="boolean"/>
+                        <ref name="avt-expr"/>
+                     </choice>
+                  </attribute>
+                  <attribute name="helper-name">
+                     <ref name="identifier"/>
+                  </attribute>
+               </choice>
+            </zeroOrMore>
             <ref name="_html-attribs"/>
             <ref name="sequence-constructor"/>
          </element>
