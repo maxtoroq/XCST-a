@@ -223,6 +223,26 @@
          </xs:complexContent>
       </xs:complexType>
    </xs:element>
+   <xs:element name="fieldset" substitutionGroup="a:extension-instruction">
+      <xs:annotation>
+         <xs:documentation>Creates a &lt;fieldset&gt; element and defines a model for descendant instructions.</xs:documentation>
+      </xs:annotation>
+      <xs:complexType>
+         <xs:complexContent>
+            <xs:extension base="a:sequence-constructor">
+               <xs:attribute name="for" type="a:expression" />
+               <xs:attribute name="name" type="a:avt" />
+               <xs:attribute name="disabled">
+                  <xs:simpleType>
+                     <xs:union memberTypes="a:boolean a:avt-expr" />
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="helper-name" type="a:identifier" />
+               <xs:attributeGroup ref="a:_html-attribs" />
+            </xs:extension>
+         </xs:complexContent>
+      </xs:complexType>
+   </xs:element>
    <xs:attributeGroup name="_html-attribs">
       <xs:attribute name="id" type="a:avt" />
       <xs:attribute name="class" type="a:avt" />
