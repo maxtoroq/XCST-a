@@ -123,7 +123,7 @@ public class ViewContext {
    ViewName { get; set; }
 
    [AllowNull]
-   public IDictionary<string, object?>
+   internal IDictionary<string, object?>
    ViewParameters {
       get => _viewParameters ??= new Dictionary<string, object?>();
       set => _viewParameters = value;
