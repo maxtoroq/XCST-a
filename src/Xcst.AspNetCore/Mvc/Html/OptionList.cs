@@ -72,7 +72,7 @@ public class OptionList : IEnumerable<SelectListItem> {
 
          foreach (var item in list) {
 
-            AddDynamicOption(new SelectListItem {
+            _dynamicList.Add(new SelectListItem {
                Disabled = item.Disabled,
                Group = item.Group,
                Selected = item.Selected,
@@ -83,11 +83,6 @@ public class OptionList : IEnumerable<SelectListItem> {
       }
 
       return this;
-   }
-
-   void
-   AddDynamicOption(SelectListItem item) {
-      _dynamicList!.Add(item);
    }
 
    public IEnumerator<SelectListItem>

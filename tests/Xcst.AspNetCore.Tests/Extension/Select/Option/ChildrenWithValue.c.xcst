@@ -4,12 +4,18 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:template name='foo'>
-      <a:select>
+   <c:template name='c:initial-template'>
+      <a:select name='a'>
          <a:option value='""'>
             <c:text/>
          </a:option>
       </a:select>
+   </c:template>
+
+   <c:template name='expected'>
+      <select id='a' name='a'>
+         <option value=''/>
+      </select>
    </c:template>
 
 </c:module>

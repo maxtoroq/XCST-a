@@ -6,13 +6,13 @@
 
    <c:template name='c:initial-template'>
       <a:select name='a'>
-         <a:option>-- Select --</a:option>
+         <a:option value='null'/>
       </a:select>
    </c:template>
 
    <c:template name='expected'>
       <select id='a' name='a'>
-         <option>-- Select --</option>
+         <option value=''/>
       </select>
    </c:template>
 

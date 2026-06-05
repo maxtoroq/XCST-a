@@ -52,9 +52,24 @@ partial class HtmlHelper {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public struct OptionArgs {
 
+      object?
+      _value;
+
+      bool
+      _valueSet;
+
       [GeneratedCodeReference]
       public object?
-      value { get; set; }
+      value {
+         readonly get => _value;
+         set {
+            _value = value;
+            _valueSet = true;
+         }
+      }
+
+      internal readonly bool
+      valueSet => _valueSet;
 
       [GeneratedCodeReference]
       public bool
@@ -95,10 +110,8 @@ partial class HtmlHelper {
 
       var fullName = FullNameNonEmpty(name);
 
-      var defaultValue = GetModelStateValue(fullName,
-         (multiple) ? typeof(string[]) : typeof(string));
-
-      defaultValue ??= value ?? modelExplorer.Model;
+      var defaultValue = GetModelStateValue(fullName, (multiple) ? typeof(string[]) : typeof(string))
+         ?? value ?? modelExplorer.Model;
 
       var selectedValues = getSelectedValues(defaultValue, multiple);
 
@@ -231,7 +244,7 @@ partial class HtmlHelper {
 
       output.WriteStartElement("option");
 
-      if (value != null) {
+      if (args.valueSet) {
          output.WriteAttributeString("value", valueStr);
       }
 
