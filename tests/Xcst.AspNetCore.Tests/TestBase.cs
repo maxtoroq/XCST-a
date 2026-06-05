@@ -63,7 +63,7 @@ static partial class TestsHelper {
       httpContextMock.Setup(c => c.RequestServices)
          .Returns(serviceProvider);
 
-      package.HttpContext = httpContextMock.Object;
+      package.Contextualize(httpContextMock.Object, String.Empty, String.Empty);
 
       return package;
    }

@@ -29,9 +29,6 @@ namespace Xcst.Web;
 
 public abstract class XcstPage {
 
-   HttpContext?
-   _httpContext;
-
    IList<string>?
    _urlData;
 
@@ -42,30 +39,21 @@ public abstract class XcstPage {
    _antiforgery;
 
 #pragma warning disable CS8618
-   public virtual string
-   VirtualPath { get; set; }
+   public string
+   VirtualPath { get; private set; }
+
+   public string
+   PathInfo { get; private set; }
 #pragma warning restore CS8618
 
-   public virtual string?
-   PathInfo { get; set; }
+   public IList<string>
+   UrlData => _urlData
+      ??= new UrlDataList(PathInfo);
 
-   public virtual IList<string>
-   UrlData {
-      get => _urlData ??= new UrlDataList(PathInfo);
-      set => _urlData = value;
-   }
-
-   public virtual HttpContext
-   HttpContext {
-#pragma warning disable CS8603
-      get => _httpContext;
-#pragma warning restore CS8603
-      set {
-         _httpContext = value;
-         _urlData = null;
-         _url = null;
-      }
-   }
+#pragma warning disable CS8618
+   public HttpContext
+   HttpContext { get; private set; }
+#pragma warning restore CS8618
 
 #pragma warning disable CS8603
    public HttpRequest
@@ -81,30 +69,36 @@ public abstract class XcstPage {
    User => HttpContext?.User;
 #pragma warning restore CS8603
 
-   public virtual bool
+   public bool
    IsPost => Request?.Method == "POST";
 
-   public virtual bool
+   public bool
    IsAjax => Request?.IsAjaxRequest() ?? false;
 
-   public virtual UrlHelper
+   public UrlHelper
    Url {
-      get {
-         if (_url is null
-            && HttpContext != null) {
-
-            _url = new UrlHelper(HttpContext);
-         }
-#pragma warning disable CS8603
-         return _url;
-#pragma warning restore CS8603
-      }
+      get => _url ??= new UrlHelper(HttpContext);
       set => _url = value;
    }
 
    public AntiforgeryHelper
-   Antiforgery =>
-      _antiforgery ??= new AntiforgeryHelper(() => HttpContext);
+   Antiforgery => _antiforgery
+      ??= new AntiforgeryHelper(() => HttpContext);
+
+   public virtual void
+   Contextualize(HttpContext httpContext, string virtualPath, string pathInfo) {
+
+      ArgumentNullException.ThrowIfNull(httpContext);
+      ArgumentNullException.ThrowIfNull(virtualPath);
+      ArgumentNullException.ThrowIfNull(pathInfo);
+
+      this.HttpContext = httpContext;
+      this.VirtualPath = virtualPath;
+      this.PathInfo = pathInfo;
+
+      _urlData = null;
+      _url = null;
+   }
 
    public virtual void
    Redirect(string url) {

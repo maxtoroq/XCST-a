@@ -259,8 +259,8 @@ sealed class TemplateRenderer {
             + $" with model of type '{modelExplorer.Metadata.ModelType}'.");
       }
 
-      viewPage.ViewContext = _viewContext;
-      viewPage._modelExplorer = modelExplorer;
+      viewPage.Contextualize(_viewContext);
+      viewPage.ModelExplorer = modelExplorer;
 
       XcstEvaluator.Using((object)viewPage)
          .WithParams(_viewContext.ViewParameters)

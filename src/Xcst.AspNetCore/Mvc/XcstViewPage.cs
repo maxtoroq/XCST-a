@@ -30,10 +30,7 @@ namespace Xcst.Web.Mvc;
 
 public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
-   ViewContext?
-   _viewContext;
-
-   internal ModelExplorer?
+   ModelExplorer?
    _modelExplorer;
 
    IModelMetadataProvider?
@@ -42,42 +39,20 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    HtmlHelper?
    _html;
 
-   public override HttpContext
-   HttpContext {
-      get => base.HttpContext;
-      set {
-         base.HttpContext = value;
-
-         if (value != null
-            && ViewContext is null) {
-
-            ViewContext = new ViewContext(value, this as IXcstPackage);
-         }
-      }
-   }
-
-   public virtual ViewContext
-   ViewContext {
-#pragma warning disable CS8603
-      get => _viewContext;
-#pragma warning restore CS8603
-      set {
-         _viewContext = value;
-
-#pragma warning disable CS8601
-         HttpContext = value?.HttpContext;
-#pragma warning restore CS8601
-
-         _html = null;
-      }
-   }
+#pragma warning disable CS8618
+   public ViewContext
+   ViewContext { get; private set; }
+#pragma warning restore CS8618
 
    protected internal virtual Type
    DeclaredModelType => typeof(Object);
 
    public ModelExplorer
-   ModelExplorer => _modelExplorer
-      ??= MetadataProvider.GetModelExplorerForType(DeclaredModelType, default);
+   ModelExplorer {
+      get => _modelExplorer
+         ??= MetadataProvider.GetModelExplorerForType(DeclaredModelType, null);
+      internal set => _modelExplorer = value;
+   }
 
    public object?
    Model {
@@ -85,13 +60,13 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       set => SetModel(value);
    }
 
-   private protected IModelMetadataProvider
+   private IModelMetadataProvider
    MetadataProvider => _modelMetadataProvider
       ??= HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
 
    public HtmlHelper
    Html => _html
-      ??= CreateHtmlHelper(ViewContext ?? throw new InvalidOperationException(), this, MetadataProvider);
+      ??= CreateHtmlHelper(ViewContext, this, MetadataProvider);
 
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
@@ -111,6 +86,32 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
 
       _modelExplorer = this.MetadataProvider
          .GetModelExplorerForType(value?.GetType() ?? declaredType, value);
+   }
+
+   public sealed override void
+   Contextualize(HttpContext httpContext, string virtualPath, string pathInfo) {
+
+      ArgumentNullException.ThrowIfNull(httpContext);
+      ArgumentNullException.ThrowIfNull(virtualPath);
+      ArgumentNullException.ThrowIfNull(pathInfo);
+
+      base.Contextualize(httpContext, virtualPath, pathInfo);
+
+      Contextualize(new ViewContext(httpContext, this as IXcstPackage));
+   }
+
+   public virtual void
+   Contextualize(ViewContext viewContext) {
+
+      ArgumentNullException.ThrowIfNull(viewContext);
+
+      if (this.HttpContext is null) {
+         base.Contextualize(viewContext.HttpContext, String.Empty, String.Empty);
+      }
+
+      this.ViewContext = viewContext;
+
+      _html = null;
    }
 
    protected virtual HtmlHelper

@@ -82,9 +82,7 @@ sealed class PrecompiledPageMiddleware {
          && MatchRequest(requestPath, out var pagePath, out var pathInfo, out var pageType)) {
 
          var page = CreatePage(pageType, context.RequestServices);
-         page.VirtualPath = pagePath;
-         page.PathInfo = pathInfo;
-         page.HttpContext = context;
+         page.Contextualize(context, pagePath, pathInfo);
 
          await page.RenderPageAsync();
          return;
