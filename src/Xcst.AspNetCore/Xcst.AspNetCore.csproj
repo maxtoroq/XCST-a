@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <LangVersion>11</LangVersion>
@@ -6,13 +7,16 @@
     <RootNamespace>Xcst.Web</RootNamespace>
     <VersionPrefix>2</VersionPrefix>
     <Description>XCST web pages for ASP.NET Core</Description>
+    <PackageIcon>icon.png</PackageIcon>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
+
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
@@ -20,14 +24,20 @@
     </PackageReference>
     <PackageReference Include="Xcst.Runtime" Version="2.0.31" />
   </ItemGroup>
+
   <ItemGroup>
     <Using Include="Microsoft.AspNetCore.Mvc.ActionContext" Alias="ActionContext" />
     <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorer" Alias="ModelExplorer" />
     <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorerExtensions" Static="true" />
     <Using Include="Microsoft.AspNetCore.Mvc.ViewFeatures.ModelMetadataProviderExtensions" Static="true" />
   </ItemGroup>
+
   <ItemGroup>
-    <Content Include="..\..\schemas\xcst-app.rng" Visible="false" PackagePath="schemas" />
-    <Content Include="..\..\schemas\xcst-app.xsd" Visible="false" PackagePath="schemas" />
+    <None Include="..\..\LICENSE.txt" Visible="false" Pack="true" PackagePath="" />
+    <None Include="..\..\build\temp\$(MSBuildProjectName)\NOTICE.xml" Visible="false" Pack="true" PackagePath="" />
+    <None Include="..\..\build\icon.png" Visible="false" Pack="true" PackagePath="" />
+    <None Include="..\..\schemas\xcst-app.rng" Visible="false" Pack="true" PackagePath="schemas" />
+    <None Include="..\..\schemas\xcst-app.xsd" Visible="false" Pack="true" PackagePath="schemas" />
   </ItemGroup>
+
 </Project>

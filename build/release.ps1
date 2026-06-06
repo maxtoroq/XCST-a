@@ -13,50 +13,6 @@ $solutionPath = Resolve-Path ..
 $solution = "$solutionPath\XCST-a.sln"
 $configuration = "Release"
 
-function BuildProj($target) {
-
-   $pack = $target -eq "Pack"
-
-   if ($pack) {
-
-      $itemXml = "<ItemGroup xmlns='$($project.doc.DocumentElement.NamespaceURI)'>
-         <None Include='$solutionPath\LICENSE.txt' Pack='true' PackagePath=''/>
-         <None Include='$tempNotice' Pack='true' PackagePath=''/>
-         <None Include='$(Resolve-Path icon.png)' Pack='true' PackagePath=''/>
-      </ItemGroup>"
-
-      $itemReader = [Xml.XmlReader]::Create((New-Object IO.StringReader $itemXml))
-      $itemReader.MoveToContent() | Out-Null
-      $itemNode = $project.doc.ReadNode($itemReader)
-      $project.doc.DocumentElement.AppendChild($itemNode) | Out-Null
-      $itemNode.RemoveAttribute("xmlns")
-
-      $project.doc.Save($project.file)
-   }
-
-   MSBuild $project.file /t:$target /v:minimal `
-      /p:Configuration=$configuration `
-      /p:AssemblyVersion=$assemblyVersion `
-      /p:FileVersion=$pkgVersion `
-      /p:VersionPrefix=$pkgVersion `
-      /p:VersionSuffix=$versionSuffix `
-      /p:ContinuousIntegrationBuild=true `
-      /p:Product=$($notice.work) `
-      /p:Copyright=$($notice.copyright) `
-      /p:Company=$($notice.website) `
-      /p:Authors=$($notice.authors) `
-      /p:PackageLicenseExpression=$($notice.license.name) `
-      /p:PackageProjectUrl=$($notice.website) `
-      /p:PackageOutputPath=$outputPath `
-      /p:RepositoryBranch=$(git branch --show-current) `
-      /p:PackageIcon=icon.png
-
-   if ($pack) {
-      $project.doc.DocumentElement.RemoveChild($itemNode) | Out-Null
-      $project.doc.Save($project.file)
-   }
-}
-
 function PackageNotice {
 
    Add-Type -AssemblyName System.Xml.Linq
@@ -90,7 +46,22 @@ function NuPack {
    $outputPath = Resolve-Path nupkg
    $tempNotice = PackageNotice
 
-   BuildProj "Pack" | Out-Null
+   MSBuild $project.file /t:Pack /v:minimal `
+      /p:Configuration=$configuration `
+      /p:AssemblyVersion=$assemblyVersion `
+      /p:FileVersion=$pkgVersion `
+      /p:VersionPrefix=$pkgVersion `
+      /p:VersionSuffix=$versionSuffix `
+      /p:ContinuousIntegrationBuild=true `
+      /p:Product=$($notice.work) `
+      /p:Copyright=$($notice.copyright) `
+      /p:Company=$($notice.website) `
+      /p:Authors=$($notice.authors) `
+      /p:PackageLicenseExpression=$($notice.license.name) `
+      /p:PackageProjectUrl=$($notice.website) `
+      /p:PackageOutputPath=$outputPath `
+      /p:RepositoryBranch=$(git branch --show-current) |
+      Out-Null
 
    return Join-Path $outputPath "$($project.name).$pkgVer.nupkg"
 }
@@ -102,8 +73,6 @@ function ProjectData([string]$projName) {
    $project.path = Resolve-Path $solutionPath\src\$($project.name)
    $project.file = "$($project.path)\$($project.name).csproj"
    $project.doc = [xml](Get-Content $project.file)
-   $project.targetFx = (($project.doc.Project.PropertyGroup | select -first 1) | %{ (($_.TargetFramework, $_.TargetFrameworks) -ne $null)[0] })
-
    $project.temp = Join-Path (Get-Item .) temp\$($project.name)
 
    if (-not (Test-Path $project.temp -PathType Container)) {

@@ -7,11 +7,12 @@
     <RootNamespace>Xcst.Web.Extension</RootNamespace>
     <VersionPrefix>2</VersionPrefix>
     <Description>Extension instructions for XCST web pages</Description>
+    <PackageIcon>icon.png</PackageIcon>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
-   
+
   <PropertyGroup>
     <XcstInput>**\*.xcst</XcstInput>
     <XcstOutput>xcst.generated.cs</XcstOutput>
@@ -23,6 +24,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Xcst.Runtime" Version="2.0.31" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.txt" Visible="false" Pack="true" PackagePath="" />
+    <None Include="..\..\build\temp\$(MSBuildProjectName)\NOTICE.xml" Visible="false" Pack="true" PackagePath="" />
+    <None Include="..\..\build\icon.png" Visible="false" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
