@@ -26,7 +26,7 @@
    </c:use-package>
 
    <c:function name='layout'>
-      <c:param name='tunnelParams' value='null' as='object?'/>
+      <c:param name='tunnelParams' value='null'/>
 
       <c:set ref='Response.ContentType'>text/html</c:set>
       <c:result-document output='Response.BodyWriter.AsStream()'>
