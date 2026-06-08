@@ -37,12 +37,10 @@ What's New
 - ['id' attribute for HTML instructions](https://github.com/maxtoroq/XCST-a/commit/664768dc3d598403ba66327560cef72b03e90d34)
 - ['hidden' attribute for HTML instructions](https://github.com/maxtoroq/XCST-a/commit/44453d394ecf12f0edbb9e69c341c220a14e2b60)
 - ['a:slug' attribute](https://github.com/maxtoroq/XCST-a/commit/bfb94be4c626e9bfcc0e450a9b8cab3dd1990eb6)
+- [`a:fieldset` instruction](https://github.com/maxtoroq/XCST-a/commit/86c7fc2f54a7abdf12dd5794eac1b96909fa54bc)
 - [`Url.Absolute()` method](https://github.com/maxtoroq/XCST-a/commit/2f494831288c38d1343d4ae9de0bea5d6832aebf)
 
-Breaking Changes
-----------------
-
-### Entension
+### Breaking Changes: Extension
 
 - [Removed 'attributes' attribute from HTML instructions (can now use `c:attribute`)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
 - [Replaced 'inherits' and 'model' directives with 'inherits' and 'a:model-type' attributes](https://github.com/maxtoroq/XCST-a/commit/b9a4d18c834c706d236b2ea60bb8fde361bacf1b)
@@ -60,7 +58,7 @@ Breaking Changes
 - [Renamed `a:model` 'as' attribute to 'type'](https://github.com/maxtoroq/XCST-a/commit/3ac2492e377e7be181f0aa49e981e20c67010608)
 - [Using single Number template for integral types](https://github.com/maxtoroq/XCST-a/commit/6787fb48ee29127f536dcb52c267082be7791cee)
 
-### Runtime
+### Breaking Changes: Runtime
 The runtime has lots of changes, including renamed namespaces and moved types. These are the most notable changes:
 
 - [Merged TemplateInfo into ViewContext](https://github.com/maxtoroq/XCST-a/commit/996c47dd75e79f76c856616bb4c4dfab4ead69f4)
