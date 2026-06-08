@@ -214,7 +214,7 @@
                <code:type-reference name='Dictionary' namespace='System.Collections.Generic'>
                   <code:type-arguments>
                      <code:type-reference name='String' namespace='System'/>
-                     <code:type-reference name='IEnumerable' namespace='System.Collections.Generic'>
+                     <code:type-reference name='IEnumerable' namespace='System.Collections.Generic' nullable='true'>
                         <code:type-arguments>
                            <code:type-reference name='SelectListItem' namespace='Xcst.Web.Mvc'/>
                         </code:type-arguments>

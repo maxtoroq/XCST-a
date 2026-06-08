@@ -30,7 +30,7 @@ public class ViewContext {
    IList<string>?
    _membersNames;
 
-   IDictionary<string, IEnumerable<SelectListItem>>?
+   IDictionary<string, IEnumerable<SelectListItem>?>?
    _membersOptions;
 
    IDictionary<string, object?>?
@@ -110,9 +110,9 @@ public class ViewContext {
    }
 
    [AllowNull]
-   public IDictionary<string, IEnumerable<SelectListItem>>
+   public IDictionary<string, IEnumerable<SelectListItem>?>
    MembersOptions {
-      get => _membersOptions ??= new Dictionary<string, IEnumerable<SelectListItem>>();
+      get => _membersOptions ??= new Dictionary<string, IEnumerable<SelectListItem>?>();
       set => _membersOptions = value;
    }
 
@@ -186,7 +186,7 @@ public class ViewContext {
       }
 
       if (viewContext._membersOptions is { Count: > 0 } memberOpts) {
-         _membersOptions = new CopyOnWriteDictionary<string, IEnumerable<SelectListItem>>(memberOpts, EqualityComparer<string>.Default);
+         _membersOptions = new CopyOnWriteDictionary<string, IEnumerable<SelectListItem>?>(memberOpts, EqualityComparer<string>.Default);
       }
 
       this.MemberTemplate = viewContext.MemberTemplate;

@@ -246,7 +246,7 @@ public class TemplateHelper {
       membersNames { get; set; }
 
       [GeneratedCodeReference]
-      public IDictionary<string, IEnumerable<SelectListItem>>?
+      public IDictionary<string, IEnumerable<SelectListItem>?>?
       membersOptions { get; set; }
 
       [GeneratedCodeReference]
