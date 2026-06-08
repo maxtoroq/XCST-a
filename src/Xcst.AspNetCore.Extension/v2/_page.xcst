@@ -112,7 +112,7 @@
          </code:attributes>
          <code:getter>
             <code:block>
-               <code:disable-warning codes='CS8605'/>
+               <code:disable-warning codes='CS8600 CS8605'/>
                <code:return>
                   <code:cast>
                      <copy-of value='modelTypeRef'/>
@@ -121,7 +121,7 @@
                      </code:property-reference>
                   </code:cast>
                </code:return>
-               <code:restore-warning codes='CS8605'/>
+               <code:restore-warning codes='CS8600 CS8605'/>
             </code:block>
          </code:getter>
          <code:setter>
