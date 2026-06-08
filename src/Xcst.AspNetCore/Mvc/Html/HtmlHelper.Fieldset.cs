@@ -61,7 +61,7 @@ partial class HtmlHelper<TModel> {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public HtmlHelper<TResult>
-   NewFieldsetHelperFor<TResult>(Expression<Func<TModel, TResult>> expression) {
+   NewFieldsetHelperFor<TResult>(Expression<Func<TModel, TResult?>> expression) {
 
       var expressionString = ExpressionHelper.GetExpressionText(expression);
       var modelExplorer = GetModelExplorerFromLambda(expression);

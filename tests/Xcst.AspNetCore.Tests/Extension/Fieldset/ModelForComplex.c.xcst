@@ -7,30 +7,47 @@
    <c:type name='ContactModel'>
       <c:member name='first_name' as='string'/>
       <c:member name='last_name' as='string'/>
-      <c:member name='address' display-name='Your Address'>
-         <c:member name='line_1' as='string'/>
-         <c:member name='line_2' as='string'/>
-         <c:member name='city' as='string'/>
-      </c:member>
+      <c:member name='home_address' as='ContactAddress' display-name='Home Address'/>
+      <c:member name='work_address' as='ContactAddress?' display-name='Work Address'/>
+   </c:type>
+
+   <c:type name='ContactAddress'>
+      <c:member name='line_1' as='string'/>
+      <c:member name='line_2' as='string'/>
+      <c:member name='city' as='string'/>
    </c:type>
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
-      <a:model type='ContactModel'>
-         <a:fieldset for='address'>
-            <legend>
-               <a:display-name/>
-            </legend>
-            <a:input for='line_1'/>
-         </a:fieldset>
-      </a:model>
+      <div>
+         <a:model type='ContactModel'>
+            <a:fieldset for='home_address'>
+               <legend>
+                  <a:display-name/>
+               </legend>
+               <a:input for='line_1'/>
+            </a:fieldset>
+            <a:fieldset for='work_address'>
+               <legend>
+                  <a:display-name/>
+               </legend>
+               <a:input for='line_1'/>
+            </a:fieldset>
+         </a:model>
+      </div>
    </c:template>
 
    <c:template name='expected'>
-      <fieldset>
-         <legend>Your Address</legend>
-         <input id='address_line_1' type='text' name='address.line_1' value=''/>
-      </fieldset>
+      <div>
+         <fieldset>
+            <legend>Home Address</legend>
+            <input id='home_address_line_1' type='text' name='home_address.line_1' value=''/>
+         </fieldset>
+         <fieldset>
+            <legend>Work Address</legend>
+            <input id='work_address_line_1' type='text' name='work_address.line_1' value=''/>
+         </fieldset>
+      </div>
    </c:template>
 
 </c:module>
