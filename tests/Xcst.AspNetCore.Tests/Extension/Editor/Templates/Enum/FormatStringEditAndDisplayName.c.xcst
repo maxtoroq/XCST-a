@@ -4,8 +4,6 @@
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>
 
-   <c:import-namespace ns='System'/>
-
    <c:type name='Foo'>
       <c:member name='Bar' as='EnumWithDisplayName' format='{0:d}' apply-format-in-edit-mode='yes'/>
    </c:type>
@@ -18,7 +16,7 @@
             </a:model>
          </c:document>
       </c:variable>
-      <c:void value='doc.Root.RemoveAttributes()'/>
+      <c:void value='doc.Root!.RemoveAttributes()'/>
       <c:copy-of value='doc.Root'/>
    </c:template>
 

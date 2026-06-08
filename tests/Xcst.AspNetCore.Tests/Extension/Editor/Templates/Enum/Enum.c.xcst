@@ -18,7 +18,7 @@
             </a:model>
          </c:document>
       </c:variable>
-      <c:void value='doc.Root.RemoveAttributes()'/>
+      <c:void value='doc.Root!.RemoveAttributes()'/>
       <c:copy-of value='doc.Root'/>
    </c:template>
 

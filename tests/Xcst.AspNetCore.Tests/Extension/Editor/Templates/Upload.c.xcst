@@ -13,7 +13,7 @@
       <div>
          <a:model value='new Foo { f = @"c:\foo.txt" }' helper-name='htm'>
             <a:editor for='f'/>
-            <a:editor for='f' attributes='new { value = htm.Model.f }'/>
+            <a:editor for='f' attributes='new { value = htm.Model!.f }'/>
          </a:model>
       </div>
    </c:template>

@@ -225,28 +225,34 @@ static partial class TestsHelper {
          .Select(p => MetadataReference.CreateFromFile(p));
 
       var specificDiagnosticOptions = (disableWarning != null) ?
-         disableWarning.Split(' ').Select(p => new KeyValuePair<string, ReportDiagnostic>(p, ReportDiagnostic.Suppress)).ToArray()
+         disableWarning.Split(' ')
+            .Select(p => new KeyValuePair<string, ReportDiagnostic>(p, ReportDiagnostic.Suppress))
+            .ToArray()
          : Array.Empty<KeyValuePair<string, ReportDiagnostic>>();
 
       var compilation = CSharpCompilation.Create(
          Path.GetRandomFileName(),
          syntaxTrees: syntaxTrees,
          references: references,
-         options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
+         options: new CSharpCompilationOptions(
+            OutputKind.DynamicallyLinkedLibrary,
             specificDiagnosticOptions: specificDiagnosticOptions
-               .Append(new KeyValuePair<string, ReportDiagnostic>("CS1701", ReportDiagnostic.Suppress))));
+               .Append(new("CS1701", ReportDiagnostic.Suppress))));
 
       using var assemblyStream = new MemoryStream();
       using var pdbStream = new MemoryStream();
 
       var codeResult = compilation.Emit(assemblyStream, pdbStream);
 
-      var failed = codeResult.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error
-         || (d.Severity == DiagnosticSeverity.Warning && d.WarningLevel > 1));
+      var errorDiagnostics = codeResult.Diagnostics
+         .Where(d => d.WarningLevel <= 1 && d.Severity != DiagnosticSeverity.Hidden)
+         .ToArray();
+
+      var failed = errorDiagnostics.Length > 0;
 
       if (printCode || failed) {
 
-         foreach (var item in codeResult.Diagnostics.Where(d => d.Severity != DiagnosticSeverity.Hidden)) {
+         foreach (var item in errorDiagnostics) {
             var lineSpan = item.Location.GetLineSpan();
             Console.WriteLine($"// ({lineSpan.StartLinePosition.Line},{lineSpan.StartLinePosition.Character}) {item.Severity} {item.Id}: {item.GetMessage()}");
          }
