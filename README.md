@@ -10,8 +10,8 @@ See the [project home][XCST] for more information.
 
 Package | Targets
 ------- | -------
-**[Xcst.AspNetCore]**<br/>XCST web pages for ASP.NET Core. | .NET 7
-**[Xcst.AspNetCore.Extension]**<br/>Extension instructions for XCST web pages. | .NET 7
+**[Xcst.AspNetCore]**<br/>Runtime | .NET 7
+**[Xcst.AspNetCore.Extension]**<br/>Compiler extension | .NET 7
 
 ### Related Repositories
 
@@ -31,12 +31,20 @@ The runtime on v2 is much more integrated with ASP.NET Core. Functionality that 
 
 The extension on v2 can generate code for runtime v1 or v2 (the default). This not only accounts for runtime API changes, but the extension instructions and attributes also. For example, if v2 removes an attribute, it will be available if you target v1. On the other hand, new instructions and attributes on v2 are not supported when targeting v1. To put it simply, the extension is backwards compatible, but you must explicitly target v1. You are therefore encouraged to use the v2 extension and XCST's v2 compiler to maintain your legacy v1 apps.
 
+What's New
+----------
+- [Sequence constructor for HTML instructions](https://github.com/maxtoroq/XCST-a/commit/cfe3836ab2b79f448bd5e7995a9bff779973056c) (also [this](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe))
+- ['id' attribute for HTML instructions](https://github.com/maxtoroq/XCST-a/commit/664768dc3d598403ba66327560cef72b03e90d34)
+- ['hidden' attribute for HTML instructions](https://github.com/maxtoroq/XCST-a/commit/44453d394ecf12f0edbb9e69c341c220a14e2b60)
+- ['a:slug' attribute](https://github.com/maxtoroq/XCST-a/commit/bfb94be4c626e9bfcc0e450a9b8cab3dd1990eb6)
+- [`Url.Absolute()` method](https://github.com/maxtoroq/XCST-a/commit/2f494831288c38d1343d4ae9de0bea5d6832aebf)
+
 Breaking Changes
 ----------------
 
 ### Entension
 
-- [Removed 'attributes' attribute from all html instructions (can now use sequence constructor to add attributes)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
+- [Removed 'attributes' attribute from HTML instructions (can now use `c:attribute`)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
 - [Replaced 'inherits' and 'model' directives with 'inherits' and 'a:model-type' attributes](https://github.com/maxtoroq/XCST-a/commit/b9a4d18c834c706d236b2ea60bb8fde361bacf1b)
 - [Not using ViewDataDictionary value on form instructions](https://github.com/maxtoroq/XCST-a/commit/c23401630f2dbcef8bf6ff041bc281296b1665a1)
 - [Not adding blank option on `a:select` (`a:editor` still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
