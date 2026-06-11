@@ -10,7 +10,7 @@ See the [project home][XCST] for more information.
 
 Package | Targets
 ------- | -------
-**[Xcst.AspNetCore]**<br/>Runtime | .NET 7
+**[Xcst.AspNetCore]**<br/>Runtime | .NET 8
 **[Xcst.AspNetCore.Extension]**<br/>Compiler extension | .NET 7
 
 ### Related Repositories

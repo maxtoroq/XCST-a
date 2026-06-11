@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -33,7 +34,7 @@ sealed class PrecompiledPageMiddleware {
    readonly RequestDelegate
    _next;
 
-   readonly Lazy<Dictionary<string, Type>>
+   readonly Lazy<FrozenDictionary<string, Type>>
    _pageMap;
 
    public
@@ -54,16 +55,14 @@ sealed class PrecompiledPageMiddleware {
 
          foreach (var item in pairs) {
 
-            if (map.TryGetValue(item.Key, out var prevType)) {
+            if (!map.TryAdd(item.Key, item.Value)) {
                throw new InvalidOperationException(
-                  $"Ambiguous path '{item.Key}', is used by '{prevType.AssemblyQualifiedName}'" +
+                  $"Ambiguous path '{item.Key}', is used by '{map[item.Key].AssemblyQualifiedName}'" +
                   $" and '{item.Value.AssemblyQualifiedName}'.");
             }
-
-            map.Add(item.Key, item.Value);
          }
 
-         return map;
+         return map.ToFrozenDictionary(map.Comparer);
       });
    }
 
