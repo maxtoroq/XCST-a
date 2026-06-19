@@ -17,7 +17,7 @@
    </c:template>
 
    <c:template name='expected'>
-      <input type='datetime-local' id='d' name='d' value='0001-01-01T00:00:00.000' class='text-box single-line'/>
+      <input type='datetime-local' id='d' name='d' value='0001-01-01T00:00:00.000'/>
    </c:template>
 
 </c:module>

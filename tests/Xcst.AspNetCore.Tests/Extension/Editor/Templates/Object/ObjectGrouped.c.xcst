@@ -27,7 +27,7 @@
                <label for='FirstName'>FirstName</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='FirstName' name='FirstName' value='' class='text-box single-line'/>
+               <input type='text' id='FirstName' name='FirstName' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='FirstName' data-valmsg-replace='true'/>
             </div>
@@ -35,7 +35,7 @@
                <label for='LastName'>LastName</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='LastName' name='LastName' value='' class='text-box single-line'/>
+               <input type='text' id='LastName' name='LastName' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='LastName' data-valmsg-replace='true'/>
             </div>
@@ -46,7 +46,7 @@
                <label for='AddressLine1'>AddressLine1</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='AddressLine1' name='AddressLine1' value='' class='text-box single-line'/>
+               <input type='text' id='AddressLine1' name='AddressLine1' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='AddressLine1' data-valmsg-replace='true'/>
             </div>
@@ -54,7 +54,7 @@
                <label for='AddressLine2'>AddressLine2</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='AddressLine2' name='AddressLine2' value='' class='text-box single-line'/>
+               <input type='text' id='AddressLine2' name='AddressLine2' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='AddressLine2' data-valmsg-replace='true'/>
             </div>

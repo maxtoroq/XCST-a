@@ -21,7 +21,7 @@
 
    <c:template name='expected'>
       <form method='post'>
-         <input id='color' type='text' name='color' value='' data-val='true' data-val-required='The color field is required.' class="text-box single-line"/>
+         <input id='color' type='text' name='color' value='' data-val='true' data-val-required='The color field is required.'/>
          <input id='color' type='text' name='color' value=''/>
       </form>
    </c:template>

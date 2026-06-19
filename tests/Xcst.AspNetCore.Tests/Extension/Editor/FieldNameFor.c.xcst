@@ -19,7 +19,7 @@
 
    <c:template name='expected'>
       <div>
-         <input type='text' id='foo' name='foo' value='red' class='text-box single-line'/>
+         <input type='text' id='foo' name='foo' value='red'/>
       </div>
    </c:template>
 

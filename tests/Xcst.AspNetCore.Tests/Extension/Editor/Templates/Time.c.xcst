@@ -17,7 +17,7 @@
    </c:template>
 
    <c:template name='expected'>
-      <input type='time' id='d' name='d' value='00:00:00.000' class='text-box single-line'/>
+      <input type='time' id='d' name='d' value='00:00:00.000'/>
    </c:template>
 
 </c:module>

@@ -69,7 +69,7 @@ static class DefaultEditorTemplates {
       if (html.ModelMetadata.IsNullableValueType) {
 
          var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-         var className = GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
+         var className = GetEditorCssClass(_booleanSelectInfo);
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
          using var disp = html.GenerateSelect(
@@ -86,7 +86,7 @@ static class DefaultEditorTemplates {
 
       } else {
 
-         var className = GetEditorCssClass(_booleanCheckBoxInfo, "check-box");
+         var className = GetEditorCssClass(_booleanCheckBoxInfo);
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
          using var disp = html.GenerateCheckbox(
@@ -199,7 +199,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var className = GetEditorCssClass(_dropDownListInfo, null);
+      var className = GetEditorCssClass(_dropDownListInfo);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       string? optionLabel = null;
@@ -236,7 +236,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var className = GetEditorCssClass(_enumInfo, null);
+      var className = GetEditorCssClass(_enumInfo);
       var htmlAttributes = CreateHtmlAttributes(html, className);
       var metadata = html.ModelMetadata;
 
@@ -281,7 +281,7 @@ static class DefaultEditorTemplates {
          DefaultDisplayTemplates.StringTemplate(html, seqOutput);
       }
 
-      var className = GetEditorCssClass(_hiddenInputInfo, null);
+      var className = GetEditorCssClass(_hiddenInputInfo);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(
@@ -307,7 +307,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var className = GetEditorCssClass(_listBoxInfo, null);
+      var className = GetEditorCssClass(_listBoxInfo);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       var options = html.ViewContext.OptionsForModel();
@@ -340,7 +340,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var className = GetEditorCssClass(_multilineTextInfo, "text-box multi-line");
+      var className = GetEditorCssClass(_multilineTextInfo);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateTextarea(
@@ -448,7 +448,7 @@ static class DefaultEditorTemplates {
    public static void
    PasswordTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var className = GetEditorCssClass(_passwordInfo, "text-box single-line password");
+      var className = GetEditorCssClass(_passwordInfo);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(
@@ -489,7 +489,7 @@ static class DefaultEditorTemplates {
       var value = (HtmlHelper.InputOmitValue(inputType)) ? null
          : html.ViewContext.FormattedModelValue;
 
-      var className = GetEditorCssClass(new EditorInfo(templateName, "input", inputType ?? "text"), "text-box single-line");
+      var className = GetEditorCssClass(new EditorInfo(templateName, "input", inputType ?? "text"));
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(
@@ -540,15 +540,11 @@ static class DefaultEditorTemplates {
    }
 
    internal static string?
-   GetEditorCssClass(EditorInfo editorInfo, string? defaultCssClass) {
+   GetEditorCssClass(EditorInfo editorInfo) {
 
       var customFn = XcstWebOptions.Instance.EditorCssClass;
 
-      if (customFn != null) {
-         return customFn.Invoke(editorInfo, defaultCssClass);
-      }
-
-      return defaultCssClass;
+      return customFn?.Invoke(editorInfo);
    }
 
    internal static List<SelectListItem>

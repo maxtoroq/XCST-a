@@ -16,7 +16,7 @@
    </c:template>
 
    <c:template name='expected'>
-      <input type='url' id='p1' name='p1' value='' class='text-box single-line'/>
+      <input type='url' id='p1' name='p1' value=''/>
    </c:template>
 
 </c:module>

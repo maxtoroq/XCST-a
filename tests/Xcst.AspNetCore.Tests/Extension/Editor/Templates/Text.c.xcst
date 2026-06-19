@@ -21,8 +21,8 @@
 
    <c:template name='expected'>
       <div>
-         <input type='text' id='p1' name='p1' value='' class='text-box single-line'/>
-         <input type='text' id='p2' name='p2' value='0' class='text-box single-line'/>
+         <input type='text' id='p1' name='p1' value=''/>
+         <input type='text' id='p2' name='p2' value='0'/>
       </div>
    </c:template>
 

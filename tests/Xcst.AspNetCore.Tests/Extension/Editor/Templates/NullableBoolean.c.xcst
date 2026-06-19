@@ -19,7 +19,7 @@
 
    <c:template name='expected'>
       <div>
-         <select id='b' name='b' class='list-box tri-state'>
+         <select id='b' name='b'>
             <option value=''>Not Set</option>
             <option value='true' selected='selected'>True</option>
             <option value='false'>False</option>

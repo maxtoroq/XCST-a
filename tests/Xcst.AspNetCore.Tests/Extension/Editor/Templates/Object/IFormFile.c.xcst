@@ -24,7 +24,7 @@
             <label for='f'>f</label>
          </div>
          <div class='editor-field'>
-            <input type='file' id='f' name='f' class='text-box single-line'/>
+            <input type='file' id='f' name='f'/>
             <c:text> </c:text>
             <span class='field-validation-valid' data-valmsg-for='f' data-valmsg-replace='true'/>
          </div>

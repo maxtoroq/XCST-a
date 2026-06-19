@@ -18,7 +18,7 @@
    </c:template>
 
    <c:template name='expected'>
-      <input type='file' id='f' name='f' class='text-box single-line'/>
+      <input type='file' id='f' name='f'/>
    </c:template>
 
 </c:module>

@@ -26,7 +26,7 @@
             <label for='a'>a</label>
          </div>
          <div class='editor-field'>
-            <input type='text' id='a' name='a' value='' class='text-box single-line'/>
+            <input type='text' id='a' name='a' value=''/>
             <c:text> </c:text>
             <span class='field-validation-valid' data-valmsg-for='a' data-valmsg-replace='true'/>
          </div>
@@ -34,7 +34,7 @@
             <label for='c'>c</label>
          </div>
          <div class='editor-field'>
-            <input type='text' id='c' name='c' value='' class='text-box single-line'/>
+            <input type='text' id='c' name='c' value=''/>
             <c:text> </c:text>
             <span class='field-validation-valid' data-valmsg-for='c' data-valmsg-replace='true'/>
          </div>

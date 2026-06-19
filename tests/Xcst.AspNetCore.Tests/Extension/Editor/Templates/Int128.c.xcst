@@ -17,7 +17,7 @@
    </c:template>
 
    <c:template name='expected'>
-      <input type='number' id='p1' name='p1' value='0' class='text-box single-line'/>
+      <input type='number' id='p1' name='p1' value='0'/>
    </c:template>
 
 </c:module>

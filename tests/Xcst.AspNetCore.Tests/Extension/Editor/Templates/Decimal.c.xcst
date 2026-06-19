@@ -19,7 +19,7 @@
    </c:template>
 
    <c:template name='expected'>
-      <input type='text' id='p1' name='p1' value='0,00' class='text-box single-line'/>
+      <input type='text' id='p1' name='p1' value='0,00'/>
    </c:template>
 
 </c:module>

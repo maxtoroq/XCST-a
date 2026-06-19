@@ -50,7 +50,7 @@ static class DefaultDisplayTemplates {
 
          output.WriteStartElement("select");
 
-         var className = DefaultEditorTemplates.GetEditorCssClass(_booleanSelectInfo, "list-box tri-state");
+         var className = DefaultEditorTemplates.GetEditorCssClass(_booleanSelectInfo);
 
          html.WriteCssClass(null, className, output);
          html.WriteBoolean("disabled", true, output);
@@ -66,7 +66,7 @@ static class DefaultDisplayTemplates {
          output.WriteStartElement("input");
          output.WriteAttributeString("type", "checkbox");
 
-         var className = DefaultEditorTemplates.GetEditorCssClass(_booleanCheckboxInfo, "check-box");
+         var className = DefaultEditorTemplates.GetEditorCssClass(_booleanCheckboxInfo);
 
          html.WriteCssClass(null, className, output);
          html.WriteBoolean("disabled", true, output);

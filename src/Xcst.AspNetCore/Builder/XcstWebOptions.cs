@@ -22,7 +22,7 @@ public sealed class XcstWebOptions {
    internal static XcstWebOptions
    Instance { get; } = new();
 
-   public Func<EditorInfo, string?, string?>?
+   public Func<EditorInfo, string?>?
    EditorCssClass { get; set; }
 
    public Func<string, ViewContext, XcstViewPage?>?

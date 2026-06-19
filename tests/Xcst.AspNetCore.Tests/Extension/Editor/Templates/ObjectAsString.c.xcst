@@ -25,7 +25,7 @@
       <ol>
          <c:for-each name='i' in='System.Linq.Enumerable.Range(1, 3)'>
             <li>
-               <input type='text' id='foo' name='foo' value='' class='text-box single-line'/>
+               <input type='text' id='foo' name='foo' value=''/>
             </li>
          </c:for-each>
       </ol>

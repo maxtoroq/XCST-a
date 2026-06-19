@@ -20,8 +20,8 @@
 
    <c:template name='expected'>
       <div>
-         <input type='file' id='f' name='f' class='text-box single-line'/>
-         <input type='file' id='f' name='f' value='c:\foo.txt' class='text-box single-line'/>
+         <input type='file' id='f' name='f'/>
+         <input type='file' id='f' name='f' value='c:\foo.txt'/>
       </div>
    </c:template>
 

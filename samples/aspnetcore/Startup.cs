@@ -43,7 +43,7 @@ public class Startup {
       opts.DisplayTemplateFactory = LoadDisplayTemplate;
       opts.EditorTemplateFactory = LoadEditorTemplate;
 
-      opts.EditorCssClass = (info, defaultClass) =>
+      opts.EditorCssClass = info =>
          (info.TagName != "input") ? "form-control"
          : info.InputType switch {
             "checkbox" or "radio" => "form-check-input",

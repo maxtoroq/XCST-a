@@ -44,7 +44,7 @@
                <label for='SomeField'>SomeField</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='SomeField' name='SomeField' value='' class='text-box single-line'/>
+               <input type='text' id='SomeField' name='SomeField' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='SomeField' data-valmsg-replace='true'/>
             </div>
@@ -52,7 +52,7 @@
                <label for='DontDisplay'>DontDisplay</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='DontDisplay' name='DontDisplay' value='' class='text-box single-line'/>
+               <input type='text' id='DontDisplay' name='DontDisplay' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='DontDisplay' data-valmsg-replace='true'/>
             </div>
@@ -62,7 +62,7 @@
                <label for='DontDisplay'>DontDisplay</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='DontDisplay' name='DontDisplay' value='' class='text-box single-line'/>
+               <input type='text' id='DontDisplay' name='DontDisplay' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='DontDisplay' data-valmsg-replace='true'/>
             </div>
@@ -70,7 +70,7 @@
                <label for='SomeField'>SomeField</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='SomeField' name='SomeField' value='' class='text-box single-line'/>
+               <input type='text' id='SomeField' name='SomeField' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='SomeField' data-valmsg-replace='true'/>
             </div>
@@ -80,7 +80,7 @@
                <label for='SomeField'>SomeField</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='SomeField' name='SomeField' value='' class='text-box single-line'/>
+               <input type='text' id='SomeField' name='SomeField' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='SomeField' data-valmsg-replace='true'/>
             </div>
@@ -90,7 +90,7 @@
                <label for='Complex_ComplexField'>ComplexField</label>
             </div>
             <div class='editor-field'>
-               <input type='text' id='Complex_ComplexField' name='Complex.ComplexField' value='' class='text-box single-line'/>
+               <input type='text' id='Complex_ComplexField' name='Complex.ComplexField' value=''/>
                <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='Complex.ComplexField' data-valmsg-replace='true'/>
             </div>
