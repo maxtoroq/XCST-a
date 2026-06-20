@@ -110,7 +110,9 @@ partial class HtmlHelper {
 
       var fullName = FullNameNonEmpty(name);
 
-      var defaultValue = GetModelStateValue(fullName, (multiple) ? typeof(string[]) : typeof(string))
+      this.ModelState.TryGetValue(fullName, out var modelState);
+
+      var defaultValue = GetModelStateValue(modelState, (multiple) ? typeof(string[]) : typeof(string))
          ?? value ?? modelExplorer.Model;
 
       var selectedValues = getSelectedValues(defaultValue, multiple);
@@ -122,8 +124,8 @@ partial class HtmlHelper {
       output.WriteAttributeString("name", fullName);
       WriteBoolean("multiple", multiple, output);
 
-      var cssClass = (this.ModelState.TryGetValue(fullName, out var modelState)
-         && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
+      var cssClass = (modelState?.Errors.Count > 0) ?
+         ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, excludeMinMaxLength: !multiple, output);

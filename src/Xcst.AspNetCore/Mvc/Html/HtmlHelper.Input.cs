@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -56,45 +57,45 @@ partial class HtmlHelper {
    const string
    _fallbackInputType = "text";
 
-   static readonly Dictionary<string, string>
-   _defaultInputTypes = new(StringComparer.OrdinalIgnoreCase) {
+   static readonly FrozenDictionary<string, string>
+   _defaultInputTypes = new KeyValuePair<string, string>[] {
 
       // System.ComponentModel.DataAnnotations.DataType
-      { nameof(DataType.Date), "date" },
-      { nameof(DataType.DateTime), "datetime-local" },
-      { nameof(DataType.DateTime) + "-local", "datetime-local" },
-      { nameof(DataType.EmailAddress), "email" },
-      { nameof(DataType.Password), "password" },
-      { nameof(DataType.PhoneNumber), "tel" },
-      { nameof(DataType.Text), _fallbackInputType },
-      { nameof(DataType.Time), "time" },
-      { nameof(DataType.Upload), "file" },
-      { nameof(DataType.Url), "url" },
+      new(nameof(DataType.Date), "date"),
+      new(nameof(DataType.DateTime), "datetime-local"),
+      new(nameof(DataType.DateTime) + "-local", "datetime-local"),
+      new(nameof(DataType.EmailAddress), "email"),
+      new(nameof(DataType.Password), "password"),
+      new(nameof(DataType.PhoneNumber), "tel"),
+      new(nameof(DataType.Text), _fallbackInputType),
+      new(nameof(DataType.Time), "time"),
+      new(nameof(DataType.Upload), "file"),
+      new(nameof(DataType.Url), "url"),
 
       // integer
-      { nameof(Byte), "number" },
-      { nameof(Int16), "number" },
-      { nameof(Int32), "number" },
-      { nameof(Int64), "number" },
-      { nameof(Int128), "number" },
-      { nameof(SByte), "number" },
-      { nameof(UInt16), "number" },
-      { nameof(UInt32), "number" },
-      { nameof(UInt64), "number" },
-      { nameof(UInt128), "number" },
+      new(nameof(Byte), "number"),
+      new(nameof(Int16), "number"),
+      new(nameof(Int32), "number"),
+      new(nameof(Int64), "number"),
+      new(nameof(Int128), "number"),
+      new(nameof(SByte), "number"),
+      new(nameof(UInt16), "number"),
+      new(nameof(UInt32), "number"),
+      new(nameof(UInt64), "number"),
+      new(nameof(UInt128), "number"),
 
       // floating-point
-      { nameof(Decimal), _fallbackInputType },
-      { nameof(Double), _fallbackInputType },
-      { nameof(Single), _fallbackInputType },
+      new(nameof(Decimal), _fallbackInputType),
+      new(nameof(Double), _fallbackInputType),
+      new(nameof(Single), _fallbackInputType),
 
       // other
-      { "HiddenInput", "hidden" },
-      { nameof(IFormFile), "file" },
-      { "Month", "month" },
-      { nameof(String), _fallbackInputType },
-      { "Week", "week" },
-   };
+      new("HiddenInput", "hidden"),
+      new(nameof(IFormFile), "file"),
+      new("Month", "month"),
+      new(nameof(String), _fallbackInputType),
+      new("Week", "week"),
+   }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
    static readonly Dictionary<string, string>
    _rfc3339Formats = new(StringComparer.Ordinal) {
@@ -193,8 +194,10 @@ partial class HtmlHelper {
 
       format ??= GetFormat(modelExplorer.Metadata, inputType, inputTypeHint);
 
+      this.ModelState.TryGetValue(fullName, out var modelState);
+
       var valueOrModel = value ?? modelExplorer.Model;
-      var valueAttr = (string?)GetModelStateValue(fullName, typeof(string));
+      var valueAttr = (string?)GetModelStateValue(modelState, typeof(string));
 
       var culture = InputTypeIsInvariant(inputType) ?
          CultureInfo.InvariantCulture : null;
@@ -214,8 +217,8 @@ partial class HtmlHelper {
          output.WriteAttributeString("value", valueAttr);
       }
 
-      var cssClass = (this.ModelState.TryGetValue(fullName, out var modelState)
-         && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
+      var cssClass = (modelState?.Errors.Count > 0) ?
+         ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
       WriteBoolean("readonly", modelExplorer.Metadata.IsReadOnly, output);

@@ -3,14 +3,12 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Xcst.Web.Mvc.ModelBinding;
 
 class ValueProviderResult {
 
-   [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Conversion failure is not fatal")]
    static object?
    ConvertSimpleType(CultureInfo culture, object? value, Type destinationType) {
 

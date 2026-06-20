@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
@@ -31,75 +32,75 @@ using TemplateAction = Action<HtmlHelper, ISequenceWriter<object>>;
 
 sealed class TemplateRenderer {
 
-   static readonly Dictionary<string, TemplateAction>
-   _defaultDisplayActions = new(StringComparer.OrdinalIgnoreCase) {
+   static readonly FrozenDictionary<string, TemplateAction>
+   _defaultDisplayActions = new KeyValuePair<string, TemplateAction>[] {
 
       // System.ComponentModel.DataAnnotations.DataType
-      { "EmailAddress", DefaultDisplayTemplates.EmailAddressTemplate },
-      { "Html", DefaultDisplayTemplates.HtmlTemplate },
-      { "ImageUrl", DefaultDisplayTemplates.ImageUrlTemplate },
-      { "Text", DefaultDisplayTemplates.StringTemplate },
-      { "Url", DefaultDisplayTemplates.UrlTemplate },
+      new("EmailAddress", DefaultDisplayTemplates.EmailAddressTemplate),
+      new("Html", DefaultDisplayTemplates.HtmlTemplate),
+      new("ImageUrl", DefaultDisplayTemplates.ImageUrlTemplate),
+      new("Text", DefaultDisplayTemplates.StringTemplate),
+      new("Url", DefaultDisplayTemplates.UrlTemplate),
 
       // primitive
-      { "Boolean", DefaultDisplayTemplates.BooleanTemplate },
-      { "Decimal", DefaultDisplayTemplates.DecimalTemplate },
-      { "Enum", DefaultDisplayTemplates.EnumTemplate },
-      { "String", DefaultDisplayTemplates.StringTemplate },
+      new("Boolean", DefaultDisplayTemplates.BooleanTemplate),
+      new("Decimal", DefaultDisplayTemplates.DecimalTemplate),
+      new("Enum", DefaultDisplayTemplates.EnumTemplate),
+      new("String", DefaultDisplayTemplates.StringTemplate),
 
       // other
-      { "Month", DefaultDisplayTemplates.MonthTemplate },
+      new("Month", DefaultDisplayTemplates.MonthTemplate),
 
       // "special" templates
-      { "Object", DefaultDisplayTemplates.ObjectTemplate },
-      { "HiddenInput", DefaultDisplayTemplates.HiddenInputTemplate },
-      { "Collection", DefaultDisplayTemplates.CollectionTemplate },
-   };
+      new("Object", DefaultDisplayTemplates.ObjectTemplate),
+      new("HiddenInput", DefaultDisplayTemplates.HiddenInputTemplate),
+      new("Collection", DefaultDisplayTemplates.CollectionTemplate),
+   }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
-   static readonly Dictionary<string, TemplateAction>
-   _defaultEditorActions = new(StringComparer.OrdinalIgnoreCase) {
+   static readonly FrozenDictionary<string, TemplateAction>
+   _defaultEditorActions = new KeyValuePair<string, TemplateAction>[] {
 
       // System.ComponentModel.DataAnnotations.DataType
-      { "Date", DefaultEditorTemplates.StringTemplate },
-      { "DateTime", DefaultEditorTemplates.StringTemplate },
-      { "DateTime-local", DefaultEditorTemplates.StringTemplate },
-      { "EmailAddress", DefaultEditorTemplates.StringTemplate },
-      { "MultilineText", DefaultEditorTemplates.MultilineTextTemplate },
-      { "Password", DefaultEditorTemplates.PasswordTemplate },
-      { "PhoneNumber", DefaultEditorTemplates.StringTemplate },
-      { "Text", DefaultEditorTemplates.StringTemplate },
-      { "Time", DefaultEditorTemplates.StringTemplate },
-      { "Upload", DefaultEditorTemplates.UploadTemplate },
-      { "Url", DefaultEditorTemplates.StringTemplate },
+      new("Date", DefaultEditorTemplates.StringTemplate),
+      new("DateTime", DefaultEditorTemplates.StringTemplate),
+      new("DateTime-local", DefaultEditorTemplates.StringTemplate),
+      new("EmailAddress", DefaultEditorTemplates.StringTemplate),
+      new("MultilineText", DefaultEditorTemplates.MultilineTextTemplate),
+      new("Password", DefaultEditorTemplates.PasswordTemplate),
+      new("PhoneNumber", DefaultEditorTemplates.StringTemplate),
+      new("Text", DefaultEditorTemplates.StringTemplate),
+      new("Time", DefaultEditorTemplates.StringTemplate),
+      new("Upload", DefaultEditorTemplates.UploadTemplate),
+      new("Url", DefaultEditorTemplates.StringTemplate),
 
       // primitive
-      { "Boolean", DefaultEditorTemplates.BooleanTemplate },
-      { "Byte", DefaultEditorTemplates.StringTemplate },
-      { "Decimal", DefaultEditorTemplates.StringTemplate },
-      { "Enum", DefaultEditorTemplates.EnumTemplate },
-      { "Int32", DefaultEditorTemplates.StringTemplate },
-      { "Int64", DefaultEditorTemplates.StringTemplate },
-      { "Int128", DefaultEditorTemplates.StringTemplate },
-      { "SByte", DefaultEditorTemplates.StringTemplate },
-      { "String", DefaultEditorTemplates.StringTemplate },
-      { "UInt32", DefaultEditorTemplates.StringTemplate },
-      { "UInt64", DefaultEditorTemplates.StringTemplate },
-      { "UInt128", DefaultEditorTemplates.StringTemplate },
+      new("Boolean", DefaultEditorTemplates.BooleanTemplate),
+      new("Byte", DefaultEditorTemplates.StringTemplate),
+      new("Decimal", DefaultEditorTemplates.StringTemplate),
+      new("Enum", DefaultEditorTemplates.EnumTemplate),
+      new("Int32", DefaultEditorTemplates.StringTemplate),
+      new("Int64", DefaultEditorTemplates.StringTemplate),
+      new("Int128", DefaultEditorTemplates.StringTemplate),
+      new("SByte", DefaultEditorTemplates.StringTemplate),
+      new("String", DefaultEditorTemplates.StringTemplate),
+      new("UInt32", DefaultEditorTemplates.StringTemplate),
+      new("UInt64", DefaultEditorTemplates.StringTemplate),
+      new("UInt128", DefaultEditorTemplates.StringTemplate),
 
       // other
-      { "Month", DefaultEditorTemplates.StringTemplate },
-      { "Week", DefaultEditorTemplates.StringTemplate },
+      new("Month", DefaultEditorTemplates.StringTemplate),
+      new("Week", DefaultEditorTemplates.StringTemplate),
 
       // this library's templates
-      { "DropDownList", DefaultEditorTemplates.DropDownListTemplate },
-      { "ListBox", DefaultEditorTemplates.ListBoxTemplate },
-      { "IFormFile", DefaultEditorTemplates.UploadTemplate },
+      new("DropDownList", DefaultEditorTemplates.DropDownListTemplate),
+      new("ListBox", DefaultEditorTemplates.ListBoxTemplate),
+      new("IFormFile", DefaultEditorTemplates.UploadTemplate),
 
       // "special" templates
-      { "Object", DefaultEditorTemplates.ObjectTemplate },
-      { "HiddenInput", DefaultEditorTemplates.HiddenInputTemplate },
-      { "Collection", DefaultEditorTemplates.CollectionTemplate },
-   };
+      new("Object", DefaultEditorTemplates.ObjectTemplate),
+      new("HiddenInput", DefaultEditorTemplates.HiddenInputTemplate),
+      new("Collection", DefaultEditorTemplates.CollectionTemplate),
+   }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
    readonly ViewContext
    _viewContext;
@@ -130,7 +131,7 @@ sealed class TemplateRenderer {
 
       _viewContext.ViewName = null;
 
-      var defaultActions = GetDefaultActions();
+      var defaultActions = (_readOnly) ? _defaultDisplayActions : _defaultEditorActions;
 
       var metadata = _viewDataContainer.ModelExplorer.Metadata;
       var config = XcstWebOptions.Instance;
@@ -157,11 +158,6 @@ sealed class TemplateRenderer {
       throw new InvalidOperationException(
          $"Unable to locate an appropriate template for type '{metadata.UnderlyingOrModelType}'.");
    }
-
-   Dictionary<string, TemplateAction>
-   GetDefaultActions() =>
-      (_readOnly) ? _defaultDisplayActions
-         : _defaultEditorActions;
 
    IEnumerable<string>
    GetViewNames() {

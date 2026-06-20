@@ -247,26 +247,15 @@ public partial class HtmlHelper {
    }
 
    object?
-   GetModelStateValue(string key, Type destinationType) {
+   GetModelStateValue(ModelStateEntry? modelState, Type destinationType) {
 
-      if (this.ModelState.TryGetValue(key, out var modelState)
-         && modelState.RawValue != null) {
-
+      if (modelState is { RawValue: not null }) {
          return ConvertTo(modelState.RawValue, destinationType, culture: null);
       }
 
       return null;
 
-      static object? ConvertTo(object? value, Type type, CultureInfo? culture) {
-
-         if (value is null) {
-
-            if (!type.IsValueType) {
-               return null;
-            }
-
-            return Activator.CreateInstance(type);
-         }
+      static object? ConvertTo(object value, Type type, CultureInfo? culture) {
 
          if (type.IsAssignableFrom(value.GetType())) {
             return value;
@@ -438,7 +427,9 @@ public partial class HtmlHelper {
 
       var fullName = GetFullHtmlFieldName(name);
 
-      var resolvedValue = (string?)GetModelStateValue(fullName, typeof(string))
+      this.ModelState.TryGetValue(fullName, out var modelState);
+
+      var resolvedValue = (string?)GetModelStateValue(modelState, typeof(string))
          ?? FormatValue(modelExplorer.Model, format);
 
       return resolvedValue;

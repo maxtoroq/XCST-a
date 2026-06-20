@@ -66,9 +66,11 @@ partial class HtmlHelper {
       var fullName = FullNameNonEmpty(name);
       var valueString = FormatValue(value, null);
 
+      this.ModelState.TryGetValue(fullName, out var modelState);
+
       var checkedAttr = default(bool?);
 
-      if (GetModelStateValue(fullName, typeof(string)) is string modelStateValue) {
+      if (GetModelStateValue(modelState, typeof(string)) is string modelStateValue) {
          checkedAttr = String.Equals(modelStateValue, valueString, StringComparison.Ordinal);
       }
 
@@ -90,8 +92,8 @@ partial class HtmlHelper {
 
       WriteBoolean("checked", checkedAttr.GetValueOrDefault(), output);
 
-      var cssClass = (this.ModelState.TryGetValue(fullName, out var modelState)
-         && modelState.Errors.Count > 0) ? ValidationInputCssClassName : null;
+      var cssClass = (modelState?.Errors.Count > 0) ?
+         ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
