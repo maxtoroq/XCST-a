@@ -211,9 +211,7 @@ partial class HtmlHelper {
 
          if (!includePropertyErrors) {
 
-            if (this.ModelState.TryGetValue(this.ViewContext.HtmlFieldPrefix, out var ms)
-               && ms != null) {
-
+            if (this.ModelState.TryGetValue(this.ViewContext.HtmlFieldPrefix, out var ms)) {
                return new ModelStateEntry[] { ms };
             }
 

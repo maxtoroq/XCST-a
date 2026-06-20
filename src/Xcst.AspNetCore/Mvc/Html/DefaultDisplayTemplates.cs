@@ -138,7 +138,7 @@ static class DefaultDisplayTemplates {
 
       if (html.ViewContext.FormattedModelValue == value) {
 
-         var format = html.GetDataTypeFormat(html.ModelMetadata, "text", "Decimal")!;
+         var format = html.GetDataTypeFormat(html.ModelMetadata, null, html.ViewContext.ViewName)!;
 
          html.ViewContext.FormattedModelValue = html.SimpleContent.Format(format, value);
       }

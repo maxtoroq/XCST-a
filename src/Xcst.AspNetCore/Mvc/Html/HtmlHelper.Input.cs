@@ -53,6 +53,9 @@ partial class HtmlHelper {
       @class { get; set; }
    }
 
+   const string
+   _fallbackInputType = "text";
+
    static readonly Dictionary<string, string>
    _defaultInputTypes = new(StringComparer.OrdinalIgnoreCase) {
 
@@ -63,7 +66,7 @@ partial class HtmlHelper {
       { nameof(DataType.EmailAddress), "email" },
       { nameof(DataType.Password), "password" },
       { nameof(DataType.PhoneNumber), "tel" },
-      { nameof(DataType.Text), "text" },
+      { nameof(DataType.Text), _fallbackInputType },
       { nameof(DataType.Time), "time" },
       { nameof(DataType.Upload), "file" },
       { nameof(DataType.Url), "url" },
@@ -81,15 +84,15 @@ partial class HtmlHelper {
       { nameof(UInt128), "number" },
 
       // floating-point
-      { nameof(Decimal), "text" },
-      { nameof(Double), "text" },
-      { nameof(Single), "text" },
+      { nameof(Decimal), _fallbackInputType },
+      { nameof(Double), _fallbackInputType },
+      { nameof(Single), _fallbackInputType },
 
       // other
       { "HiddenInput", "hidden" },
       { nameof(IFormFile), "file" },
       { "Month", "month" },
-      { nameof(String), "text" },
+      { nameof(String), _fallbackInputType },
       { "Week", "week" },
    };
 
@@ -103,7 +106,15 @@ partial class HtmlHelper {
    };
 
    static readonly HashSet<string>
-   _invariantInputTypes = new(_rfc3339Formats.Keys.Append("number"), StringComparer.Ordinal);
+   _invariantInputTypes = new(
+      _rfc3339Formats.Keys.Append("number"), StringComparer.Ordinal);
+
+   static readonly HashSet<string>
+   _noValueInputTypes = new(new[] {
+      "file",
+      "image",
+      "password",
+   }, StringComparer.Ordinal);
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -138,7 +149,7 @@ partial class HtmlHelper {
 
       void writeHiddenInput() {
 
-         if (!IncludeHiddenInvariantField(inputType)) {
+         if (!includeHiddenInvariantField(inputType)) {
             return;
          }
 
@@ -149,6 +160,16 @@ partial class HtmlHelper {
          hiddenWriter.WriteAttributeString("name", "__Invariant");
          hiddenWriter.WriteAttributeString("value", fullName);
          hiddenWriter.WriteEndElement();
+      }
+
+      bool
+      includeHiddenInvariantField(string inputType) {
+
+         if (this.ViewContext.FormMethod == FormMethod.Get) {
+            return false;
+         }
+
+         return InputTypeIsInvariant(inputType);
       }
    }
 
@@ -170,7 +191,7 @@ partial class HtmlHelper {
       var inputTypeHint = default(string);
       inputType = type ?? GetInputType(modelExplorer, out inputTypeHint);
 
-      format ??= GetFormat(modelExplorer.Metadata, name, inputType, inputTypeHint);
+      format ??= GetFormat(modelExplorer.Metadata, inputType, inputTypeHint);
 
       var valueOrModel = value ?? modelExplorer.Model;
       var valueAttr = (string?)GetModelStateValue(fullName, typeof(string));
@@ -189,7 +210,7 @@ partial class HtmlHelper {
       output.WriteAttributeString("type", inputType);
       output.WriteAttributeString("name", fullName);
 
-      if (!(InputOmitValue(inputType) && value is null)) {
+      if (!(value is null && InputOmitValue(inputType))) {
          output.WriteAttributeString("value", valueAttr);
       }
 
@@ -206,16 +227,6 @@ partial class HtmlHelper {
       WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
    }
 
-   internal static bool
-   InputOmitValue(string? inputType) =>
-      InputTypeEquals(inputType, "password")
-         || InputTypeEquals(inputType, "file")
-         || InputTypeEquals(inputType, "image");
-
-   static bool
-   InputTypeEquals(string? a, string? b) =>
-      String.Equals(a, b, StringComparison.OrdinalIgnoreCase);
-
    static string
    GetInputType(ModelExplorer modelExplorer, out string inputTypeHint) {
 
@@ -228,7 +239,17 @@ partial class HtmlHelper {
 
       inputTypeHint = nameof(String);
 
-      return "text";
+      return _fallbackInputType;
+   }
+
+   internal static string
+   GetInputType(string inputTypeHint) {
+
+      if (_defaultInputTypes.TryGetValue(inputTypeHint, out var inputType)) {
+         return inputType;
+      }
+
+      return _fallbackInputType;
    }
 
    static IEnumerable<string>
@@ -242,24 +263,13 @@ partial class HtmlHelper {
          yield return metadata.DataTypeName;
       }
 
-      var fieldType = metadata.UnderlyingOrModelType;
-
-      foreach (var typeName in TemplateRenderer.GetTypeNames(metadata, fieldType)) {
+      foreach (var typeName in TemplateRenderer.GetTypeNames(metadata)) {
          yield return typeName;
       }
    }
 
    string?
-   GetFormat(ModelMetadata metadata, string name, string inputType, string? inputTypeHint) {
-
-      if (UsingFormattedModelValue(name)) {
-
-         // Calling from an editor/display template, getting format for
-         // the top model (not a property). Formatting is already done and should be
-         // using ViewContext.FormattedModelValue as value.
-
-         return null;
-      }
+   GetFormat(ModelMetadata metadata, string inputType, string? inputTypeHint) {
 
       if (metadata.HasNonDefaultEditFormat) {
          return metadata.EditFormatString;
@@ -270,7 +280,9 @@ partial class HtmlHelper {
    }
 
    internal string?
-   GetDataTypeFormat(ModelMetadata metadata, string inputType, string? inputTypeHint) {
+   GetDataTypeFormat(ModelMetadata metadata, string? inputType, string? inputTypeHint) {
+
+      inputType ??= _fallbackInputType;
 
       // inputTypeHint should always take precedence over UnderlyingOrModelType
 
@@ -287,24 +299,17 @@ partial class HtmlHelper {
       return null;
    }
 
-   bool
-   UsingFormattedModelValue(string name) =>
-      this.ViewContext.ViewName != null
-         && String.IsNullOrEmpty(name);
+   static bool
+   InputOmitValue(string inputType) =>
+      _noValueInputTypes.Contains(inputType);
+
+   static bool
+   InputTypeEquals(string? a, string? b) =>
+      String.Equals(a, b, StringComparison.OrdinalIgnoreCase);
 
    static bool
    InputTypeIsInvariant(string inputType) =>
       _invariantInputTypes.Contains(inputType);
-
-   bool
-   IncludeHiddenInvariantField(string inputType) {
-
-      if (this.ViewContext.FormMethod == FormMethod.Get) {
-         return false;
-      }
-
-      return InputTypeIsInvariant(inputType);
-   }
 }
 
 partial class HtmlHelper<TModel> {

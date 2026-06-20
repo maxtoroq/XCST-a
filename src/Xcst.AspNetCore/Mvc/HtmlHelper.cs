@@ -315,15 +315,9 @@ public partial class HtmlHelper {
       }
    }
 
-   IDictionary<string, string>?
+   Dictionary<string, string>?
    GetUnobtrusiveValidationAttributesImpl(
          string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength) {
-
-      // The ordering of these 3 checks (and the early exits) is for performance reasons.
-
-      if (!this.ViewContext.ClientValidationEnabled) {
-         return default;
-      }
 
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 

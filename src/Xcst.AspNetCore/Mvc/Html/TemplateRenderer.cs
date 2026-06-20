@@ -60,34 +60,40 @@ sealed class TemplateRenderer {
    _defaultEditorActions = new(StringComparer.OrdinalIgnoreCase) {
 
       // System.ComponentModel.DataAnnotations.DataType
-      { "Date", DefaultEditorTemplates.DateTemplate },
-      { "DateTime", DefaultEditorTemplates.DateTimeLocalTemplate },
-      { "DateTime-local", DefaultEditorTemplates.DateTimeLocalTemplate },
+      { "Date", DefaultEditorTemplates.StringTemplate },
+      { "DateTime", DefaultEditorTemplates.StringTemplate },
+      { "DateTime-local", DefaultEditorTemplates.StringTemplate },
+      { "EmailAddress", DefaultEditorTemplates.StringTemplate },
       { "MultilineText", DefaultEditorTemplates.MultilineTextTemplate },
       { "Password", DefaultEditorTemplates.PasswordTemplate },
+      { "PhoneNumber", DefaultEditorTemplates.StringTemplate },
       { "Text", DefaultEditorTemplates.StringTemplate },
-      { "Time", DefaultEditorTemplates.TimeTemplate },
+      { "Time", DefaultEditorTemplates.StringTemplate },
       { "Upload", DefaultEditorTemplates.UploadTemplate },
+      { "Url", DefaultEditorTemplates.StringTemplate },
 
       // primitive
       { "Boolean", DefaultEditorTemplates.BooleanTemplate },
-      { "Byte", DefaultEditorTemplates.NumberTemplate },
-      { "Decimal", DefaultEditorTemplates.DecimalTemplate },
+      { "Byte", DefaultEditorTemplates.StringTemplate },
+      { "Decimal", DefaultEditorTemplates.StringTemplate },
       { "Enum", DefaultEditorTemplates.EnumTemplate },
-      { "Int32", DefaultEditorTemplates.NumberTemplate },
-      { "Int64", DefaultEditorTemplates.NumberTemplate },
-      { "SByte", DefaultEditorTemplates.NumberTemplate },
+      { "Int32", DefaultEditorTemplates.StringTemplate },
+      { "Int64", DefaultEditorTemplates.StringTemplate },
+      { "Int128", DefaultEditorTemplates.StringTemplate },
+      { "SByte", DefaultEditorTemplates.StringTemplate },
       { "String", DefaultEditorTemplates.StringTemplate },
-      { "UInt32", DefaultEditorTemplates.NumberTemplate },
-      { "UInt64", DefaultEditorTemplates.NumberTemplate },
+      { "UInt32", DefaultEditorTemplates.StringTemplate },
+      { "UInt64", DefaultEditorTemplates.StringTemplate },
+      { "UInt128", DefaultEditorTemplates.StringTemplate },
 
       // other
-      { "Month", DefaultEditorTemplates.MonthTemplate },
+      { "Month", DefaultEditorTemplates.StringTemplate },
+      { "Week", DefaultEditorTemplates.StringTemplate },
 
       // this library's templates
       { "DropDownList", DefaultEditorTemplates.DropDownListTemplate },
       { "ListBox", DefaultEditorTemplates.ListBoxTemplate },
-      { "IFormFile", DefaultEditorTemplates.IFormFileTemplate },
+      { "IFormFile", DefaultEditorTemplates.UploadTemplate },
 
       // "special" templates
       { "Object", DefaultEditorTemplates.ObjectTemplate },
@@ -177,17 +183,16 @@ sealed class TemplateRenderer {
          yield return templateHint!;
       }
 
-      // We don't want to search for Nullable<T>, we want to search for T (which should handle both T and Nullable<T>)
-
-      var fieldType = metadata.UnderlyingOrModelType;
-
-      foreach (var typeName in GetTypeNames(metadata, fieldType)) {
+      foreach (var typeName in GetTypeNames(metadata)) {
          yield return typeName;
       }
    }
 
    internal static IEnumerable<string>
-   GetTypeNames(ModelMetadata metadata, Type fieldType) {
+   GetTypeNames(ModelMetadata metadata) {
+
+      // We don't want to search for Nullable<T>, we want to search for T (which should handle both T and Nullable<T>)
+      var fieldType = metadata.UnderlyingOrModelType;
 
       yield return fieldType.Name;
 

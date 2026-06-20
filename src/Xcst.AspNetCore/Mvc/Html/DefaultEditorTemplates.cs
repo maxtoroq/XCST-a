@@ -26,7 +26,6 @@ using System.Reflection;
 using Xcst.Runtime;
 using Xcst.Web.Builder;
 using Xcst.Web.Mvc.ModelBinding;
-using IFormFile = Microsoft.AspNetCore.Http.IFormFile;
 
 namespace Xcst.Web.Mvc;
 
@@ -55,6 +54,9 @@ static class DefaultEditorTemplates {
 
    static readonly EditorInfo
    _passwordInfo = new("Password", "input", "password");
+
+   static readonly EditorInfo
+   _uploadInfo = new("Upload", "input", "file");
 
    public static void
    BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
@@ -156,42 +158,6 @@ static class DefaultEditorTemplates {
       } finally {
          html.ViewContext.HtmlFieldPrefix = oldPrefix;
       }
-   }
-
-   public static void
-   DateTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
-
-      var inputType = "date";
-
-      ApplyRfc3339DateFormattingIfNeeded(html, inputType);
-      HtmlInputTemplateHelper(html, seqOutput, "Date", inputType);
-   }
-
-   public static void
-   DateTimeLocalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
-
-      var inputType = "datetime-local";
-
-      ApplyRfc3339DateFormattingIfNeeded(html, inputType);
-      HtmlInputTemplateHelper(html, seqOutput, "DateTime-local", inputType);
-   }
-
-   public static void
-   DecimalTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
-
-      var value = html.ModelExplorer.Model;
-
-      var templateName = "Decimal";
-      var inputType = "text";
-
-      if (html.ViewContext.FormattedModelValue == value) {
-
-         var format = html.GetDataTypeFormat(html.ModelMetadata, inputType, templateName)!;
-
-         html.ViewContext.FormattedModelValue = html.FormatValue(value, format);
-      }
-
-      HtmlInputTemplateHelper(html, seqOutput, templateName, inputType);
    }
 
    public static void
@@ -299,10 +265,6 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   IFormFileTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, seqOutput, nameof(IFormFile), inputType: "file");
-
-   public static void
    ListBoxTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
@@ -327,15 +289,6 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   MonthTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
-
-      var inputType = "month";
-
-      ApplyRfc3339DateFormattingIfNeeded(html, inputType);
-      HtmlInputTemplateHelper(html, seqOutput, "Month", inputType);
-   }
-
-   public static void
    MultilineTextTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
@@ -355,10 +308,6 @@ static class DefaultEditorTemplates {
       htmlAttributes.WriteTo(output);
       disp.EndOfConstructor();
    }
-
-   public static void
-   NumberTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, seqOutput, "Number", inputType: "number");
 
    public static void
    ObjectTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
@@ -448,6 +397,7 @@ static class DefaultEditorTemplates {
    public static void
    PasswordTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
+      var inputType = "password";
       var className = GetEditorCssClass(_passwordInfo);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
@@ -456,7 +406,7 @@ static class DefaultEditorTemplates {
          html.ModelExplorer,
          String.Empty,
          new HtmlHelper.InputArgs {
-            type = "password",
+            type = inputType,
             @class = htmlAttributes.RemoveClass(html.SimpleContent)
          });
 
@@ -465,31 +415,22 @@ static class DefaultEditorTemplates {
    }
 
    public static void
-   StringTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
+   StringTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
+
       // String is the fallback template for non-complex types. Not using an explicit
       // input type allows GenerateInput() to infer from metadata.
-      HtmlInputTemplateHelper(html, seqOutput, "String");
 
-   public static void
-   TimeTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
+      var templateName = html.ViewContext.ViewName!;
+      var inputTypeDefault = HtmlHelper.GetInputType(templateName);
 
-      var inputType = "time";
+      // Don't use FormattedModelValue (current culture) for cases where
+      // the input type requires invariant formatting, and other cases
+      // (see GetDataTypeFormat())
 
-      ApplyRfc3339DateFormattingIfNeeded(html, inputType);
-      HtmlInputTemplateHelper(html, seqOutput, "Time", inputType);
-   }
+      var value = (html.ModelMetadata.HasNonDefaultEditFormat) ?
+         html.ViewContext.FormattedModelValue : null;
 
-   public static void
-   UploadTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) =>
-      HtmlInputTemplateHelper(html, seqOutput, "Upload", inputType: "file");
-
-   static void
-   HtmlInputTemplateHelper(HtmlHelper html, ISequenceWriter<object> seqOutput, string templateName, string? inputType = null) {
-
-      var value = (HtmlHelper.InputOmitValue(inputType)) ? null
-         : html.ViewContext.FormattedModelValue;
-
-      var className = GetEditorCssClass(new EditorInfo(templateName, "input", inputType ?? "text"));
+      var className = GetEditorCssClass(new EditorInfo(templateName, "input", inputTypeDefault));
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(
@@ -497,7 +438,6 @@ static class DefaultEditorTemplates {
          html.ModelExplorer,
          String.Empty,
          new HtmlHelper.InputArgs {
-            type = inputType,
             value = value,
             @class = htmlAttributes.RemoveClass(html.SimpleContent)
          });
@@ -506,26 +446,24 @@ static class DefaultEditorTemplates {
       disp.EndOfConstructor();
    }
 
-   static void
-   ApplyRfc3339DateFormattingIfNeeded(HtmlHelper html, string inputType) {
+   public static void
+   UploadTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var value = html.ModelExplorer.Model;
+      var inputType = "file";
+      var className = GetEditorCssClass(_uploadInfo);
+      var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      if (html.ViewContext.FormattedModelValue != value
-         && html.ModelMetadata.HasNonDefaultEditFormat) {
+      using var disp = html.GenerateInput(
+         seqOutput,
+         html.ModelExplorer,
+         String.Empty,
+         new HtmlHelper.InputArgs {
+            type = inputType,
+            @class = htmlAttributes.RemoveClass(html.SimpleContent)
+         });
 
-         // non-default current culture formatting applied
-
-         return;
-      }
-
-      var format = html.GetDataTypeFormat(html.ModelMetadata, inputType, null)!;
-
-      if (value is DateTime
-         || value is DateTimeOffset) {
-
-         html.ViewContext.FormattedModelValue = String.Format(CultureInfo.InvariantCulture, format, value);
-      }
+      htmlAttributes.WriteTo(disp.ElementOutput);
+      disp.EndOfConstructor();
    }
 
    static HtmlAttributeDictionary
