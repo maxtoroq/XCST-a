@@ -88,7 +88,9 @@ sealed class TemplateRenderer {
       new("UInt128", DefaultEditorTemplates.StringTemplate),
 
       // other
+      new("DateOnly", DefaultEditorTemplates.StringTemplate),
       new("Month", DefaultEditorTemplates.StringTemplate),
+      new("TimeOnly", DefaultEditorTemplates.StringTemplate),
       new("Week", DefaultEditorTemplates.StringTemplate),
 
       // this library's templates

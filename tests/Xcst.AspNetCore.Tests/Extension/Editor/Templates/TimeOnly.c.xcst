@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:type name='Foo'>
+      <c:member name='d' as='System.TimeOnly' value='new()'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <c:set ref='ViewContext.FormMethod' value='Xcst.Web.Mvc.FormMethod.Get'/>
+      <a:model value='new Foo()'>
+         <a:editor for='d'/>
+      </a:model>
+   </c:template>
+
+   <c:template name='expected'>
+      <input type='time' id='d' name='d' value='00:00:00.000'/>
+   </c:template>
+
+</c:module>

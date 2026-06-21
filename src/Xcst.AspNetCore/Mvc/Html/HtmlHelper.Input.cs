@@ -90,10 +90,12 @@ partial class HtmlHelper {
       new(nameof(Single), _fallbackInputType),
 
       // other
+      new(nameof(DateOnly), "date"),
       new("HiddenInput", "hidden"),
       new(nameof(IFormFile), "file"),
       new("Month", "month"),
       new(nameof(String), _fallbackInputType),
+      new(nameof(TimeOnly), "time"),
       new("Week", "week"),
    }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
