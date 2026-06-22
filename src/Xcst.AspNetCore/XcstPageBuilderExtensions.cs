@@ -17,29 +17,17 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 
-namespace Xcst.Web.Builder;
+namespace Xcst.Web;
 
-public static class PrecompiledPageBuilderExtensions {
+public static class XcstPageBuilderExtensions {
 
    public static IApplicationBuilder
-   UseXcstPrecompiledPages(this IApplicationBuilder app, IEnumerable<Assembly> appModules) {
+   UseXcstPages(this IApplicationBuilder app, IEnumerable<Assembly> appModules) {
 
       ArgumentNullException.ThrowIfNull(app);
       ArgumentNullException.ThrowIfNull(appModules);
 
-      app.UseMiddleware<PrecompiledPageMiddleware>((object)appModules);
-
-      return app;
-   }
-
-   public static IApplicationBuilder
-   UseXcstPrecompiledPages(this IApplicationBuilder app, IEnumerable<Assembly> appModules, Action<XcstWebOptions> config) {
-
-      ArgumentNullException.ThrowIfNull(config);
-
-      UseXcstPrecompiledPages(app, appModules);
-
-      config.Invoke(XcstWebOptions.Instance);
+      app.UseMiddleware<XcstPageMiddleware>((object)appModules);
 
       return app;
    }

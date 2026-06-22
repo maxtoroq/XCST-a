@@ -23,9 +23,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Xcst.Runtime;
-using Xcst.Web.Mvc.ModelBinding;
 
 namespace Xcst.Web.Mvc;
+
+using ModelBinding;
 
 partial class HtmlHelper {
 

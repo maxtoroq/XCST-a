@@ -24,7 +24,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xcst.Runtime;
-using Xcst.Web.Builder;
 
 namespace Xcst.Web.Mvc;
 
@@ -133,18 +132,13 @@ sealed class TemplateRenderer {
 
       _viewContext.ViewName = null;
 
+      var options = _viewContext.Options;
+      var tmplFactory = (_readOnly) ? options.DisplayTemplateFactory : options.EditorTemplateFactory;
       var defaultActions = (_readOnly) ? _defaultDisplayActions : _defaultEditorActions;
-
-      var metadata = _viewDataContainer.ModelExplorer.Metadata;
-      var config = XcstWebOptions.Instance;
 
       foreach (var viewName in GetViewNames()) {
 
-         var viewPage = ((_readOnly) ?
-            config.DisplayTemplateFactory
-            : config.EditorTemplateFactory)?.Invoke(viewName, _viewContext);
-
-         if (viewPage != null) {
+         if (tmplFactory?.Invoke(viewName, _viewContext) is { } viewPage) {
             _viewContext.ViewName = viewName;
             RenderViewPage(viewPage, output);
             return;
@@ -156,6 +150,8 @@ sealed class TemplateRenderer {
             return;
          }
       }
+
+      var metadata = _viewDataContainer.ModelExplorer.Metadata;
 
       throw new InvalidOperationException(
          $"Unable to locate an appropriate template for type '{metadata.UnderlyingOrModelType}'.");

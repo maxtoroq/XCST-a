@@ -3,15 +3,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Xcst.Web.Builder;
+using Xcst.Web;
 using Xcst.Web.Mvc;
 
 namespace aspnetcore;
 
 public class Startup {
 
-   // This method gets called by the runtime. Use this method to add services to the container.
-   // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
    public void
    ConfigureServices(IServiceCollection services) {
 
@@ -23,35 +21,22 @@ public class Startup {
          .AddViews();
 
       services.AddAntiforgery();
-   }
 
-   // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-   public void
-   Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+      services.Configure((XcstViewOptions opts) => {
 
-      if (env.IsDevelopment()) {
-         app.UseDeveloperExceptionPage();
-      }
+         opts.DisplayTemplateFactory = LoadDisplayTemplate;
+         opts.EditorTemplateFactory = LoadEditorTemplate;
 
-      app.UseStaticFiles();
-      app.UseXcstPrecompiledPages(new[] { GetType().Assembly }, opts => ConfigureXcstWeb(opts));
-   }
-
-   static void
-   ConfigureXcstWeb(XcstWebOptions opts) {
-
-      opts.DisplayTemplateFactory = LoadDisplayTemplate;
-      opts.EditorTemplateFactory = LoadEditorTemplate;
-
-      opts.EditorCssClass = info =>
-         (info.TagName != "input") ? "form-control"
-         : info.InputType switch {
-            "checkbox" or "radio" => "form-check-input",
-            "file" => "form-control-file",
-            "range" => "form-control-range",
-            "hidden" => null,
-            _ => "form-control"
-         };
+         opts.EditorCssClass = info =>
+            (info.TagName != "input") ? "form-control"
+            : info.InputType switch {
+               "checkbox" or "radio" => "form-check-input",
+               "file" => "form-control-file",
+               "range" => "form-control-range",
+               "hidden" => null,
+               _ => "form-control"
+            };
+      });
    }
 
    static XcstViewPage?
@@ -68,4 +53,15 @@ public class Startup {
          nameof(Object) => new EditorTemplates.ObjectPackage(),
          _ => null,
       };
+
+   public void
+   Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+
+      if (env.IsDevelopment()) {
+         app.UseDeveloperExceptionPage();
+      }
+
+      app.UseStaticFiles();
+      app.UseXcstPages(new[] { GetType().Assembly });
+   }
 }

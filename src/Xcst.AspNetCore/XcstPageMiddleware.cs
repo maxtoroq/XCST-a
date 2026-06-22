@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#region PrecompiledPageMiddleware is based on code from ASP.NET Web Stack
+#region XcstPageMiddleware is based on code from ASP.NET Web Stack
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 #endregion
 
@@ -29,7 +29,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Xcst.Web;
 
-sealed class PrecompiledPageMiddleware {
+sealed class XcstPageMiddleware {
 
    readonly RequestDelegate
    _next;
@@ -38,7 +38,7 @@ sealed class PrecompiledPageMiddleware {
    _pageMap;
 
    public
-   PrecompiledPageMiddleware(RequestDelegate next, IEnumerable<Assembly> appModules) {
+   XcstPageMiddleware(RequestDelegate next, IEnumerable<Assembly> appModules) {
 
       _next = next;
       _pageMap = new(() => {

@@ -22,10 +22,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Xcst.Runtime;
-using Xcst.Web.Builder;
-using Xcst.Web.Mvc.ModelBinding;
 
 namespace Xcst.Web.Mvc;
+
+using ModelBinding;
 
 static class DefaultDisplayTemplates {
 
@@ -50,7 +50,7 @@ static class DefaultDisplayTemplates {
 
          output.WriteStartElement("select");
 
-         var className = DefaultEditorTemplates.GetEditorCssClass(_booleanSelectInfo);
+         var className = DefaultEditorTemplates.GetEditorCssClass(html, _booleanSelectInfo);
 
          html.WriteCssClass(null, className, output);
          html.WriteBoolean("disabled", true, output);
@@ -66,7 +66,7 @@ static class DefaultDisplayTemplates {
          output.WriteStartElement("input");
          output.WriteAttributeString("type", "checkbox");
 
-         var className = DefaultEditorTemplates.GetEditorCssClass(_booleanCheckboxInfo);
+         var className = DefaultEditorTemplates.GetEditorCssClass(html, _booleanCheckboxInfo);
 
          html.WriteCssClass(null, className, output);
          html.WriteBoolean("disabled", true, output);
