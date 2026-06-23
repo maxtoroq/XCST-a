@@ -426,8 +426,7 @@ public partial class HtmlHelper {
       format ??= modelExplorer.Metadata.EditFormatString;
 
       var fullName = GetFullHtmlFieldName(name);
-
-      this.ModelState.TryGetValue(fullName, out var modelState);
+      var modelState = this.ModelState[fullName];
 
       var resolvedValue = (string?)GetModelStateValue(modelState, typeof(string))
          ?? FormatValue(modelExplorer.Model, format);

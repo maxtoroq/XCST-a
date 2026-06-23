@@ -77,19 +77,18 @@ partial class HtmlHelper {
       var @class = args.@class;
 
       var modelName = GetFullHtmlFieldName(name);
+      var modelState = this.ModelState[modelName];
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
-      if (!this.ModelState.ContainsKey(modelName)
+      if (modelState is null
          && formContext is null) {
 
          return new DefaultContentDisposable(output, elementStarted: false, null);
       }
 
-      var modelState = this.ModelState[modelName];
-      var modelErrors = modelState?.Errors;
-
-      var modelError = (modelErrors is null || modelErrors.Count == 0) ? null
-         : (modelErrors.FirstOrDefault(m => !String.IsNullOrEmpty(m.ErrorMessage)) ?? modelErrors[0]);
+      var modelError = (modelState?.Errors is { Count: > 0 } modelErrors) ?
+         (modelErrors.FirstOrDefault(m => !String.IsNullOrEmpty(m.ErrorMessage)) ?? modelErrors[0])
+         : null;
 
       if (modelError is null
          && formContext is null) {

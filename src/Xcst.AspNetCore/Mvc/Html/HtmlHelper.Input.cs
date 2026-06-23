@@ -196,7 +196,7 @@ partial class HtmlHelper {
 
       format ??= GetFormat(modelExplorer.Metadata, inputType, inputTypeHint);
 
-      this.ModelState.TryGetValue(fullName, out var modelState);
+      var modelState = this.ModelState[fullName];
 
       var valueOrModel = value ?? modelExplorer.Model;
       var valueAttr = (string?)GetModelStateValue(modelState, typeof(string));

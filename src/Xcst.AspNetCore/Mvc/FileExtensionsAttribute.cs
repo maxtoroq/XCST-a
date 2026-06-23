@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -41,7 +40,6 @@ public class FileExtensionsAttribute : ValidationAttribute, IClientModelValidato
    ExtensionsFormatted =>
       ExtensionsParsed.Aggregate((left, right) => left + ", " + right);
 
-   [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "These strings are normalized to lowercase because they are presented to the user in lowercase format")]
    private string
    ExtensionsNormalized =>
       Extensions.Replace(" ", "").Replace(".", "").ToLowerInvariant();
@@ -89,7 +87,6 @@ public class FileExtensionsAttribute : ValidationAttribute, IClientModelValidato
       return false;
    }
 
-   [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "These strings are normalized to lowercase because they are presented to the user in lowercase format")]
    bool
    ValidateExtension(string fileName) {
 
@@ -109,13 +106,6 @@ public class FileExtensionsAttribute : ValidationAttribute, IClientModelValidato
    }
 
    static bool
-   MergeAttribute(IDictionary<string, string> attributes, string key, string value) {
-
-      if (attributes.ContainsKey(key)) {
-         return false;
-      }
-
-      attributes.Add(key, value);
-      return true;
-   }
+   MergeAttribute(IDictionary<string, string> attributes, string key, string value) =>
+      attributes.TryAdd(key, value);
 }

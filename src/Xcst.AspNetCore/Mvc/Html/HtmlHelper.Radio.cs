@@ -65,8 +65,7 @@ partial class HtmlHelper {
 
       var fullName = FullNameNonEmpty(name);
       var valueString = FormatValue(value, null);
-
-      this.ModelState.TryGetValue(fullName, out var modelState);
+      var modelState = this.ModelState[fullName];
 
       var checkedAttr = default(bool?);
 

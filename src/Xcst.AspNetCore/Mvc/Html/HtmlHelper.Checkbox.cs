@@ -99,7 +99,7 @@ partial class HtmlHelper {
 
       fullName = FullNameNonEmpty(name);
 
-      this.ModelState.TryGetValue(fullName, out var modelState);
+      var modelState = this.ModelState[fullName];
 
       var value = "true";
 
