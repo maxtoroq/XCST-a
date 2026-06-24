@@ -47,15 +47,15 @@
 
       <h1>{this.title}</h1>
       <c:if test='sent'>
-         <div class='alert alert-success alert-dismissable'>
-            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&#215;</button>
+         <div class='alert alert-success alert-dismissible' role='alert'>
             <c:text>Thanks for contacting us. We'll get back to you shortly.</c:text>
+            <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'/>
          </div>
       </c:if>
       <a:form method='post' model-value='contact' antiforgery='yes'>
          <a:validation-summary/>
          <a:editor with-params='new { labelColumnClass = "col-md-3", fieldColumnClass = "col-md-9" }'/>
-         <div class='form-group row'>
+         <div class='row mb-3'>
             <div class='offset-md-3 col-md-9'>
                <button type='submit' class='btn btn-primary'>Send</button>
             </div>

@@ -65,7 +65,7 @@
          <c:return/>
       </c:if>
 
-      <div class='form-group row'>
+      <div class='row mb-3'>
          <a:label name='{propertyName}' class='col-form-label {this.labelColumnClass}'/>
          <div class='{this.fieldColumnClass}'>
             <a:editor name='{propertyName}' template='{templateName}'/>

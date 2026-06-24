@@ -17,7 +17,7 @@
       <c:variable name='@class' value='ViewContext.HtmlAttributes.TryGetValue("class", out var cls) ? $" {cls}" : null'/>
       <c:choose>
          <c:when test='Html.ModelMetadata.IsNullableValueType'>
-            <a:select class='form-control{@class}'>
+            <a:select class='form-select{@class}'>
                <c:call-template name='write-attributes-except-class'/>
                <a:option value='""' selected='{!modelValue.HasValue}'/>
                <a:option value='"true"' selected='{modelValue.HasValue &amp;&amp; modelValue.Value}'>Yes</a:option>

@@ -28,13 +28,12 @@ public class Startup {
          opts.EditorTemplateFactory = LoadEditorTemplate;
 
          opts.EditorCssClass = info =>
-            (info.TagName != "input") ? "form-control"
-            : info.InputType switch {
+            info.InputType switch {
+               null => (info.TagName == "select") ? "form-select" : "form-control",
                "checkbox" or "radio" => "form-check-input",
-               "file" => "form-control-file",
-               "range" => "form-control-range",
+               "range" => "form-range",
                "hidden" => null,
-               _ => "form-control"
+               _ => "form-control",
             };
       });
    }

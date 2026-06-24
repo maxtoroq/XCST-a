@@ -13,7 +13,7 @@
             <title>
                <c:value-of value='new[] { this.pageTitle, this.siteTitle }' separator=' — '/>
             </title>
-            <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css' rel='stylesheet'/>
+            <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css' rel='stylesheet'/>
             <link href='/css/site.css' rel='stylesheet'/>
             <c:call-template name='layout-head'/>
          </head>
@@ -45,9 +45,9 @@
                   <p>© {DateTime.Now.Year} - {this.siteTitle}</p>
                </footer>
             </div>
-            <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'/>
-            <script src='https://cdn.jsdelivr.net/npm/jquery-validation@1.15.1/dist/jquery.validate.min.js'/>
-            <script src='https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.11/dist/jquery.validate.unobtrusive.min.js'/>
+            <script src='https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js'/>
+            <script src='https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js'/>
+            <script src='https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js'/>
             <c:call-template name='layout-scripts'/>
          </body>
       </html>
