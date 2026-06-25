@@ -140,7 +140,7 @@ public class ViewContext {
    TemplateDepth => VisitedObjects.Count;
 
    internal XcstViewOptions
-   Options => _options ??
+   Options => _options ??=
       HttpContext.RequestServices.GetRequiredService<IOptions<XcstViewOptions>>()
          .Value;
 
