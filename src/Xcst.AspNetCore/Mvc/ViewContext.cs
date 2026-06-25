@@ -212,10 +212,9 @@ public class ViewContext {
 
       ArgumentException.ThrowIfNullOrEmpty(formMethod);
 
-      this.FormMethod = formMethod.ToUpperInvariant() switch {
-         "GET" => FormMethod.Get,
-         _ => FormMethod.Post,
-      };
+      this.FormMethod = (StringComparer.OrdinalIgnoreCase.Equals(formMethod, "GET")) ?
+         FormMethod.Get
+         : FormMethod.Post;
    }
 
    public void
