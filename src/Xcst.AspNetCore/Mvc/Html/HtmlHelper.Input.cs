@@ -17,7 +17,6 @@
 #endregion
 
 using System;
-using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -57,47 +56,47 @@ partial class HtmlHelper {
    const string
    _fallbackInputType = "text";
 
-   static readonly FrozenDictionary<string, string>
-   _defaultInputTypes = new KeyValuePair<string, string>[] {
+   static readonly Dictionary<string, string>
+   _defaultInputTypes = new(StringComparer.OrdinalIgnoreCase) {
 
       // System.ComponentModel.DataAnnotations.DataType
-      new(nameof(DataType.Date), "date"),
-      new(nameof(DataType.DateTime), "datetime-local"),
-      new(nameof(DataType.DateTime) + "-local", "datetime-local"),
-      new(nameof(DataType.EmailAddress), "email"),
-      new(nameof(DataType.Password), "password"),
-      new(nameof(DataType.PhoneNumber), "tel"),
-      new(nameof(DataType.Text), _fallbackInputType),
-      new(nameof(DataType.Time), "time"),
-      new(nameof(DataType.Upload), "file"),
-      new(nameof(DataType.Url), "url"),
+      { nameof(DataType.Date), "date" },
+      { nameof(DataType.DateTime), "datetime-local" },
+      { nameof(DataType.DateTime) + "-local", "datetime-local" },
+      { nameof(DataType.EmailAddress), "email" },
+      { nameof(DataType.Password), "password" },
+      { nameof(DataType.PhoneNumber), "tel" },
+      { nameof(DataType.Text), _fallbackInputType },
+      { nameof(DataType.Time), "time" },
+      { nameof(DataType.Upload), "file" },
+      { nameof(DataType.Url), "url" },
 
       // integer
-      new(nameof(Byte), "number"),
-      new(nameof(Int16), "number"),
-      new(nameof(Int32), "number"),
-      new(nameof(Int64), "number"),
-      new(nameof(Int128), "number"),
-      new(nameof(SByte), "number"),
-      new(nameof(UInt16), "number"),
-      new(nameof(UInt32), "number"),
-      new(nameof(UInt64), "number"),
-      new(nameof(UInt128), "number"),
+      { nameof(Byte), "number" },
+      { nameof(Int16), "number" },
+      { nameof(Int32), "number" },
+      { nameof(Int64), "number" },
+      { nameof(Int128), "number" },
+      { nameof(SByte), "number" },
+      { nameof(UInt16), "number" },
+      { nameof(UInt32), "number" },
+      { nameof(UInt64), "number" },
+      { nameof(UInt128), "number" },
 
       // floating-point
-      new(nameof(Decimal), _fallbackInputType),
-      new(nameof(Double), _fallbackInputType),
-      new(nameof(Single), _fallbackInputType),
+      { nameof(Decimal), _fallbackInputType },
+      { nameof(Double), _fallbackInputType },
+      { nameof(Single), _fallbackInputType },
 
       // other
-      new(nameof(DateOnly), "date"),
-      new("HiddenInput", "hidden"),
-      new(nameof(IFormFile), "file"),
-      new("Month", "month"),
-      new(nameof(String), _fallbackInputType),
-      new(nameof(TimeOnly), "time"),
-      new("Week", "week"),
-   }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+      { nameof(DateOnly), "date" },
+      { "HiddenInput", "hidden" },
+      { nameof(IFormFile), "file" },
+      { "Month", "month" },
+      { nameof(String), _fallbackInputType },
+      { nameof(TimeOnly), "time" },
+      { "Week", "week" },
+   };
 
    static readonly Dictionary<string, string>
    _rfc3339Formats = new(StringComparer.Ordinal) {
