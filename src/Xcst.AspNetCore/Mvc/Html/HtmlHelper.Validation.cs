@@ -98,12 +98,12 @@ partial class HtmlHelper {
 
       var tag = this.ViewContext.Options.ValidationMessageElement;
 
-      var validationClass = (modelError != null) ?
+      var cssClass = (modelError != null) ?
          ValidationMessageCssClassName
          : ValidationMessageValidCssClassName;
 
       output.WriteStartElement(tag);
-      WriteCssClass(@class, validationClass, output);
+      WriteCssClass(@class, cssClass, output);
 
       if (formContext != null) {
 
@@ -157,12 +157,12 @@ partial class HtmlHelper {
          }
       }
 
-      var validationClass = (this.ModelState.IsValid) ?
+      var cssClass = (this.ModelState.IsValid) ?
          ValidationSummaryValidCssClassName
          : ValidationSummaryCssClassName;
 
       output.WriteStartElement("div");
-      WriteCssClass(@class, validationClass, output);
+      WriteCssClass(@class, cssClass, output);
 
       if (formContext != null
          && includePropertyErrors) {

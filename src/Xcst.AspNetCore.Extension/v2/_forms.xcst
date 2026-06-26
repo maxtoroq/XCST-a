@@ -999,7 +999,7 @@
    <template match='XElement el &amp;&amp; el.Name == a + "label"' mode='src:statement'>
       <param name='output' as='XElement' tunnel='yes'/>
 
-      <variable name='clientAttributes' value='global_attributes'/>
+      <variable name='clientAttributes' value='global_attributes_except_class'/>
 
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
@@ -1119,6 +1119,11 @@
                   <if test='!isEmpty'>
                      <code:member-initializer name='hasDefaultText'>
                         <code:bool value='true'/>
+                     </code:member-initializer>
+                  </if>
+                  <if test='el.Attribute("class") is { } classAttr'>
+                     <code:member-initializer name='class' verbatim='true'>
+                        <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = classAttr }'/>
                      </code:member-initializer>
                   </if>
                </code:initializer>

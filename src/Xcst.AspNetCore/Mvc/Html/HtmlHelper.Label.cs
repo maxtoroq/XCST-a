@@ -32,6 +32,10 @@ partial class HtmlHelper {
       [GeneratedCodeReference]
       public bool
       hasDefaultText { get; set; }
+
+      [GeneratedCodeReference]
+      public string?
+      @class { get; set; }
    }
 
    [GeneratedCodeReference]
@@ -54,17 +58,23 @@ partial class HtmlHelper {
    GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string name, LabelArgs args) {
 
       var hasDefaultText = args.hasDefaultText;
+      var @class = args.@class;
+
+      var metadata = modelExplorer.Metadata;
 
       var htmlFieldName = name;
       var fullFieldName = GetFullHtmlFieldName(htmlFieldName);
       var id = GenerateIdFromName(fullFieldName);
+      var reqClass = this.ViewContext.Options.LabelCssClass?.Invoke(metadata.IsRequired);
 
       output.WriteStartElement("label");
       output.WriteAttributeString("for", id);
 
+      WriteCssClass(@class, reqClass, output);
+
       var text = (!hasDefaultText) ?
-         modelExplorer.Metadata.DisplayName
-            ?? modelExplorer.Metadata.PropertyName
+         metadata.DisplayName
+            ?? metadata.PropertyName
             ?? htmlFieldName.Split('.').Last()
          : null;
 

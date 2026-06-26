@@ -226,12 +226,12 @@ static partial class TestsHelper {
 
       var specificDiagnosticOptions = (disableWarning != null) ?
          disableWarning.Split(' ')
-            .Select(p => new KeyValuePair<string, ReportDiagnostic>(p, ReportDiagnostic.Suppress))
+            .Select(p => KeyValuePair.Create(p, ReportDiagnostic.Suppress))
             .ToArray()
          : Array.Empty<KeyValuePair<string, ReportDiagnostic>>();
 
       var compilation = CSharpCompilation.Create(
-         Path.GetRandomFileName(),
+         "XcstGeneratedTest",
          syntaxTrees: syntaxTrees,
          references: references,
          options: new CSharpCompilationOptions(

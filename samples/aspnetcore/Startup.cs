@@ -35,6 +35,8 @@ public class Startup {
                "hidden" => null,
                _ => "form-control",
             };
+
+         opts.LabelCssClass = req => req ? "req" : null;
       });
    }
 

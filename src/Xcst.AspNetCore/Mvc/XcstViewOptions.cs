@@ -24,6 +24,9 @@ public sealed class XcstViewOptions {
    public Func<EditorInfo, string?>?
    EditorCssClass { get; set; }
 
+   public Func<bool, string?>?
+   LabelCssClass { get; set; }
+
    public Func<string, ViewContext, XcstViewPage?>?
    EditorTemplateFactory { get; set; }
 

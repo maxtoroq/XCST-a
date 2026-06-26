@@ -45,22 +45,40 @@
       <c:param name='contact' as='Contact' required='yes' tunnel='yes'/>
       <c:param name='sent' as='bool' required='yes' tunnel='yes'/>
 
-      <h1>{this.title}</h1>
-      <c:if test='sent'>
-         <div class='alert alert-success alert-dismissible' role='alert'>
-            <c:text>Thanks for contacting us. We'll get back to you shortly.</c:text>
-            <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'/>
-         </div>
-      </c:if>
-      <a:form method='post' model-value='contact' antiforgery='yes'>
-         <a:validation-summary/>
-         <a:editor with-params='new { labelColumnClass = "col-md-3", fieldColumnClass = "col-md-9" }'/>
-         <div class='row mb-3'>
-            <div class='offset-md-3 col-md-9'>
-               <button type='submit' class='btn btn-primary'>Send</button>
+      <main>
+         <h1>{this.title}</h1>
+         <c:if test='sent'>
+            <div class='alert alert-success alert-dismissible' role='alert'>
+               <c:text>Thanks for contacting us. We'll get back to you shortly.</c:text>
+               <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'/>
             </div>
-         </div>
-      </a:form>
+         </c:if>
+         <a:form method='post' model-value='contact' antiforgery='yes'>
+            <a:validation-summary/>
+            <a:editor with-params='new {
+               labelColumnClass = "col-md-3",
+               fieldColumnClass = "col-md-9"
+            }'/>
+            <div class='row mb-3'>
+               <div class='offset-md-3 col-md-9'>
+                  <button type='submit' class='btn btn-primary'>Send</button>
+               </div>
+            </div>
+         </a:form>
+      </main>
+   </c:template>
+
+   <c:template name='head'>
+      <c:next-template/>
+      <style c:transform-text='normalize-space'>
+         <![CDATA[
+         
+         main {
+            max-width: 600px;
+            margin: auto;
+         }
+         ]]>
+      </style>
    </c:template>
 
 </c:module>
