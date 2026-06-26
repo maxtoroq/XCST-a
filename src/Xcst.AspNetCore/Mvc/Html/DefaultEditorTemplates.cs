@@ -31,33 +31,6 @@ using ModelBinding;
 
 static class DefaultEditorTemplates {
 
-   static readonly EditorInfo
-   _booleanSelectInfo = new("Boolean", "select");
-
-   static readonly EditorInfo
-   _booleanCheckBoxInfo = new("Boolean", "input", "checkbox");
-
-   static readonly EditorInfo
-   _dropDownListInfo = new("DropDownList", "select");
-
-   static readonly EditorInfo
-   _enumInfo = new("Enum", "select");
-
-   static readonly EditorInfo
-   _hiddenInputInfo = new("HiddenInput", "input", "hidden");
-
-   static readonly EditorInfo
-   _listBoxInfo = new("ListBox", "select");
-
-   static readonly EditorInfo
-   _multilineTextInfo = new("MultilineText", "textarea");
-
-   static readonly EditorInfo
-   _passwordInfo = new("Password", "input", "password");
-
-   static readonly EditorInfo
-   _uploadInfo = new("Upload", "input", "file");
-
    public static void
    BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
@@ -71,7 +44,7 @@ static class DefaultEditorTemplates {
       if (html.ModelMetadata.IsNullableValueType) {
 
          var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-         var className = GetEditorCssClass(html, _booleanSelectInfo);
+         var className = GetEditorCssClass(html, "select", null);
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
          using var disp = html.GenerateSelect(
@@ -88,7 +61,7 @@ static class DefaultEditorTemplates {
 
       } else {
 
-         var className = GetEditorCssClass(html,_booleanCheckBoxInfo);
+         var className = GetEditorCssClass(html, "input", "checkbox");
          var htmlAttributes = CreateHtmlAttributes(html, className);
 
          using var disp = html.GenerateCheckbox(
@@ -165,7 +138,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var className = GetEditorCssClass(html, _dropDownListInfo);
+      var className = GetEditorCssClass(html, "select", null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       string? optionLabel = null;
@@ -202,7 +175,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var className = GetEditorCssClass(html, _enumInfo);
+      var className = GetEditorCssClass(html, "select", null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
       var metadata = html.ModelMetadata;
 
@@ -247,7 +220,7 @@ static class DefaultEditorTemplates {
          DefaultDisplayTemplates.StringTemplate(html, seqOutput);
       }
 
-      var className = GetEditorCssClass(html, _hiddenInputInfo);
+      var className = GetEditorCssClass(html, "input", "hidden");
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(
@@ -269,7 +242,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var className = GetEditorCssClass(html, _listBoxInfo);
+      var className = GetEditorCssClass(html, "select", null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       var options = html.ViewContext.OptionsForModel();
@@ -293,7 +266,7 @@ static class DefaultEditorTemplates {
 
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-      var className = GetEditorCssClass(html, _multilineTextInfo);
+      var className = GetEditorCssClass(html, "textarea", null);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateTextarea(
@@ -398,7 +371,7 @@ static class DefaultEditorTemplates {
    PasswordTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var inputType = "password";
-      var className = GetEditorCssClass(html, _passwordInfo);
+      var className = GetEditorCssClass(html, "input", inputType);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(
@@ -430,7 +403,7 @@ static class DefaultEditorTemplates {
       var value = (html.ModelMetadata.HasNonDefaultEditFormat) ?
          html.ViewContext.FormattedModelValue : null;
 
-      var className = GetEditorCssClass(html, new EditorInfo(templateName, "input", inputTypeDefault));
+      var className = GetEditorCssClass(html, "input", inputTypeDefault);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(
@@ -450,7 +423,7 @@ static class DefaultEditorTemplates {
    UploadTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       var inputType = "file";
-      var className = GetEditorCssClass(html, _uploadInfo);
+      var className = GetEditorCssClass(html, "input", inputType);
       var htmlAttributes = CreateHtmlAttributes(html, className);
 
       using var disp = html.GenerateInput(
@@ -478,8 +451,8 @@ static class DefaultEditorTemplates {
    }
 
    internal static string?
-   GetEditorCssClass(HtmlHelper html, EditorInfo editorInfo) =>
-      html.ViewContext.Options.EditorCssClass?.Invoke(editorInfo);
+   GetEditorCssClass(HtmlHelper html, string elementName, string? inputType) =>
+      html.ViewContext.Options.EditorCssClass?.Invoke(elementName, inputType);
 
    internal static List<SelectListItem>
    TriStateValues(bool? value) =>

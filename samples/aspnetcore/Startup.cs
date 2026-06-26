@@ -27,9 +27,11 @@ public class Startup {
          opts.DisplayTemplateFactory = LoadDisplayTemplate;
          opts.EditorTemplateFactory = LoadEditorTemplate;
 
-         opts.EditorCssClass = info =>
-            info.InputType switch {
-               null => (info.TagName == "select") ? "form-select" : "form-control",
+         opts.EditorCssClass = (elementName, inputType) =>
+            inputType switch {
+               null => (elementName == "select") ?
+                  "form-select"
+                  : "form-control",
                "checkbox" or "radio" => "form-check-input",
                "range" => "form-range",
                "hidden" => null,

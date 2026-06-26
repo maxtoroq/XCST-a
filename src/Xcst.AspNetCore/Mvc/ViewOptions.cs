@@ -21,7 +21,7 @@ public sealed class ViewOptions {
    public bool
    ClientValidationEnabled { get; set; } = true;
 
-   public Func<EditorInfo, string?>?
+   public Func<string, string?, string?>?
    EditorCssClass { get; set; }
 
    public Func<bool, string?>?

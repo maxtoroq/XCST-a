@@ -29,12 +29,6 @@ using ModelBinding;
 
 static class DefaultDisplayTemplates {
 
-   static readonly EditorInfo
-   _booleanSelectInfo = new("Boolean", "select");
-
-   static readonly EditorInfo
-   _booleanCheckboxInfo = new("Boolean", "input", "checkbox");
-
    public static void
    BooleanTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
@@ -50,7 +44,7 @@ static class DefaultDisplayTemplates {
 
          output.WriteStartElement("select");
 
-         var className = DefaultEditorTemplates.GetEditorCssClass(html, _booleanSelectInfo);
+         var className = DefaultEditorTemplates.GetEditorCssClass(html, "select", null);
 
          html.WriteCssClass(null, className, output);
          html.WriteBoolean("disabled", true, output);
@@ -66,7 +60,7 @@ static class DefaultDisplayTemplates {
          output.WriteStartElement("input");
          output.WriteAttributeString("type", "checkbox");
 
-         var className = DefaultEditorTemplates.GetEditorCssClass(html, _booleanCheckboxInfo);
+         var className = DefaultEditorTemplates.GetEditorCssClass(html, "input", "checkbox");
 
          html.WriteCssClass(null, className, output);
          html.WriteBoolean("disabled", true, output);
