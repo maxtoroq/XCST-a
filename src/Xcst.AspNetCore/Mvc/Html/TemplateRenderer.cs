@@ -162,18 +162,22 @@ sealed class TemplateRenderer {
       var metadata = _viewDataContainer.ModelExplorer.Metadata;
       var options = _viewContext.OptionsForModel();
 
-      var templateHints = new[] {
-         _templateName,
-         metadata.TemplateHint,
-         ((options != null) ?
-            metadata.IsEnumerableType ? "ListBox"
-            : "DropDownList"
-            : null),
-         metadata.DataTypeName
-      };
+      if (!String.IsNullOrEmpty(_templateName)) {
+         yield return _templateName;
+      }
 
-      foreach (var templateHint in templateHints.Where(s => !String.IsNullOrEmpty(s))) {
-         yield return templateHint!;
+      if (!String.IsNullOrEmpty(metadata.TemplateHint)) {
+         yield return metadata.TemplateHint;
+      }
+
+      if (options != null) {
+         yield return (metadata.IsEnumerableType ?
+            "ListBox"
+            : "DropDownList");
+      }
+
+      if (!String.IsNullOrEmpty(metadata.DataTypeName)) {
+         yield return metadata.DataTypeName;
       }
 
       foreach (var typeName in GetTypeNames(metadata)) {
