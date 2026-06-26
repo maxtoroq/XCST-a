@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Builder;
 
 namespace Xcst.Web;
 
-public static class XcstPageBuilderExtensions {
+public static class StartupExtensions {
 
    public static IApplicationBuilder
    UseXcstPages(this IApplicationBuilder app, IEnumerable<Assembly> appModules) {

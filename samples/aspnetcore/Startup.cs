@@ -22,7 +22,7 @@ public class Startup {
 
       services.AddAntiforgery();
 
-      services.Configure((XcstViewOptions opts) => {
+      services.Configure((Xcst.Web.Mvc.ViewOptions opts) => {
 
          opts.DisplayTemplateFactory = LoadDisplayTemplate;
          opts.EditorTemplateFactory = LoadEditorTemplate;

@@ -41,7 +41,7 @@ public class ViewContext {
    HashSet<object>?
    _visitedObjects;
 
-   XcstViewOptions?
+   ViewOptions?
    _options;
 
    public HttpContext
@@ -139,9 +139,9 @@ public class ViewContext {
    public int
    TemplateDepth => VisitedObjects.Count;
 
-   internal XcstViewOptions
+   internal ViewOptions
    Options => _options ??=
-      HttpContext.RequestServices.GetRequiredService<IOptions<XcstViewOptions>>()
+      HttpContext.RequestServices.GetRequiredService<IOptions<ViewOptions>>()
          .Value;
 
    public

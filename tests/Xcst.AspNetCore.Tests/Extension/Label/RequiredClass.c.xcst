@@ -6,7 +6,6 @@
 
    <c:import-namespace ns='Microsoft.Extensions.DependencyInjection'/>
    <c:import-namespace ns='Microsoft.Extensions.Options'/>
-   <c:import-namespace ns='Xcst.Web.Mvc'/>
 
    <c:type name='MyModel'>
       <c:member name='a' as='string' required='yes'/>
@@ -15,7 +14,7 @@
 
    <c:template name='c:initial-template'>
       <c:variable name='options' value='HttpContext.RequestServices
-         .GetRequiredService&lt;IOptions&lt;XcstViewOptions>>()
+         .GetRequiredService&lt;IOptions&lt;Xcst.Web.Mvc.ViewOptions>>()
          .Value'/>
       <c:set ref='options.LabelCssClass' value='req => (req) ? "req" : null'/>
       <a:model type='MyModel'>

@@ -16,7 +16,7 @@ using System;
 
 namespace Xcst.Web.Mvc;
 
-public sealed class XcstViewOptions {
+public sealed class ViewOptions {
 
    public bool
    ClientValidationEnabled { get; set; } = true;
