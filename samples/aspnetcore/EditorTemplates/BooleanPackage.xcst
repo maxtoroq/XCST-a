@@ -5,10 +5,8 @@
    extension-element-prefixes='a'>
 
    <c:import-namespace ns='System'/>
-   <c:import-namespace ns='System.Collections.Generic'/>
    <c:import-namespace ns='System.Globalization'/>
    <c:import-namespace ns='System.Linq'/>
-   <c:import-namespace ns='Xcst.Web.Mvc'/>
 
    <c:template name='c:initial-template' visibility='public'>
       <c:variable name='modelValue' value='(Model != null) ?

@@ -20,7 +20,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc;
@@ -211,78 +210,64 @@ static class DefaultDisplayTemplates {
    public static void
    ObjectTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
-      var modelExplorer = html.ModelExplorer;
-
-      if (modelExplorer.Model is null
+      if (html.ModelExplorer.Model is null
          || html.ViewContext.TemplateDepth > 1) {
 
-         html.DisplayTextHelper(seqOutput, modelExplorer);
+         html.DisplayTextHelper(seqOutput, html.ModelExplorer);
          return;
       }
 
       var filteredProperties = html.DisplayProperties();
-      var groupedProperties = filteredProperties.GroupBy(p => MetadataDetailsProvider.GetGroupName(p.Metadata));
 
-      bool createFieldset = groupedProperties.Any(g => g.Key != null);
+      foreach (var propertyExplorer in filteredProperties) {
 
-      foreach (var group in groupedProperties) {
+         var propertyMeta = propertyExplorer.Metadata;
+         var propertyName = propertyMeta.PropertyName!;
 
-         XcstWriter? fieldsetWriter = null;
-
-         if (createFieldset) {
-
-            fieldsetWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-
-            fieldsetWriter.WriteStartElement("fieldset");
-            fieldsetWriter.WriteStartElement("legend");
-            fieldsetWriter.WriteString(group.Key);
-            fieldsetWriter.WriteEndElement();
+         if (propertyMeta.HideSurroundingHtml) {
+            renderPropertyTmpl(html, propertyExplorer, seqOutput);
+            continue;
          }
 
-         foreach (var propertyExplorer in group) {
-
-            var propertyMeta = propertyExplorer.Metadata;
-            XcstWriter? fieldWriter = null;
-
-            if (!propertyMeta.HideSurroundingHtml) {
-
-               var memberTemplate = html.MemberTemplate(propertyExplorer);
-
-               if (memberTemplate != null) {
-                  memberTemplate.Invoke(null!/* argument is not used */, (fieldsetWriter ?? seqOutput)!);
-                  continue;
-               }
-
-               var labelWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-
-               labelWriter.WriteStartElement("div");
-               labelWriter.WriteAttributeString("class", "display-label");
-               labelWriter.WriteString(propertyMeta.GetDisplayName() ?? String.Empty);
-               labelWriter.WriteEndElement();
-
-               fieldWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-
-               fieldWriter.WriteStartElement("div");
-               fieldWriter.WriteAttributeString("class", "display-field");
-            }
-
-            new TemplateHelper(html, true, String.Empty, propertyExplorer)
-               .Render(
-                  fieldWriter ?? fieldsetWriter ?? seqOutput,
-                  new TemplateHelper.RenderArgs {
-                     htmlFieldName = propertyMeta.PropertyName,
-                  });
-
-            if (!propertyMeta.HideSurroundingHtml) {
-               fieldWriter!.WriteEndElement(); // </div>
-            }
+         if (html.MemberTemplate(propertyExplorer) is { } memberTemplate) {
+            memberTemplate.Invoke(null!/* argument is not used */, seqOutput!);
+            continue;
          }
 
-         if (createFieldset) {
-            fieldsetWriter!.WriteEndElement(); // </fieldset>
+         var labelWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+
+         labelWriter.WriteStartElement("div");
+
+         try {
+            labelWriter.WriteAttributeString("class", "display-label");
+            labelWriter.WriteString(propertyMeta.GetDisplayName() ?? String.Empty);
+         } finally {
+            labelWriter.WriteEndElement();
          }
+
+         var fieldWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+
+         fieldWriter.WriteStartElement("div");
+
+         try {
+            fieldWriter.WriteAttributeString("class", "display-field");
+
+            renderPropertyTmpl(html, propertyExplorer, fieldWriter);
+
+         } finally {
+            fieldWriter.WriteEndElement();
+         }
+      }
+
+      static void renderPropertyTmpl(
+            HtmlHelper html, ModelExplorer propertyExplorer, ISequenceWriter<object> output) {
+
+         new TemplateHelper(html, true, String.Empty, propertyExplorer)
+            .Render(
+               output,
+               new TemplateHelper.RenderArgs {
+                  htmlFieldName = propertyExplorer.Metadata.PropertyName,
+               });
       }
    }
 

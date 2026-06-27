@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using Xcst.Runtime;
 
@@ -291,79 +290,66 @@ static class DefaultEditorTemplates {
       }
 
       var filteredProperties = html.EditorProperties();
-      var groupedProperties = filteredProperties.GroupBy(p => MetadataDetailsProvider.GetGroupName(p.Metadata));
 
-      var createFieldset = groupedProperties.Any(g => g.Key != null);
+      foreach (var propertyExplorer in filteredProperties) {
 
-      foreach (var group in groupedProperties) {
+         var propertyMeta = propertyExplorer.Metadata;
+         var propertyName = propertyMeta.PropertyName!;
 
-         XcstWriter? fieldsetWriter = null;
-
-         if (createFieldset) {
-
-            fieldsetWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-
-            fieldsetWriter.WriteStartElement("fieldset");
-            fieldsetWriter.WriteStartElement("legend");
-            fieldsetWriter.WriteString(group.Key);
-            fieldsetWriter.WriteEndElement();
+         if (propertyMeta.HideSurroundingHtml) {
+            renderPropertyTmpl(html, propertyExplorer, seqOutput);
+            continue;
          }
 
-         foreach (var propertyExplorer in group) {
-
-            XcstWriter? fieldWriter = null;
-            var propertyMeta = propertyExplorer.Metadata;
-
-            if (!propertyMeta.HideSurroundingHtml) {
-
-               var memberTemplate = html.MemberTemplate(propertyExplorer);
-
-               if (memberTemplate != null) {
-                  memberTemplate.Invoke(null!/* argument is not used */, (fieldsetWriter ?? seqOutput)!);
-                  continue;
-               }
-
-               var labelWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-
-               labelWriter.WriteStartElement("div");
-               labelWriter.WriteAttributeString("class", "editor-label");
-
-               html.GenerateLabel(labelWriter, propertyExplorer, propertyMeta.PropertyName!, default)
-                  .NoConstructor()
-                  .Dispose();
-
-               labelWriter.WriteEndElement();
-
-               fieldWriter = fieldsetWriter
-                  ?? DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-
-               fieldWriter.WriteStartElement("div");
-               fieldWriter.WriteAttributeString("class", "editor-field");
-            }
-
-            new TemplateHelper(html, false, String.Empty, propertyExplorer)
-               .Render(
-                  fieldWriter ?? fieldsetWriter ?? seqOutput,
-                  new TemplateHelper.RenderArgs {
-                     htmlFieldName = propertyMeta.PropertyName,
-                  });
-
-            if (!propertyMeta.HideSurroundingHtml) {
-
-               fieldWriter!.WriteString(" ");
-
-               html.GenerateValidationMessage(fieldWriter, propertyExplorer, propertyMeta.PropertyName!, default)
-                  .NoConstructor()
-                  .Dispose();
-
-               fieldWriter.WriteEndElement(); // </div>
-            }
+         if (html.MemberTemplate(propertyExplorer) is { } memberTemplate) {
+            memberTemplate.Invoke(null!/* argument is not used */, seqOutput!);
+            continue;
          }
 
-         if (createFieldset) {
-            fieldsetWriter!.WriteEndElement(); // </fieldset>
+         var labelWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+
+         labelWriter.WriteStartElement("div");
+
+         try {
+            labelWriter.WriteAttributeString("class", "editor-label");
+
+            html.GenerateLabel(labelWriter, propertyExplorer, propertyName, default)
+               .NoConstructor()
+               .Dispose();
+
+         } finally {
+            labelWriter.WriteEndElement();
          }
+
+         var fieldWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+
+         fieldWriter.WriteStartElement("div");
+
+         try {
+            fieldWriter.WriteAttributeString("class", "editor-field");
+
+            renderPropertyTmpl(html, propertyExplorer, fieldWriter);
+
+            fieldWriter!.WriteString(" ");
+
+            html.GenerateValidationMessage(fieldWriter, propertyExplorer, propertyName, default)
+               .NoConstructor()
+               .Dispose();
+
+         } finally {
+            fieldWriter.WriteEndElement();
+         }
+      }
+
+      static void renderPropertyTmpl(
+            HtmlHelper html, ModelExplorer propertyExplorer, ISequenceWriter<object> output) {
+
+         new TemplateHelper(html, false, String.Empty, propertyExplorer)
+            .Render(
+               output,
+               new TemplateHelper.RenderArgs {
+                  htmlFieldName = propertyExplorer.Metadata.PropertyName,
+               });
       }
    }
 
