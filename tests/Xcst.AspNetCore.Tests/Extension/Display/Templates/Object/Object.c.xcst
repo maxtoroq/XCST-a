@@ -22,10 +22,14 @@
 
    <c:template name='expected'>
       <div>
-         <div class='display-label'>a</div>
-         <div class='display-field'>1</div>
-         <div class='display-label'>d</div>
-         <div class='display-field'>4</div>
+         <div>
+            <div>a</div>
+            <div>1</div>
+         </div>
+         <div>
+            <div>d</div>
+            <div>4</div>
+         </div>
       </div>
    </c:template>
 

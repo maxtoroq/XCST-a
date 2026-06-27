@@ -21,6 +21,12 @@ public sealed class ViewOptions {
    public bool
    ClientValidationEnabled { get; set; } = true;
 
+   public string?
+   EditorGroupCssClass { get; set; }
+
+   public string?
+   DisplayGroupCssClass { get; set; }
+
    public Func<string, string?, string?>?
    EditorCssClass { get; set; }
 

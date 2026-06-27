@@ -40,24 +40,36 @@
    <c:template name='expected'>
       <div>
          <section>
-            <div class='display-label'>SomeField</div>
-            <div class='display-field'/>
-            <div class='display-label'>DontDisplay</div>
-            <div class='display-field'/>
+            <div>
+               <div>SomeField</div>
+               <div/>
+            </div>
+            <div>
+               <div>DontDisplay</div>
+               <div/>
+            </div>
          </section>
          <section>
-            <div class='display-label'>DontDisplay</div>
-            <div class='display-field'/>
-            <div class='display-label'>SomeField</div>
-            <div class='display-field'/>
+            <div>
+               <div>DontDisplay</div>
+               <div/>
+            </div>
+            <div>
+               <div>SomeField</div>
+               <div/>
+            </div>
          </section>
          <section>
-            <div class='display-label'>SomeField</div>
-            <div class='display-field'/>
+            <div>
+               <div>SomeField</div>
+               <div/>
+            </div>
          </section>
          <section>
-            <div class='display-label'>ComplexField</div>
-            <div class='display-field'/>
+            <div>
+               <div>ComplexField</div>
+               <div/>
+            </div>
          </section>
       </div>
    </c:template>

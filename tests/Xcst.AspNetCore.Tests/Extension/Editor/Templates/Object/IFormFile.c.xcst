@@ -20,12 +20,9 @@
 
    <c:template name='expected'>
       <div>
-         <div class='editor-label'>
+         <div>
             <label for='f'>f</label>
-         </div>
-         <div class='editor-field'>
             <input type='file' id='f' name='f'/>
-            <c:text> </c:text>
             <span class='field-validation-valid' data-valmsg-for='f' data-valmsg-replace='true'/>
          </div>
       </div>

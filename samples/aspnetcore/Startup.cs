@@ -27,6 +27,8 @@ public class Startup {
          opts.DisplayTemplateFactory = LoadDisplayTemplate;
          opts.EditorTemplateFactory = LoadEditorTemplate;
 
+         opts.LabelCssClass = req => req ? "req" : null;
+
          opts.EditorCssClass = (elementName, inputType) =>
             inputType switch {
                null => (elementName == "select") ?
@@ -37,8 +39,6 @@ public class Startup {
                "hidden" => null,
                _ => "form-control",
             };
-
-         opts.LabelCssClass = req => req ? "req" : null;
       });
    }
 

@@ -40,58 +40,40 @@
    <c:template name='expected'>
       <div>
          <section>
-            <div class='editor-label'>
+            <div>
                <label for='SomeField'>SomeField</label>
-            </div>
-            <div class='editor-field'>
                <input type='text' id='SomeField' name='SomeField' value=''/>
-               <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='SomeField' data-valmsg-replace='true'/>
             </div>
-            <div class='editor-label'>
+            <div>
                <label for='DontDisplay'>DontDisplay</label>
-            </div>
-            <div class='editor-field'>
                <input type='text' id='DontDisplay' name='DontDisplay' value=''/>
-               <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='DontDisplay' data-valmsg-replace='true'/>
             </div>
          </section>
          <section>
-            <div class='editor-label'>
+            <div>
                <label for='DontDisplay'>DontDisplay</label>
-            </div>
-            <div class='editor-field'>
                <input type='text' id='DontDisplay' name='DontDisplay' value=''/>
-               <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='DontDisplay' data-valmsg-replace='true'/>
             </div>
-            <div class='editor-label'>
+            <div>
                <label for='SomeField'>SomeField</label>
-            </div>
-            <div class='editor-field'>
                <input type='text' id='SomeField' name='SomeField' value=''/>
-               <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='SomeField' data-valmsg-replace='true'/>
             </div>
          </section>
          <section>
-            <div class='editor-label'>
+            <div>
                <label for='SomeField'>SomeField</label>
-            </div>
-            <div class='editor-field'>
                <input type='text' id='SomeField' name='SomeField' value=''/>
-               <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='SomeField' data-valmsg-replace='true'/>
             </div>
          </section>
          <section>
-            <div class='editor-label'>
+            <div>
                <label for='Complex_ComplexField'>ComplexField</label>
-            </div>
-            <div class='editor-field'>
                <input type='text' id='Complex_ComplexField' name='Complex.ComplexField' value=''/>
-               <c:text> </c:text>
                <span class='field-validation-valid' data-valmsg-for='Complex.ComplexField' data-valmsg-replace='true'/>
             </div>
          </section>

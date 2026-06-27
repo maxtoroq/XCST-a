@@ -290,6 +290,7 @@ static class DefaultEditorTemplates {
       }
 
       var filteredProperties = html.EditorProperties();
+      var groupCssClass = html.ViewContext.Options.EditorGroupCssClass;
 
       foreach (var propertyExplorer in filteredProperties) {
 
@@ -306,38 +307,28 @@ static class DefaultEditorTemplates {
             continue;
          }
 
-         var labelWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+         var writer = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-         labelWriter.WriteStartElement("div");
+         writer.WriteStartElement("div");
 
          try {
-            labelWriter.WriteAttributeString("class", "editor-label");
 
-            html.GenerateLabel(labelWriter, propertyExplorer, propertyName, default)
+            if (groupCssClass != null) {
+               writer.WriteAttributeString("class", groupCssClass);
+            }
+
+            html.GenerateLabel(writer, propertyExplorer, propertyName, default)
+               .NoConstructor()
+               .Dispose();
+
+            renderPropertyTmpl(html, propertyExplorer, writer);
+
+            html.GenerateValidationMessage(writer, propertyExplorer, propertyName, default)
                .NoConstructor()
                .Dispose();
 
          } finally {
-            labelWriter.WriteEndElement();
-         }
-
-         var fieldWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-
-         fieldWriter.WriteStartElement("div");
-
-         try {
-            fieldWriter.WriteAttributeString("class", "editor-field");
-
-            renderPropertyTmpl(html, propertyExplorer, fieldWriter);
-
-            fieldWriter!.WriteString(" ");
-
-            html.GenerateValidationMessage(fieldWriter, propertyExplorer, propertyName, default)
-               .NoConstructor()
-               .Dispose();
-
-         } finally {
-            fieldWriter.WriteEndElement();
+            writer.WriteEndElement();
          }
       }
 

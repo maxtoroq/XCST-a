@@ -28,7 +28,7 @@
       <c:variable name='elements' value='result.Cast&lt;XElement>().ToArray()'/>
 
       <c:void value='Assert.IsNotNull(elements)'/>
-      <c:void value='Assert.AreEqual(4, elements.Length)'/>
+      <c:void value='Assert.AreEqual(2, elements.Length)'/>
    </c:template>
 
    <c:template name='member-template'>

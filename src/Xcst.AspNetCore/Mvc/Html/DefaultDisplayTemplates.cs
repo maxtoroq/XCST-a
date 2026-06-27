@@ -24,8 +24,6 @@ using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc;
 
-using ModelBinding;
-
 static class DefaultDisplayTemplates {
 
    public static void
@@ -218,6 +216,7 @@ static class DefaultDisplayTemplates {
       }
 
       var filteredProperties = html.DisplayProperties();
+      var groupCssClass = html.ViewContext.Options.DisplayGroupCssClass;
 
       foreach (var propertyExplorer in filteredProperties) {
 
@@ -234,28 +233,36 @@ static class DefaultDisplayTemplates {
             continue;
          }
 
-         var labelWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
+         var writer = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
-         labelWriter.WriteStartElement("div");
-
-         try {
-            labelWriter.WriteAttributeString("class", "display-label");
-            labelWriter.WriteString(propertyMeta.GetDisplayName() ?? String.Empty);
-         } finally {
-            labelWriter.WriteEndElement();
-         }
-
-         var fieldWriter = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
-
-         fieldWriter.WriteStartElement("div");
+         writer.WriteStartElement("div");
 
          try {
-            fieldWriter.WriteAttributeString("class", "display-field");
 
-            renderPropertyTmpl(html, propertyExplorer, fieldWriter);
+            if (groupCssClass != null) {
+               writer.WriteAttributeString("class", groupCssClass);
+            }
+
+            writer.WriteStartElement("div");
+
+            try {
+               writer.WriteString(propertyMeta.GetDisplayName() ?? String.Empty);
+
+            } finally {
+               writer.WriteEndElement();
+            }
+
+            writer.WriteStartElement("div");
+
+            try {
+               renderPropertyTmpl(html, propertyExplorer, writer);
+
+            } finally {
+               writer.WriteEndElement();
+            }
 
          } finally {
-            fieldWriter.WriteEndElement();
+            writer.WriteEndElement();
          }
       }
 
