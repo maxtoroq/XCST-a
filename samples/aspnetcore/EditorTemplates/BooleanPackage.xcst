@@ -6,17 +6,14 @@
 
    <c:import-namespace ns='System'/>
    <c:import-namespace ns='System.Globalization'/>
-   <c:import-namespace ns='System.Linq'/>
 
    <c:template name='c:initial-template' visibility='public'>
       <c:variable name='modelValue' value='(Model != null) ?
          Convert.ToBoolean(Model, CultureInfo.InvariantCulture)
          : default(bool?)' as='bool?'/>
-      <c:variable name='@class' value='ViewContext.HtmlAttributes.TryGetValue("class", out var cls) ? $" {cls}" : null'/>
       <c:choose>
          <c:when test='Html.ModelMetadata.IsNullableValueType'>
-            <a:select class='form-select{@class}'>
-               <c:call-template name='write-attributes-except-class'/>
+            <a:select class='form-select'>
                <a:option value='""' selected='{!modelValue.HasValue}'/>
                <a:option value='"true"' selected='{modelValue.HasValue &amp;&amp; modelValue.Value}'>Yes</a:option>
                <a:option value='"false"' selected='{modelValue.HasValue &amp;&amp; !modelValue.Value}'>No</a:option>
@@ -25,19 +22,11 @@
          <c:otherwise>
             <div class='form-check'>
                <label class='form-check-label'>
-                  <a:checkbox class='form-check-input{@class}' checked='{modelValue.GetValueOrDefault()}'>
-                     <c:call-template name='write-attributes-except-class'/>
-                  </a:checkbox>
+                  <a:checkbox class='form-check-input' checked='{modelValue.GetValueOrDefault()}'/>
                </label>
             </div>
          </c:otherwise>
       </c:choose>
-   </c:template>
-
-   <c:template name='write-attributes-except-class'>
-      <c:for-each name='pair' in='ViewContext.HtmlAttributes.Where(p => p.Key != "class")'>
-         <c:attribute name='{pair.Key}' value='pair.Value'/>
-      </c:for-each>
    </c:template>
 
 </c:package>

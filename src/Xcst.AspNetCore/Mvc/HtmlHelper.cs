@@ -17,14 +17,12 @@
 #endregion
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
@@ -112,36 +110,6 @@ public partial class HtmlHelper {
       this.ViewContext = viewContext;
       this.ViewDataContainer = viewDataContainer;
       this.MetadataProvider = metadataProvider;
-   }
-
-   /// <summary>
-   /// Creates a dictionary of HTML attributes from the input object,
-   /// translating underscores to dashes.
-   /// </summary>
-   /// <example>
-   /// <c>new { data_name="value" }</c> will translate to the entry <c>{ "data-name" , "value" }</c>
-   /// in the resulting dictionary.
-   /// </example>
-   /// <param name="htmlAttributes">Anonymous object describing HTML attributes.</param>
-   /// <returns>A dictionary that represents HTML attributes.</returns>
-   public static IDictionary<string, object?>
-   AnonymousObjectToHtmlAttributes(object? htmlAttributes) {
-
-      var comparer = StringComparer.OrdinalIgnoreCase;
-
-      if (htmlAttributes is IDictionary<string, object?> dictionary) {
-         return new Dictionary<string, object?>(dictionary, comparer);
-      }
-
-      var result = new Dictionary<string, object?>(comparer);
-
-      if (htmlAttributes != null) {
-         foreach (var property in HtmlAttributePropertyHelper.GetProperties(htmlAttributes)) {
-            result.Add(property.Name, property.GetValue(htmlAttributes));
-         }
-      }
-
-      return result;
    }
 
    public string
@@ -587,29 +555,4 @@ partial class HtmlHelper {
       IsLetter(char c) =>
          (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z'));
    }
-}
-
-class HtmlAttributePropertyHelper : PropertyHelper {
-
-   static ConcurrentDictionary<Type, PropertyHelper[]>
-   _reflectionCache = new();
-
-   [AllowNull]
-   public override string
-   Name {
-      get => base.Name;
-      protected set => base.Name = value?.Replace('_', '-');
-   }
-
-   public static new PropertyHelper[]
-   GetProperties(object instance) =>
-      GetProperties(instance, CreateInstance, _reflectionCache);
-
-   static PropertyHelper
-   CreateInstance(PropertyInfo property) =>
-      new HtmlAttributePropertyHelper(property);
-
-   public
-   HtmlAttributePropertyHelper(PropertyInfo property)
-      : base(property) { }
 }

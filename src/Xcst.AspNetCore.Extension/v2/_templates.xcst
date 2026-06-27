@@ -31,7 +31,6 @@
       <call-template name='validate-attribs'>
          <with-param name='el' value='el'/>
          <with-param name='optional' as='string[]'>
-            <object>attributes</object>
             <object>field-name</object>
             <object>for</object>
             <object>members</object>
@@ -40,11 +39,6 @@
             <object>options</object>
             <object>template</object>
             <object>with-params</object>
-            <if test='editor'>
-               <object>autofocus</object>
-               <object>disabled</object>
-               <object>readonly</object>
-            </if>
          </with-param>
       </call-template>
 
@@ -180,15 +174,6 @@
                         <with-param name='el' value='el'/>
                      </call-template>
                      <apply-templates value='select(el, a + "member-template")' mode='editor-member-template'/>
-                     <call-template name='editor-html-attributes'>
-                        <with-param name='el' value='el'/>
-                        <with-param name='attributesAttr' value='el.Attribute("attributes")'/>
-                        <with-param name='boolAttribs' value='(editor) ?
-                           attributes(el).Where(p => p.Name.Namespace == XNamespace.None
-                                 &amp;&amp; p.Name.LocalName is "autofocus" or "disabled" or "readonly")
-                              .ToArray()
-                           : System.Array.Empty&lt;XAttribute>()'/>
-                     </call-template>
                      <if test='el.Attribute("with-params") is { } withParamsAttr'>
                         <code:member-initializer name='withParams'>
                            <code:expression value='{xcst_expression(withParamsAttr)}'/>
@@ -480,84 +465,6 @@
             </code:arguments>
          </code:new-object>
       </code:member-initializer>
-   </template>
-
-   <template name='editor-html-attributes'>
-      <param name='el' as='XElement' required='yes'/>
-      <param name='attributesAttr' as='XAttribute?'/>
-      <param name='classAttr' as='XAttribute?'/>
-      <param name='boolAttribs' value='System.Array.Empty&lt;XAttribute>()' as='XAttribute[]'/>
-
-      <!-- Keep document order -->
-      <variable name='avts' value='attributes(el)
-         .Where(p => p == classAttr || boolAttribs.Contains(p))
-         .ToArray()'/>
-
-      <variable name='attributesExpr' value='(attributesAttr != null) ?
-         xcst_expression(attributesAttr) : null'/>
-
-      <if test='!(avts.Length == 0
-            &amp;&amp; attributesExpr is null)'>
-         <code:member-initializer name='htmlAttributes'>
-            <choose>
-               <when test='avts.Length == 0'>
-                  <code:expression value='{attributesExpr}'/>
-               </when>
-               <otherwise>
-                  <code:chain>
-                     <code:new-object>
-                        <code:type-reference name='HtmlAttributeDictionary' namespace='Xcst.Web.Mvc'/>
-                     </code:new-object>
-                     <for-each name='avt' in='avts'>
-                        <choose>
-                           <when test='avt == classAttr'>
-                              <code:method-call name='AddClass'>
-                                 <code:chain-reference/>
-                                 <code:arguments>
-                                    <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt }'/>
-                                 </code:arguments>
-                              </code:method-call>
-                           </when>
-                           <when test='boolAttribs.Contains(avt)'>
-                              <code:method-call name='SetBoolean'>
-                                 <code:chain-reference/>
-                                 <code:arguments>
-                                    <code:string literal='true'>
-                                       <value-of value='avt.Name.LocalName'/>
-                                    </code:string>
-                                    <call-template name='src:boolean'>
-                                       <with-param name='val' value='xcst_boolean(avt, true)'/>
-                                       <with-param name='avt' value='avt'/>
-                                    </call-template>
-                                 </code:arguments>
-                              </code:method-call>
-                           </when>
-                           <otherwise>
-                              <code:method-call name='SetAttribute'>
-                                 <code:chain-reference/>
-                                 <code:arguments>
-                                    <code:string literal='true'>
-                                       <value-of value='avt.Name.LocalName'/>
-                                    </code:string>
-                                    <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = avt }'/>
-                                 </code:arguments>
-                              </code:method-call>
-                           </otherwise>
-                        </choose>
-                     </for-each>
-                     <if test='attributesExpr != null'>
-                        <code:method-call name='SetAttributes'>
-                           <code:chain-reference/>
-                           <code:arguments>
-                              <code:expression value='{attributesExpr}'/>
-                           </code:arguments>
-                        </code:method-call>
-                     </if>
-                  </code:chain>
-               </otherwise>
-            </choose>
-         </code:member-initializer>
-      </if>
    </template>
 
 </module>

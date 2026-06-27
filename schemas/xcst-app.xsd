@@ -255,31 +255,10 @@
       <xs:attribute name="id" type="a:avt" />
       <xs:attribute name="class" type="a:avt" />
    </xs:attributeGroup>
-   <xs:element name="editor" substitutionGroup="a:extension-instruction">
+   <xs:element name="editor" substitutionGroup="a:extension-instruction" type="a:_editor-display-common">
       <xs:annotation>
          <xs:documentation>Creates a form control for a model's member, or an "edit view" for a whole model.</xs:documentation>
       </xs:annotation>
-      <xs:complexType>
-         <xs:complexContent>
-            <xs:extension base="a:_editor-display-common">
-               <xs:attribute name="autofocus">
-                  <xs:simpleType>
-                     <xs:union memberTypes="a:boolean a:avt-expr" />
-                  </xs:simpleType>
-               </xs:attribute>
-               <xs:attribute name="disabled">
-                  <xs:simpleType>
-                     <xs:union memberTypes="a:boolean a:avt-expr" />
-                  </xs:simpleType>
-               </xs:attribute>
-               <xs:attribute name="readonly">
-                  <xs:simpleType>
-                     <xs:union memberTypes="a:boolean a:avt-expr" />
-                  </xs:simpleType>
-               </xs:attribute>
-            </xs:extension>
-         </xs:complexContent>
-      </xs:complexType>
    </xs:element>
    <xs:element name="display" substitutionGroup="a:extension-instruction" type="a:_editor-display-common">
       <xs:annotation>
@@ -301,7 +280,6 @@
       </xs:attribute>
       <xs:attribute name="template" type="a:avt" />
       <xs:attribute name="field-name" type="a:avt" />
-      <xs:attribute name="attributes" type="a:expr-obj-dict" />
       <xs:attribute name="with-params" type="a:expr-obj-dict" />
       <xs:attribute name="options" type="a:options-expr" />
    </xs:complexType>

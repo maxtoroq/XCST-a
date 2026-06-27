@@ -256,10 +256,6 @@ public class TemplateHelper {
 
       [GeneratedCodeReference]
       public object?
-      htmlAttributes { get; set; }
-
-      [GeneratedCodeReference]
-      public object?
       withParams { get; set; }
    }
 
@@ -292,7 +288,6 @@ public class TemplateHelper {
       var membersNames = args.membersNames;
       var membersOptions = args.membersOptions;
       var memberTemplate = args.memberTemplate;
-      var htmlAttributes = args.htmlAttributes;
       var withParams = args.withParams;
 
       htmlFieldName ??= _expression;
@@ -342,10 +337,6 @@ public class TemplateHelper {
          MembersNames = membersNames,
          VisitedObjects = { visitedObjectsKey },
       };
-
-      if (htmlAttributes != null) {
-         viewContext.MergeHtmlAttributes(htmlAttributes);
-      }
 
       if (membersOptions != null) {
          foreach (var kvp in membersOptions) {

@@ -26,9 +26,6 @@ public class ViewContext {
    object?
    _formattedModelValue;
 
-   IDictionary<string, object?>?
-   _htmlAttributes;
-
    IList<string>?
    _membersNames;
 
@@ -91,13 +88,6 @@ public class ViewContext {
    FormattedModelValue {
       get => _formattedModelValue ?? String.Empty;
       set => _formattedModelValue = value;
-   }
-
-   [AllowNull]
-   public IDictionary<string, object?>
-   HtmlAttributes {
-      get => _htmlAttributes ??= new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
-      set => _htmlAttributes = value;
    }
 
    [AllowNull]
@@ -182,10 +172,6 @@ public class ViewContext {
 
       _htmlFieldPrefix = viewContext._htmlFieldPrefix;
 
-      if (viewContext._htmlAttributes is { Count: > 0 } htmlAttribs) {
-         _htmlAttributes = new CopyOnWriteDictionary<string, object?>(htmlAttribs, StringComparer.OrdinalIgnoreCase);
-      }
-
       if (viewContext._membersOptions is { Count: > 0 } memberOpts) {
          _membersOptions = new CopyOnWriteDictionary<string, IEnumerable<SelectListItem>?>(memberOpts, EqualityComparer<string>.Default);
       }
@@ -215,27 +201,6 @@ public class ViewContext {
       this.FormMethod = (StringComparer.OrdinalIgnoreCase.Equals(formMethod, "GET")) ?
          FormMethod.Get
          : FormMethod.Post;
-   }
-
-   public void
-   MergeHtmlAttributes(object? htmlAttributes) {
-
-      if (htmlAttributes is null) {
-         return;
-      }
-
-      var dict = htmlAttributes as IDictionary<string, object?>
-         ?? HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
-
-      foreach (var kvp in dict) {
-
-         if (StringComparer.OrdinalIgnoreCase.Equals(kvp.Key, "class")) {
-            HtmlAttributeDictionary.AddClass(this.HtmlAttributes, kvp.Value);
-            continue;
-         }
-
-         this.HtmlAttributes[kvp.Key] = kvp.Value;
-      }
    }
 
    internal IEnumerable<SelectListItem>?

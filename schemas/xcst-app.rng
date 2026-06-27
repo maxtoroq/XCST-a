@@ -428,28 +428,6 @@
          <element name="editor">
             <ann:documentation>Creates a form control for a model's member, or an "edit view" for a whole model.</ann:documentation>
             <ref name="_editor-display-common"/>
-            <zeroOrMore>
-               <choice>
-                  <attribute name="autofocus">
-                     <choice>
-                        <ref name="boolean"/>
-                        <ref name="avt-expr"/>
-                     </choice>
-                  </attribute>
-                  <attribute name="disabled">
-                     <choice>
-                        <ref name="boolean"/>
-                        <ref name="avt-expr"/>
-                     </choice>
-                  </attribute>
-                  <attribute name="readonly">
-                     <choice>
-                        <ref name="boolean"/>
-                        <ref name="avt-expr"/>
-                     </choice>
-                  </attribute>
-               </choice>
-            </zeroOrMore>
          </element>
       </define>
 
@@ -491,9 +469,6 @@
                </attribute>
                <attribute name="field-name">
                   <ref name="avt"/>
-               </attribute>
-               <attribute name="attributes">
-                  <ref name="expr-obj-dict"/>
                </attribute>
                <attribute name="with-params">
                   <ref name="expr-obj-dict"/>

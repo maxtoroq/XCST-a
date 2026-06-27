@@ -44,36 +44,32 @@ static class DefaultEditorTemplates {
 
          var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
          var className = GetEditorCssClass(html, "select", null);
-         var htmlAttributes = CreateHtmlAttributes(html, className);
 
-         using var disp = html.GenerateSelect(
+         html.GenerateSelect(
             output,
             html.ModelExplorer,
             String.Empty,
             new HtmlHelper.SelectArgs {
                options = TriStateValues(value),
-               @class = htmlAttributes.RemoveClass(output.SimpleContent),
-            });
-
-         htmlAttributes.WriteTo(output);
-         disp.EndOfConstructor();
+               @class = className,
+            })
+            .NoConstructor()
+            .Dispose();
 
       } else {
 
          var className = GetEditorCssClass(html, "input", "checkbox");
-         var htmlAttributes = CreateHtmlAttributes(html, className);
 
-         using var disp = html.GenerateCheckbox(
+         html.GenerateCheckbox(
             seqOutput,
             modelExplorer: html.ModelExplorer,
             String.Empty,
             new HtmlHelper.CheckboxArgs {
                @checked = value.GetValueOrDefault(),
-               @class = htmlAttributes.RemoveClass(html.SimpleContent),
-            });
-
-         htmlAttributes.WriteTo(disp.ElementOutput);
-         disp.EndOfConstructor();
+               @class = className,
+            })
+            .NoConstructor()
+            .Dispose();
       }
    }
 
@@ -138,9 +134,7 @@ static class DefaultEditorTemplates {
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(html, "select", null);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
-
-      string? optionLabel = null;
+      var optionLabel = default(string);
 
       var options = html.ViewContext.OptionsForModel();
 
@@ -154,10 +148,8 @@ static class DefaultEditorTemplates {
          String.Empty,
          new HtmlHelper.SelectArgs {
             options = options,
-            @class = htmlAttributes.RemoveClass(output.SimpleContent),
+            @class = className,
          });
-
-      htmlAttributes.WriteTo(output);
 
       if (optionLabel != null) {
          html.WriteOption(new SelectListItem {
@@ -175,7 +167,6 @@ static class DefaultEditorTemplates {
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(html, "select", null);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
       var metadata = html.ModelMetadata;
 
       var modelType = metadata.ModelType;
@@ -199,10 +190,8 @@ static class DefaultEditorTemplates {
          String.Empty,
          new HtmlHelper.SelectArgs {
             options = options,
-            @class = htmlAttributes.RemoveClass(output.SimpleContent),
+            @class = className,
          });
-
-      htmlAttributes.WriteTo(output);
 
       html.WriteOption(new SelectListItem {
          Text = optionLabel,
@@ -220,20 +209,18 @@ static class DefaultEditorTemplates {
       }
 
       var className = GetEditorCssClass(html, "input", "hidden");
-      var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using var disp = html.GenerateInput(
+      html.GenerateInput(
          seqOutput,
          html.ModelExplorer,
          String.Empty,
          new HtmlHelper.InputArgs {
             type = "hidden",
             value = html.ViewContext.FormattedModelValue,
-            @class = htmlAttributes.RemoveClass(html.SimpleContent),
-         });
-
-      htmlAttributes.WriteTo(disp.ElementOutput);
-      disp.EndOfConstructor();
+            @class = className,
+         })
+         .NoConstructor()
+         .Dispose();
    }
 
    public static void
@@ -242,22 +229,19 @@ static class DefaultEditorTemplates {
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(html, "select", null);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
-
       var options = html.ViewContext.OptionsForModel();
 
-      using var disp = html.GenerateSelect(
+      html.GenerateSelect(
          output,
          html.ModelExplorer,
          String.Empty,
          new HtmlHelper.SelectArgs {
             options = options,
             multiple = true,
-            @class = htmlAttributes.RemoveClass(output.SimpleContent),
-         });
-
-      htmlAttributes.WriteTo(output);
-      disp.EndOfConstructor();
+            @class = className,
+         })
+         .NoConstructor()
+         .Dispose();
    }
 
    public static void
@@ -266,19 +250,17 @@ static class DefaultEditorTemplates {
       var output = DocumentWriter.CastElement(html.CurrentPackage, seqOutput);
 
       var className = GetEditorCssClass(html, "textarea", null);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using var disp = html.GenerateTextarea(
+      html.GenerateTextarea(
          output,
          html.ModelExplorer,
          String.Empty,
          new HtmlHelper.TextareaArgs {
             value = html.ViewContext.FormattedModelValue,
-            @class = htmlAttributes.RemoveClass(output.SimpleContent),
-         });
-
-      htmlAttributes.WriteTo(output);
-      disp.EndOfConstructor();
+            @class = className,
+         })
+         .NoConstructor()
+         .Dispose();
    }
 
    public static void
@@ -349,19 +331,17 @@ static class DefaultEditorTemplates {
 
       var inputType = "password";
       var className = GetEditorCssClass(html, "input", inputType);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using var disp = html.GenerateInput(
+      html.GenerateInput(
          seqOutput,
          html.ModelExplorer,
          String.Empty,
          new HtmlHelper.InputArgs {
             type = inputType,
-            @class = htmlAttributes.RemoveClass(html.SimpleContent)
-         });
-
-      htmlAttributes.WriteTo(disp.ElementOutput);
-      disp.EndOfConstructor();
+            @class = className,
+         })
+         .NoConstructor()
+         .Dispose();
    }
 
    public static void
@@ -381,19 +361,17 @@ static class DefaultEditorTemplates {
          html.ViewContext.FormattedModelValue : null;
 
       var className = GetEditorCssClass(html, "input", inputTypeDefault);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using var disp = html.GenerateInput(
+      html.GenerateInput(
          seqOutput,
          html.ModelExplorer,
          String.Empty,
          new HtmlHelper.InputArgs {
             value = value,
-            @class = htmlAttributes.RemoveClass(html.SimpleContent)
-         });
-
-      htmlAttributes.WriteTo(disp.ElementOutput);
-      disp.EndOfConstructor();
+            @class = className,
+         })
+         .NoConstructor()
+         .Dispose();
    }
 
    public static void
@@ -401,30 +379,17 @@ static class DefaultEditorTemplates {
 
       var inputType = "file";
       var className = GetEditorCssClass(html, "input", inputType);
-      var htmlAttributes = CreateHtmlAttributes(html, className);
 
-      using var disp = html.GenerateInput(
+      html.GenerateInput(
          seqOutput,
          html.ModelExplorer,
          String.Empty,
          new HtmlHelper.InputArgs {
             type = inputType,
-            @class = htmlAttributes.RemoveClass(html.SimpleContent)
-         });
-
-      htmlAttributes.WriteTo(disp.ElementOutput);
-      disp.EndOfConstructor();
-   }
-
-   static HtmlAttributeDictionary
-   CreateHtmlAttributes(HtmlHelper html, string? className) {
-
-      var htmlAttributes = new HtmlAttributeDictionary();
-
-      htmlAttributes.AddClass(className);
-      htmlAttributes.SetAttributes(html.ViewContext.HtmlAttributes);
-
-      return htmlAttributes;
+            @class = className,
+         })
+         .NoConstructor()
+         .Dispose();
    }
 
    internal static string?
