@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Xcst.Web.Mvc.ExpressionUtil;
 
 namespace Xcst.Web.Mvc;
 
@@ -56,14 +55,25 @@ static class ExpressionMetadataProvider {
       }
 
       if (!legalExpression) {
-         throw new InvalidOperationException("Templates can be used only with field access, property access, single-dimension array index, or single-parameter custom indexer expressions.");
+         throw new InvalidOperationException(
+            "Templates can be used only with field access, property access, single-dimension array index, or single-parameter custom indexer expressions.");
       }
 
       object? modelAccessor(object container) {
+
+         var model = (TParameter)container;
+
+         var cachedFn = CachedExpressionCompiler.Process(expression);
+
+         if (cachedFn != null) {
+            return cachedFn.Invoke(model);
+         }
+
+         var fn = expression.Compile();
+
          try {
-            return CachedExpressionCompiler
-               .Process(expression)
-               .Invoke((TParameter)container);
+            return fn.Invoke((TParameter)container);
+
          } catch (NullReferenceException) {
             return null;
          }

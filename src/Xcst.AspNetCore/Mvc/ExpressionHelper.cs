@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Xcst.Web.Mvc.ExpressionUtil;
 
 namespace Xcst.Web.Mvc;
 
@@ -33,7 +32,7 @@ public static class ExpressionHelper {
             nameParts.Push(
                GetIndexerInvocation(
                   methodExpression.Arguments.Single(),
-                  expression.Parameters.ToArray()));
+                  expression.Parameters));
 
             part = methodExpression.Object;
 
@@ -44,7 +43,7 @@ public static class ExpressionHelper {
             nameParts.Push(
                GetIndexerInvocation(
                   binaryExpression.Right,
-                  expression.Parameters.ToArray()));
+                  expression.Parameters));
 
             part = binaryExpression.Left;
 
@@ -77,15 +76,16 @@ public static class ExpressionHelper {
    }
 
    static string
-   GetIndexerInvocation(Expression expression, ParameterExpression[] parameters) {
+   GetIndexerInvocation(Expression expression, IList<ParameterExpression> parameters) {
 
       var converted = Expression.Convert(expression, typeof(object));
       var fakeParameter = Expression.Parameter(typeof(object), null);
       var lambda = Expression.Lambda<Func<object, object>>(converted, fakeParameter);
-      Func<object?, object> func;
+      Func<object, object> func;
 
       try {
-         func = CachedExpressionCompiler.Process(lambda)!;
+         func = CachedExpressionCompiler.Process(lambda)
+            ?? lambda.Compile();
 
       } catch (InvalidOperationException ex) {
 
@@ -94,7 +94,7 @@ public static class ExpressionHelper {
             ex);
       }
 
-      return String.Concat("[", Convert.ToString(func.Invoke(null), CultureInfo.InvariantCulture), "]");
+      return String.Concat("[", Convert.ToString(func.Invoke(null!), CultureInfo.InvariantCulture), "]");
    }
 
    internal static bool
