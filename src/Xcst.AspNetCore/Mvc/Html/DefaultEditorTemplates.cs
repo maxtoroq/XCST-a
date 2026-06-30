@@ -21,12 +21,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Reflection;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc;
-
-using ModelBinding;
 
 static class DefaultEditorTemplates {
 
@@ -169,10 +168,7 @@ static class DefaultEditorTemplates {
       var className = GetEditorCssClass(html, "select", null);
       var metadata = html.ModelMetadata;
 
-      var modelType = metadata.ModelType;
-      var enumType = Nullable.GetUnderlyingType(modelType) ?? modelType;
-
-      if (!enumType.IsEnum) {
+      if (!metadata.IsEnum) {
          throw new InvalidOperationException("Enum template can only be used on Enum members.");
       }
 
@@ -181,7 +177,7 @@ static class DefaultEditorTemplates {
 
       var applyFormatInEdit = metadata.EditFormatString != null;
 
-      var options = EnumOptions(enumType, output, formatString, applyFormatInEdit);
+      var options = EnumOptions(metadata, output, formatString, applyFormatInEdit);
       var optionLabel = metadata.Placeholder ?? String.Empty;
 
       using var disp = html.GenerateSelect(
@@ -396,9 +392,9 @@ static class DefaultEditorTemplates {
    GetEditorCssClass(HtmlHelper html, string elementName, string? inputType) =>
       html.ViewContext.Options.EditorCssClass?.Invoke(elementName, inputType);
 
-   internal static List<SelectListItem>
+   internal static SelectListItem[]
    TriStateValues(bool? value) =>
-      new List<SelectListItem> {
+      new SelectListItem[] {
          new SelectListItem {
             Text = "Not Set",
             Value = String.Empty,
@@ -416,34 +412,36 @@ static class DefaultEditorTemplates {
          }
       };
 
-   internal static IList<SelectListItem>
-   EnumOptions(Type enumType, XcstWriter output, string? formatString = null, bool applyFormatInEdit = false) {
+   static SelectListItem[]
+   EnumOptions(ModelMetadata metadata, XcstWriter output, string? formatString = null, bool applyFormatInEdit = false) {
 
-      Debug.Assert(enumType.IsEnum);
+      Debug.Assert(metadata.IsEnum);
 
-      var selectList = new List<SelectListItem>();
+      var displayFields = metadata.EnumGroupedDisplayNamesAndValues as IList<KeyValuePair<EnumGroupAndName, string>>
+         ?? metadata.EnumGroupedDisplayNamesAndValues!.ToArray();
 
-      const BindingFlags bindingFlags = BindingFlags.DeclaredOnly
-         | BindingFlags.GetField
-         | BindingFlags.Public
-         | BindingFlags.Static;
+      var selectList = new SelectListItem[displayFields.Count];
 
-      foreach (var field in enumType.GetFields(bindingFlags)) {
+      var i = -1;
 
-         var enumValue = field.GetValue(null);
+      foreach (var field in metadata.EnumNamesAndValues!) {
+
+         i++;
+
+         var displayField = displayFields[i];
 
          var value = (formatString != null && applyFormatInEdit) ?
-            String.Format(CultureInfo.CurrentCulture, formatString, enumValue)
-            : field.Name;
+            displayField.Value
+            : field.Key;
 
          var text = (formatString != null && !applyFormatInEdit) ?
-            output.SimpleContent.Format(formatString, enumValue)
-            : MetadataDetailsProvider.GetDisplayName(field) ?? field.Name;
+            output.SimpleContent.Format(formatString, Enum.Parse(metadata.UnderlyingOrModelType, field.Value))
+            : displayField.Key.Name;
 
-         selectList.Add(new SelectListItem {
+         selectList[i] = new SelectListItem {
             Value = value,
             Text = text,
-         });
+         };
       }
 
       return selectList;
