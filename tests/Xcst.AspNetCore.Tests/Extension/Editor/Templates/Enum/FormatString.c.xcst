@@ -11,23 +11,18 @@
    </c:type>
 
    <c:template name='c:initial-template'>
-      <c:variable name='doc'>
-         <c:document>
-            <a:model type='Foo'>
-               <a:editor for='Bar'/>
-            </a:model>
-         </c:document>
-      </c:variable>
-      <c:void value='doc.Root!.RemoveAttributes()'/>
-      <c:copy-of value='doc.Root'/>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <a:model type='Foo'>
+         <a:editor for='Bar'/>
+      </a:model>
    </c:template>
 
    <c:template name='expected'>
-      <select>
-         <option value=""/>
-         <option value="Unspecified">Kind: Unspecified</option>
-         <option value="Utc">Kind: Utc</option>
-         <option value="Local">Kind: Local</option>
+      <select id='Bar' name='Bar'>
+         <option value=''/>
+         <option value='Unspecified'>Kind: Unspecified</option>
+         <option value='Utc'>Kind: Utc</option>
+         <option value='Local'>Kind: Local</option>
       </select>
    </c:template>
 
