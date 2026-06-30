@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:textarea readonly=''/>
+      <a:textarea readonly='-'/>
    </c:template>
 
 </c:module>

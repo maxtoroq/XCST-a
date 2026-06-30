@@ -6,7 +6,7 @@
 
    <c:type name='Foo'>
       <c:member name='a'>
-         <c:member name='file' a:file-max-length=''/>
+         <c:member name='file' a:file-max-length='-'/>
       </c:member>
    </c:type>
 

@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:input autofocus=''/>
+      <a:input autofocus='-'/>
    </c:template>
 
 </c:module>

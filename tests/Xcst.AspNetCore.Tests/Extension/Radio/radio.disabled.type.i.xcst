@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:radio value='1' disabled=''/>
+      <a:radio value='1' disabled='-'/>
    </c:template>
 
 </c:module>

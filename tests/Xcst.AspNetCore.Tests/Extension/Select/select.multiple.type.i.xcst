@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:template name='foo'>
-      <a:select multiple=''/>
+      <a:select multiple='-'/>
    </c:template>
 
 </c:module>

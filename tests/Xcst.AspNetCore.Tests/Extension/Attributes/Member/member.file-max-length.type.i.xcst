@@ -5,7 +5,7 @@
    extension-element-prefixes='a'>
 
    <c:type name='Foo'>
-      <c:member name='file' a:file-max-length=''/>
+      <c:member name='file' a:file-max-length='-'/>
    </c:type>
 
 </c:module>

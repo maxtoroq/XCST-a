@@ -7,7 +7,7 @@
    <c:template name='foo'>
       <a:editor>
          <a:with-options>
-            <a:option disabled=''/>
+            <a:option disabled='-'/>
          </a:with-options>
       </a:editor>
    </c:template>

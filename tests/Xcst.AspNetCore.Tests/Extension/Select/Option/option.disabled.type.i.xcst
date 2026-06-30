@@ -6,7 +6,7 @@
 
    <c:template name='foo'>
       <a:select>
-         <a:option disabled=''/>
+         <a:option disabled='-'/>
       </a:select>
    </c:template>
 
