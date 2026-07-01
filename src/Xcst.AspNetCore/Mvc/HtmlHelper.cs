@@ -50,22 +50,8 @@ public partial class HtmlHelper {
    public static readonly string
    ValidationSummaryValidCssClassName = "validation-summary-valid";
 
-   static string?
-   _idAttributeDotReplacement;
-
    DefaultValidationHtmlAttributeProvider?
    _validationAttributeProvider;
-
-   public static string
-   IdAttributeDotReplacement {
-      get {
-         if (String.IsNullOrEmpty(_idAttributeDotReplacement)) {
-            _idAttributeDotReplacement = "_";
-         }
-         return _idAttributeDotReplacement;
-      }
-      set => _idAttributeDotReplacement = value;
-   }
 
    public ViewContext
    ViewContext { get; }
@@ -121,7 +107,7 @@ public partial class HtmlHelper {
          return String.Empty;
       }
 
-      var invalidCharReplacement = IdAttributeDotReplacement;
+      var invalidCharReplacement = this.ViewContext.Options.IdAttributeDotReplacement;
 
       var firstChar = name[0];
 
