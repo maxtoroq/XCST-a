@@ -39,11 +39,11 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
-   Textarea(XcstWriter output, string name, TextareaArgs args = default) {
+   Textarea(XcstWriter output, string expression, TextareaArgs args = default) {
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
-      return GenerateTextarea(output, modelExplorer, name, args);
+      return GenerateTextarea(output, modelExplorer, expression, args);
    }
 
    [GeneratedCodeReference]
@@ -53,14 +53,14 @@ partial class HtmlHelper {
       GenerateTextarea(output, this.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
-   GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string name, TextareaArgs args) {
+   GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string expression, TextareaArgs args) {
 
-      ArgumentNullException.ThrowIfNull(name);
+      ArgumentNullException.ThrowIfNull(expression);
 
       var value = args.value;
       var @class = args.@class;
 
-      var fullName = FullNameNonEmpty(name);
+      var fullName = FullNameNonEmpty(expression);
       var modelState = this.ModelState[fullName];
 
       var valueOrModel = value ?? modelExplorer.Model;
@@ -92,7 +92,7 @@ partial class HtmlHelper {
          output.WriteAttributeString("placeholder", modelExplorer.Metadata.Placeholder);
       }
 
-      WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
+      WriteUnobtrusiveValidationAttributes(fullName, modelExplorer, default, output);
 
       return new DefaultContentDisposable(output, elementStarted: true, contentFn);
 

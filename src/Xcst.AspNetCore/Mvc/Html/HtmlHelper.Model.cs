@@ -46,12 +46,15 @@ partial class HtmlHelper {
          this.MetadataProvider.GetModelExplorerForType(typeof(TModel), model));
 
       var newViewContext = new ViewContext(this.ViewContext, null, currentPackage) {
-         HtmlFieldPrefix = GetFullHtmlFieldName(htmlFieldPrefix),
          FormContext = null,
          MembersOptions = null,
          ViewParameters = null,
          VisitedObjects = null,
       };
+
+      if (htmlFieldPrefix != null) {
+         newViewContext.HtmlFieldPrefix = GenerateName(htmlFieldPrefix);
+      }
 
       if (formMethod != null) {
          newViewContext.SetFormMethodString(formMethod);

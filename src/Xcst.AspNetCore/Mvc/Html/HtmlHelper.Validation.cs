@@ -54,13 +54,13 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
-   ValidationMessage(XcstWriter output, string name, ValidationMessageArgs args = default) {
+   ValidationMessage(XcstWriter output, string expression, ValidationMessageArgs args = default) {
 
-      ArgumentNullException.ThrowIfNull(name);
+      ArgumentNullException.ThrowIfNull(expression);
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
-      return GenerateValidationMessage(output, modelExplorer, name, args);
+      return GenerateValidationMessage(output, modelExplorer, expression, args);
    }
 
    [GeneratedCodeReference]
@@ -71,12 +71,12 @@ partial class HtmlHelper {
 
    protected internal DefaultContentDisposable
    GenerateValidationMessage(
-         XcstWriter output, ModelExplorer modelExplorer, string name, ValidationMessageArgs args) {
+         XcstWriter output, ModelExplorer modelExplorer, string expression, ValidationMessageArgs args) {
 
       var hasDefaultText = args.hasDefaultText;
       var @class = args.@class;
 
-      var modelName = GetFullHtmlFieldName(name);
+      var modelName = GenerateName(expression);
       var modelState = this.ModelState[modelName];
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 

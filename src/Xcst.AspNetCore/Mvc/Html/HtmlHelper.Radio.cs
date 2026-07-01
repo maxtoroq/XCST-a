@@ -40,11 +40,11 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
-   Radio(XcstWriter output, string name, object value, RadioArgs args = default) {
+   Radio(XcstWriter output, string expression, object value, RadioArgs args = default) {
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
-      return GenerateRadio(output, modelExplorer, name, value, args);
+      return GenerateRadio(output, modelExplorer, expression, value, args);
    }
 
    [GeneratedCodeReference]
@@ -54,16 +54,16 @@ partial class HtmlHelper {
       GenerateRadio(output, this.ModelExplorer, String.Empty, value, args);
 
    protected IDisposable
-   GenerateRadio(XcstWriter output, ModelExplorer modelExplorer, string name, object value,
+   GenerateRadio(XcstWriter output, ModelExplorer modelExplorer, string expression, object value,
          RadioArgs args) {
 
-      ArgumentNullException.ThrowIfNull(name);
+      ArgumentNullException.ThrowIfNull(expression);
       ArgumentNullException.ThrowIfNull(value);
 
       var @checked = args.@checked;
       var @class = args.@class;
 
-      var fullName = FullNameNonEmpty(name);
+      var fullName = FullNameNonEmpty(expression);
       var valueString = FormatValue(value, null);
       var modelState = this.ModelState[fullName];
 
@@ -95,7 +95,7 @@ partial class HtmlHelper {
          ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
-      WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
+      WriteUnobtrusiveValidationAttributes(fullName, modelExplorer, default, output);
 
       return new ElementEndingDisposable(output);
    }

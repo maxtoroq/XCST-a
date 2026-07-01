@@ -23,11 +23,11 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public HtmlHelper
-   NewFieldsetHelper(string name) {
+   NewFieldsetHelper(string expression) {
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
       var container = new ViewDataContainer(modelExplorer);
-      var newViewContext = NewFieldsetViewContext(name);
+      var newViewContext = NewFieldsetViewContext(expression);
 
       return new HtmlHelper(newViewContext, container, this.MetadataProvider);
    }
@@ -37,19 +37,19 @@ partial class HtmlHelper {
    public HtmlHelper
    NewFieldsetHelperForModel() {
 
-      var name = String.Empty;
+      var expression = String.Empty;
       var modelExplorer = this.ModelExplorer;
       var container = new ViewDataContainer(modelExplorer);
-      var newViewContext = NewFieldsetViewContext(name);
+      var newViewContext = NewFieldsetViewContext(expression);
 
       return new HtmlHelper(newViewContext, container, this.MetadataProvider);
    }
 
    private protected ViewContext
-   NewFieldsetViewContext(string name) {
+   NewFieldsetViewContext(string expression) {
 
       var newViewContext = new ViewContext(this.ViewContext) {
-         HtmlFieldPrefix = GetFullHtmlFieldName(name),
+         HtmlFieldPrefix = GenerateName(expression),
       };
 
       return newViewContext;

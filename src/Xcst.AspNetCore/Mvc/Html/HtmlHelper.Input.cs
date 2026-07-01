@@ -121,11 +121,11 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SiblingContentDisposable
-   Input(ISequenceWriter<XElement> output, string name, InputArgs args = default) {
+   Input(ISequenceWriter<XElement> output, string expression, InputArgs args = default) {
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
-      return GenerateInput(output, modelExplorer, name, args);
+      return GenerateInput(output, modelExplorer, expression, args);
    }
 
    [GeneratedCodeReference]
@@ -135,14 +135,14 @@ partial class HtmlHelper {
       GenerateInput(output, this.ModelExplorer, String.Empty, args);
 
    protected internal SiblingContentDisposable
-   GenerateInput(ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string name, InputArgs args) {
+   GenerateInput(ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string expression, InputArgs args) {
 
       var inputWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
 
       GenerateInputElement(
          inputWriter,
          modelExplorer,
-         name,
+         expression,
          args,
          out var fullName,
          out var inputType);
@@ -177,18 +177,18 @@ partial class HtmlHelper {
 
    void
    GenerateInputElement(
-         XcstWriter output, ModelExplorer modelExplorer, string name, InputArgs args,
+         XcstWriter output, ModelExplorer modelExplorer, string expression, InputArgs args,
          out string fullName,
          out string inputType) {
 
-      ArgumentNullException.ThrowIfNull(name);
+      ArgumentNullException.ThrowIfNull(expression);
 
       var value = args.value;
       var type = args.type;
       var format = args.format;
       var @class = args.@class;
 
-      fullName = FullNameNonEmpty(name);
+      fullName = FullNameNonEmpty(expression);
 
       var inputTypeHint = default(string);
       inputType = type ?? GetInputType(modelExplorer, out inputTypeHint);
@@ -228,7 +228,7 @@ partial class HtmlHelper {
          output.WriteAttributeString("placeholder", modelExplorer.Metadata.Placeholder);
       }
 
-      WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
+      WriteUnobtrusiveValidationAttributes(fullName, modelExplorer, default, output);
    }
 
    static string

@@ -87,11 +87,11 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
-   Select(XcstWriter output, string name, SelectArgs args = default) {
+   Select(XcstWriter output, string expression, SelectArgs args = default) {
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
-      return GenerateSelect(output, modelExplorer, name, args);
+      return GenerateSelect(output, modelExplorer, expression, args);
    }
 
    [GeneratedCodeReference]
@@ -101,14 +101,14 @@ partial class HtmlHelper {
       GenerateSelect(output, this.ModelExplorer, String.Empty, args);
 
    protected internal SelectDisposable
-   GenerateSelect(XcstWriter output, ModelExplorer modelExplorer, string name, SelectArgs args) {
+   GenerateSelect(XcstWriter output, ModelExplorer modelExplorer, string expression, SelectArgs args) {
 
       var value = args.value;
       var options = args.options;
       var multiple = args.multiple;
       var @class = args.@class;
 
-      var fullName = FullNameNonEmpty(name);
+      var fullName = FullNameNonEmpty(expression);
       var modelState = this.ModelState[fullName];
 
       var defaultValue = GetModelStateValue(modelState, (multiple) ? typeof(string[]) : typeof(string))
@@ -127,7 +127,7 @@ partial class HtmlHelper {
          ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
-      WriteUnobtrusiveValidationAttributes(name, modelExplorer, excludeMinMaxLength: !multiple, output);
+      WriteUnobtrusiveValidationAttributes(fullName, modelExplorer, excludeMinMaxLength: !multiple, output);
 
       return new SelectDisposable(output, writeList, isSelected);
 

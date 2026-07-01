@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace Xcst.Web.Mvc;
 
-class DefaultValidationHtmlAttributeProvider {
+sealed class DefaultValidationHtmlAttributeProvider {
 
    readonly IModelMetadataProvider
    _metadataProvider;

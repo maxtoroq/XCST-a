@@ -190,7 +190,7 @@ partial class HtmlHelper {
       var container = new ViewDataContainer(memberExplorer);
 
       var viewContext = new ViewContext(this.ViewContext) {
-         HtmlFieldPrefix = GetFullHtmlFieldName(memberExplorer.Metadata.PropertyName),
+         HtmlFieldPrefix = GenerateName(memberExplorer.Metadata.PropertyName!),
          VisitedObjects = null,
       };
 
@@ -332,7 +332,7 @@ public class TemplateHelper {
       }
 
       var viewContext = new ViewContext(_html.ViewContext) {
-         HtmlFieldPrefix = _html.GetFullHtmlFieldName(htmlFieldName),
+         HtmlFieldPrefix = _html.GenerateName(htmlFieldName),
          FormattedModelValue = formattedModelValue,
          MembersNames = membersNames,
          VisitedObjects = { visitedObjectsKey },

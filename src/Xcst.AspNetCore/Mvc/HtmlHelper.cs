@@ -99,28 +99,28 @@ public partial class HtmlHelper {
    }
 
    public string
-   GenerateIdFromName(string name) {
+   GenerateIdFromName(string fullName) {
 
-      ArgumentNullException.ThrowIfNull(name);
+      ArgumentNullException.ThrowIfNull(fullName);
 
-      if (name.Length == 0) {
+      if (fullName.Length == 0) {
          return String.Empty;
       }
 
       var invalidCharReplacement = this.ViewContext.Options.IdAttributeDotReplacement;
 
-      var firstChar = name[0];
+      var firstChar = fullName[0];
 
       if (!Html401IdUtil.IsLetter(firstChar)) {
          // the first character must be a letter
          return String.Empty;
       }
 
-      var sb = new StringBuilder(name.Length);
+      var sb = new StringBuilder(fullName.Length);
       sb.Append(firstChar);
 
-      for (int i = 1; i < name.Length; i++) {
-         var thisChar = name[i];
+      for (int i = 1; i < fullName.Length; i++) {
+         var thisChar = fullName[i];
          if (Html401IdUtil.IsValidIdCharacter(thisChar)) {
             sb.Append(thisChar);
          } else {
@@ -146,32 +146,36 @@ public partial class HtmlHelper {
    ObjectToDictionary(object value) =>
       TypeHelpers.ObjectToDictionary(value);
 
-   public string
-   GetFullHtmlFieldId(string? partialFieldName) =>
-      GenerateIdFromName(GetFullHtmlFieldName(partialFieldName));
+   protected string
+   GenerateId(string expression) {
 
-   public string
-   GetFullHtmlFieldName(string? partialFieldName) {
+      var fullName = GenerateName(expression);
+
+      return GenerateIdFromName(fullName);
+   }
+
+   protected internal string
+   GenerateName(string expression) {
 
       var htmlFieldPrefix = this.ViewContext.HtmlFieldPrefix;
 
-      if (String.IsNullOrEmpty(partialFieldName)) {
+      if (String.IsNullOrEmpty(expression)) {
          return htmlFieldPrefix;
       }
 
       if (String.IsNullOrEmpty(htmlFieldPrefix)) {
-         return partialFieldName;
+         return expression;
       }
 
-      if (partialFieldName.StartsWith('[')) {
+      if (expression.StartsWith('[')) {
 
          // See Codeplex #544 - the partialFieldName might represent an indexer access, in which case combining
          // with a 'dot' would be invalid.
 
-         return htmlFieldPrefix + partialFieldName;
+         return htmlFieldPrefix + expression;
       }
 
-      return String.Concat(htmlFieldPrefix, ".", partialFieldName);
+      return String.Concat(htmlFieldPrefix, ".", expression);
    }
 
    public object?
@@ -226,29 +230,33 @@ public partial class HtmlHelper {
       ExpressionMetadataProvider.FromStringExpression(expression, this.ViewDataContainer, this.MetadataProvider);
 
    public IDictionary<string, string>
-   GetUnobtrusiveValidationAttributes(string name) =>
-      GetUnobtrusiveValidationAttributes(name, modelExplorer: null);
+   GetUnobtrusiveValidationAttributes(string expression) =>
+      GetUnobtrusiveValidationAttributes(expression, modelExplorer: null);
 
    // Only render attributes if unobtrusive client-side validation is enabled, and then only if we've
    // never rendered validation for a field with this name in this form. Also, if there's no form context,
    // then we can't render the attributes (we'd have no <form> to attach them to).
 
    public IDictionary<string, string>
-   GetUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer) =>
-      GetUnobtrusiveValidationAttributes(name, modelExplorer, false);
+   GetUnobtrusiveValidationAttributes(string expression, ModelExplorer? modelExplorer) =>
+      GetUnobtrusiveValidationAttributes(expression, modelExplorer, false);
 
-   IDictionary<string, string>
-   GetUnobtrusiveValidationAttributes(string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength) {
+   Dictionary<string, string>
+   GetUnobtrusiveValidationAttributes(string expression, ModelExplorer? modelExplorer, bool excludeMinMaxLength) {
 
-      return GetUnobtrusiveValidationAttributesImpl(name, modelExplorer, excludeMinMaxLength)
+      var fullName = GenerateName(expression);
+
+      modelExplorer ??= GetModelExplorerFromString(expression);
+
+      return GetUnobtrusiveValidationAttributesImpl(fullName, modelExplorer, excludeMinMaxLength)
          ?? new Dictionary<string, string>();
    }
 
    void
    WriteUnobtrusiveValidationAttributes(
-         string name, ModelExplorer modelExplorer, bool excludeMinMaxLength, XcstWriter output) {
+         string fullName, ModelExplorer modelExplorer, bool excludeMinMaxLength, XcstWriter output) {
 
-      var attributes = GetUnobtrusiveValidationAttributesImpl(name, modelExplorer, excludeMinMaxLength);
+      var attributes = GetUnobtrusiveValidationAttributesImpl(fullName, modelExplorer, excludeMinMaxLength);
 
       if (attributes != null) {
 
@@ -260,7 +268,7 @@ public partial class HtmlHelper {
 
    Dictionary<string, string>?
    GetUnobtrusiveValidationAttributesImpl(
-         string name, ModelExplorer? modelExplorer, bool excludeMinMaxLength) {
+         string fullName, ModelExplorer modelExplorer, bool excludeMinMaxLength) {
 
       var formContext = this.ViewContext.GetFormContextForClientValidation();
 
@@ -268,15 +276,11 @@ public partial class HtmlHelper {
          return default;
       }
 
-      var fullName = GetFullHtmlFieldName(name);
-
       if (formContext.RenderedField(fullName)) {
          return default;
       }
 
       formContext.RenderedField(fullName, true);
-
-      modelExplorer ??= GetModelExplorerFromString(name);
 
       var attributes = new Dictionary<string, string>();
 
@@ -288,11 +292,11 @@ public partial class HtmlHelper {
 
    [GeneratedCodeReference]
    public string
-   DisplayName(string name) {
+   DisplayName(string expression) {
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
-      return DisplayNameHelper(modelExplorer, name);
+      return DisplayNameHelper(modelExplorer, expression);
    }
 
    [GeneratedCodeReference]
@@ -301,7 +305,7 @@ public partial class HtmlHelper {
       DisplayNameHelper(this.ModelExplorer, String.Empty);
 
    private protected string
-   DisplayNameHelper(ModelExplorer modelExplorer, string htmlFieldName) {
+   DisplayNameHelper(ModelExplorer modelExplorer, string expression) {
 
       var metadata = modelExplorer.Metadata;
 
@@ -310,7 +314,7 @@ public partial class HtmlHelper {
 
       var resolvedDisplayName = metadata.DisplayName
          ?? metadata.PropertyName
-         ?? htmlFieldName.Split('.').Last();
+         ?? expression.Split('.').Last();
 
       return resolvedDisplayName;
    }
@@ -318,13 +322,13 @@ public partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public void
-   DisplayText(ISequenceWriter<string> output, string name) =>
-      DisplayTextHelper(output, GetModelExplorerFromString(name));
+   DisplayText(ISequenceWriter<string> output, string expression) =>
+      DisplayTextHelper(output, GetModelExplorerFromString(expression));
 
    [GeneratedCodeReference]
    public string
-   DisplayString(string name) =>
-      DisplayStringHelper(GetModelExplorerFromString(name));
+   DisplayString(string expression) =>
+      DisplayStringHelper(GetModelExplorerFromString(expression));
 
    private protected string
    DisplayStringHelper(ModelExplorer modelExplorer) =>
@@ -343,31 +347,31 @@ public partial class HtmlHelper {
    }
 
    public string
-   Id(string name) =>
-      GetFullHtmlFieldId(name);
+   Id(string expression) =>
+      GenerateId(expression);
 
    public string
    IdForModel() => Id(String.Empty);
 
    public string
-   Name(string name) =>
-      GetFullHtmlFieldName(name);
+   Name(string expression) =>
+      GenerateName(expression);
 
    public string
    NameForModel() => Name(String.Empty);
 
    public string
-   Value(string name) =>
-      Value(name, null);
+   Value(string expression) =>
+      Value(expression, null);
 
    public string
-   Value(string name, string? format) {
+   Value(string expression, string? format) {
 
-      ArgumentNullException.ThrowIfNull(name);
+      ArgumentNullException.ThrowIfNull(expression);
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
-      return ValueHelper(name, modelExplorer, format);
+      return ValueHelper(expression, modelExplorer, format);
    }
 
    public string
@@ -375,11 +379,11 @@ public partial class HtmlHelper {
       ValueHelper(String.Empty, this.ModelExplorer, format: null);
 
    private protected string
-   ValueHelper(string name, ModelExplorer modelExplorer, string? format) {
+   ValueHelper(string expression, ModelExplorer modelExplorer, string? format) {
 
       format ??= modelExplorer.Metadata.EditFormatString;
 
-      var fullName = GetFullHtmlFieldName(name);
+      var fullName = GenerateName(expression);
       var modelState = this.ModelState[fullName];
 
       var resolvedValue = (string?)GetModelStateValue(modelState, typeof(string))
@@ -391,21 +395,21 @@ public partial class HtmlHelper {
    // extension helpers
 
    string
-   FullNameNonEmpty(string name) {
+   FullNameNonEmpty(string expression) {
 
-      var fullName = GetFullHtmlFieldName(name);
+      var fullName = GenerateName(expression);
 
       if (String.IsNullOrEmpty(fullName)) {
-         throw new ArgumentException("The name of an HTML field cannot be null or empty.", nameof(name));
+         throw new ArgumentException("The name of an HTML field cannot be null or empty.", nameof(expression));
       }
 
       return fullName;
    }
 
    void
-   WriteId(string name, XcstWriter output) {
+   WriteId(string fullName, XcstWriter output) {
 
-      var sanitizedId = GenerateIdFromName(name);
+      var sanitizedId = GenerateIdFromName(fullName);
 
       if (!String.IsNullOrEmpty(sanitizedId)) {
          output.WriteAttributeString("id", sanitizedId);

@@ -42,22 +42,22 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SiblingContentDisposable
-   Checkbox(ISequenceWriter<XElement> output, string name, CheckboxArgs args = default) {
+   Checkbox(ISequenceWriter<XElement> output, string expression, CheckboxArgs args = default) {
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
-      return GenerateCheckbox(output, modelExplorer, name, args);
+      return GenerateCheckbox(output, modelExplorer, expression, args);
    }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SiblingContentDisposable
    CheckboxForModel(ISequenceWriter<XElement> output, CheckboxArgs args = default) =>
-      GenerateCheckbox(output, this.ModelExplorer, name: String.Empty, args);
+      GenerateCheckbox(output, this.ModelExplorer, expression: String.Empty, args);
 
    protected internal SiblingContentDisposable
    GenerateCheckbox(
-         ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string name,
+         ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string expression,
          CheckboxArgs args) {
 
       var inputWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
@@ -65,7 +65,7 @@ partial class HtmlHelper {
       GenerateCheckboxInput(
          inputWriter,
          modelExplorer,
-         name,
+         expression,
          args,
          out var fullName);
 
@@ -89,15 +89,15 @@ partial class HtmlHelper {
    }
 
    void
-   GenerateCheckboxInput(XcstWriter output, ModelExplorer modelExplorer, string name,
+   GenerateCheckboxInput(XcstWriter output, ModelExplorer modelExplorer, string expression,
          CheckboxArgs args, out string fullName) {
 
-      ArgumentNullException.ThrowIfNull(name);
+      ArgumentNullException.ThrowIfNull(expression);
 
       var isChecked = args.@checked;
       var @class = args.@class;
 
-      fullName = FullNameNonEmpty(name);
+      fullName = FullNameNonEmpty(expression);
 
       var modelState = this.ModelState[fullName];
 
@@ -137,7 +137,7 @@ partial class HtmlHelper {
          ValidationInputCssClassName : null;
 
       WriteCssClass(@class, cssClass, output);
-      WriteUnobtrusiveValidationAttributes(name, modelExplorer, default, output);
+      WriteUnobtrusiveValidationAttributes(fullName, modelExplorer, default, output);
    }
 }
 

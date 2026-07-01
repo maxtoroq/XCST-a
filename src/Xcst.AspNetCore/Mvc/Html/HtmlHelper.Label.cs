@@ -41,11 +41,11 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
-   Label(XcstWriter output, string name, LabelArgs args = default) {
+   Label(XcstWriter output, string expression, LabelArgs args = default) {
 
-      var modelExplorer = GetModelExplorerFromString(name);
+      var modelExplorer = GetModelExplorerFromString(expression);
 
-      return GenerateLabel(output, modelExplorer, name, args);
+      return GenerateLabel(output, modelExplorer, expression, args);
    }
 
    [GeneratedCodeReference]
@@ -55,15 +55,14 @@ partial class HtmlHelper {
       GenerateLabel(output, this.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
-   GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string name, LabelArgs args) {
+   GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string expression, LabelArgs args) {
 
       var hasDefaultText = args.hasDefaultText;
       var @class = args.@class;
 
       var metadata = modelExplorer.Metadata;
 
-      var htmlFieldName = name;
-      var fullFieldName = GetFullHtmlFieldName(htmlFieldName);
+      var fullFieldName = GenerateName(expression);
       var id = GenerateIdFromName(fullFieldName);
       var reqClass = this.ViewContext.Options.LabelCssClass?.Invoke(metadata.IsRequired);
 
@@ -75,7 +74,7 @@ partial class HtmlHelper {
       var text = (!hasDefaultText) ?
          metadata.DisplayName
             ?? metadata.PropertyName
-            ?? htmlFieldName.Split('.').Last()
+            ?? expression.Split('.').Last()
          : null;
 
       return new DefaultContentDisposable(output, elementStarted: true, contentFn);
