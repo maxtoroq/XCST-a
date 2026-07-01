@@ -172,12 +172,7 @@ static class DefaultEditorTemplates {
          throw new InvalidOperationException("Enum template can only be used on Enum members.");
       }
 
-      var formatString = metadata.EditFormatString
-         ?? metadata.DisplayFormatString;
-
-      var applyFormatInEdit = metadata.EditFormatString != null;
-
-      var options = EnumOptions(metadata, output, formatString, applyFormatInEdit);
+      var options = EnumOptions(metadata, output);
       var optionLabel = metadata.Placeholder ?? String.Empty;
 
       using var disp = html.GenerateSelect(
@@ -413,18 +408,28 @@ static class DefaultEditorTemplates {
       };
 
    static SelectListItem[]
-   EnumOptions(ModelMetadata metadata, XcstWriter output, string? formatString = null, bool applyFormatInEdit = false) {
+   EnumOptions(ModelMetadata metadata, XcstWriter output) {
 
       Debug.Assert(metadata.IsEnum);
 
-      var displayFields = metadata.EnumGroupedDisplayNamesAndValues as IList<KeyValuePair<EnumGroupAndName, string>>
-         ?? metadata.EnumGroupedDisplayNamesAndValues!.ToArray();
+      var fields = metadata.EnumNamesAndValues;
+      var displayFields = (metadata.EnumGroupedDisplayNamesAndValues is { } l) ?
+         l as IList<KeyValuePair<EnumGroupAndName, string>> ?? l.ToArray()
+         : default;
 
-      var selectList = new SelectListItem[displayFields.Count];
+      Debug.Assert(fields != null);
+      Debug.Assert(displayFields != null);
+
+      var formatString = metadata.EditFormatString
+         ?? metadata.DisplayFormatString;
+
+      var applyFormatInEdit = metadata.EditFormatString != null;
+
+      var selectList = new SelectListItem[fields.Count];
 
       var i = -1;
 
-      foreach (var field in metadata.EnumNamesAndValues!) {
+      foreach (var field in fields) {
 
          i++;
 
