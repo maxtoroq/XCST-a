@@ -294,12 +294,15 @@ public partial class HtmlHelper {
    public string
    DisplayName(string expression) {
 
-      var modelExplorer = GetModelExplorerFromString(expression);
+      var modelExplorer = (String.IsNullOrEmpty(expression)) ?
+         this.ModelExplorer
+         : GetModelExplorerFromString(expression);
 
       return DisplayNameHelper(modelExplorer, expression);
    }
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public string
    DisplayNameForModel() =>
       DisplayNameHelper(this.ModelExplorer, String.Empty);
@@ -374,6 +377,7 @@ public partial class HtmlHelper {
       GenerateName(expression);
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
    public string
    NameForModel() => Name(String.Empty);
 
