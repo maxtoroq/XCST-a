@@ -9,11 +9,10 @@
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
-      <c:set ref='ViewContext.MembersOptions' value='
-         new Dictionary&lt;string, IEnumerable&lt;SelectListItem>?> {
-            { "color", new SelectListItem[] {
-               new() { Text = "red" },
-               new() { Text = "blue" } } }
+      <c:set ref='ViewContext.MembersOptions["color"]' value='
+         new SelectListItem[] {
+            new() { Text = "red" },
+            new() { Text = "blue" }
          }'/>
       <a:editor for='color'/>
    </c:template>

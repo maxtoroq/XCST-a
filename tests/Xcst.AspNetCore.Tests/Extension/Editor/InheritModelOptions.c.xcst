@@ -14,11 +14,10 @@
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
       <a:model type='ColorModel' helper-name='htm'>
-         <c:set ref='htm.ViewContext.MembersOptions' value='
-            new Dictionary&lt;string, IEnumerable&lt;SelectListItem>?> {
-               { "color", new SelectListItem[] {
-                  new() { Text = "red" },
-                  new() { Text = "blue" } } }
+         <c:set ref='htm.ViewContext.MembersOptions["color"]' value='
+            new SelectListItem[] {
+               new() { Text = "red" },
+               new() { Text = "blue" }
             }'/>
          <a:editor for='color'/>
       </a:model>
