@@ -30,6 +30,9 @@ using ModelBinding;
 
 partial class HtmlHelper {
 
+   // *ForModel() helpers should call GetModelExplorerFromString(String.Empty)
+   // and not use this.ModelExplorer
+
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public TemplateHelper
