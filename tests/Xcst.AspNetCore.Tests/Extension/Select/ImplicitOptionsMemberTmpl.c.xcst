@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='Xcst.Web.Mvc'/>
+
+   <c:type name='Foo'>
+      <c:member name='color' as='string'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <div>
+         <a:model type='Foo'>
+            <a:editor>
+               <a:with-options for='color' options='
+                  new SelectListItem[] {
+                     new() { Text = "red" },
+                     new() { Text = "blue" }
+                  }'>
+                  <a:option value='""'>-- Select a color --</a:option>
+               </a:with-options>
+               <a:member-template>
+                  <a:select/>
+               </a:member-template>
+            </a:editor>
+         </a:model>
+         <a:model type='Foo'>
+            <a:editor>
+               <a:with-options for='color' options='
+                  new SelectListItem[] {
+                     new() { Text = "red" },
+                     new() { Text = "blue" }
+                  }'>
+                  <a:option value='""'>-- Select a color --</a:option>
+               </a:with-options>
+               <a:member-template>
+                  <a:select options='[]'/>
+               </a:member-template>
+            </a:editor>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <select name='color' id='color'>
+            <option value=''>-- Select a color --</option>
+            <option>red</option>
+            <option>blue</option>
+         </select>
+         <select name='color' id='color'/>
+      </div>
+   </c:template>
+
+</c:module>

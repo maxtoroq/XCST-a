@@ -116,6 +116,15 @@ partial class HtmlHelper {
 
       var selectedValues = getSelectedValues(defaultValue, multiple);
 
+      if (options is null) {
+
+         if (this.ViewContext.MembersOptions.TryGetValue(fullName, out var opts)) {
+            options = opts;
+         } else if (modelExplorer.Metadata.IsEnum) {
+            options = DefaultEditorTemplates.EnumOptions(modelExplorer.Metadata, output);
+         }
+      }
+
       output.WriteStartElement("select");
 
       WriteId(fullName, output);

@@ -407,7 +407,7 @@ static class DefaultEditorTemplates {
          }
       };
 
-   static SelectListItem[]
+   internal static SelectListItem[]
    EnumOptions(ModelMetadata metadata, XcstWriter output) {
 
       Debug.Assert(metadata.IsEnum);

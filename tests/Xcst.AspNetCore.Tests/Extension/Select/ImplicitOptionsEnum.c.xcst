@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c:module version='1.0' language='C#'
+   xmlns:c='http://maxtoroq.github.io/XCST'
+   xmlns:a='http://maxtoroq.github.io/XCST/application'
+   extension-element-prefixes='a'>
+
+   <c:import-namespace ns='Xcst.Web.Mvc'/>
+
+   <c:type name='Foo'>
+      <c:member name='method' as='FormMethod'/>
+   </c:type>
+
+   <c:template name='c:initial-template'>
+      <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
+      <div>
+         <a:model type='Foo'>
+            <a:select for='method'>
+               <a:option value='""'>-- Select a method --</a:option>
+            </a:select>
+         </a:model>
+         <a:model type='Foo'>
+            <a:select for='method' options='[]'>
+               <a:option value='""'>-- Select a method --</a:option>
+            </a:select>
+         </a:model>
+      </div>
+   </c:template>
+
+   <c:template name='expected'>
+      <div>
+         <select name='method' id='method'>
+            <option value=''>-- Select a method --</option>
+            <option value='Get'>Get</option>
+            <option value='Post'>Post</option>
+         </select>
+         <select name='method' id='method'>
+            <option value=''>-- Select a method --</option>
+         </select>
+      </div>
+   </c:template>
+
+</c:module>

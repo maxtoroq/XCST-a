@@ -188,7 +188,7 @@ static partial class TestsHelper {
          string packageName, Uri packageUri, IEnumerable<string> compilationUnits, string language,
          bool error = false, string? disableWarning = null, bool printCode = false) {
 
-      var csOptions = new CSharpParseOptions(CSharpVersion.CSharp10, preprocessorSymbols: new[] { "DEBUG", "TRACE" });
+      var csOptions = new CSharpParseOptions(CSharpVersion.CSharp12, preprocessorSymbols: new[] { "DEBUG", "TRACE" });
 
       var syntaxTrees = compilationUnits
          .Select(c => CSharpSyntaxTree.ParseText(c, csOptions, path: packageUri.LocalPath, encoding: Encoding.UTF8))
