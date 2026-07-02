@@ -1,7 +1,7 @@
 ﻿
 namespace Xcst.Web.Tests.Extension.Editor;
 
-public class InheritTemplateOptionsModel {
+public class InheritViewOptionsModel {
 
    public string?
    color { get; set; }

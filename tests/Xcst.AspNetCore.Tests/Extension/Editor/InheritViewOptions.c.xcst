@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<c:module version='1.0' language='C#' a:model-type='InheritTemplateOptionsModel'
+<c:module version='1.0' language='C#' a:model-type='InheritViewOptionsModel'
    xmlns:c='http://maxtoroq.github.io/XCST'
    xmlns:a='http://maxtoroq.github.io/XCST/application'
    extension-element-prefixes='a'>

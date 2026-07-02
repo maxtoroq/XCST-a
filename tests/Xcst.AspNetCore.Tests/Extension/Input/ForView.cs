@@ -1,7 +1,7 @@
 ﻿
 namespace Xcst.Web.Tests.Extension.Input;
 
-public class ForTemplateModel {
+public class ForViewModel {
 
    public string?
    foo { get; set; }
