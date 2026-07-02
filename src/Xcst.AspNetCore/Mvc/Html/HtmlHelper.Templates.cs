@@ -352,7 +352,7 @@ public class TemplateHelper {
       }
 
       if (withParams != null) {
-         foreach (var kvp in HtmlHelper.ObjectToDictionary(withParams)) {
+         foreach (var kvp in TypeHelpers.ObjectToDictionary(withParams)) {
             viewContext.ViewParameters[kvp.Key] = kvp.Value;
          }
       }
