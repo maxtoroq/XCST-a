@@ -351,9 +351,6 @@ public partial class HtmlHelper {
       GenerateId(expression);
 
    public string
-   IdForModel() => Id(String.Empty);
-
-   public string
    Name(string expression) =>
       GenerateName(expression);
 
@@ -369,14 +366,12 @@ public partial class HtmlHelper {
 
       ArgumentNullException.ThrowIfNull(expression);
 
-      var modelExplorer = GetModelExplorerFromString(expression);
+      var modelExplorer = (String.IsNullOrEmpty(expression)) ?
+         this.ModelExplorer
+         : GetModelExplorerFromString(expression);
 
       return ValueHelper(expression, modelExplorer, format);
    }
-
-   public string
-   ValueForModel() =>
-      ValueHelper(String.Empty, this.ModelExplorer, format: null);
 
    private protected string
    ValueHelper(string expression, ModelExplorer modelExplorer, string? format) {
