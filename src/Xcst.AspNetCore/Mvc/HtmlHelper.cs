@@ -326,9 +326,27 @@ public partial class HtmlHelper {
       DisplayTextHelper(output, GetModelExplorerFromString(expression));
 
    [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public void
+   DisplayTextForModel(ISequenceWriter<string> output) =>
+      DisplayTextHelper(output, this.ModelExplorer);
+
+   [GeneratedCodeReference]
    public string
-   DisplayString(string expression) =>
-      DisplayStringHelper(GetModelExplorerFromString(expression));
+   DisplayString(string expression) {
+
+      var modelExplorer = (String.IsNullOrEmpty(expression)) ?
+         this.ModelExplorer
+         : GetModelExplorerFromString(expression);
+
+      return DisplayStringHelper(modelExplorer);
+   }
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public string
+   DisplayStringForModel() =>
+      DisplayStringHelper(this.ModelExplorer);
 
    private protected string
    DisplayStringHelper(ModelExplorer modelExplorer) =>
