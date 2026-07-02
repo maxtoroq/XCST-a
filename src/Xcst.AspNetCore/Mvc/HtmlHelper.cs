@@ -350,10 +350,12 @@ public partial class HtmlHelper {
    Id(string expression) =>
       GenerateId(expression);
 
+   [GeneratedCodeReference]
    public string
    Name(string expression) =>
       GenerateName(expression);
 
+   [GeneratedCodeReference]
    public string
    NameForModel() => Name(String.Empty);
 
@@ -494,6 +496,7 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
    IdFor<TResult>(Expression<Func<TModel, TResult>> expression) =>
       Id(ExpressionHelper.GetExpressionText(expression));
 
+   [GeneratedCodeReference]
    public string
    NameFor<TResult>(Expression<Func<TModel, TResult>> expression) =>
       Name(ExpressionHelper.GetExpressionText(expression));
