@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <None Include="..\..\LICENSE.txt" Visible="false" Pack="true" PackagePath="" />
-    <None Include="..\..\build\temp\$(MSBuildProjectName)\NOTICE.xml" Visible="false" Pack="true" PackagePath="" />
+    <None Include="..\..\build\temp\$(MSBuildProjectName)\NOTICE.txt" Visible="false" Pack="true" PackagePath="" />
     <None Include="..\..\build\icon.png" Visible="false" Pack="true" PackagePath="" />
   </ItemGroup>
 

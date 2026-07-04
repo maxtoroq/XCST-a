@@ -34,7 +34,7 @@
 
   <ItemGroup>
     <None Include="..\..\LICENSE.txt" Visible="false" Pack="true" PackagePath="" />
-    <None Include="..\..\build\temp\$(MSBuildProjectName)\NOTICE.xml" Visible="false" Pack="true" PackagePath="" />
+    <None Include="..\..\build\temp\$(MSBuildProjectName)\NOTICE.txt" Visible="false" Pack="true" PackagePath="" />
     <None Include="..\..\build\icon.png" Visible="false" Pack="true" PackagePath="" />
     <None Include="..\..\schemas\xcst-app.rng" Visible="false" Pack="true" PackagePath="schemas" />
     <None Include="..\..\schemas\xcst-app.xsd" Visible="false" Pack="true" PackagePath="schemas" />

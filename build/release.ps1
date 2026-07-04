@@ -31,7 +31,7 @@ function PackageNotice {
    $ubs = [Collections.Generic.List[object]]$noticeDoc.Root.Descendants("used-by-source")
    $ubs | %{$_.Remove()}
 
-   $tempNotice = $project.temp + "\NOTICE.xml"
+   $tempNotice = $project.temp + "\NOTICE.txt"
    $noticeDoc.Save($tempNotice)
 
    return $tempNotice
