@@ -114,7 +114,7 @@ static class DefaultEditorTemplates {
             }
 
             var itemExplorer = new ModelExplorer(html.MetadataProvider, html.ModelExplorer, itemMetadata, item);
-            var fieldName = String.Format(CultureInfo.InvariantCulture, "{0}[{1}]", fieldNameBase, index++);
+            var fieldName = String.Create(CultureInfo.InvariantCulture, $"{fieldNameBase}[{index++}]");
 
             new TemplateHelper(html, false, String.Empty, itemExplorer)
                .Render(seqOutput, new TemplateHelper.RenderArgs {

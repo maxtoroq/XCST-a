@@ -94,7 +94,7 @@ public static class ExpressionHelper {
             ex);
       }
 
-      return String.Concat("[", Convert.ToString(func.Invoke(null!), CultureInfo.InvariantCulture), "]");
+      return String.Create(CultureInfo.InvariantCulture, $"[{func.Invoke(null!)}]");
    }
 
    internal static bool
