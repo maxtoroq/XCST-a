@@ -92,6 +92,7 @@ partial class HtmlHelper {
       { nameof(DateOnly), "date" },
       { "HiddenInput", "hidden" },
       { nameof(IFormFile), "file" },
+      { TemplateRenderer.IEnumerableOfIFormFileName, "file" },
       { "Month", "month" },
       { nameof(String), _fallbackInputType },
       { nameof(TimeOnly), "time" },
@@ -207,6 +208,14 @@ partial class HtmlHelper {
          && valueOrModel is byte[] byteArrayValue) ? Convert.ToBase64String(byteArrayValue)
          : FormatValue(valueOrModel, format, culture);
 
+      var writeValue = !(value is null && InputOmitValue(inputType));
+
+      var multiple = InputTypeEquals(inputType, "file")
+         && modelExplorer.Metadata.IsEnumerableType;
+
+      var cssClass = (modelState?.Errors.Count > 0) ?
+         ValidationInputCssClassName : null;
+
       output.WriteStartElement("input");
 
       WriteId(fullName, output);
@@ -214,12 +223,11 @@ partial class HtmlHelper {
       output.WriteAttributeString("type", inputType);
       output.WriteAttributeString("name", fullName);
 
-      if (!(value is null && InputOmitValue(inputType))) {
+      if (writeValue) {
          output.WriteAttributeString("value", valueAttr);
       }
 
-      var cssClass = (modelState?.Errors.Count > 0) ?
-         ValidationInputCssClassName : null;
+      WriteBoolean("multiple", multiple, output);
 
       WriteCssClass(@class, cssClass, output);
       WriteBoolean("readonly", modelExplorer.Metadata.IsReadOnly, output);

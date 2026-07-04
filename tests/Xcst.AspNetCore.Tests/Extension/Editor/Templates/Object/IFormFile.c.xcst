@@ -8,6 +8,7 @@
 
    <c:type name='Foo'>
       <c:member name='f' as='IFormFile?'/>
+      <c:member name='f2' as='IFormFile[]?'/>
    </c:type>
 
    <c:template name='c:initial-template'>
@@ -24,6 +25,11 @@
             <label for='f'>f</label>
             <input type='file' id='f' name='f'/>
             <span class='field-validation-valid' data-valmsg-for='f' data-valmsg-replace='true'/>
+         </div>
+         <div>
+            <label for='f2'>f2</label>
+            <input type='file' id='f2' name='f2' multiple='multiple'/>
+            <span class='field-validation-valid' data-valmsg-for='f2' data-valmsg-replace='true'/>
          </div>
       </div>
    </c:template>

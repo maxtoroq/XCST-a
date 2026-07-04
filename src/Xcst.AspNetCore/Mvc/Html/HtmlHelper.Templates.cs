@@ -158,7 +158,11 @@ partial class HtmlHelper {
          return show;
       }
 
-      if (propertyMetadata.ModelType == typeof(IFormFile)) {
+      var formFileType = typeof(IFormFile);
+
+      if (formFileType.IsAssignableFrom(propertyMetadata.ModelType)
+         || (propertyMetadata.IsEnumerableType && formFileType.IsAssignableFrom(propertyMetadata.ElementType))) {
+
          return true;
       }
 

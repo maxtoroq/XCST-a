@@ -17,9 +17,7 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xcst.Runtime;
@@ -29,6 +27,9 @@ namespace Xcst.Web.Mvc;
 using TemplateAction = Action<HtmlHelper, ISequenceWriter<object>>;
 
 sealed class TemplateRenderer {
+
+   public const string
+   IEnumerableOfIFormFileName = "IEnumerable`" + nameof(IFormFile);
 
    static readonly Dictionary<string, TemplateAction>
    _defaultDisplayActions = new(StringComparer.OrdinalIgnoreCase) {
@@ -95,6 +96,7 @@ sealed class TemplateRenderer {
       { "DropDownList", DefaultEditorTemplates.DropDownListTemplate },
       { "ListBox", DefaultEditorTemplates.ListBoxTemplate },
       { "IFormFile", DefaultEditorTemplates.UploadTemplate },
+      { IEnumerableOfIFormFileName, DefaultEditorTemplates.UploadTemplate },
 
       // "special" templates
       { "Object", DefaultEditorTemplates.ObjectTemplate },
@@ -191,7 +193,11 @@ sealed class TemplateRenderer {
       // We don't want to search for Nullable<T>, we want to search for T (which should handle both T and Nullable<T>)
       var fieldType = metadata.UnderlyingOrModelType;
 
-      yield return fieldType.Name;
+      // Not returning type name here for IEnumerable<IFormFile> since we will be returning
+      // a more specific name, IEnumerableOfIFormFileName.
+      if (typeof(IEnumerable<IFormFile>) != fieldType) {
+         yield return fieldType.Name;
+      }
 
       if (fieldType == typeof(string)) {
 
@@ -221,7 +227,7 @@ sealed class TemplateRenderer {
 
          while (true) {
 
-            baseType = fieldType.BaseType;
+            baseType = baseType.BaseType;
 
             if (baseType is null
                || baseType == typeof(object)) {
@@ -233,14 +239,18 @@ sealed class TemplateRenderer {
          }
       }
 
-      if (fieldType != typeof(IFormFile)
+      if (metadata.IsEnumerableType) {
+
+         if (typeof(IFormFile).IsAssignableFrom(metadata.ElementType)) {
+            yield return IEnumerableOfIFormFileName;
+         }
+
+         yield return "Collection";
+
+      } else if (fieldType != typeof(IFormFile)
          && typeof(IFormFile).IsAssignableFrom(fieldType)) {
 
          yield return nameof(IFormFile);
-      }
-
-      if (typeof(IEnumerable).IsAssignableFrom(fieldType)) {
-         yield return "Collection";
       }
 
       yield return nameof(Object);

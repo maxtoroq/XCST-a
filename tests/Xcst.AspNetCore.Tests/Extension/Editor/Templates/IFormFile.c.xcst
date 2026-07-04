@@ -8,17 +8,24 @@
 
    <c:type name='Foo'>
       <c:member name='f' as='IFormFile'/>
+      <c:member name='f2' as='IFormFile[]'/>
    </c:type>
 
    <c:template name='c:initial-template'>
       <c:set ref='ViewContext.ClientValidationEnabled' value='false'/>
-      <a:model value='new Foo()'>
-         <a:editor for='f'/>
-      </a:model>
+      <div>
+         <a:model value='new Foo()'>
+            <a:editor for='f'/>
+            <a:editor for='f2'/>
+         </a:model>
+      </div>
    </c:template>
 
    <c:template name='expected'>
-      <input type='file' id='f' name='f'/>
+      <div>
+         <input type='file' id='f' name='f'/>
+         <input type='file' id='f2' name='f2' multiple='multiple'/>
+      </div>
    </c:template>
 
 </c:module>

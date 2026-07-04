@@ -8,6 +8,7 @@
 
    <c:type name='Foo'>
       <c:member name='p1' as='IFormFile'/>
+      <c:member name='p2' as='IFormFile[]'/>
    </c:type>
 
    <c:template name='c:initial-template'>
@@ -15,6 +16,7 @@
       <div>
          <a:model type='Foo'>
             <a:input for='p1'/>
+            <a:input for='p2'/>
          </a:model>
       </div>
    </c:template>
@@ -22,6 +24,7 @@
    <c:template name='expected'>
       <div>
          <input type='file' id='p1' name='p1'/>
+         <input type='file' id='p2' name='p2' multiple='multiple'/>
       </div>
    </c:template>
 

@@ -371,16 +371,18 @@ static class DefaultEditorTemplates {
       var inputType = "file";
       var className = GetEditorCssClass(html, "input", inputType);
 
-      html.GenerateInput(
+      using var disp = html.GenerateInput(
          seqOutput,
          html.ModelExplorer,
          String.Empty,
          new HtmlHelper.InputArgs {
             type = inputType,
             @class = className,
-         })
-         .NoConstructor()
-         .Dispose();
+         });
+
+      html.WriteBoolean("multiple", html.ModelMetadata.IsEnumerableType, disp.ElementOutput);
+
+      disp.EndOfConstructor();
    }
 
    internal static string?
