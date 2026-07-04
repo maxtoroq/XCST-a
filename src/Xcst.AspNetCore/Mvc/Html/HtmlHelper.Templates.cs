@@ -82,8 +82,8 @@ partial class HtmlHelper {
          return false;
       }
 
-      if (this.ViewContext.MembersNames.Count > 0) {
-         return this.ViewContext.MembersNames.Contains(propertyMetadata.PropertyName!);
+      if (this.ViewContext.MembersNames is { Count: > 0 } names) {
+         return names.Contains(propertyMetadata.PropertyName!);
       }
 
       if (!propertyMetadata.ShowForDisplay) {
@@ -146,8 +146,8 @@ partial class HtmlHelper {
          return false;
       }
 
-      if (this.ViewContext.MembersNames.Count > 0) {
-         return this.ViewContext.MembersNames.Contains(propertyMetadata.PropertyName!);
+      if (this.ViewContext.MembersNames is { Count: > 0 } names) {
+         return names.Contains(propertyMetadata.PropertyName!);
       }
 
       if (!propertyMetadata.ShowForEdit) {

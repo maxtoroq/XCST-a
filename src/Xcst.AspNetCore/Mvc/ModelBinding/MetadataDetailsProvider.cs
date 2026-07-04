@@ -23,10 +23,10 @@ namespace Xcst.Web.Mvc.ModelBinding;
 public class MetadataDetailsProvider : IDisplayMetadataProvider {
 
    static readonly object
-   _showForDisplayKey = new();
+   _showForDisplay = new();
 
    static readonly object
-   _showForEditKey = new();
+   _showForEdit = new();
 
    static readonly object
    _groupName = new();
@@ -49,12 +49,12 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
 
          if (showForAttr._displaySet) {
             metadata.ShowForDisplay = showForAttr.Display;
-            metadata.AdditionalValues[_showForDisplayKey] = showForAttr.Display;
+            metadata.AdditionalValues[_showForDisplay] = showForAttr.Display;
          }
 
          if (showForAttr._editSet) {
             metadata.ShowForEdit = showForAttr.Edit;
-            metadata.AdditionalValues[_showForEditKey] = showForAttr.Edit;
+            metadata.AdditionalValues[_showForEdit] = showForAttr.Edit;
          }
       }
 
@@ -78,7 +78,7 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
 
       ArgumentNullException.ThrowIfNull(metadata);
 
-      if (metadata.AdditionalValues.TryGetValue(_showForDisplayKey, out var obj)
+      if (metadata.AdditionalValues.TryGetValue(_showForDisplay, out var obj)
          && obj is bool b) {
 
          return b;
@@ -92,7 +92,7 @@ public class MetadataDetailsProvider : IDisplayMetadataProvider {
 
       ArgumentNullException.ThrowIfNull(metadata);
 
-      if (metadata.AdditionalValues.TryGetValue(_showForEditKey, out var obj)
+      if (metadata.AdditionalValues.TryGetValue(_showForEdit, out var obj)
          && obj is bool b) {
 
          return b;
