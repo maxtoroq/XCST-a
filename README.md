@@ -33,41 +33,54 @@ The extension on v2 can generate code for runtime v1 or v2 (the default). This n
 
 What's New
 ----------
+<small>
+
+\*\*: breaking change
+
+</small>
+
+### Extension
+
 - [Sequence constructor for HTML instructions](https://github.com/maxtoroq/XCST-a/commit/cfe3836ab2b79f448bd5e7995a9bff779973056c) (also [this](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe))
+- [Removed 'attributes' attribute from HTML instructions (can now use `c:attribute`)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe) \*\*
 - ['id' attribute for HTML instructions](https://github.com/maxtoroq/XCST-a/commit/664768dc3d598403ba66327560cef72b03e90d34)
 - ['hidden' attribute for HTML instructions](https://github.com/maxtoroq/XCST-a/commit/44453d394ecf12f0edbb9e69c341c220a14e2b60)
-- ['a:slug' attribute](https://github.com/maxtoroq/XCST-a/commit/bfb94be4c626e9bfcc0e450a9b8cab3dd1990eb6)
 - [`a:fieldset` instruction](https://github.com/maxtoroq/XCST-a/commit/86c7fc2f54a7abdf12dd5794eac1b96909fa54bc)
-- [`Url.Absolute()` method](https://github.com/maxtoroq/XCST-a/commit/2f494831288c38d1343d4ae9de0bea5d6832aebf)
+- [Keeping track of form method to use appropriate culture (invariant for GET requests) and including `__Invariant` hidden field for invariant input types](https://github.com/maxtoroq/XCST-a/commit/8d3b75c0ec877bb0ab6ec6cf2fde0b68e78b1a63) \*\*
+- `a:select`
+  - [Not adding blank option on `a:select` (`a:editor` still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe) \*\*
+  - [Not auto-creating IEnumerable&lt;SelectListItem> from various types](https://github.com/maxtoroq/XCST-a/commit/e995a3ffa4589c1c4d30c6622c7be9ddb3744622) \*\*
+  - [Implicit options on `a:select` (MembersOptions or Enum)](https://github.com/maxtoroq/XCST-a/commit/89b857652b072b02e45c9601415465ad20b478a2) \*\*
+- `a:input`, `a:textarea`
+  - [Not prepending new line on `a:textarea` when value is empty](https://github.com/maxtoroq/XCST-a/commit/7df19560060f7ac8a1ed09aab1ff833b961a09b5) \*\*
+  - [Adding 'readonly' and 'placeholder' on `a:input` and `a:textarea` based on metadata](https://github.com/maxtoroq/XCST-a/commit/12789aff82b056158b4e7f1c7b7d0469dc0a13c1) \*\*
+  - [Using more specific type on `a:input` based on metadata](https://github.com/maxtoroq/XCST-a/commit/b46332d98ec618dbfef6147c7747c09ff44ab478) \*\*
+  - [Default format on `a:input`](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190) \*\*
+- `a:editor`, `a:display`
+  - [Removed 'autofocus', 'disabled' and 'readonly' from `a:editor` and 'attributes' from `a:editor` and `a:display`](https://github.com/maxtoroq/XCST-a/commit/f7afce91ec6526b4629aab9b92d89d1371acdc9e) \*\*
+  - [Ignoring Html5DateRenderingMode](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190) ([and removed](https://github.com/maxtoroq/XCST-a/commit/9ba3d8de281f1b263b2654964476d89c88126459)) \*\*
+  - [Text-only sequence constructor for `a:with-options/a:option`](https://github.com/maxtoroq/XCST-a/commit/a168d65dcaec34680f0ad15e2bf3b7821e0bf00a) \*\*
+  - [Removed default editor CSS classes](https://github.com/maxtoroq/XCST-a/commit/45b34c21f11185c2a3aa74d1d8ba160e4f348fcb) \*\*
+  - [Not grouping into fieldset in Object templates](https://github.com/maxtoroq/XCST-a/commit/8ec5cc482a7fd529d62bf0ce35ee94677ef4bf4c) \*\*
+  - [New layout for Object templates (one "row" per member)](https://github.com/maxtoroq/XCST-a/commit/672e137848a67cbec081eb6ec6d2fb6119f2aa87) \*\*
+  - [DateOnly and TimeOnly editor templates](https://github.com/maxtoroq/XCST-a/commit/5df30b3715fbe7d8243f75c8f2224fa9dd68e9ad)
+  - [Week editor template](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190)
+  - [Month editor and display template](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190)
+  - [Multiple file upload](https://github.com/maxtoroq/XCST-a/commit/2daef6dbf36a6e5cd147dc2ddc00aaa4d7247f68)
+- `a:model`
+  - [Renamed `a:model` 'as' attribute to 'type'](https://github.com/maxtoroq/XCST-a/commit/3ac2492e377e7be181f0aa49e981e20c67010608) \*\*
+- [LabelCssClass config option](https://github.com/maxtoroq/XCST-a/commit/038e4e3eeba2ac8c7d980d363e1d762d7fcbe435)
+- [Replaced 'inherits' and 'model' directives with 'inherits' and 'a:model-type' attributes](https://github.com/maxtoroq/XCST-a/commit/b9a4d18c834c706d236b2ea60bb8fde361bacf1b) \*\*
+- ['a:slug' attribute for `c:module` and `c:package`](https://github.com/maxtoroq/XCST-a/commit/bfb94be4c626e9bfcc0e450a9b8cab3dd1990eb6)
 
-### Breaking Changes: Extension
-
-- [Removed 'attributes' attribute from HTML instructions (can now use `c:attribute`)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
-- [Replaced 'inherits' and 'model' directives with 'inherits' and 'a:model-type' attributes](https://github.com/maxtoroq/XCST-a/commit/b9a4d18c834c706d236b2ea60bb8fde361bacf1b)
-- [Not using ViewDataDictionary value on form instructions](https://github.com/maxtoroq/XCST-a/commit/c23401630f2dbcef8bf6ff041bc281296b1665a1)
-- [Not adding blank option on `a:select` (`a:editor` still does)](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
-- [Not looking for options in ViewData on `a:select`](https://github.com/maxtoroq/XCST-a/commit/9fdf3de9175ce00153e83bce1949a3bd63af65fe)
-- [Not auto-creating IEnumerable&lt;SelectListItem> from various types](https://github.com/maxtoroq/XCST-a/commit/e995a3ffa4589c1c4d30c6622c7be9ddb3744622)
-- [Not prepending new line on `a:textarea` when value is empty](https://github.com/maxtoroq/XCST-a/commit/7df19560060f7ac8a1ed09aab1ff833b961a09b5)
-- [Adding 'readonly' and 'placeholder' on `a:input` and `a:textarea` based on metadata](https://github.com/maxtoroq/XCST-a/commit/12789aff82b056158b4e7f1c7b7d0469dc0a13c1)
-- [Using more specific type on `a:input` based on metadata](https://github.com/maxtoroq/XCST-a/commit/b46332d98ec618dbfef6147c7747c09ff44ab478)
-- [Default format on `a:input`](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190)
-- [Keeping track of form method to use appropriate culture (invariant for GET requests) and including `__Invariant` hidden field for invariant input types](https://github.com/maxtoroq/XCST-a/commit/8d3b75c0ec877bb0ab6ec6cf2fde0b68e78b1a63)
-- [Ignoring Html5DateRenderingMode](https://github.com/maxtoroq/XCST-a/commit/11b0df99f7773ddfdbe24be0beb1085a67999190) ([and removed](https://github.com/maxtoroq/XCST-a/commit/9ba3d8de281f1b263b2654964476d89c88126459))
-- [Text-only sequence constructor for `a:with-options/a:option`](https://github.com/maxtoroq/XCST-a/commit/a168d65dcaec34680f0ad15e2bf3b7821e0bf00a)
-- [Renamed `a:model` 'as' attribute to 'type'](https://github.com/maxtoroq/XCST-a/commit/3ac2492e377e7be181f0aa49e981e20c67010608)
-- [Using single Number template for integral types](https://github.com/maxtoroq/XCST-a/commit/6787fb48ee29127f536dcb52c267082be7791cee)
-
-### Breaking Changes: Runtime
+### API
 The runtime has lots of changes, including renamed namespaces and moved types. These are the most notable changes:
 
-- [Merged TemplateInfo into ViewContext](https://github.com/maxtoroq/XCST-a/commit/996c47dd75e79f76c856616bb4c4dfab4ead69f4)
-- [Removed RouteValueDictionary dependency from ObjectToDictionary() and AnonymousObjectToHtmlAttributes()](https://github.com/maxtoroq/XCST-a/commit/25e0171c73cf199280dbaa77445c3532074f23d0)
-- [Removed TempData](https://github.com/maxtoroq/XCST-a/commit/1d2fdacbe13cde8383af34245d2170379a529289)
-- [Removed ViewData](https://github.com/maxtoroq/XCST-a/commit/8ef0a86d7fa2150c4a5044fc5ecd7c97e3e77bc2) ([and ViewBag](https://github.com/maxtoroq/XCST-a/commit/83f147cd0cad4b1c9ff0638f895be3ea730bde8c))
-- [Removed InputType enum](https://github.com/maxtoroq/XCST-a/commit/2cd8abcc6d21a55014ac8a43151e89a6fe149ed5)
-- [Renamed XcstPage.Context to HttpContext](https://github.com/maxtoroq/XCST-a/commit/a576f482c5ce36c2463c1af9328a6058e4eabcec)
-- [Removed XcstPageHandler, moved RenderPage() to XcstPage](https://github.com/maxtoroq/XCST-a/commit/8d32a32fb74180a85d28675ab0d24845fe0a974c)
+- [`Url.Absolute()` method](https://github.com/maxtoroq/XCST-a/commit/2f494831288c38d1343d4ae9de0bea5d6832aebf)
+- [Merged TemplateInfo into ViewContext](https://github.com/maxtoroq/XCST-a/commit/996c47dd75e79f76c856616bb4c4dfab4ead69f4) \*\*
+- [Removed TempData](https://github.com/maxtoroq/XCST-a/commit/1d2fdacbe13cde8383af34245d2170379a529289) \*\*
+- [Removed ViewData](https://github.com/maxtoroq/XCST-a/commit/8ef0a86d7fa2150c4a5044fc5ecd7c97e3e77bc2) ([and ViewBag](https://github.com/maxtoroq/XCST-a/commit/83f147cd0cad4b1c9ff0638f895be3ea730bde8c)) \*\*
+- [Renamed XcstPage.Context to HttpContext](https://github.com/maxtoroq/XCST-a/commit/a576f482c5ce36c2463c1af9328a6058e4eabcec) \*\*
 
 System Requirements
 -------------------
