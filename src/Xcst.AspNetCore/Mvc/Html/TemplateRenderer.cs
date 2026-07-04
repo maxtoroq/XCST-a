@@ -152,17 +152,16 @@ sealed class TemplateRenderer {
          }
       }
 
-      var metadata = _viewDataContainer.ModelExplorer.Metadata;
+      var modelType = _viewDataContainer.ModelExplorer.ModelType;
 
       throw new InvalidOperationException(
-         $"Unable to locate an appropriate template for type '{metadata.UnderlyingOrModelType}'.");
+         $"Unable to locate an appropriate template for type '{modelType}'.");
    }
 
    IEnumerable<string>
    GetViewNames() {
 
       var metadata = _viewDataContainer.ModelExplorer.Metadata;
-      var options = _viewContext.OptionsForModel();
 
       if (!String.IsNullOrEmpty(_templateName)) {
          yield return _templateName;
@@ -172,7 +171,7 @@ sealed class TemplateRenderer {
          yield return metadata.TemplateHint;
       }
 
-      if (options != null) {
+      if (_viewContext.OptionsForModel() != null) {
          yield return (metadata.IsEnumerableType ?
             "ListBox"
             : "DropDownList");
@@ -264,11 +263,12 @@ sealed class TemplateRenderer {
    RenderViewPage(XcstViewPage viewPage, ISequenceWriter<object> output) {
 
       var modelExplorer = _viewDataContainer.ModelExplorer;
+      var modelType = modelExplorer.ModelType;
 
-      if (!viewPage.DeclaredModelType.IsAssignableFrom(modelExplorer.Metadata.ModelType)) {
+      if (!viewPage.DeclaredModelType.IsAssignableFrom(modelType)) {
          throw new InvalidOperationException(
             $"{(_readOnly ? "Display" : "Editor")} template '{_viewContext.ViewName}' is not type-compatible"
-            + $" with model of type '{modelExplorer.Metadata.ModelType}'.");
+            + $" with model of type '{modelType}'.");
       }
 
       viewPage.Contextualize(_viewContext);
