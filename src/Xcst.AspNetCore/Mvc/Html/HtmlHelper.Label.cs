@@ -64,7 +64,7 @@ partial class HtmlHelper {
 
       var fullFieldName = GenerateName(expression);
       var id = GenerateIdFromName(fullFieldName);
-      var reqClass = this.ViewContext.Options.LabelCssClass?.Invoke(metadata.IsRequired);
+      var reqClass = this.ViewContext.Configuration.LabelCssClass?.Invoke(metadata.IsRequired);
 
       output.WriteStartElement("label");
       output.WriteAttributeString("for", id);

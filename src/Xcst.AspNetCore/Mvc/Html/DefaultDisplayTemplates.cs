@@ -216,7 +216,7 @@ static class DefaultDisplayTemplates {
       }
 
       var filteredProperties = html.DisplayProperties();
-      var groupCssClass = html.ViewContext.Options.DisplayGroupCssClass;
+      var groupCssClass = html.ViewContext.Configuration.DisplayGroupCssClass;
 
       foreach (var propertyExplorer in filteredProperties) {
 

@@ -263,7 +263,7 @@ static class DefaultEditorTemplates {
       }
 
       var filteredProperties = html.EditorProperties();
-      var groupCssClass = html.ViewContext.Options.EditorGroupCssClass;
+      var groupCssClass = html.ViewContext.Configuration.EditorGroupCssClass;
 
       foreach (var propertyExplorer in filteredProperties) {
 
@@ -387,7 +387,7 @@ static class DefaultEditorTemplates {
 
    internal static string?
    GetEditorCssClass(HtmlHelper html, string elementName, string? inputType) =>
-      html.ViewContext.Options.EditorCssClass?.Invoke(elementName, inputType);
+      html.ViewContext.Configuration.EditorCssClass?.Invoke(elementName, inputType);
 
    internal static SelectListItem[]
    TriStateValues(bool? value) =>

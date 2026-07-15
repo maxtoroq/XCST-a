@@ -107,7 +107,7 @@ public partial class HtmlHelper {
          return String.Empty;
       }
 
-      var invalidCharReplacement = this.ViewContext.Options.IdAttributeDotReplacement;
+      var invalidCharReplacement = this.ViewContext.Configuration.IdAttributeDotReplacement;
 
       var firstChar = fullName[0];
 

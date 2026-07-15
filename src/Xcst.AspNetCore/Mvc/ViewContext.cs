@@ -20,6 +20,9 @@ public class ViewContext {
    FormContext?
    _formContext;
 
+   bool?
+   _clientValidationEnabled;
+
    string?
    _htmlFieldPrefix;
 
@@ -39,7 +42,7 @@ public class ViewContext {
    _visitedObjects;
 
    ViewOptions?
-   _options;
+   _config;
 
    public HttpContext
    HttpContext { get; }
@@ -74,7 +77,10 @@ public class ViewContext {
    }
 
    public bool
-   ClientValidationEnabled { get; set; }
+   ClientValidationEnabled {
+      get => _clientValidationEnabled ??= Configuration.ClientValidationEnabled;
+      set => _clientValidationEnabled = value;
+   }
 
    [AllowNull]
    public string
@@ -130,7 +136,7 @@ public class ViewContext {
    TemplateDepth => VisitedObjects.Count;
 
    internal ViewOptions
-   Options => _options ??=
+   Configuration => _config ??=
       HttpContext.RequestServices.GetRequiredService<IOptions<ViewOptions>>()
          .Value;
 
@@ -144,7 +150,6 @@ public class ViewContext {
 
       this.FormContext = new FormContext();
       this.FormMethod = FormMethod.Post;
-      this.ClientValidationEnabled = this.Options.ClientValidationEnabled;
    }
 
    public
@@ -166,10 +171,9 @@ public class ViewContext {
 
       // FormContext must be shared, not copied
       this.FormContext = viewContext.FormContext;
-
       this.FormMethod = viewContext.FormMethod;
-      this.ClientValidationEnabled = viewContext.ClientValidationEnabled;
 
+      _clientValidationEnabled = viewContext._clientValidationEnabled;
       _htmlFieldPrefix = viewContext._htmlFieldPrefix;
 
       if (viewContext._membersOptions is { Count: > 0 } memberOpts) {
@@ -186,7 +190,7 @@ public class ViewContext {
          _visitedObjects = new HashSet<object>(visitedObjs);
       }
 
-      _options = viewContext._options;
+      _config = viewContext._config;
    }
 
    internal FormContext?

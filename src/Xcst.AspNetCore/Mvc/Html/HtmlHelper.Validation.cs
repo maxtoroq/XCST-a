@@ -96,7 +96,7 @@ partial class HtmlHelper {
          return new DefaultContentDisposable(output, elementStarted: false, null);
       }
 
-      var tag = this.ViewContext.Options.ValidationMessageElement;
+      var tag = this.ViewContext.Configuration.ValidationMessageElement;
 
       var cssClass = (modelError != null) ?
          ValidationMessageCssClassName

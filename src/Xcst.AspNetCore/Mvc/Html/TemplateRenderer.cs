@@ -133,8 +133,8 @@ sealed class TemplateRenderer {
 
       _viewContext.ViewName = null;
 
-      var options = _viewContext.Options;
-      var tmplFactory = (_readOnly) ? options.DisplayTemplateFactory : options.EditorTemplateFactory;
+      var config = _viewContext.Configuration;
+      var tmplFactory = (_readOnly) ? config.DisplayTemplateFactory : config.EditorTemplateFactory;
       var defaultActions = (_readOnly) ? _defaultDisplayActions : _defaultEditorActions;
 
       foreach (var viewName in GetViewNames()) {
