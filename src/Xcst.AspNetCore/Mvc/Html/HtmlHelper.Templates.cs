@@ -194,14 +194,12 @@ partial class HtmlHelper {
 
       ArgumentNullException.ThrowIfNull(memberExplorer);
 
-      var container = new ViewDataContainer(memberExplorer);
-
       var viewContext = new ViewContext(this.ViewContext) {
          HtmlFieldPrefix = GenerateName(memberExplorer.Metadata.PropertyName!),
          VisitedObjects = null,
       };
 
-      return new HtmlHelper(viewContext, container, this.MetadataProvider);
+      return new HtmlHelper(viewContext, () => memberExplorer, this.MetadataProvider);
    }
 
    [GeneratedCodeReference]
@@ -361,9 +359,9 @@ public class TemplateHelper {
          }
       }
 
-      var container = new ViewDataContainer(_modelExplorer.GetExplorerForModel(model));
+      var newModelExpl = _modelExplorer.GetExplorerForModel(model);
 
-      new TemplateRenderer(viewContext, container, _html.MetadataProvider, templateName, _displayMode)
+      new TemplateRenderer(viewContext, newModelExpl, _html.MetadataProvider, templateName, _displayMode)
          .Render(output);
    }
 }

@@ -30,6 +30,7 @@ using Xcst.Runtime;
 
 namespace Xcst.Web.Mvc;
 
+[GeneratedCodeReference]
 public partial class HtmlHelper {
 
    public static readonly string
@@ -50,26 +51,26 @@ public partial class HtmlHelper {
    public static readonly string
    ValidationSummaryValidCssClassName = "validation-summary-valid";
 
+   readonly Func<ModelExplorer>
+   _modelExplorerFn;
+
    DefaultValidationHtmlAttributeProvider?
    _validationAttributeProvider;
 
    public ViewContext
    ViewContext { get; }
 
-   public IViewDataContainer
-   ViewDataContainer { get; }
-
    public IModelMetadataProvider
    MetadataProvider { get; }
 
    public object?
-   Model => ViewDataContainer.ModelExplorer.Model;
+   Model => ModelExplorer.Model;
 
    public ModelExplorer
-   ModelExplorer => ViewDataContainer.ModelExplorer;
+   ModelExplorer => _modelExplorerFn.Invoke();
 
    public ModelMetadata
-   ModelMetadata => ViewDataContainer.ModelExplorer.Metadata;
+   ModelMetadata => ModelExplorer.Metadata;
 
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
@@ -87,14 +88,15 @@ public partial class HtmlHelper {
    SimpleContent => CurrentPackage.Context.SimpleContent;
 
    public
-   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IModelMetadataProvider metadataProvider) {
+   HtmlHelper(ViewContext viewContext, Func<ModelExplorer> modelExplorerFn, IModelMetadataProvider metadataProvider) {
 
       ArgumentNullException.ThrowIfNull(viewContext);
-      ArgumentNullException.ThrowIfNull(viewDataContainer);
+      ArgumentNullException.ThrowIfNull(modelExplorerFn);
       ArgumentNullException.ThrowIfNull(metadataProvider);
 
+      _modelExplorerFn = modelExplorerFn;
+
       this.ViewContext = viewContext;
-      this.ViewDataContainer = viewDataContainer;
       this.MetadataProvider = metadataProvider;
    }
 
@@ -165,7 +167,7 @@ public partial class HtmlHelper {
 
    public object?
    Eval(string? expression) {
-      var info = ViewDataEvaluator.Eval(this.ViewDataContainer, expression);
+      var info = ViewDataEvaluator.Eval(this.ModelExplorer, expression);
       return info?.Value;
    }
 
@@ -212,7 +214,7 @@ public partial class HtmlHelper {
 
    ModelExplorer
    GetModelExplorerFromString(string expression) =>
-      ExpressionMetadataProvider.FromStringExpression(expression, this.ViewDataContainer, this.MetadataProvider);
+      ExpressionMetadataProvider.FromStringExpression(expression, this.ModelExplorer, this.MetadataProvider);
 
    public IDictionary<string, string>
    GetUnobtrusiveValidationAttributes(string expression) =>
@@ -462,15 +464,15 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
 
    [MaybeNull]
    public new TModel
-   Model => (TModel)ViewDataContainer.ModelExplorer.Model;
+   Model => (TModel)ModelExplorer.Model;
 
    public
-   HtmlHelper(ViewContext viewContext, IViewDataContainer viewDataContainer, IModelMetadataProvider metadataProvider)
-      : base(viewContext, viewDataContainer, metadataProvider) { }
+   HtmlHelper(ViewContext viewContext, Func<ModelExplorer> modelExplorerFn, IModelMetadataProvider metadataProvider)
+      : base(viewContext, modelExplorerFn, metadataProvider) { }
 
    ModelExplorer
    GetModelExplorerFromLambda<TResult>(Expression<Func<TModel, TResult>> expression) =>
-      ExpressionMetadataProvider.FromLambdaExpression(expression, this.ViewDataContainer, this.MetadataProvider);
+      ExpressionMetadataProvider.FromLambdaExpression(expression, this.ModelExplorer, this.MetadataProvider);
 
    [GeneratedCodeReference]
    public string
@@ -479,7 +481,7 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
       var modelExplorer = (typeof(IEnumerable<TModel>).IsAssignableFrom(typeof(TModel))) ?
           ExpressionMetadataProvider.FromLambdaExpression(
              expression,
-             new ViewDataContainer(this.MetadataProvider.GetModelExplorerForType(typeof(TModel), default)),
+             this.MetadataProvider.GetModelExplorerForType(typeof(TModel), default),
              this.MetadataProvider)
           : GetModelExplorerFromLambda(expression);
 
@@ -520,12 +522,6 @@ public partial class HtmlHelper<TModel> : HtmlHelper {
 
       return ValueHelper(expressionString, modelExplorer, format);
    }
-}
-
-public interface IViewDataContainer {
-
-   ModelExplorer
-   ModelExplorer { get; }
 }
 
 partial class HtmlHelper {

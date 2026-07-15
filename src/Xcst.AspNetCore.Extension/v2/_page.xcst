@@ -158,8 +158,12 @@
             <code:parameter name='viewContext'>
                <code:type-reference name='ViewContext' namespace='Xcst.Web.Mvc'/>
             </code:parameter>
-            <code:parameter name='container'>
-               <code:type-reference name='IViewDataContainer' namespace='Xcst.Web.Mvc'/>
+            <code:parameter name='modelExplorerFn'>
+               <code:type-reference name='Func' namespace='System'>
+                  <code:type-arguments>
+                     <code:type-reference name='ModelExplorer' namespace='Microsoft.AspNetCore.Mvc.ViewFeatures'/>
+                  </code:type-arguments>
+               </code:type-reference>
             </code:parameter>
             <code:parameter name='metadataProvider'>
                <code:type-reference name='IModelMetadataProvider' namespace='Microsoft.AspNetCore.Mvc.ModelBinding'/>
@@ -171,7 +175,7 @@
                   <copy-of value='typedHtmlHelperRef'/>
                   <code:arguments>
                      <code:variable-reference name='viewContext'/>
-                     <code:variable-reference name='container'/>
+                     <code:variable-reference name='modelExplorerFn'/>
                      <code:variable-reference name='metadataProvider'/>
                   </code:arguments>
                </code:new-object>

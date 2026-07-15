@@ -12,6 +12,7 @@ using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
 namespace Xcst.Web.Mvc;
 
+[GeneratedCodeReference]
 public class ViewContext {
 
    ActionContext?

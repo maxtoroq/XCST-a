@@ -28,7 +28,8 @@ namespace Xcst.Web.Mvc;
 // Many of the properties of XcstViewPage can be null if ViewContext is not initialized.
 // These are however not marked as nullable since, at runtime, ViewContext is always initialized.
 
-public abstract class XcstViewPage : XcstPage, IViewDataContainer {
+[GeneratedCodeReference]
+public abstract class XcstViewPage : XcstPage {
 
    ModelExplorer?
    _modelExplorer;
@@ -44,6 +45,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    ViewContext { get; private set; }
 #pragma warning restore CS8618
 
+   [GeneratedCodeReference]
    protected internal virtual Type
    DeclaredModelType => typeof(Object);
 
@@ -54,6 +56,7 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       internal set => _modelExplorer = value;
    }
 
+   [GeneratedCodeReference]
    public object?
    Model {
       get => ModelExplorer.Model;
@@ -64,9 +67,10 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
    MetadataProvider => _modelMetadataProvider
       ??= HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
 
+   [GeneratedCodeReference]
    public HtmlHelper
    Html => _html
-      ??= CreateHtmlHelper(ViewContext, this, MetadataProvider);
+      ??= CreateHtmlHelper(ViewContext, () => ModelExplorer, MetadataProvider);
 
    public ModelStateDictionary
    ModelState => ViewContext.ActionContext.ModelState;
@@ -114,9 +118,10 @@ public abstract class XcstViewPage : XcstPage, IViewDataContainer {
       _html = null;
    }
 
+   [GeneratedCodeReference]
    protected virtual HtmlHelper
-   CreateHtmlHelper(ViewContext viewContext, IViewDataContainer container, IModelMetadataProvider metadataProvider) =>
-      new HtmlHelper(viewContext, container, metadataProvider);
+   CreateHtmlHelper(ViewContext viewContext, Func<ModelExplorer> modelExplorerFn, IModelMetadataProvider metadataProvider) =>
+      new HtmlHelper(viewContext, modelExplorerFn, metadataProvider);
 
    public async Task<bool>
    TryUpdateModelAsync(
@@ -214,6 +219,6 @@ public abstract class XcstViewPage<TModel> : XcstViewPage {
    Html => (HtmlHelper<TModel>)base.Html;
 
    protected override HtmlHelper
-   CreateHtmlHelper(ViewContext viewContext, IViewDataContainer container, IModelMetadataProvider metadataProvider) =>
-      new HtmlHelper<TModel>(viewContext, container, metadataProvider);
+   CreateHtmlHelper(ViewContext viewContext, Func<ModelExplorer> modelExplorerFn, IModelMetadataProvider metadataProvider) =>
+      new HtmlHelper<TModel>(viewContext, modelExplorerFn, metadataProvider);
 }

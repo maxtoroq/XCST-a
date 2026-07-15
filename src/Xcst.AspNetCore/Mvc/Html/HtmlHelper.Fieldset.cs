@@ -26,10 +26,9 @@ partial class HtmlHelper {
    NewFieldsetHelper(string expression) {
 
       var modelExplorer = GetModelExplorerFromString(expression);
-      var container = new ViewDataContainer(modelExplorer);
       var newViewContext = NewFieldsetViewContext(expression);
 
-      return new HtmlHelper(newViewContext, container, this.MetadataProvider);
+      return new HtmlHelper(newViewContext, () => modelExplorer, this.MetadataProvider);
    }
 
    [GeneratedCodeReference]
@@ -39,10 +38,9 @@ partial class HtmlHelper {
 
       var expression = String.Empty;
       var modelExplorer = this.ModelExplorer;
-      var container = new ViewDataContainer(modelExplorer);
       var newViewContext = NewFieldsetViewContext(expression);
 
-      return new HtmlHelper(newViewContext, container, this.MetadataProvider);
+      return new HtmlHelper(newViewContext, () => modelExplorer, this.MetadataProvider);
    }
 
    private protected ViewContext
@@ -65,9 +63,8 @@ partial class HtmlHelper<TModel> {
 
       var expressionString = ExpressionHelper.GetExpressionText(expression);
       var modelExplorer = GetModelExplorerFromLambda(expression);
-      var container = new ViewDataContainer(modelExplorer);
       var newViewContext = NewFieldsetViewContext(expressionString);
 
-      return new HtmlHelper<TResult>(newViewContext, container, this.MetadataProvider);
+      return new HtmlHelper<TResult>(newViewContext, () => modelExplorer, this.MetadataProvider);
    }
 }

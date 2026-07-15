@@ -107,8 +107,8 @@ sealed class TemplateRenderer {
    readonly ViewContext
    _viewContext;
 
-   readonly IViewDataContainer
-   _viewDataContainer;
+   readonly ModelExplorer
+   _modelExplorer;
 
    readonly IModelMetadataProvider
    _metadataProvider;
@@ -120,9 +120,9 @@ sealed class TemplateRenderer {
    _readOnly;
 
    public
-   TemplateRenderer(ViewContext viewContext, IViewDataContainer viewDataContainer, IModelMetadataProvider metadataProvider, string? templateName, bool readOnly) {
+   TemplateRenderer(ViewContext viewContext, ModelExplorer modelExplorer, IModelMetadataProvider metadataProvider, string? templateName, bool readOnly) {
       _viewContext = viewContext;
-      _viewDataContainer = viewDataContainer;
+      _modelExplorer = modelExplorer;
       _metadataProvider = metadataProvider;
       _templateName = templateName;
       _readOnly = readOnly;
@@ -152,7 +152,7 @@ sealed class TemplateRenderer {
          }
       }
 
-      var modelType = _viewDataContainer.ModelExplorer.ModelType;
+      var modelType = _modelExplorer.ModelType;
 
       throw new InvalidOperationException(
          $"Unable to locate an appropriate template for type '{modelType}'.");
@@ -161,7 +161,7 @@ sealed class TemplateRenderer {
    IEnumerable<string>
    GetViewNames() {
 
-      var metadata = _viewDataContainer.ModelExplorer.Metadata;
+      var metadata = _modelExplorer.Metadata;
 
       if (!String.IsNullOrEmpty(_templateName)) {
          yield return _templateName;
@@ -257,13 +257,12 @@ sealed class TemplateRenderer {
 
    HtmlHelper
    MakeHtmlHelper() =>
-      new HtmlHelper(_viewContext, _viewDataContainer, _metadataProvider);
+      new HtmlHelper(_viewContext, () => _modelExplorer, _metadataProvider);
 
    void
    RenderViewPage(XcstViewPage viewPage, ISequenceWriter<object> output) {
 
-      var modelExplorer = _viewDataContainer.ModelExplorer;
-      var modelType = modelExplorer.ModelType;
+      var modelType = _modelExplorer.ModelType;
 
       if (!viewPage.DeclaredModelType.IsAssignableFrom(modelType)) {
          throw new InvalidOperationException(
@@ -272,7 +271,7 @@ sealed class TemplateRenderer {
       }
 
       viewPage.Contextualize(_viewContext);
-      viewPage.ModelExplorer = modelExplorer;
+      viewPage.ModelExplorer = _modelExplorer;
 
       XcstEvaluator.Using((object)viewPage)
          .WithParams(_viewContext.ViewParameters)

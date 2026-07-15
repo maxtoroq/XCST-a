@@ -10,16 +10,16 @@ namespace Xcst.Web.Mvc;
 static class ViewDataEvaluator {
 
    public static ViewDataInfo?
-   Eval(IViewDataContainer viewData, string? expression) {
+   Eval(ModelExplorer modelExplorer, string? expression) {
 
-      ArgumentNullException.ThrowIfNull(viewData);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
 
       if (String.IsNullOrEmpty(expression)) {
          // Null or empty expression name means current model even if that model is null.
-         return new ViewDataInfo(viewData, viewData.ModelExplorer.Model);
+         return new ViewDataInfo(modelExplorer, modelExplorer.Model);
       }
 
-      return EvalComplexExpression(viewData.ModelExplorer.Model, expression);
+      return EvalComplexExpression(modelExplorer.Model, expression);
    }
 
    static ViewDataInfo?

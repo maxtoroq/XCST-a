@@ -29,6 +29,7 @@ static partial class TestsHelper {
       typeof(Microsoft.AspNetCore.Mvc.HiddenInputAttribute).Assembly.Location,
       typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelMetadata).Assembly.Location,
       typeof(Microsoft.AspNetCore.Mvc.ModelBinding.QueryStringValueProvider).Assembly.Location,
+      typeof(Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorer).Assembly.Location,
       typeof(Xcst.Web.Mvc.XcstViewPage).Assembly.Location,
       typeof(TestAssert).Assembly.Location,
       Assembly.GetExecutingAssembly().Location

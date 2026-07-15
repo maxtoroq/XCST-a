@@ -13,11 +13,11 @@ static class ExpressionMetadataProvider {
    public static ModelExplorer
    FromLambdaExpression<TParameter, TValue>(
          Expression<Func<TParameter, TValue>> expression,
-         IViewDataContainer viewData,
+         ModelExplorer modelExplorer,
          IModelMetadataProvider metadataProvider) {
 
       ArgumentNullException.ThrowIfNull(expression);
-      ArgumentNullException.ThrowIfNull(viewData);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
       ArgumentNullException.ThrowIfNull(metadataProvider);
 
       var propertyName = default(string);
@@ -51,7 +51,7 @@ static class ExpressionMetadataProvider {
 
          case ExpressionType.Parameter:
             // Parameter expression means "model => model", so we delegate to FromModel
-            return FromModel(viewData.ModelExplorer, metadataProvider);
+            return FromModel(modelExplorer, metadataProvider);
       }
 
       if (!legalExpression) {
@@ -104,22 +104,22 @@ static class ExpressionMetadataProvider {
       // - non-visibility (internal/private)
       metadata ??= metadataProvider.GetMetadataForType(typeof(TValue));
 
-      return viewData.ModelExplorer.GetExplorerForExpression(metadata, modelAccessor);
+      return modelExplorer.GetExplorerForExpression(metadata, modelAccessor);
    }
 
    public static ModelExplorer
-   FromStringExpression(string expression, IViewDataContainer viewData, IModelMetadataProvider metadataProvider) {
+   FromStringExpression(string expression, ModelExplorer modelExplorer, IModelMetadataProvider metadataProvider) {
 
-      ArgumentNullException.ThrowIfNull(viewData);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
       ArgumentNullException.ThrowIfNull(metadataProvider);
 
-      var viewDataInfo = ViewDataEvaluator.Eval(viewData, expression);
+      var viewDataInfo = ViewDataEvaluator.Eval(modelExplorer, expression);
 
       if (viewDataInfo is null) {
 
          //  Try getting a property from ModelMetadata if we couldn't find an answer in ViewData
 
-         var propertyExplorer = viewData.ModelExplorer.GetExplorerForProperty(expression);
+         var propertyExplorer = modelExplorer.GetExplorerForProperty(expression);
 
          if (propertyExplorer != null) {
             return propertyExplorer;
@@ -128,16 +128,16 @@ static class ExpressionMetadataProvider {
 
       if (viewDataInfo != null) {
 
-         if (viewDataInfo.Container == viewData
-            && viewDataInfo.Value == viewData.ModelExplorer.Model
+         if (viewDataInfo.Container == modelExplorer
+            && viewDataInfo.Value == modelExplorer.Model
             && String.IsNullOrEmpty(expression)) {
 
             // Nothing for empty expression in ViewData and ViewDataEvaluator just returned the model. Handle
             // using FromModel() for its object special case.
-            return FromModel(viewData.ModelExplorer, metadataProvider);
+            return FromModel(modelExplorer, metadataProvider);
          }
 
-         var containerExplorer = viewData.ModelExplorer;
+         var containerExplorer = modelExplorer;
          var containerType = viewDataInfo.Container?.GetType();
 
          if (viewDataInfo.Container != null) {
@@ -168,7 +168,7 @@ static class ExpressionMetadataProvider {
 
       var stringMetadata = metadataProvider.GetMetadataForType(typeof(string));
 
-      return viewData.ModelExplorer.GetExplorerForExpression(stringMetadata, modelAccessor: null);
+      return modelExplorer.GetExplorerForExpression(stringMetadata, modelAccessor: null);
    }
 
    static ModelExplorer
