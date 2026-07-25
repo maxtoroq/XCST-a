@@ -258,7 +258,7 @@ static class DefaultEditorTemplates {
    ObjectTemplate(HtmlHelper html, ISequenceWriter<object> seqOutput) {
 
       if (html.ViewContext.TemplateDepth > 1) {
-         html.DisplayTextHelper(seqOutput, html.ModelExplorer);
+         HtmlHelper.DisplayTextHelper(seqOutput, html.ModelExplorer);
          return;
       }
 

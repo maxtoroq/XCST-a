@@ -312,14 +312,32 @@ public partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public void
-   DisplayText(ISequenceWriter<string> output, string expression) =>
-      DisplayTextHelper(output, GetModelExplorerFromString(expression));
+   DisplayText(ISequenceWriter<string> output, string expression) {
+
+      var modelExplorer = (String.IsNullOrEmpty(expression)) ?
+         this.ModelExplorer
+         : GetModelExplorerFromString(expression);
+
+      DisplayTextHelper(output, modelExplorer);
+   }
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public void
    DisplayTextForModel(ISequenceWriter<string> output) =>
       DisplayTextHelper(output, this.ModelExplorer);
+
+   internal static void
+   DisplayTextHelper(ISequenceWriter<string> output, ModelExplorer modelExplorer) {
+
+      var text = modelExplorer.GetSimpleDisplayText();
+
+      if (modelExplorer.Metadata.HtmlEncode) {
+         output.WriteString(text);
+      } else {
+         output.WriteRaw(text);
+      }
+   }
 
    [GeneratedCodeReference]
    public string
@@ -338,21 +356,9 @@ public partial class HtmlHelper {
    DisplayStringForModel() =>
       DisplayStringHelper(this.ModelExplorer);
 
-   private protected string
+   private protected static string
    DisplayStringHelper(ModelExplorer modelExplorer) =>
       modelExplorer.GetSimpleDisplayText();
-
-   internal void
-   DisplayTextHelper(ISequenceWriter<string> output, ModelExplorer modelExplorer) {
-
-      var text = modelExplorer.GetSimpleDisplayText();
-
-      if (modelExplorer.Metadata.HtmlEncode) {
-         output.WriteString(text);
-      } else {
-         output.WriteRaw(text);
-      }
-   }
 
    public string
    Id(string expression) =>

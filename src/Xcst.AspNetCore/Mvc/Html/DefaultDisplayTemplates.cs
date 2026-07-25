@@ -211,7 +211,7 @@ static class DefaultDisplayTemplates {
       if (html.ModelExplorer.Model is null
          || html.ViewContext.TemplateDepth > 1) {
 
-         html.DisplayTextHelper(seqOutput, html.ModelExplorer);
+         HtmlHelper.DisplayTextHelper(seqOutput, html.ModelExplorer);
          return;
       }
 
