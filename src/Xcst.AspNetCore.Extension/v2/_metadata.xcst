@@ -54,13 +54,11 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <attribute name='name'>
             <text>DisplayName</text>
-            <if test='forAttr != null || forModel'>For</if>
-            <if test='forModel'>Model</if>
+            <if test='forAttr != null'>For</if>
          </attribute>
          <call-template name='html-helper-ref'/>
          <code:arguments>
@@ -119,7 +117,6 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <if test='statement'>
@@ -131,8 +128,7 @@
                <when test='statement'>Text</when>
                <otherwise>String</otherwise>
             </choose>
-            <if test='forAttr != null || forModel'>For</if>
-            <if test='forModel'>Model</if>
+            <if test='forAttr != null'>For</if>
          </attribute>
          <call-template name='html-helper-ref'/>
          <code:arguments>

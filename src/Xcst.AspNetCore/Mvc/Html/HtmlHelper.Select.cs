@@ -87,18 +87,18 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
+   Select(XcstWriter output, SelectArgs args = default) =>
+      GenerateSelect(output, this.ModelExplorer, String.Empty, args);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public SelectDisposable
    Select(XcstWriter output, string expression, SelectArgs args = default) {
 
       var modelExplorer = GetModelExplorerFromString(expression);
 
       return GenerateSelect(output, modelExplorer, expression, args);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public SelectDisposable
-   SelectForModel(XcstWriter output, SelectArgs args = default) =>
-      GenerateSelect(output, this.ModelExplorer, String.Empty, args);
 
    protected internal SelectDisposable
    GenerateSelect(XcstWriter output, ModelExplorer modelExplorer, string expression, SelectArgs args) {

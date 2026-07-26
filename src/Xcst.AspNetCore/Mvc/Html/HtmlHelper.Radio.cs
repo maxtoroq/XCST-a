@@ -40,18 +40,18 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
-   Radio(XcstWriter output, string expression, object value, RadioArgs args = default) {
+   Radio(XcstWriter output, object value, RadioArgs args = default) =>
+      GenerateRadio(output, this.ModelExplorer, String.Empty, value, args);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public IDisposable
+   Radio(XcstWriter output, object value, string expression, RadioArgs args = default) {
 
       var modelExplorer = GetModelExplorerFromString(expression);
 
       return GenerateRadio(output, modelExplorer, expression, value, args);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public IDisposable
-   RadioForModel(XcstWriter output, object value, RadioArgs args = default) =>
-      GenerateRadio(output, this.ModelExplorer, String.Empty, value, args);
 
    protected IDisposable
    GenerateRadio(XcstWriter output, ModelExplorer modelExplorer, string expression, object value,
@@ -115,7 +115,7 @@ partial class HtmlHelper<TModel> {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public IDisposable
-   RadioFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, object value,
+   RadioFor<TResult>(XcstWriter output, object value, Expression<Func<TModel, TResult>> expression,
          RadioArgs args = default) {
 
       ArgumentNullException.ThrowIfNull(value);

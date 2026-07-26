@@ -153,13 +153,11 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <attribute name='name'>
             <text>Input</text>
-            <if test='forAttr != null || forModel'>For</if>
-            <if test='forModel'>Model</if>
+            <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
@@ -322,13 +320,11 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <attribute name='name'>
             <text>Textarea</text>
-            <if test='forAttr != null || forModel'>For</if>
-            <if test='forModel'>Model</if>
+            <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
@@ -460,13 +456,11 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <attribute name='name'>
             <text>Checkbox</text>
-            <if test='forAttr != null || forModel'>For</if>
-            <if test='forModel'>Model</if>
+            <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
@@ -600,18 +594,17 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <attribute name='name'>
             <text>Radio</text>
-            <if test='forAttr != null || forModel'>For</if>
-            <if test='forModel'>Model</if>
+            <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
          <code:arguments>
             <copy-of value='select(output, src + "reference", code)'/>
+            <code:expression value='{xcst_expression(el.Attribute("value")!)}'/>
             <choose>
                <when test='forAttr != null'>
                   <variable name='param' value='aux_variable(fn_generate_id(el))'/>
@@ -628,7 +621,6 @@
                   <invoke-delegate delegate='src_expand_attribute' with-params='new { attr = nameAttr }'/>
                </when>
             </choose>
-            <code:expression value='{xcst_expression(el.Attribute("value")!)}'/>
             <code:new-object>
                <code:type-reference name='RadioArgs'>
                   <code:type-reference name='HtmlHelper' namespace='Xcst.Web.Mvc'/>
@@ -809,13 +801,11 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <attribute name='name'>
             <text>Select</text>
-            <if test='forAttr != null || forModel'>For</if>
-            <if test='forModel'>Model</if>
+            <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
@@ -1083,13 +1073,11 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <attribute name='name'>
             <text>Label</text>
-            <if test='forAttr != null || forModel'>For</if>
-            <if test='forModel'>Model</if>
+            <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
@@ -1341,13 +1329,11 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call>
          <attribute name='name'>
             <text>ValidationMessage</text>
-            <if test='forAttr != null || forModel'>For</if>
-            <if test='forModel'>Model</if>
+            <if test='forAttr != null'>For</if>
          </attribute>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
          <call-template name='html-helper-ref'/>
@@ -1429,7 +1415,6 @@
 
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <code:method-call name='WriteStartElement'>
          <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
@@ -1455,8 +1440,7 @@
                <code:method-call>
                   <attribute name='name'>
                      <text>NewFieldsetHelper</text>
-                     <if test='forAttr != null || forModel'>For</if>
-                     <if test='forModel'>Model</if>
+                     <if test='forAttr != null'>For</if>
                   </attribute>
                   <call-template name='html-helper-ref'/>
                   <code:arguments>

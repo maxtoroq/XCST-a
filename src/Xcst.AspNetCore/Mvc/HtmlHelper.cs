@@ -279,6 +279,11 @@ public partial class HtmlHelper {
 
    [GeneratedCodeReference]
    public string
+   DisplayName() =>
+      DisplayNameHelper(this.ModelExplorer, String.Empty);
+
+   [GeneratedCodeReference]
+   public string
    DisplayName(string expression) {
 
       var modelExplorer = (String.IsNullOrEmpty(expression)) ?
@@ -288,13 +293,7 @@ public partial class HtmlHelper {
       return DisplayNameHelper(modelExplorer, expression);
    }
 
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public string
-   DisplayNameForModel() =>
-      DisplayNameHelper(this.ModelExplorer, String.Empty);
-
-   private protected string
+   private protected static string
    DisplayNameHelper(ModelExplorer modelExplorer, string expression) {
 
       var metadata = modelExplorer.Metadata;
@@ -312,6 +311,12 @@ public partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public void
+   DisplayText(ISequenceWriter<string> output) =>
+      DisplayTextHelper(output, this.ModelExplorer);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public void
    DisplayText(ISequenceWriter<string> output, string expression) {
 
       var modelExplorer = (String.IsNullOrEmpty(expression)) ?
@@ -320,12 +325,6 @@ public partial class HtmlHelper {
 
       DisplayTextHelper(output, modelExplorer);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public void
-   DisplayTextForModel(ISequenceWriter<string> output) =>
-      DisplayTextHelper(output, this.ModelExplorer);
 
    internal static void
    DisplayTextHelper(ISequenceWriter<string> output, ModelExplorer modelExplorer) {
@@ -341,6 +340,11 @@ public partial class HtmlHelper {
 
    [GeneratedCodeReference]
    public string
+   DisplayString() =>
+      DisplayStringHelper(this.ModelExplorer);
+
+   [GeneratedCodeReference]
+   public string
    DisplayString(string expression) {
 
       var modelExplorer = (String.IsNullOrEmpty(expression)) ?
@@ -350,15 +354,13 @@ public partial class HtmlHelper {
       return DisplayStringHelper(modelExplorer);
    }
 
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public string
-   DisplayStringForModel() =>
-      DisplayStringHelper(this.ModelExplorer);
-
    private protected static string
    DisplayStringHelper(ModelExplorer modelExplorer) =>
       modelExplorer.GetSimpleDisplayText();
+
+   public string
+   Id() =>
+      GenerateId(String.Empty);
 
    public string
    Id(string expression) =>
@@ -366,13 +368,16 @@ public partial class HtmlHelper {
 
    [GeneratedCodeReference]
    public string
+   Name() => GenerateName(String.Empty);
+
+   [GeneratedCodeReference]
+   public string
    Name(string expression) =>
       GenerateName(expression);
 
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
    public string
-   NameForModel() => Name(String.Empty);
+   Value() =>
+      ValueHelper(String.Empty, this.ModelExplorer, format: null);
 
    public string
    Value(string expression) =>

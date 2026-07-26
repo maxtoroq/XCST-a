@@ -65,7 +65,6 @@
       <variable name='forAttr' value='el.Attribute("for")'/>
       <variable name='forExpr' value='(forAttr != null) ? xcst_expression(forAttr) : null'/>
       <variable name='nameAttr' value='el.Attribute("name")'/>
-      <variable name='forModel' value='forAttr is null &amp;&amp; nameAttr is null'/>
 
       <variable name='htmlHelper'>
          <call-template name='html-helper-ref'/>
@@ -75,11 +74,10 @@
          <code:method-call>
             <attribute name='name'>
                <choose>
-                  <when test='editor'>Editor</when>
-                  <otherwise>Display</otherwise>
+                  <when test='editor'>EditorTemplate</when>
+                  <otherwise>DisplayTemplate</otherwise>
                </choose>
-               <if test='forAttr != null || forModel'>For</if>
-               <if test='forModel'>Model</if>
+               <if test='forAttr != null'>For</if>
             </attribute>
             <invoke-delegate delegate='src_line_number' with-params='new { el }'/>
             <copy-of value='htmlHelper'/>
@@ -248,14 +246,12 @@
 
       <variable name='useFor' value='forAttr != null || parentForAttr != null'/>
       <variable name='useName' value='nameAttr != null || parentNameAttr != null'/>
-      <variable name='forModel' value='!(useFor || useName)'/>
 
       <code:collection-initializer>
          <code:method-call>
             <attribute name='name'>
                <text>Name</text>
-               <if test='useFor || forModel'>For</if>
-               <if test='forModel'>Model</if>
+               <if test='useFor'>For</if>
             </attribute>
             <call-template name='html-helper-ref'/>
             <code:arguments>

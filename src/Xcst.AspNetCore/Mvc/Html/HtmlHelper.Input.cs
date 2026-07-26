@@ -122,18 +122,18 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SiblingContentDisposable
+   Input(ISequenceWriter<XElement> output, InputArgs args = default) =>
+      GenerateInput(output, this.ModelExplorer, String.Empty, args);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public SiblingContentDisposable
    Input(ISequenceWriter<XElement> output, string expression, InputArgs args = default) {
 
       var modelExplorer = GetModelExplorerFromString(expression);
 
       return GenerateInput(output, modelExplorer, expression, args);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public SiblingContentDisposable
-   InputForModel(ISequenceWriter<XElement> output, InputArgs args = default) =>
-      GenerateInput(output, this.ModelExplorer, String.Empty, args);
 
    protected internal SiblingContentDisposable
    GenerateInput(ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string expression, InputArgs args) {

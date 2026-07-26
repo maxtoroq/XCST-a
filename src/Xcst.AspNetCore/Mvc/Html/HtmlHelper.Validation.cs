@@ -54,6 +54,12 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
+   ValidationMessage(XcstWriter output, ValidationMessageArgs args = default) =>
+      GenerateValidationMessage(output, this.ModelExplorer, String.Empty, args);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public DefaultContentDisposable
    ValidationMessage(XcstWriter output, string expression, ValidationMessageArgs args = default) {
 
       ArgumentNullException.ThrowIfNull(expression);
@@ -62,12 +68,6 @@ partial class HtmlHelper {
 
       return GenerateValidationMessage(output, modelExplorer, expression, args);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public DefaultContentDisposable
-   ValidationMessageForModel(XcstWriter output, ValidationMessageArgs args = default) =>
-      GenerateValidationMessage(output, this.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
    GenerateValidationMessage(

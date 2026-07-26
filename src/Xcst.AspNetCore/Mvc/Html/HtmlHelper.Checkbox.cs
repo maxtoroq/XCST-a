@@ -42,18 +42,18 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SiblingContentDisposable
+   Checkbox(ISequenceWriter<XElement> output, CheckboxArgs args = default) =>
+      GenerateCheckbox(output, this.ModelExplorer, expression: String.Empty, args);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public SiblingContentDisposable
    Checkbox(ISequenceWriter<XElement> output, string expression, CheckboxArgs args = default) {
 
       var modelExplorer = GetModelExplorerFromString(expression);
 
       return GenerateCheckbox(output, modelExplorer, expression, args);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public SiblingContentDisposable
-   CheckboxForModel(ISequenceWriter<XElement> output, CheckboxArgs args = default) =>
-      GenerateCheckbox(output, this.ModelExplorer, expression: String.Empty, args);
 
    protected internal SiblingContentDisposable
    GenerateCheckbox(

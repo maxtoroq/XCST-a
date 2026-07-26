@@ -23,9 +23,10 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public HtmlHelper
-   NewFieldsetHelper(string expression) {
+   NewFieldsetHelper() {
 
-      var modelExplorer = GetModelExplorerFromString(expression);
+      var expression = String.Empty;
+      var modelExplorer = this.ModelExplorer;
       var newViewContext = NewFieldsetViewContext(expression);
 
       return new HtmlHelper(newViewContext, () => modelExplorer, this.MetadataProvider);
@@ -34,10 +35,9 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public HtmlHelper
-   NewFieldsetHelperForModel() {
+   NewFieldsetHelper(string expression) {
 
-      var expression = String.Empty;
-      var modelExplorer = this.ModelExplorer;
+      var modelExplorer = GetModelExplorerFromString(expression);
       var newViewContext = NewFieldsetViewContext(expression);
 
       return new HtmlHelper(newViewContext, () => modelExplorer, this.MetadataProvider);

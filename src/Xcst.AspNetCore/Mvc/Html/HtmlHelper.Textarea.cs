@@ -39,18 +39,18 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
+   Textarea(XcstWriter output, TextareaArgs args = default) =>
+      GenerateTextarea(output, this.ModelExplorer, String.Empty, args);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public DefaultContentDisposable
    Textarea(XcstWriter output, string expression, TextareaArgs args = default) {
 
       var modelExplorer = GetModelExplorerFromString(expression);
 
       return GenerateTextarea(output, modelExplorer, expression, args);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public DefaultContentDisposable
-   TextareaForModel(XcstWriter output, TextareaArgs args = default) =>
-      GenerateTextarea(output, this.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
    GenerateTextarea(XcstWriter output, ModelExplorer modelExplorer, string expression, TextareaArgs args) {

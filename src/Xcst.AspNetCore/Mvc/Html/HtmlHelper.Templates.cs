@@ -30,24 +30,24 @@ using ModelBinding;
 
 partial class HtmlHelper {
 
-   // *ForModel() helpers should call GetModelExplorerFromString(String.Empty)
+   // "ForModel" helpers should call GetModelExplorerFromString(String.Empty)
    // and not use this.ModelExplorer
 
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public TemplateHelper
-   Display(string expression) {
+   DisplayTemplate() =>
+      DisplayTemplate(String.Empty);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public TemplateHelper
+   DisplayTemplate(string expression) {
 
       var modelExplorer = GetModelExplorerFromString(expression);
 
       return new TemplateHelper(this, true, expression, modelExplorer);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public TemplateHelper
-   DisplayForModel() =>
-      Display(String.Empty);
 
    /// <summary>
    /// Returns the properties that should be shown in a display template, based on the
@@ -100,18 +100,18 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public TemplateHelper
-   Editor(string expression) {
+   EditorTemplate() =>
+      EditorTemplate(String.Empty);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public TemplateHelper
+   EditorTemplate(string expression) {
 
       var modelExplorer = GetModelExplorerFromString(expression);
 
       return new TemplateHelper(this, false, expression, modelExplorer);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public TemplateHelper
-   EditorForModel() =>
-      Editor(String.Empty);
 
    /// <summary>
    /// Returns the properties that should be shown in an editor template, based on the
@@ -214,7 +214,7 @@ partial class HtmlHelper<TModel> {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public TemplateHelper
-   DisplayFor<TResult>(Expression<Func<TModel, TResult>> expression) {
+   DisplayTemplateFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
       var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);
@@ -225,7 +225,7 @@ partial class HtmlHelper<TModel> {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public TemplateHelper
-   EditorFor<TResult>(Expression<Func<TModel, TResult>> expression) {
+   EditorTemplateFor<TResult>(Expression<Func<TModel, TResult>> expression) {
 
       var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);

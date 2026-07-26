@@ -41,18 +41,18 @@ partial class HtmlHelper {
    [GeneratedCodeReference]
    [EditorBrowsable(EditorBrowsableState.Never)]
    public DefaultContentDisposable
+   Label(XcstWriter output, LabelArgs args = default) =>
+      GenerateLabel(output, this.ModelExplorer, String.Empty, args);
+
+   [GeneratedCodeReference]
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public DefaultContentDisposable
    Label(XcstWriter output, string expression, LabelArgs args = default) {
 
       var modelExplorer = GetModelExplorerFromString(expression);
 
       return GenerateLabel(output, modelExplorer, expression, args);
    }
-
-   [GeneratedCodeReference]
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public DefaultContentDisposable
-   LabelForModel(XcstWriter output, LabelArgs args = default) =>
-      GenerateLabel(output, this.ModelExplorer, String.Empty, args);
 
    protected internal DefaultContentDisposable
    GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string expression, LabelArgs args) {
