@@ -35,7 +35,7 @@ static class DefaultEditorTemplates {
       var value = default(bool?);
 
       if (html.Model != null) {
-         // FIX: conversion logic duplicated with GenerateCheckbox()
+         // TODO: conversion logic duplicated with GenerateCheckbox()
          value = Convert.ToBoolean(html.Model, CultureInfo.InvariantCulture);
       }
 
