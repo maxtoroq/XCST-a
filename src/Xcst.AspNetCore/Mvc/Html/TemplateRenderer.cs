@@ -139,10 +139,17 @@ sealed class TemplateRenderer {
 
       foreach (var viewName in GetViewNames()) {
 
-         if (tmplFactory?.Invoke(viewName, _viewContext) is { } viewPage) {
-            _viewContext.ViewName = viewName;
-            RenderViewPage(viewPage, output);
-            return;
+         // MemberTemplate must be honored, let built-in Object template
+         // do the work
+
+         if (!(_viewContext.MemberTemplate != null
+            && _defaultDisplayActions.Comparer.Equals(viewName, nameof(Object)))) {
+
+            if (tmplFactory?.Invoke(viewName, _viewContext) is { } viewPage) {
+               _viewContext.ViewName = viewName;
+               RenderViewPage(viewPage, output);
+               return;
+            }
          }
 
          if (defaultActions.TryGetValue(viewName, out var defaultAction)) {

@@ -224,7 +224,8 @@ static class DefaultDisplayTemplates {
          var propertyName = propertyMeta.PropertyName!;
 
          if (propertyMeta.HideSurroundingHtml) {
-            renderPropertyTmpl(html, propertyExplorer, seqOutput);
+            propertyHelper(html, propertyExplorer)
+               .Render(seqOutput);
             continue;
          }
 
@@ -255,7 +256,8 @@ static class DefaultDisplayTemplates {
             writer.WriteStartElement("div");
 
             try {
-               renderPropertyTmpl(html, propertyExplorer, writer);
+               propertyHelper(html, propertyExplorer)
+                  .Render(writer);
 
             } finally {
                writer.WriteEndElement();
@@ -266,16 +268,8 @@ static class DefaultDisplayTemplates {
          }
       }
 
-      static void renderPropertyTmpl(
-            HtmlHelper html, ModelExplorer propertyExplorer, ISequenceWriter<object> output) {
-
-         new TemplateHelper(html, true, String.Empty, propertyExplorer)
-            .Render(
-               output,
-               new TemplateHelper.RenderArgs {
-                  htmlFieldName = propertyExplorer.Metadata.PropertyName,
-               });
-      }
+      static TemplateHelper propertyHelper(HtmlHelper html, ModelExplorer propertyExplorer) =>
+         new TemplateHelper(html, true, propertyExplorer.Metadata.PropertyName!, propertyExplorer);
    }
 
    public static void

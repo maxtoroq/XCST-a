@@ -14,32 +14,18 @@
          <c:return/>
       </c:if>
 
-      <c:variable name='filteredProperties' value='Html.DisplayProperties()'/>
-
-      <c:for-each name='propertyExplorer' in='filteredProperties'>
-
-         <c:variable name='propertyMeta' value='propertyExplorer.Metadata'/>
-         <c:variable name='propertyName' value='propertyMeta.PropertyName'/>
-
-         <c:if test='propertyMeta.HideSurroundingHtml'>
-            <a:display name='{propertyName}'/>
-            <c:continue/>
-         </c:if>
-
-         <c:if test='Html.MemberTemplate(propertyExplorer) is { } memberTemplate'>
-            <c:invoke-delegate delegate='memberTemplate'/>
-            <c:continue/>
-         </c:if>
-
-         <div class='row mb-3'>
-            <a:label name='{propertyName}' class='col-form-label {this.labelColumnClass}'/>
-            <div class='{this.fieldColumnClass}'>
-               <div class='form-control-plaintext'>
-                  <a:display name='{propertyName}'/>
+      <a:display>
+         <a:member-template>
+            <div class='row mb-3'>
+               <a:label class='col-form-label {this.labelColumnClass}'/>
+               <div class='{this.fieldColumnClass}'>
+                  <div class='form-control-plaintext'>
+                     <a:display/>
+                  </div>
                </div>
             </div>
-         </div>
-      </c:for-each>
+         </a:member-template>
+      </a:display>
    </c:template>
 
 </c:package>

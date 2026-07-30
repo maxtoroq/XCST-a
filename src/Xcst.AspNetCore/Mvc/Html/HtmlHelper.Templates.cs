@@ -59,20 +59,24 @@ partial class HtmlHelper {
    /// e.g. by default, it excludes complex-type properties.
    /// </remarks>
    public IEnumerable<ModelExplorer>
-   DisplayProperties() {
+   DisplayProperties() =>
+      DisplayProperties(this.ViewContext.MembersNames);
+
+   internal IEnumerable<ModelExplorer>
+   DisplayProperties(IList<string>? names) {
 
       var filteredProperties = this.ModelExplorer.Properties
-         .Where(ShowForDisplay);
+         .Where(p => ShowForDisplay(p, names));
 
-      var orderedProperties = (this.ViewContext.MembersNames.Count > 0) ?
-         filteredProperties.OrderBy(p => this.ViewContext.MembersNames.IndexOf(p.Metadata.PropertyName!))
+      var orderedProperties = (names is { Count: > 0 }) ?
+         filteredProperties.OrderBy(p => names.IndexOf(p.Metadata.PropertyName!))
          : filteredProperties;
 
       return orderedProperties;
    }
 
    bool
-   ShowForDisplay(ModelExplorer propertyExplorer) {
+   ShowForDisplay(ModelExplorer propertyExplorer, IList<string>? names) {
 
       ArgumentNullException.ThrowIfNull(propertyExplorer);
 
@@ -82,7 +86,7 @@ partial class HtmlHelper {
          return false;
       }
 
-      if (this.ViewContext.MembersNames is { Count: > 0 } names) {
+      if (names is { Count: > 0 }) {
          return names.Contains(propertyMetadata.PropertyName!);
       }
 
@@ -123,20 +127,24 @@ partial class HtmlHelper {
    /// e.g. by default, it excludes complex-type properties.
    /// </remarks>
    public IEnumerable<ModelExplorer>
-   EditorProperties() {
+   EditorProperties() =>
+      EditorProperties(this.ViewContext.MembersNames);
+
+   internal IEnumerable<ModelExplorer>
+   EditorProperties(IList<string>? names) {
 
       var filteredProperties = this.ModelExplorer.Properties
-         .Where(ShowForEdit);
+         .Where(p => ShowForEdit(p, names));
 
-      var orderedProperties = (this.ViewContext.MembersNames.Count > 0) ?
-         filteredProperties.OrderBy(p => this.ViewContext.MembersNames.IndexOf(p.Metadata.PropertyName!))
+      var orderedProperties = (names is { Count: > 0 }) ?
+         filteredProperties.OrderBy(p => names.IndexOf(p.Metadata.PropertyName!))
          : filteredProperties;
 
       return orderedProperties;
    }
 
    bool
-   ShowForEdit(ModelExplorer propertyExplorer) {
+   ShowForEdit(ModelExplorer propertyExplorer, IList<string>? names) {
 
       ArgumentNullException.ThrowIfNull(propertyExplorer);
 
@@ -146,7 +154,7 @@ partial class HtmlHelper {
          return false;
       }
 
-      if (this.ViewContext.MembersNames is { Count: > 0 } names) {
+      if (names is { Count: > 0 }) {
          return names.Contains(propertyMetadata.PropertyName!);
       }
 
@@ -179,27 +187,26 @@ partial class HtmlHelper {
 
       ArgumentNullException.ThrowIfNull(propertyExplorer);
 
-      if (this.ViewContext.MemberTemplate is { } memberTemplate) {
-
-         var helper = MakeHtmlHelperForMemberTemplate(propertyExplorer);
-
-         return (c, o) => memberTemplate.Invoke(helper, o);
+      if (propertyExplorer.Metadata.ContainerType is null) {
+         throw new ArgumentException(
+            "propertyExplorer must represent a property.", nameof(propertyExplorer));
       }
 
-      return null;
-   }
+      var memberTemplate = this.ViewContext.MemberTemplate;
 
-   HtmlHelper
-   MakeHtmlHelperForMemberTemplate(ModelExplorer memberExplorer) {
+      if (memberTemplate is null) {
+         return null;
+      }
 
-      ArgumentNullException.ThrowIfNull(memberExplorer);
-
-      var viewContext = new ViewContext(this.ViewContext) {
-         HtmlFieldPrefix = GenerateName(memberExplorer.Metadata.PropertyName!),
-         VisitedObjects = null,
+      var memberContext = new ViewContext(this.ViewContext) {
+         HtmlFieldPrefix = GenerateName(propertyExplorer.Metadata.PropertyName!),
       };
 
-      return new HtmlHelper(viewContext, () => memberExplorer, this.MetadataProvider);
+      TemplateHelper.SetUpMemberContext(memberContext);
+
+      var memberHtml = new HtmlHelper(memberContext, () => propertyExplorer, this.MetadataProvider);
+
+      return (c, o) => memberTemplate.Invoke(memberHtml, o);
    }
 
    [GeneratedCodeReference]
@@ -288,31 +295,26 @@ public class TemplateHelper {
    public void
    Render(ISequenceWriter<object> output, RenderArgs args = default) {
 
-      var htmlFieldName = args.htmlFieldName;
-      var templateName = args.templateName;
-      var membersNames = args.membersNames;
-      var membersOptions = args.membersOptions;
-      var memberTemplate = args.memberTemplate;
-      var withParams = args.withParams;
+      if (args.memberTemplate != null) {
+         RenderMemberTemplate(output, args);
+         return;
+      }
 
-      htmlFieldName ??= _expression;
-
-      var metadata = _modelExplorer.Metadata;
-      var model = _modelExplorer.Model;
+      var explorer = _modelExplorer;
+      var metadata = explorer.Metadata;
+      var model = explorer.Model;
 
       if (metadata.ConvertEmptyStringToNull
          && String.Empty.Equals(model)) {
 
          model = null;
+         explorer = explorer.GetExplorerForModel(model);
       }
 
       // Normally this shouldn't happen, unless someone writes their own custom Object templates which
       // don't check to make sure that the object hasn't already been displayed
 
-      var visitedObjectsKey = model ?? metadata.UnderlyingOrModelType;
-
-      if (_html.ViewContext.VisitedObjects.Contains(visitedObjectsKey)) {
-         // DDB #224750
+      if (_html.ViewContext.Visited(explorer)) {
          return;
       }
 
@@ -336,32 +338,81 @@ public class TemplateHelper {
             : _html.FormatValue(model, formatString);
       }
 
-      var viewContext = new ViewContext(_html.ViewContext) {
-         HtmlFieldPrefix = _html.GenerateName(htmlFieldName),
-         FormattedModelValue = formattedModelValue,
-         MembersNames = membersNames,
-         VisitedObjects = { visitedObjectsKey },
+      var templateContext = MakeTemplateContext(args);
+      templateContext.FormattedModelValue = formattedModelValue;
+      templateContext.MembersNames = args.membersNames;
+
+      templateContext.AddVisited(explorer);
+
+      new TemplateRenderer(templateContext, explorer, _html.MetadataProvider, args.templateName, _displayMode)
+         .Render(output);
+   }
+
+   void
+   RenderMemberTemplate(ISequenceWriter<object> output, in RenderArgs args) {
+
+      var memberTemplate = args.memberTemplate!;
+
+      var baseContext = MakeTemplateContext(args);
+      SetUpMemberContext(baseContext);
+
+      foreach (var propertyExplorer in Members(args.membersNames)) {
+
+         var propertyMeta = propertyExplorer.Metadata;
+         var propertyName = propertyMeta.PropertyName!;
+
+         var memberContext = new ViewContext(baseContext);
+
+         var memberHtml = new HtmlHelper(
+            memberContext, () => propertyExplorer, _html.MetadataProvider);
+         memberHtml.ViewContext.HtmlFieldPrefix = memberHtml.GenerateName(propertyName);
+
+         if (propertyMeta.HideSurroundingHtml) {
+
+            new TemplateHelper(memberHtml, _displayMode, String.Empty, propertyExplorer)
+               .Render(output);
+
+            continue;
+         }
+
+         memberTemplate.Invoke(memberHtml, output!);
+      }
+   }
+
+   internal static void
+   SetUpMemberContext(ViewContext templateContext) {
+      templateContext.VisitedObjects = null;
+   }
+
+   IEnumerable<ModelExplorer>
+   Members(IList<string>? membersNames) =>
+      (_displayMode) ?
+         _html.DisplayProperties(membersNames)
+         : _html.EditorProperties(membersNames);
+
+   ViewContext
+   MakeTemplateContext(in RenderArgs args) {
+
+      var templateContext = new ViewContext(_html.ViewContext) {
+         HtmlFieldPrefix = _html.GenerateName(args.htmlFieldName ?? _expression),
       };
 
-      if (membersOptions != null) {
+      if (args.membersOptions is { } membersOptions) {
          foreach (var kvp in membersOptions) {
-            viewContext.MembersOptions[kvp.Key] = kvp.Value;
+            templateContext.MembersOptions[kvp.Key] = kvp.Value;
          }
       }
 
-      if (memberTemplate != null) {
-         viewContext.MemberTemplate = memberTemplate;
+      if (args.memberTemplate is { } memberTemplate) {
+         templateContext.MemberTemplate = memberTemplate;
       }
 
-      if (withParams != null) {
+      if (args.withParams is { } withParams) {
          foreach (var kvp in TypeHelpers.ObjectToDictionary(withParams)) {
-            viewContext.ViewParameters[kvp.Key] = kvp.Value;
+            templateContext.ViewParameters[kvp.Key] = kvp.Value;
          }
       }
 
-      var newModelExpl = _modelExplorer.GetExplorerForModel(model);
-
-      new TemplateRenderer(viewContext, newModelExpl, _html.MetadataProvider, templateName, _displayMode)
-         .Render(output);
+      return templateContext;
    }
 }

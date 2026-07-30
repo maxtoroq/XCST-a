@@ -271,7 +271,8 @@ static class DefaultEditorTemplates {
          var propertyName = propertyMeta.PropertyName!;
 
          if (propertyMeta.HideSurroundingHtml) {
-            renderPropertyTmpl(html, propertyExplorer, seqOutput);
+            propertyHelper(html, propertyExplorer)
+               .Render(seqOutput);
             continue;
          }
 
@@ -294,7 +295,8 @@ static class DefaultEditorTemplates {
                .NoConstructor()
                .Dispose();
 
-            renderPropertyTmpl(html, propertyExplorer, writer);
+            propertyHelper(html, propertyExplorer)
+               .Render(writer);
 
             html.GenerateValidationMessage(writer, propertyExplorer, propertyName, default)
                .NoConstructor()
@@ -305,16 +307,8 @@ static class DefaultEditorTemplates {
          }
       }
 
-      static void renderPropertyTmpl(
-            HtmlHelper html, ModelExplorer propertyExplorer, ISequenceWriter<object> output) {
-
-         new TemplateHelper(html, false, String.Empty, propertyExplorer)
-            .Render(
-               output,
-               new TemplateHelper.RenderArgs {
-                  htmlFieldName = propertyExplorer.Metadata.PropertyName,
-               });
-      }
+      static TemplateHelper propertyHelper(HtmlHelper html, ModelExplorer propertyExplorer) =>
+         new TemplateHelper(html, false, propertyExplorer.Metadata.PropertyName!, propertyExplorer);
    }
 
    public static void

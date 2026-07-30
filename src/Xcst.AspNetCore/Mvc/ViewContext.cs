@@ -124,17 +124,15 @@ public class ViewContext {
       set => _viewParameters = value;
    }
 
-   // DDB #224750 - Keep a collection of visited objects to prevent infinite recursion
-
    [AllowNull]
    internal HashSet<object>
    VisitedObjects {
-      get => _visitedObjects ??= new();
+      private get => _visitedObjects ??= new();
       set => _visitedObjects = value;
    }
 
    public int
-   TemplateDepth => VisitedObjects.Count;
+   TemplateDepth => _visitedObjects?.Count ?? 0;
 
    internal ViewOptions
    Configuration => _config ??=
@@ -219,8 +217,12 @@ public class ViewContext {
    }
 
    internal bool
+   AddVisited(ModelExplorer modelExplorer) =>
+      this.VisitedObjects.Add(modelExplorer.Model ?? modelExplorer.Metadata.ModelType);
+
+   internal bool
    Visited(ModelExplorer modelExplorer) =>
-      this.VisitedObjects.Contains(modelExplorer.Model ?? modelExplorer.Metadata.ModelType);
+      _visitedObjects?.Contains(modelExplorer.Model ?? modelExplorer.Metadata.ModelType) == true;
 }
 
 public enum FormMethod {
