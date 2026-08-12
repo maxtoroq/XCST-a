@@ -471,6 +471,7 @@ public partial class HtmlHelper {
    }
 }
 
+[GeneratedCodeReference]
 public partial class HtmlHelper<TModel> : HtmlHelper {
 
    [MaybeNull]
