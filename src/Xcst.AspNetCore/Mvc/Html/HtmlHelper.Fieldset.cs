@@ -61,8 +61,8 @@ partial class HtmlHelper<TModel> {
    public HtmlHelper<TResult>
    NewFieldsetHelperFor<TResult>(Expression<Func<TModel, TResult?>> expression) {
 
-      var expressionString = ExpressionHelper.GetExpressionText(expression);
       var modelExplorer = GetModelExplorerFromLambda(expression);
+      var expressionString = ExpressionHelper.GetExpressionText(expression);
       var newViewContext = NewFieldsetViewContext(expressionString);
 
       return new HtmlHelper<TResult>(newViewContext, () => modelExplorer, this.MetadataProvider);

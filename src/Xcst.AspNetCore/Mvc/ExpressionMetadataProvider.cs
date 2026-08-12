@@ -59,26 +59,6 @@ static class ExpressionMetadataProvider {
             "Templates can be used only with field access, property access, single-dimension array index, or single-parameter custom indexer expressions.");
       }
 
-      object? modelAccessor(object container) {
-
-         var model = (TParameter)container;
-
-         var cachedFn = CachedExpressionCompiler.Process(expression);
-
-         if (cachedFn != null) {
-            return cachedFn.Invoke(model);
-         }
-
-         var fn = expression.Compile();
-
-         try {
-            return fn.Invoke((TParameter)container);
-
-         } catch (NullReferenceException) {
-            return null;
-         }
-      }
-
       var metadata = default(ModelMetadata);
 
       if (containerType != null
@@ -105,6 +85,26 @@ static class ExpressionMetadataProvider {
       metadata ??= metadataProvider.GetMetadataForType(typeof(TValue));
 
       return modelExplorer.GetExplorerForExpression(metadata, modelAccessor);
+
+      object? modelAccessor(object container) {
+
+         var model = (TParameter)container;
+
+         var cachedFn = CachedExpressionCompiler.Process(expression);
+
+         if (cachedFn != null) {
+            return cachedFn.Invoke(model);
+         }
+
+         var fn = expression.Compile();
+
+         try {
+            return fn.Invoke((TParameter)container);
+
+         } catch (NullReferenceException) {
+            return null;
+         }
+      }
    }
 
    public static ModelExplorer

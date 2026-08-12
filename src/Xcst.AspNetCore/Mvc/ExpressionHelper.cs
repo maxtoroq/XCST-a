@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 
 namespace Xcst.Web.Mvc;
 
@@ -14,12 +14,18 @@ public static class ExpressionHelper {
    public static string
    GetExpressionText(LambdaExpression expression) {
 
-      // Split apart the expression string for property/field accessors to create its name
+      ArgumentNullException.ThrowIfNull(expression);
 
-      var nameParts = new Stack<string>();
+      var lastSegment = default(string);
+      var lastIsIndex = false;
+      var builder = default(StringBuilder);
+
       var part = expression.Body;
 
       while (part != null) {
+
+         string segment;
+         bool isIndex;
 
          if (part.NodeType == ExpressionType.Call) {
 
@@ -29,54 +35,71 @@ public static class ExpressionHelper {
                break;
             }
 
-            nameParts.Push(
-               GetIndexerInvocation(
-                  methodExpression.Arguments.Single(),
-                  expression.Parameters));
+            segment = GetIndexerInvocation(
+               methodExpression.Arguments.Single(),
+               expression);
 
+            isIndex = true;
             part = methodExpression.Object;
 
          } else if (part.NodeType == ExpressionType.ArrayIndex) {
 
             var binaryExpression = (BinaryExpression)part;
 
-            nameParts.Push(
-               GetIndexerInvocation(
-                  binaryExpression.Right,
-                  expression.Parameters));
+            segment = GetIndexerInvocation(
+               binaryExpression.Right,
+               expression);
 
+            isIndex = true;
             part = binaryExpression.Left;
 
          } else if (part.NodeType == ExpressionType.MemberAccess) {
 
             var memberExpressionPart = (MemberExpression)part;
-            nameParts.Push("." + memberExpressionPart.Member.Name);
+
+            segment = memberExpressionPart.Member.Name;
+            isIndex = false;
             part = memberExpressionPart.Expression;
-
-         } else if (part.NodeType == ExpressionType.Parameter) {
-
-            // Dev10 Bug #907611
-            // When the expression is parameter based (m => m.Something...), we'll push an empty
-            // string onto the stack and stop evaluating. The extra empty string makes sure that
-            // we don't accidentally cut off too much of m => m.Model.
-
-            nameParts.Push(String.Empty);
-            part = null;
 
          } else {
             break;
          }
+
+         if (lastSegment != null) {
+
+            if (builder is null) {
+               builder = new StringBuilder(
+                  lastSegment.Length
+                  + (lastIsIndex ? 0 : 1)
+                  + segment.Length);
+               builder.Append(lastSegment);
+            }
+
+            if (!lastIsIndex) {
+               builder.Insert(0, '.');
+            }
+
+            builder.Insert(0, segment);
+         }
+
+         lastSegment = segment;
+         lastIsIndex = isIndex;
       }
 
-      if (nameParts.Count > 0) {
-         return nameParts.Aggregate((left, right) => left + right).TrimStart('.');
+      if (lastSegment != null) {
+
+         if (builder != null) {
+            return builder.ToString();
+         }
+
+         return lastSegment;
       }
 
       return String.Empty;
    }
 
    static string
-   GetIndexerInvocation(Expression expression, IList<ParameterExpression> parameters) {
+   GetIndexerInvocation(Expression expression, LambdaExpression parentExpression) {
 
       var converted = Expression.Convert(expression, typeof(object));
       var fakeParameter = Expression.Parameter(typeof(object), null);
@@ -89,8 +112,10 @@ public static class ExpressionHelper {
 
       } catch (InvalidOperationException ex) {
 
+         var p0 = parentExpression.Parameters[0];
+
          throw new InvalidOperationException(
-            $"The expression compiler was unable to evaluate the indexer expression '{expression}' because it references the model parameter '{parameters[0].Name}' which is unavailable.",
+            $"The expression compiler was unable to evaluate the indexer expression '{expression}' because it references the model parameter '{p0.Name}' which is unavailable.",
             ex);
       }
 
@@ -100,8 +125,7 @@ public static class ExpressionHelper {
    internal static bool
    IsSingleArgumentIndexer(Expression expression) {
 
-      if (expression is MethodCallExpression methodExpression
-         && methodExpression.Arguments.Count == 1) {
+      if (expression is MethodCallExpression { Arguments.Count: 1 } methodExpression) {
 
          return methodExpression.Method
             .DeclaringType!
