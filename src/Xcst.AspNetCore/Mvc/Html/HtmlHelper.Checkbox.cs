@@ -60,6 +60,10 @@ partial class HtmlHelper {
          ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string expression,
          CheckboxArgs args) {
 
+      ArgumentNullException.ThrowIfNull(output);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
+      ArgumentNullException.ThrowIfNull(expression);
+
       var inputWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
 
       GenerateCheckboxInput(
@@ -91,8 +95,6 @@ partial class HtmlHelper {
    void
    GenerateCheckboxInput(XcstWriter output, ModelExplorer modelExplorer, string expression,
          CheckboxArgs args, out string fullName) {
-
-      ArgumentNullException.ThrowIfNull(expression);
 
       var isChecked = args.@checked;
       var @class = args.@class;
@@ -148,8 +150,6 @@ partial class HtmlHelper<TModel> {
    CheckboxFor(
          ISequenceWriter<XElement> output, Expression<Func<TModel, bool>> expression,
          CheckboxArgs args = default) {
-
-      ArgumentNullException.ThrowIfNull(expression);
 
       var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);

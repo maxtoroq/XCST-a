@@ -57,6 +57,8 @@ partial class HtmlHelper {
    GenerateRadio(XcstWriter output, ModelExplorer modelExplorer, string expression, object value,
          RadioArgs args) {
 
+      ArgumentNullException.ThrowIfNull(output);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
       ArgumentNullException.ThrowIfNull(expression);
       ArgumentNullException.ThrowIfNull(value);
 
@@ -117,8 +119,6 @@ partial class HtmlHelper<TModel> {
    public IDisposable
    RadioFor<TResult>(XcstWriter output, object value, Expression<Func<TModel, TResult>> expression,
          RadioArgs args = default) {
-
-      ArgumentNullException.ThrowIfNull(value);
 
       var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);

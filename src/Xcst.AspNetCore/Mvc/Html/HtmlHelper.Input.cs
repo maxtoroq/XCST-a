@@ -138,6 +138,10 @@ partial class HtmlHelper {
    protected internal SiblingContentDisposable
    GenerateInput(ISequenceWriter<XElement> output, ModelExplorer modelExplorer, string expression, InputArgs args) {
 
+      ArgumentNullException.ThrowIfNull(output);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
+      ArgumentNullException.ThrowIfNull(expression);
+
       var inputWriter = DocumentWriter.CastElement(this.CurrentPackage, output);
 
       GenerateInputElement(
@@ -181,8 +185,6 @@ partial class HtmlHelper {
          XcstWriter output, ModelExplorer modelExplorer, string expression, InputArgs args,
          out string fullName,
          out string inputType) {
-
-      ArgumentNullException.ThrowIfNull(expression);
 
       var value = args.value;
       var type = args.type;

@@ -103,6 +103,10 @@ partial class HtmlHelper {
    protected internal SelectDisposable
    GenerateSelect(XcstWriter output, ModelExplorer modelExplorer, string expression, SelectArgs args) {
 
+      ArgumentNullException.ThrowIfNull(output);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
+      ArgumentNullException.ThrowIfNull(expression);
+
       var value = args.value;
       var options = args.options;
       var multiple = args.multiple;
@@ -297,8 +301,6 @@ partial class HtmlHelper<TModel> {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public SelectDisposable
    SelectFor<TResult>(XcstWriter output, Expression<Func<TModel, TResult>> expression, SelectArgs args = default) {
-
-      ArgumentNullException.ThrowIfNull(expression);
 
       var modelExplorer = GetModelExplorerFromLambda(expression);
       var expressionString = ExpressionHelper.GetExpressionText(expression);

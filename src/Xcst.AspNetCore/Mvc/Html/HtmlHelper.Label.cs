@@ -57,6 +57,10 @@ partial class HtmlHelper {
    protected internal DefaultContentDisposable
    GenerateLabel(XcstWriter output, ModelExplorer modelExplorer, string expression, LabelArgs args) {
 
+      ArgumentNullException.ThrowIfNull(output);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
+      ArgumentNullException.ThrowIfNull(expression);
+
       var hasDefaultText = args.hasDefaultText;
       var @class = args.@class;
 

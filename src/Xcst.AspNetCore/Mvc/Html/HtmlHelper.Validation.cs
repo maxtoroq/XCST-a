@@ -62,8 +62,6 @@ partial class HtmlHelper {
    public DefaultContentDisposable
    ValidationMessage(XcstWriter output, string expression, ValidationMessageArgs args = default) {
 
-      ArgumentNullException.ThrowIfNull(expression);
-
       var modelExplorer = GetModelExplorerFromString(expression);
 
       return GenerateValidationMessage(output, modelExplorer, expression, args);
@@ -72,6 +70,10 @@ partial class HtmlHelper {
    protected internal DefaultContentDisposable
    GenerateValidationMessage(
          XcstWriter output, ModelExplorer modelExplorer, string expression, ValidationMessageArgs args) {
+
+      ArgumentNullException.ThrowIfNull(output);
+      ArgumentNullException.ThrowIfNull(modelExplorer);
+      ArgumentNullException.ThrowIfNull(expression);
 
       var hasDefaultText = args.hasDefaultText;
       var @class = args.@class;
@@ -203,7 +205,7 @@ partial class HtmlHelper {
          }
 
          output.WriteEndElement(); // </ul>
-      };
+      }
 
       // Returns non-null list of model states, which caller will render in order provided.
       IEnumerable<ModelStateEntry> getModelStateList(bool includePropertyErrors) {
