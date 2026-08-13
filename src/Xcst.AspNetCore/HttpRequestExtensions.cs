@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http;
 
 namespace Xcst.Web;
@@ -59,12 +58,9 @@ public static class HttpRequestExtensions {
 
       ArgumentNullException.ThrowIfNull(request);
 
-      return request.Item("X-Requested-With") == "XMLHttpRequest"
-         || request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      return request.Headers.XRequestedWith == "XMLHttpRequest";
    }
 
-   [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "request", Justification = "The request parameter is no longer being used but we do not want to break legacy callers.")]
-   [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "1#", Justification = "Response.Redirect() takes its URI as a string parameter.")]
    public static bool
    IsUrlLocalToHost(this HttpRequest request, string? url) {
 
@@ -72,10 +68,4 @@ public static class HttpRequestExtensions {
          ((url[0] == '/' && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'))) || // "/" or "/foo" but not "//" or "/\"
          (url.Length > 1 && url[0] == '~' && url[1] == '/')); // "~/" or "~/foo"
    }
-
-   static string?
-   Item(this HttpRequest request, string key) =>
-      request.Query[key].ToString()
-         ?? request.Form[key].ToString()
-         ?? request.Cookies[key];
 }
