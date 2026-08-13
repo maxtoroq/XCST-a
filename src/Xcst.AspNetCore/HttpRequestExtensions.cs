@@ -56,12 +56,4 @@ public static class HttpRequestExtensions {
          return values.ToString();
       }
    }
-
-   public static bool
-   IsAjaxRequest(this HttpRequest request) {
-
-      ArgumentNullException.ThrowIfNull(request);
-
-      return request.Headers.XRequestedWith == "XMLHttpRequest";
-   }
 }

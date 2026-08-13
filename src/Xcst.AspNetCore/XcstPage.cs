@@ -73,7 +73,7 @@ public abstract class XcstPage {
    IsPost => Request?.Method == "POST";
 
    public bool
-   IsAjax => Request?.IsAjaxRequest() ?? false;
+   IsAjax => Request?.Headers.XRequestedWith.Equals("XMLHttpRequest") == true;
 
    public UrlHelper
    Url {
