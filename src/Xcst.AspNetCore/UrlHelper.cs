@@ -82,9 +82,11 @@ public class UrlHelper {
    Encode(string? url) => HttpUtility.UrlEncode(url);
 
    public virtual bool
-   IsLocalUrl(string? url) =>
-      // TODO this should call the System.Web.dll API once it gets added to the framework and MVC takes a dependency on it.
-      _httpContext.Request.IsUrlLocalToHost(url);
+   IsLocalUrl(string? url) {
+      return !String.IsNullOrEmpty(url) &&
+         ((url[0] == '/' && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'))) || // "/" or "/foo" but not "//" or "/\"
+         (url.Length > 1 && url[0] == '~' && url[1] == '/')); // "~/" or "~/foo"
+   }
 
    // this method can accept an app-relative path or an absolute path for contentPath
    [return: NotNullIfNotNull(nameof(contentPath))]

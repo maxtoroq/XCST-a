@@ -64,12 +64,4 @@ public static class HttpRequestExtensions {
 
       return request.Headers.XRequestedWith == "XMLHttpRequest";
    }
-
-   public static bool
-   IsUrlLocalToHost(this HttpRequest request, string? url) {
-
-      return !String.IsNullOrEmpty(url) &&
-         ((url[0] == '/' && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'))) || // "/" or "/foo" but not "//" or "/\"
-         (url.Length > 1 && url[0] == '~' && url[1] == '/')); // "~/" or "~/foo"
-   }
 }
