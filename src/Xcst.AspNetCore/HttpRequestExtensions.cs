@@ -2,18 +2,22 @@
 
 using System;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace Xcst.Web;
 
 public static class HttpRequestExtensions {
 
-   internal const string
-   XHttpMethodOverrideKey = "X-HTTP-Method-Override";
+   public static string
+   GetHttpMethodOverride(this HttpRequest request) =>
+      GetHttpMethodOverride(request, null);
 
    public static string
-   GetHttpMethodOverride(this HttpRequest request) {
+   GetHttpMethodOverride(this HttpRequest request, IFormCollection? form) {
 
       ArgumentNullException.ThrowIfNull(request);
+
+      const string key = "X-HTTP-Method-Override";
 
       var incomingVerb = request.Method;
 
@@ -21,36 +25,36 @@ public static class HttpRequestExtensions {
          return incomingVerb;
       }
 
-      string? verbOverride = null;
-      var headerOverrideValue = (string?)request.Headers[XHttpMethodOverrideKey];
+      var verbOverride = SingleValue(request.Headers[key])
+         ?? SingleValue((FormOrDefault(request, form) is { } f) ? f[key] : StringValues.Empty)
+         ?? SingleValue(request.Query[key]);
 
-      if (!String.IsNullOrEmpty(headerOverrideValue)) {
-         verbOverride = headerOverrideValue;
-      } else {
+      if (!String.IsNullOrEmpty(verbOverride)
+         && !String.Equals(verbOverride, "GET", StringComparison.OrdinalIgnoreCase)
+         && !String.Equals(verbOverride, "POST", StringComparison.OrdinalIgnoreCase)) {
 
-         var formOverrideValue = (string?)request.Form[XHttpMethodOverrideKey];
-
-         if (!String.IsNullOrEmpty(formOverrideValue)) {
-            verbOverride = formOverrideValue;
-         } else {
-
-            var queryStringOverrideValue = (string?)request.Query[XHttpMethodOverrideKey];
-
-            if (!String.IsNullOrEmpty(queryStringOverrideValue)) {
-               verbOverride = queryStringOverrideValue;
-            }
-         }
-      }
-
-      if (verbOverride != null) {
-         if (!String.Equals(verbOverride, "GET", StringComparison.OrdinalIgnoreCase)
-            && !String.Equals(verbOverride, "POST", StringComparison.OrdinalIgnoreCase)) {
-
-            incomingVerb = verbOverride;
-         }
+         incomingVerb = verbOverride;
       }
 
       return incomingVerb;
+
+      static IFormCollection? FormOrDefault(HttpRequest request, IFormCollection? form) =>
+         form ?? (request.HasFormContentType ? request.Form : null);
+
+      static string? SingleValue(StringValues values) {
+
+         if (values.Count == 0) {
+            return null;
+         }
+
+         // if not empty don't return null, for coalescing
+
+         if (values.Count > 1) {
+            return String.Empty;
+         }
+
+         return values.ToString();
+      }
    }
 
    public static bool
